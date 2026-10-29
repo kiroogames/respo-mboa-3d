@@ -1,0 +1,63 @@
+/* Menus illustrés : choix lisibles, informations secondaires repliées, pages fixes. */
+dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)[open]{height:min(780px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);width:min(1000px,calc(100vw - 32px));grid-template-columns:210px minmax(0,1fr)}
+dialog.game-menu .menu-context{background:#f3e8cb;border-color:#dfd4b5;padding:22px 14px;min-height:0}
+dialog.game-menu .menu-brand{color:#4e6449;font-size:10px}
+dialog.game-menu .menu-brand b{font-size:38px;color:#244e3a}
+dialog.game-menu .menu-context>p{display:none}
+dialog.game-menu .menu-context .menu-city-art{display:flex;align-items:center;background:none;margin:0;min-height:0;width:100%;height:100%;flex:1}
+dialog.game-menu .game-menu-hero{width:100%;max-height:100%;object-fit:contain;display:block;border-radius:16px}
+dialog.game-menu .menu-context-clock{color:#4c6248;font-size:12px;letter-spacing:0}
+dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-head{padding:18px 56px 10px 22px}
+dialog.game-menu:not([data-mode=puzzle])>.popup-head h2{font-size:27px;line-height:1.15}
+dialog.game-menu .popup-head .popup-icon{width:70px;height:70px;background:transparent;box-shadow:none;border:0;padding:0;flex:none;overflow:hidden}
+dialog.game-menu .popup-icon img{width:100%;height:100%;object-fit:contain}
+dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-body{overflow:hidden;padding:8px 22px 10px;scroll-behavior:auto}
+dialog.game-menu:not(.citizen-puzzle-dialog):not(.transport-dialog) .game-menu-pages{width:100%;column-count:auto;column-gap:24px;column-fill:auto;overflow:visible}
+dialog.game-menu .game-menu-pages>*,dialog.game-menu .game-menu-pages :is(button,article,li,select,input,label,h3,p,details){break-inside:avoid}
+dialog.game-menu .game-menu-pages>section{break-inside:auto}
+dialog.game-menu .game-menu-pages :is(h3,p){margin-top:7px;margin-bottom:7px}
+dialog.game-menu .game-menu-pages :is(.wait-dates,.wait-presets,.wait-mood,.sleep-energy,.meal-energy,.comfort-score,.bills-summary){break-inside:avoid}
+dialog.game-menu:not([data-mode=puzzle]) .popup-body :is(p,small,label,summary,.venue-description,.travel-costs,.venue-other-gains){font-size:16px!important;line-height:1.45}
+dialog.game-menu:not([data-mode=puzzle]) .popup-body :is(.venue-service,.citizen-card) b{font-size:19px!important;line-height:1.25}
+dialog.game-menu .game-card-art{display:flex;justify-content:center;align-items:center;width:100%;height:104px;margin:0 0 6px;overflow:hidden;border-radius:10px;background:#fff8ea;flex:none}
+dialog.game-menu .game-card-art img{display:block;width:100%;height:100%;object-fit:contain}
+dialog.game-menu .popup-body :is(.venue-service,.citizen-card,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button){display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px;padding:12px!important;text-align:left;overflow-wrap:anywhere}
+dialog.game-menu .popup-body .venue-description{display:none}
+dialog.game-menu .popup-body .venue-service .venue-section-label{display:none}
+dialog.game-menu .popup-body .venue-service .venue-gains{border:0;margin-top:0;padding-top:0}
+dialog.game-menu .popup-body .venue-service::after{display:none}
+dialog.game-menu .popup-body .venue-service>b{padding-right:0}
+dialog.game-menu .popup-body .travel-costs{gap:5px 8px;margin-top:5px}
+dialog.game-menu .game-menu-infos{padding:10px 12px;border:1px solid #d7ddca;background:#f0f0e0;border-radius:10px;margin:12px 0;break-inside:avoid}
+dialog.game-menu .game-menu-infos summary{cursor:pointer;color:#3d5e43;font-weight:800}
+dialog.game-menu .game-menu-infos[open]{break-inside:auto}
+dialog.game-menu .game-menu-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 8px;color:#35553d;font-weight:800;font-size:14px}
+dialog.game-menu .game-menu-pager[hidden]{display:none}
+dialog.game-menu .game-menu-pager button{width:42px;min-height:36px;height:36px;padding:0;border:1px solid #c4d0b7;border-radius:10px;font-size:25px;background:#fffaf0;color:#31583d}
+dialog.game-menu .game-menu-pager button:disabled{opacity:.4}
+dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-foot{padding:10px 18px}
+dialog.game-menu .popup-foot :is(button){font-size:16px!important;min-height:43px}
+/* Le texte de dialogue et les erreurs restent entiers : ils peuvent occuper une page dédiée. */
+dialog.game-menu .popup-body :is([role=alert],[class$="-error"]){color:#923b23;font-weight:700}
+@media(max-width:760px){
+ dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)[open]{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);margin:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:'head' 'body' 'foot'}
+ dialog.game-menu:not(.transport-dialog) .menu-context{display:none}
+ dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-head{padding:12px 44px 8px 12px}
+ dialog.game-menu:not([data-mode=puzzle])>.popup-head h2{font-size:22px}
+ dialog.game-menu .popup-head .popup-icon{width:62px;height:62px;margin-right:6px}
+ dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-body{padding:6px 12px 8px}
+ dialog.game-menu .game-card-art{height:80px}
+ dialog.game-menu .popup-head .popup-stats{gap:5px;padding-top:7px;margin-top:5px;display:flex;justify-content:space-between}
+ dialog.game-menu .popup-head .popup-stats>span{flex-direction:row;gap:3px}
+ dialog.game-menu .popup-head .popup-stats b{font-size:14px}
+ dialog.game-menu .popup-head .popup-stats .currency-icon{width:18px;height:18px}
+ dialog.game-menu .popup-body :is(.venue-service,.citizen-card,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button){padding:9px!important;gap:4px}
+ dialog.game-menu:not([data-mode=puzzle]) .popup-body :is(.venue-service,.citizen-card) b{font-size:17px!important}
+ dialog.game-menu .popup-body :is(.venue-tabs button){font-size:14px!important;min-height:40px}
+ dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-foot{padding:8px 12px}
+ dialog.game-menu .game-menu-pager{margin-bottom:6px;gap:12px}
+}
+@media(max-height:480px){dialog.game-menu .game-card-art{height:58px}dialog.game-menu .popup-head .popup-icon{width:44px;height:44px}dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-head{padding-top:8px;padding-bottom:6px}}
+
+dialog.game-menu .popup-body .venue-description.game-important-description{display:block;font-size:13px!important;line-height:1.35;color:#496044}
+dialog.game-menu .popup-body .venue-service[hidden]{display:none!important}

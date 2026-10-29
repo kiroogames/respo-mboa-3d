@@ -1,3 +1,5 @@
+import {presentGameMenu} from './menu-presentation'
+import { onGameTimeChange } from './game-clock'
 /* Charpente commune des fenêtres : en-tête fixe, contenu défilant, actions toujours visibles en bas. */
 
 const headPart = '.travel-close, .travel-eyebrow, h2, .dossier-heading, .npc-conversation-header'
@@ -45,9 +47,12 @@ function shapePopup(dialog: HTMLDialogElement) {
   const base=import.meta.env.BASE_URL
   stats.innerHTML=`<span><img class="currency-icon" src="${base}ui/currency-nkap.png" alt="Nkap"/><b data-popup-stat="money"></b></span><span><img class="currency-icon" src="${base}ui/currency-energy.png" alt="Énergie"/><b data-popup-stat="energy"></b></span><span><span class="currency-icon currency-icon-mood" role="img" aria-label="Humeur" style="background-image:url('${base}ui/mood-sprites.png')"></span><b data-popup-stat="mood"></b></span><span><img class="currency-icon" src="${base}ui/currency-respo.png" alt="Influence"/><b data-popup-stat="influence"></b></span>`
   head.append(stats)
+  presentGameMenu(dialog)
 
   const syncContext=()=>{context.querySelector('.menu-context-clock')!.textContent=`${document.querySelector('#game-day')?.textContent??''} · ${document.querySelector('#game-time')?.textContent??''}`}
   new MutationObserver(syncContext).observe(dialog,{attributes:true,attributeFilter:['open']});syncContext()
+  // L'heure du panneau suit le calendrier pendant que la fenêtre est ouverte (travail, repas, sommeil…).
+  onGameTimeChange(()=>{if(dialog.open)queueMicrotask(syncContext)})
 
 }
 

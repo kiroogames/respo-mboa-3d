@@ -1,4 +1,5 @@
 /* Les deux accès à la cantine utilisent le même service quotidien et le même verrou par plat. */
+import { recordMeal } from './hunger.ts'
 import rules from './data/canteen.json' with {type:'json'}
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
 import {projectEnergy,getPlayerResources,previewMoodChange,restoreEnergy,changeMood} from './player-resources.ts'
@@ -44,7 +45,7 @@ export function confirmCanteenMeal(token:number,context:{zone:string;travelling:
   // Réserver le plat avant toute notification protège les deux entrées et les appels réentrants.
   ledger={day:p.service.day,done:[...p.service.done,p.dish.id]}
   try{localStorage.setItem(key,JSON.stringify({version:1,...ledger}))}catch{/* Service conservé en mémoire. */}
-  spendMoney(p.dish.money);restoreEnergy(p.energyGain);changeMood(p.dish.mood);advanceGameTime(p.dish.minutes)
+  spendMoney(p.dish.money);recordMeal();restoreEnergy(p.energyGain);changeMood(p.dish.mood);advanceGameTime(p.dish.minutes)
   listeners.forEach(fn=>fn())
   return {ok:true as const,...p}
  }finally{committing=false}

@@ -1,3 +1,4 @@
+import { recordMeal } from './hunger.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Règles des services : sélection par lieu, validation des coûts et application des effets.
@@ -31,6 +32,8 @@ export function useVenueService(id: string, zone: string) {
   if (before.energy < service.energyCost) return { ok: false as const, reason: 'Énergie insuffisante.' }
   // Toutes les validations précèdent les mutations pour éviter une facturation partielle en cas de refus.
   spendMoney(service.money)
+  // Repas au marché ou à l'hôtel : compte comme un des trois repas du jour.
+  if (service.id === 'market-meal' || service.id === 'hotel-meal') recordMeal()
   spendEnergy(service.energyCost)
   const sleeping=service.id==='hotel-night'
   if(sleeping)advanceGameTime(service.minutes,'sleep')

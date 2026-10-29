@@ -30,7 +30,7 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
   }
   if (zone === 'ministry') {
     const queue = getUserQueue(), meeting = getMeetingSchedule(), canteen = getCanteenService()
-    items.push({ icon: '🙋', title: 'Accueillir les usagers', detail: `Lun–ven · 10h–13h et 16h–18h · +${userQueueRules.moneyGain} Nkap`, closed: !!queue.reason, status: queue.reason || `${queue.remaining} demandes dans la file` })
+    items.push({ icon: '🙋', title: 'Accueillir les usagers', detail: `Lun–ven · 10h–13h et 16h–18h · jusqu’à ~${userQueueRules.moneyGain} Nkap selon votre parcours`, closed: !!queue.reason, status: queue.reason || `${queue.remaining} demandes dans la file` })
     items.push({ icon: '🗂️', title: 'Réunion MINFI', detail: `Lun–ven · 08h–16h · ${meeting.topic ?? 'pas de réunion le week-end'}`, closed: !!meeting.reason, status: meeting.reason || 'Disponible' })
     items.push({ icon: '🍛', title: 'Cantine du ministère', detail: 'Lun–ven · 11h–14h · repas dès 200 Nkap', closed: !!canteen.reason, status: canteen.reason || `${canteen.menu.length - canteen.done.length} plat(s) disponible(s)` })
     items.push({ icon: '🌙', title: 'Taf extra d’Anneke', detail: 'Lun–ven · 18h–23h · commande à récupérer en journée · +900 Nkap' })

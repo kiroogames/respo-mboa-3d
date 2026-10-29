@@ -17,8 +17,9 @@ export function mountHudEnhance() {
   stats.classList.add('hud-command-center')
   const consolePanel=document.createElement('section');consolePanel.className='respo-console';consolePanel.setAttribute('aria-label','Votre personnage et ses besoins')
   const caption=document.createElement('span');caption.className='console-caption';caption.textContent='LE RESPONSABLE MBOA'
-  const vitals=document.createElement('div');vitals.className='respo-vitals';vitals.append(energyTile,moodTile);consolePanel.append(caption,player,vitals)
-  const wallet=document.createElement('div');wallet.className='city-wallet-strip';const money=document.querySelector('#money-amount')!.closest('.game-wallet')!,karma=document.querySelector('#influence-counter')!;wallet.append(money,karma)
+  consolePanel.append(caption,player)
+  // Toutes les ressources alignées en haut : argent, influence, énergie, humeur.
+  const wallet=document.createElement('div');wallet.className='city-wallet-strip';const money=document.querySelector('#money-amount')!.closest('.game-wallet')!,karma=document.querySelector('#influence-counter')!;wallet.append(money,karma,energyTile,moodTile)
   stats.append(consolePanel,wallet);header.append(stats)
   const clockWidget=document.querySelector('.game-clock')!,actions=document.querySelector<HTMLElement>('.header-actions')!;header.append(clockWidget,actions);actions.hidden=true
   const menu=document.createElement('button');menu.id='ui-menu-toggle';menu.type='button';menu.textContent='☰ Menu';menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-controls','hud-menu-actions');actions.id='hud-menu-actions';header.append(menu)

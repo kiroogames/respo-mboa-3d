@@ -1,3 +1,4 @@
+globalThis.__MBOA_NO_HUNGER__=true // Faim testée à part (hunger-check).
 // Les sauts de date des fixtures représentent une période reposée ; les activités testées restent en temps normal.
 // Attente : frontières d’ennui, cumul persistant, dates et absence de gains parasites.
 import assert from 'node:assert/strict'

@@ -77,6 +77,7 @@ import { mountPopupShell } from './popup-shell'
 import { mountHudEnhance } from './hud-enhance'
 import { mountStartMenu } from './start-menu'
 import { mountCurrencyIcons } from './currency-icons'
+import { mountHungerUI } from './hunger-ui'
 import './currency-icons.css'
 import './start-menu.css'
 import './popups.css'
@@ -86,6 +87,11 @@ import './ui-composition.css'
 import './ui-readability.css'
 import './menu-cards.css'
 import './travel-steps.css'
+import './hud-strip.css'
+import './journey-feedback.css'
+import {createJourneyVisual} from './journey-visual'
+import {journeyTiming,journeyFrame,sampleJourneyPath} from './journey-playback'
+import {quoteTravel} from './travel'
 
 
 
@@ -263,23 +269,36 @@ function select(key:string){pendingPlaceMenu=null;destination=views[key]!;setOrb
 let playerZone='home'
 const playerPosition=new Vector3(0,8,0)
 let guidedVisualPaused=import.meta.env.DEV&&(window as unknown as {__MBOA_GUIDED_QA_PAUSED__?:boolean}).__MBOA_GUIDED_QA_PAUSED__===true
-let activeTrip:{key:string;points:Vector3[];distances:number[];length:number;elapsed:number;duration:number;done?:()=>void}|null=null
-function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void){
-  const points=route.map(p=>Vector3.FromArray(p)),distances=[0]
-  for(let i=1;i<points.length;i++)distances.push(distances[i-1]!+Vector3.Distance(points[i-1]!,points[i]!))
-  const length=distances.at(-1)!
-  activeTrip={key,points,distances,length,elapsed:0,done,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?.1:Math.max(4,Math.min(12,length/(mode==='walk'?45:75)))}
-  playerPosition.copyFrom(points[0]!)
-  try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Keep travelling in this session. */}
-  hideDialogue();setOrbit(false)
-  const middle=Vector3.Center(points[0]!,points.at(-1)!)
-  destination={...views.city!,target:middle,radius:Math.max(120,Math.min(650*cityScale,length*1.2))}
+const journeyVisual=createJourneyVisual(scene,base)
+const journeyFeedback=document.createElement('div');journeyFeedback.className='journey-feedback';journeyFeedback.hidden=true
+journeyFeedback.innerHTML='<span data-journey-symbol aria-hidden="true"></span><span class="journey-caption"><b data-journey-label></b><span class="journey-progress"><i></i></span></span><button type="button" data-journey-skip title="Passer l’animation du trajet" aria-label="Passer l’animation du trajet">››</button>'
+document.querySelector('#app')!.append(journeyFeedback)
+let journeyVisualPaused=false
+let activeTrip:{key:string;mode:TravelMode;points:TravelPoint[];road:TravelPoint[];exit:TravelPoint[];entry:TravelPoint[];elapsed:number;duration:number;timing:ReturnType<typeof journeyTiming>;minutes:number;done?:()=>void}|null=null
+journeyFeedback.querySelector('button')!.onclick=()=>{if(activeTrip){activeTrip.elapsed=activeTrip.duration;tickJourney(0,true)}}
+function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void,minutes=quoteTravel(route,mode).minutes){
+ const points=route.map(p=>[...p] as TravelPoint)
+ if(!points.length){done?.();return}
+ const road=points.length>2?points.slice(1,-1):points
+ const first=road[0]!,last=road.at(-1)!
+ const timing=journeyTiming(mode,minutes,matchMedia('(prefers-reduced-motion: reduce)').matches)
+ activeTrip={key,mode,points,road,exit:[points[0]!,first],entry:[last,points.at(-1)!],elapsed:0,duration:timing.duration,timing,minutes,done}
+ pendingPlaceMenu=null;journeyVisual.show(mode)
+ journeyFeedback.hidden=false;document.body.classList.add('journey-playing')
+ journeyFeedback.querySelector('[data-journey-symbol]')!.textContent={walk:'🚶',taxi:'🚕',yonga:'🚘',moto:'🏍'}[mode]
+ playerPosition.copyFromFloats(...points[0]!)
+ try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position à reprendre après rechargement. */}
+ hideDialogue();setOrbit(false)
+ // Cadrage haut mais proche, fixé une seule fois : aucun suivi du véhicule.
+ const xs=points.map(p=>p[0]),zs=points.map(p=>p[2])
+ destination={...views.city!,target:new Vector3((Math.min(...xs)+Math.max(...xs))/2,8,(Math.min(...zs)+Math.max(...zs))/2),radius:Math.max(110,Math.min(180,camera.radius)),alpha:camera.alpha,beta:.65}
+ tickJourney(0)
 }
 const travel=mountTravel({
  base,
  origin:()=>({key:playerZone,label:views[playerZone]!.label,position:playerPosition.asArray() as TravelPoint}),
  place:key=>({key,label:views[key]!.label,position:[views[key]!.target.x,Math.max(10,views[key]!.target.y+12),views[key]!.target.z]}),
- depart:beginTrip
+ depart:(key,route,mode,minutes)=>beginTrip(key,route,mode,undefined,minutes)
 })
 const venues=mountVenues({takeAway:id=>foodBagUI.openPurchase(id),base,currentZone:()=>playerZone,label:key=>views[key]!.label,travelling:()=>travel.isTravelling(),invite:id=>accompaniedUI.open(id),interact:(id,serviceId)=>{
  const npc=npcTemplates.find(item=>item.id===id)
@@ -288,7 +307,7 @@ const venues=mountVenues({takeAway:id=>foodBagUI.openPurchase(id),base,currentZo
 }})
 const npcConversation=mountNPCDialogue({base,canInteract:id=>getNPCZone(id)===playerZone&&!travel.isTravelling(),back:id=>{const zone=getNPCZone(id);if(zone)venues.open(zone,'people')}})
 const accompaniedUI=mountAccompaniedOutings({currentZone:()=>playerZone,travelling:()=>travel.isTravelling(),locate:key=>[views[key]!.target.x,Math.max(10,views[key]!.target.y+12),views[key]!.target.z],label:key=>views[key]!.label,depart:beginTrip,
- positionAt(key){playerZone=key;playerPosition.copyFromFloats(views[key]!.target.x,Math.max(10,views[key]!.target.y+12),views[key]!.target.z);try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position en mémoire. */}hideDialogue();destination=views[key]!;setOrbit(false)},
+ positionAt(key){playerZone=key;playerPosition.copyFromFloats(views[key]!.target.x,Math.max(10,views[key]!.target.y+12),views[key]!.target.z);try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position en mémoire. */}hideDialogue();setOrbit(false)},
  back:id=>{const zone=getNPCZone(id);if(zone)venues.open(zone,'people')},
 })
 accompaniedUI.setVisualPaused(guidedVisualPaused)
@@ -308,18 +327,31 @@ mountPopupShell()
 mountHudEnhance()
 mountStartMenu(base)
 mountCurrencyIcons(base)
+mountHungerUI()
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
- if(guidedVisualPaused&&isGuidedOutingActive()&&!force)return
+ if((journeyVisualPaused||guidedVisualPaused&&isGuidedOutingActive())&&!force)return
  const trip=activeTrip
  if(!trip)return
  trip.elapsed+=Math.min(delta,100)/1000
- const t=Math.min(1,trip.elapsed/trip.duration),progress=t*t*(3-2*t)*trip.length
- if(isGuidedOutingActive())setGuidedProgress(t*t*(3-2*t))
- let i=1;while(i<trip.distances.length-1&&trip.distances[i]!<progress)i++
- const span=trip.distances[i]!-trip.distances[i-1]!
- playerPosition.copyFrom(Vector3.Lerp(trip.points[i-1]!,trip.points[i]!,span>0?(progress-trip.distances[i-1]!)/span:1))
- if(t===1){playerZone=trip.key;activeTrip=null;if(trip.done){trip.done();return}select(playerZone);travel.arrive(playerZone);hideDialogue();venues.open(playerZone);document.querySelector('.player-pin')?.setAttribute('aria-label',`Le Respo, ${views[playerZone]!.label}`)}
+ const frame=journeyFrame(trip.timing,trip.elapsed)
+ const path=frame.phase==='exit'?trip.exit:frame.phase==='enter'||frame.phase==='done'?trip.entry:trip.road
+ const progress=frame.phase==='board'?0:frame.phase==='alight'||frame.phase==='done'?1:frame.progress
+ const sample=sampleJourneyPath(path,progress)
+ const visualPoint=journeyVisual.update({...frame,point:sample.point,yaw:sample.yaw,seconds:trip.elapsed,cameraAlpha:camera.alpha,vehiclePoint:frame.phase==='exit'?trip.road[0]:frame.phase==='enter'?trip.road.at(-1):undefined})
+ playerPosition.copyFromFloats(visualPoint[0],visualPoint[1]+8,visualPoint[2])
+ if(isGuidedOutingActive())setGuidedProgress(frame.total)
+ const labels={exit:'Le Respo sort…',board:trip.mode==='moto'?'En selle !':'On embarque !',travel:trip.mode==='walk'?'À pied':trip.mode==='moto'?'En bendskin':trip.mode==='taxi'?'Taxi commun':'Yonga privé',alight:'On descend…',enter:'Arrivée sur place',done:'Arrivée'}
+ journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')
+ ;(journeyFeedback.querySelector('.journey-progress i') as HTMLElement).style.width=frame.total*100+'%'
+ if(frame.phase==='done'){
+  playerZone=trip.key;activeTrip=null;journeyVisual.hide();journeyFeedback.hidden=true;document.body.classList.remove('journey-playing')
+  playerPosition.copyFromFloats(...trip.points.at(-1)!)
+  if(trip.done){trip.done();return}
+  document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===playerZone));document.querySelector('#view-name')!.textContent=views[playerZone]!.label
+  travel.arrive(playerZone);hideDialogue();venues.open(playerZone)
+  document.querySelector('.player-pin')?.setAttribute('aria-label',`Le Respo, ${views[playerZone]!.label}`)
+ }
 }
 // Un clic cadre d’abord le lieu, puis propose ses services ou les moyens de s’y rendre.
 function requestZone(key:string){
@@ -783,6 +815,7 @@ async function loadCity(){
 
   document.querySelector('.loading')!.remove()
 
+  await journeyVisual.ready
   document.documentElement.dataset.ready='true'
   accompaniedUI.resume()
 
@@ -845,6 +878,7 @@ if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:
  },
 
  // Accélère uniquement l’animation de trajet pour les contrôles ; les coûts sont déjà appliqués au départ.
+ pauseJourney(value:boolean){journeyVisualPaused=value},
  advanceJourney(seconds:number){for(let elapsed=0;elapsed<Math.max(0,Math.min(120,seconds));elapsed+=.1)tickJourney(100,true)},
  pauseGuided(value:boolean){guidedVisualPaused=value;accompaniedUI.setVisualPaused(value)},
  advanceGuided(){const state=getAccompaniedState();if(state?.phase==='activity')accompaniedUI.advanceVisual();else for(let i=0;i<1500&&activeTrip;i++)tickJourney(100,true)},
@@ -858,7 +892,7 @@ if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:
 
 }})
 
-if(import.meta.env.DEV)Object.defineProperty(window,'render_game_to_text',{configurable:true,value:()=>JSON.stringify({coordinates:'Babylon right-handed world; x/z ground, y height',player:{zone:playerZone,position:playerPosition.asArray(),travelling:travel.isTravelling()},npcs:npcTemplates.map(npc=>({id:npc.id,name:npc.name,zone:getNPCZone(npc.id),activity:getNPCState(npc.id)?.activity,rank:getNPCState(npc.id)?.rank,travelling:getNPCState(npc.id)?.travelling,destination:getNPCState(npc.id)?.destination,available:isNPCAvailable(npc.id),position:pins.find(pin=>pin.npcId===npc.id)?.position.asArray(),markerVisible:!pins.find(pin=>pin.npcId===npc.id)?.button.hidden})),bae:{zone:getNPCZone('bae'),available:isNPCAvailable('bae'),serviceNotification:playerZone==='home'&&!travel.isTravelling()&&isNPCAvailable('bae')&&npcNeedsService('bae')},work:venues.workState(),advancedWork:venues.advancedState(),sleeping:venues.sleepState(),meals:venues.mealState(),userQueue:venues.queueState(),meetings:venues.meetingState(),extra:venues.extraState(),canteen:venues.canteenState(),missions:venues.missionState(),toque:venues.toqueState(),comfort:venues.comfortState(),outings:venues.outingState(),accompanied:accompaniedUI.snapshot(),foodBag:foodBagUI.snapshot(),sportEnergy:sportEnergyUI.snapshot(),bills:houseBills.snapshot(),moodEffects:moodEffects.snapshot(),progression:{...getRespoProgress(getPlayerResources().ptRespo),notice:levelNotice.snapshot()},waiting:waitingUI.snapshot(),daylight:daylight.snapshot(),dialog:[...document.querySelectorAll('dialog[open]')].map(node=>node.className)})})
+if(import.meta.env.DEV)Object.defineProperty(window,'render_game_to_text',{configurable:true,value:()=>JSON.stringify({coordinates:'Babylon right-handed world; x/z ground, y height',player:{zone:playerZone,position:playerPosition.asArray(),travelling:travel.isTravelling()},journey:{...journeyVisual.snapshot(),elapsed:activeTrip?.elapsed??0,duration:activeTrip?.duration??0,minutes:activeTrip?.minutes??0},npcs:npcTemplates.map(npc=>({id:npc.id,name:npc.name,zone:getNPCZone(npc.id),activity:getNPCState(npc.id)?.activity,rank:getNPCState(npc.id)?.rank,travelling:getNPCState(npc.id)?.travelling,destination:getNPCState(npc.id)?.destination,available:isNPCAvailable(npc.id),position:pins.find(pin=>pin.npcId===npc.id)?.position.asArray(),markerVisible:!pins.find(pin=>pin.npcId===npc.id)?.button.hidden})),bae:{zone:getNPCZone('bae'),available:isNPCAvailable('bae'),serviceNotification:playerZone==='home'&&!travel.isTravelling()&&isNPCAvailable('bae')&&npcNeedsService('bae')},work:venues.workState(),advancedWork:venues.advancedState(),sleeping:venues.sleepState(),meals:venues.mealState(),userQueue:venues.queueState(),meetings:venues.meetingState(),extra:venues.extraState(),canteen:venues.canteenState(),missions:venues.missionState(),toque:venues.toqueState(),comfort:venues.comfortState(),outings:venues.outingState(),accompanied:accompaniedUI.snapshot(),foodBag:foodBagUI.snapshot(),sportEnergy:sportEnergyUI.snapshot(),bills:houseBills.snapshot(),moodEffects:moodEffects.snapshot(),progression:{...getRespoProgress(getPlayerResources().ptRespo),notice:levelNotice.snapshot()},waiting:waitingUI.snapshot(),daylight:daylight.snapshot(),dialog:[...document.querySelectorAll('dialog[open]')].map(node=>node.className)})})
 
 void loadCity()
 
@@ -882,3 +916,5 @@ void loadCity()
 
 
 import './transport-art.css'
+
+import './game-menus.css'

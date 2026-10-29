@@ -1,5 +1,5 @@
 {
-  "energyCost":25,"minutes":45,"moneyGain":800,"respoGain":8,
+  "energyCost":15,"minutes":45,"moneyGain":800,"respoGain":8,
   "windows":[[600,780],[960,1080]],
   "titles":["Demande d’attestation","Demande d’autorisation","Régularisation administrative","Déclaration d’activité","Suivi de dossier"]
 }

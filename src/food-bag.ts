@@ -1,4 +1,5 @@
 /* Un emplacement, une confirmation : les aliments vieillissent uniquement avec le calendrier du jeu. */
+import { recordMeal } from './hunger.ts'
 import {getGameTime,advanceGameTime} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 import {projectEnergy,getPlayerResources,getMoodDetails,previewMoodChange,restoreEnergy,changeMood} from './player-resources.ts'
@@ -44,7 +45,7 @@ export function confirmFoodBag(token:number,context:BagContext){
   // Libérer/remplir le sac avant les notifications empêche de consommer deux fois le même objet.
   item=p.action==='buy'?{id:p.food!.id,bought:p.end,expires:p.expires!}:null;save()
   if(p.action==='buy')spendMoney(p.money)
-  if(p.action==='eat'){restoreEnergy(p.food!.energy);changeMood(p.food!.mood)}
+  if(p.action==='eat'){if(p.food!.id==='meal')recordMeal();restoreEnergy(p.food!.energy);changeMood(p.food!.mood)}
   if(p.minutes)advanceGameTime(p.minutes)
   listeners.forEach(fn=>fn())
   return {ok:true as const,...p}

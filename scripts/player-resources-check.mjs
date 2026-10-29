@@ -1,3 +1,4 @@
+globalThis.__MBOA_NO_HUNGER__=true // Faim testée à part (hunger-check).
 // Les sauts de date des fixtures représentent une période reposée ; les activités testées restent en temps normal.
 // Régression des ressources, trajets, conditions de trafic, services et disponibilités de Bae.
 // Teste notamment les refus sans fonds et les gains réellement plafonnés.

@@ -166,7 +166,7 @@ export function mountVenues(options: {
     if(localMissions.length)missionEntry.innerHTML=`<b>Mission : ${localMissions[0]!.title}</b><span class="venue-description">${localMissions.length} activité(s) de mission à réaliser sur place.</span><span class="travel-costs">−${missionRules.energyCost} énergie · ${missionRules.minutes} min par activité</span><span class="venue-gains">Récompense après compte rendu au ministère</span>`
 
     queueEntry.hidden=zone!=='ministry'
-    if(!queueEntry.hidden){const q=getUserQueue();queueEntry.innerHTML=`<b>Accueillir les usagers</b><span class="venue-description">Puzzle des demandes · lundi–vendredi · 10h–13h et 16h–18h.</span><span class="travel-costs">−${userQueueRules.energyCost} énergie · ${userQueueRules.minutes} min</span><span class="venue-gains">Jusqu’à ${userQueueRules.moneyGain} Nkap · +${userQueueRules.respoGain} points Respo</span><small>${q.reason||`${q.remaining} demandes disponibles dans la file`}</small>`}
+    if(!queueEntry.hidden){const q=getUserQueue();queueEntry.innerHTML=`<b>Accueillir les usagers</b><span class="venue-description">Tracez le parcours de chaque dossier · lundi–vendredi · 10h–13h et 16h–18h.</span><span class="travel-costs">Dès −${userQueueRules.energyCost} énergie · ${userQueueRules.minutes} min</span><span class="venue-gains">Environ ${userQueueRules.moneyGain} Nkap pour un bon parcours · +${userQueueRules.respoGain} points Respo</span><small>${q.reason||`${q.remaining} demandes disponibles dans la file`}</small>`}
 
     workEntry.hidden = zone !== dossierRules.zone
     if (workEntry.hidden) return

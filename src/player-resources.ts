@@ -1,3 +1,4 @@
+import { hungerEnergyCost, setHungerMoodHandler } from './hunger.ts'
 import {getMealEnergyEffect,onMealEnergyEffectChange} from './meal-energy.ts'
 import {getRestedEffect,onRestedEffectChange} from './rested-energy.ts'
 import {getFatigueAt,onFatigueChange} from './fatigue.ts'
@@ -88,10 +89,17 @@ export function changeKarma(delta: number) {
   state.karma += delta
   save()
 }
+// L’influence ne descend jamais sous zéro.
+export function changeInfluence(delta: number) {
+  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.influence + delta)) throw new RangeError('Variation d’influence invalide.')
+  state.influence = Math.max(0, state.influence + delta)
+  save()
+}
 export function spendEnergy(amount: number) {
   nonnegativeInteger(amount)
   if (amount > state.energy) return false
-  state.energy -= amount
+  // Repas sauté : l'activité coûte plus cher, plafonné à l'énergie disponible (la faim ne bloque jamais une action).
+  state.energy -= Math.min(state.energy, hungerEnergyCost(amount))
   save()
   return true
 }
@@ -123,6 +131,8 @@ export function setMood(value: number) {
   state.mood = Math.max(0, Math.min(140, value))
   save()
 }
+// Un créneau de repas qui se termine sans manger retire de l'humeur.
+setHungerMoodHandler(delta => changeMood(delta))
 export function changeMood(delta: number) {
   if (!Number.isFinite(delta)) throw new RangeError('Variation d’humeur invalide.')
   setMood(state.mood + delta)

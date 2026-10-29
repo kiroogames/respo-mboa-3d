@@ -1,3 +1,4 @@
+globalThis.__MBOA_NO_HUNGER__=true // Faim testée à part (hunger-check).
 import assert from 'node:assert/strict'
 const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
 const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),money=await import('../src/currency.ts'),busy=await import('../src/guided-outing-state.ts'),bag=await import('../src/food-bag.ts'),wait=await import('../src/waiting.ts')

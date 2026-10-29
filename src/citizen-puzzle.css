@@ -27,3 +27,38 @@ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-feedback{margin:5px 0!im
  dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-pair-tabs{margin:0}
  dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-pile{margin:0}
 }
+
+/* Reçu de la file d'attente : bouton principal pour enchaîner la demande suivante. */
+.citizen-puzzle-dialog [data-work-receipt] [data-next]{display:block;width:100%;min-height:48px;margin-top:14px;border:0;border-radius:14px;background:#286047;color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.citizen-puzzle-dialog [data-work-receipt] [data-next]:hover{background:#1f4f3a}
+
+/* Parcours de la file d'attente : départ, signature, cases à gains (+) ou pertes (−). */
+.route-fixed{font-size:14px;line-height:1.5;color:#405744}
+.citizen-face{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:50%;background:#edf4e7;font-size:28px}
+.citizen-puzzle-dialog .citizen-avatar{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#fff;font-size:28px}
+.route-tally{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0;padding:8px 12px;border-radius:12px;background:#fff;border:1px solid #d4dfcc;font-weight:800}
+.route-tally-label{font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#6a7b67;margin-right:4px}
+.route-tally small{font-weight:600;color:#7b6a55}
+.route-amount{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-weight:900;font-variant-numeric:tabular-nums}
+.route-amount .currency-icon{width:1.2em;height:1.2em;margin:0}
+.route-amount.is-gain{color:#1f6b3a}.route-amount.is-loss{color:#b3402a}
+.route-board .route-cell{position:relative;flex-direction:column;gap:2px;font-size:clamp(11px,2.6vw,15px);color:#33503d;cursor:pointer;transition:background .12s,transform .12s}
+.route-board .route-cell small{font-size:10px;font-weight:800;letter-spacing:.2px}
+.route-board .route-cell.is-gain{background:#e6f4dd}
+.route-board .route-cell.is-loss{background:#fbe3dc}
+.route-board .route-cell.is-blocked{background:#8b9681;color:#eef2e6;cursor:not-allowed}
+.route-board .route-cell.is-start{background:#fff3c8}
+.route-board .route-cell.is-goal{background:#cdeccf;box-shadow:inset 0 0 0 3px #2f8a4c}
+.route-board .route-cell.is-visited{background:#bfe0f0}
+.route-board .route-cell.is-visited.is-loss{background:#f2c0b2}
+.route-board .route-cell.is-visited.is-gain{background:#bfe6b0}
+.route-board .route-cell.is-current{box-shadow:inset 0 0 0 3px #e4b347}
+.route-board .route-cell.is-next{outline:2px dashed #86a98f;outline-offset:-5px}
+.route-board .route-cell.is-next:hover{transform:scale(1.04)}
+.route-board .route-mark{font-size:clamp(18px,4.5vw,26px);line-height:1}
+.route-board .route-cell>*{position:relative;z-index:2;pointer-events:none}
+.route-board svg polyline{stroke:#1f7a9c;stroke-width:16;opacity:.45;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.route-receipt-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.route-receipt-head h3{margin:0}.route-receipt-head p{margin:4px 0 0;font-style:italic}
+.route-receipt-amounts{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:26px;margin:6px 0 4px}
+dialog.citizen-puzzle-dialog[data-mode=puzzle] .route-board{width:min(100%,400px,calc(100dvh - 300px))}

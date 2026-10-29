@@ -1,3 +1,4 @@
+import { recordMeal } from './hunger.ts'
 import {mealEnergyRules,grantMealEnergyEffect} from './meal-energy.ts'
 import {getNPCState} from './npcs.ts'
 import {getCompletedNPCRequests,getConsideration} from './npc-relationships.ts'
@@ -62,7 +63,7 @@ export function confirmHomeMeal(id:number,context:{zone:string;travelling:boolea
     lastConsumed=current.service.start
     if(current.variant==='bae')lastBaeDay=Math.floor(current.from.totalMinutes/1440)
     try{localStorage.setItem(key,JSON.stringify({lastConsumed,lastBaeDay}))}catch{/* Le verrou reste actif pendant la session. */}
-    spendMoney(current.meal.money);advanceGameTime(current.meal.minutes);grantMealEnergyEffect();restoreEnergy(Math.max(0,current.energyAfter-getPlayerResources().energy));changeMood(current.moodDelta)
+    spendMoney(current.meal.money);recordMeal();advanceGameTime(current.meal.minutes);grantMealEnergyEffect();restoreEnergy(Math.max(0,current.energyAfter-getPlayerResources().energy));changeMood(current.moodDelta)
     return {ok:true as const,...current}
   }finally{committing=false}
 }

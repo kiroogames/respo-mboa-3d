@@ -1,3 +1,4 @@
+globalThis.__MBOA_NO_HUNGER__=true // Faim testée à part (hunger-check).
 // Les sauts de calendrier des fixtures représentent des périodes reposées, sans activité testée.
 import assert from 'node:assert/strict'
 const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)}

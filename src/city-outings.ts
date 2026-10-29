@@ -1,3 +1,4 @@
+import { recordMeal } from './hunger.ts'
 import {grantSportEffect} from './sport-energy.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Sorties solo : une occurrence par activité/session, même en changeant d’option ou après minuit. */
@@ -64,6 +65,8 @@ export function confirmCityOuting(token:number,context:{zone:string;travelling:b
   if(!current.activity.repeatable)completed[current.activity.id]=current.schedule.session!
   // Verrouiller l’occurrence avant les notifications de portefeuille, ressources et calendrier.
   try{localStorage.setItem(key,JSON.stringify(completed))}catch{/* Limite conservée pendant la session. */}
+  // Restaurant ou plat au snack : un vrai repas.
+  if(current.activity.id.startsWith('restaurant')||current.option.id==='meal')recordMeal()
   spendMoney(current.option.money);spendEnergy(current.option.energy);restoreEnergy(current.option.energyGain);changeMood(current.option.mood);advanceGameTime(current.option.minutes)
   if(current.activity.id==='football')grantSportEffect()
   listeners.forEach(listener=>listener())

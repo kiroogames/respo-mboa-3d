@@ -101,3 +101,5 @@ dialog.transport-dialog[data-travel-step=go] .popup-head .popup-stats .currency-
  dialog.transport-dialog[data-travel-step=go] .transport-copy{padding:5px 7px}
  dialog.transport-dialog[data-travel-step=go] .transport-costs{font-size:14px}
 }
+
+@media(max-width:760px) and (min-height:481px){dialog.transport-dialog[data-travel-step=go] .popup-head .popup-stats{grid-template-columns:1.25fr 1.55fr .9fr .8fr;gap:3px}dialog.transport-dialog[data-travel-step=go] .popup-head .popup-stats b{font-size:13px}dialog.transport-dialog[data-travel-step=go] .popup-head .popup-stats .currency-icon{width:17px;height:17px}}

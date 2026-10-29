@@ -1,9 +1,9 @@
-import {createDossierPuzzle,scoreDossierPairs,dossierPayout} from './dossier-puzzle.ts'
+import {createQueueRoute,scoreQueueRoute,routePayout} from './queue-route.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Accueil au ministère : file indépendante des piles de dossiers, une seule récompense par demande. */
 import rules from './data/user-queue.json' with {type:'json'}
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
-import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
+import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints,changeMood,changeInfluence} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
 export const userQueueRules=rules
 const key='mboa-user-queue-v1'
@@ -39,16 +39,21 @@ export function confirmUserRequest(id:number,context:{zone:string;travelling:boo
   const current=previewUserRequest(quote.index)
   if(current.reason)return {ok:false as const,reason:current.reason}
   if(current.from.totalMinutes!==quote.from.totalMinutes||current.queue.start!==quote.queue.start||current.energyBefore!==quote.energyBefore)return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
-  const board=createDossierPuzzle(`queue:${current.queue.start}/${current.index}`,current.index),pairs=scoreDossierPairs(board,path)
-  if(!pairs)return {ok:false as const,reason:'Reliez au moins une paire d’icônes identiques.'}
-  const money=dossierPayout(board,path,rules.moneyGain)
+  const board=createQueueRoute(`queue:${current.queue.start}/${current.index}`,current.index),totals=scoreQueueRoute(board,path)
+  if(!totals)return {ok:false as const,reason:'Tracez un chemin du dossier jusqu’à la signature.'}
+  // Bilan du parcours : l'argent ne descend pas sous zéro, l'énergie et l'humeur peuvent être négatives.
+  const payout=routePayout(totals),money=payout.money,energy=rules.energyCost+payout.energyLoss
+  if(getPlayerResources().energy<energy)return {ok:false as const,reason:`Énergie insuffisante pour ce parcours : il faut ${energy} énergie.`}
   committing=true
   try{
     ledger={start:current.queue.start,done:[...current.queue.done,current.index]}
     // Verrouiller avant les notifications d’énergie/argent empêche les appels réentrants.
     try{localStorage.setItem(key,JSON.stringify(ledger))}catch{/* File conservée pendant la session. */}
-    spendEnergy(rules.energyCost);addMoney(money);changeRespoPoints(rules.respoGain);advanceGameTime(rules.minutes)
-    return {ok:true as const,...current,money,respo:rules.respoGain,energy:rules.energyCost,minutes:rules.minutes,satisfaction:pairs*25}
+    spendEnergy(energy);addMoney(money);changeRespoPoints(rules.respoGain)
+    if(payout.mood)changeMood(payout.mood)
+    if(payout.influence)changeInfluence(payout.influence)
+    advanceGameTime(rules.minutes)
+    return {ok:true as const,...current,money,respo:rules.respoGain,energy,minutes:rules.minutes,mood:payout.mood,influence:payout.influence,totals}
   }finally{committing=false}
 }
 

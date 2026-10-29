@@ -20,7 +20,7 @@ export function mountTravel(options: {
   base: string
   origin: () => Place
   place: (key: string) => Place
-  depart: (key: string, route: TravelPoint[], mode: TravelMode) => void
+  depart: (key: string, route: TravelPoint[], mode: TravelMode, minutes?:number) => void
 }) {
   const dialog = document.createElement('dialog')
   dialog.className = 'travel-dialog transport-dialog'
@@ -98,7 +98,7 @@ export function mountTravel(options: {
       if(busy||!pending||isGuidedOutingActive())return
       const from=options.origin(),home=options.place('home'),q=prepareEmergencyReturn(from.key,from.position,home.position,pending.traffic),result=confirmEmergencyReturn(q.token,{origin:from.key,allowed:dialog.open})
       if(!result.ok){message.textContent=result.reason;renderChoices();return}
-      busy=true;pending=null;dialog.close();status.hidden=false;status.textContent='Retour de secours · +2 h de sommeil à récupérer';options.depart('home',result.route,'yonga');return
+      busy=true;pending=null;dialog.close();status.hidden=false;status.textContent='Retour de secours · +2 h de sommeil à récupérer';options.depart('home',result.route,'yonga',result.minutes);return
     }
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-travel-mode]')
     if (!button || button.disabled || !pending || busy || isGuidedOutingActive()) return
@@ -116,7 +116,7 @@ export function mountTravel(options: {
     dialog.close()
     status.textContent = `${quote.label} → ${options.place(key).label} · ${quote.minutes} min`
     status.hidden = false
-    options.depart(key, route, mode)
+    options.depart(key, route, mode, quote.minutes)
   })
 
   return {

@@ -9,3 +9,13 @@ dialog.travel-dialog .popup-body #travel-message:empty,dialog.travel-dialog .pop
 @media(min-width:900px){
  dialog.travel-dialog .popup-body .place-activity-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* État des routes bien visible dans les deux étapes : couleur selon le niveau de circulation. */
+dialog.travel-dialog .transport-route #travel-traffic{display:inline-flex!important;align-items:center;gap:6px;padding:6px 12px!important;border-radius:999px;font-size:14px!important;font-weight:800;line-height:1.2;border:1.5px solid transparent}
+dialog.travel-dialog .transport-route #travel-traffic::before{content:'🚦';font-size:15px}
+dialog.travel-dialog .transport-route #travel-traffic[data-traffic=clear]{background:#dff0d4;color:#2f6a2c;border-color:#9fcb8c}
+dialog.travel-dialog .transport-route #travel-traffic[data-traffic=busy]{background:#fff0c9;color:#8a5a00;border-color:#e8c060}
+dialog.travel-dialog .transport-route #travel-traffic[data-traffic=jammed]{background:#ffdcd5;color:#a3261a;border-color:#e88a7a;animation:traffic-pulse 1.6s ease-in-out infinite}
+dialog.travel-dialog .transport-route #travel-traffic:empty{display:none!important}
+@keyframes traffic-pulse{50%{box-shadow:0 0 0 4px #e88a7a40}}
+@media(prefers-reduced-motion:reduce){dialog.travel-dialog .transport-route #travel-traffic{animation:none}}

@@ -5,11 +5,11 @@
       "home"
     ],
     "name": "Se reposer à la maison",
-    "description": "Une pause pour reprendre des forces.",
+    "description": "Une courte pause, mais rien ne remplace un vrai repas.",
     "money": 0,
     "energyCost": 0,
     "minutes": 30,
-    "energyGain": 20,
+    "energyGain": 8,
     "moodGain": 3,
     "respoGain": 0
   },
@@ -168,7 +168,7 @@
     "money": 0,
     "energyCost": 0,
     "minutes": 15,
-    "energyGain": 5,
+    "energyGain": 3,
     "moodGain": 1,
     "respoGain": 0
   }
