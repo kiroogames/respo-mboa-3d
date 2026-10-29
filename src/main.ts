@@ -78,6 +78,7 @@ import { mountHudEnhance } from './hud-enhance'
 import { mountStartMenu } from './start-menu'
 import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
+import { mountPlaceEffects } from './place-effects-ui'
 import './currency-icons.css'
 import './start-menu.css'
 import './popups.css'
@@ -328,6 +329,7 @@ mountHudEnhance()
 mountStartMenu(base)
 mountCurrencyIcons(base)
 mountHungerUI()
+mountPlaceEffects(base)
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
  if((journeyVisualPaused||guidedVisualPaused&&isGuidedOutingActive())&&!force)return
@@ -581,10 +583,11 @@ function updateNPCNotifications(){
 }
 
 // Taille des étiquettes mesurée une fois (texte fixe) : éviter une relecture de mise en page à chaque image.
-const labelSizes=new WeakMap<HTMLElement,{w:number;h:number}>()
+// La clé des badges (gains/pertes) change la taille de l'étiquette : on remesure seulement dans ce cas.
+const labelSizes=new WeakMap<HTMLElement,{w:number;h:number;key?:string}>()
 function labelSize(label:HTMLElement){
  let size=labelSizes.get(label)
- if(!size||!size.w){size={w:label.offsetWidth,h:label.offsetHeight};if(size.w)labelSizes.set(label,size)}
+ if(!size||!size.w||size.key!==label.dataset.effects){const badges=label.querySelector<HTMLElement>(':scope > .landmark-effects');size={w:label.offsetWidth,h:label.offsetHeight+(badges?badges.offsetHeight+3:0),key:label.dataset.effects};if(size.w)labelSizes.set(label,size)}
  return size
 }
 

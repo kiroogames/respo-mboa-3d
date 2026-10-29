@@ -16,6 +16,8 @@ import { getCanteenService } from './canteen'
 import { advancedRules } from './advanced-dossiers'
 import { getRespoProgress } from './respo-level'
 import { getPlayerResources } from './player-resources'
+import { getGameTime } from './game-clock'
+import { getHomeMealService } from './home-meals'
 
 export type PlaceActivity = { icon: string; title: string; detail: string; status?: string; closed?: boolean }
 export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean }
@@ -60,4 +62,41 @@ export function getPlacePeople(zone: string): PlacePerson[] {
     const state = getNPCState(npc.id)
     return { name: npc.name, portrait: npc.portrait, activity: state ? `${state.activity}` : npc.relationship, request: npcNeedsService(npc.id) }
   })
+}
+
+export type EffectUnit = 'nkap' | 'energy' | 'mood' | 'influence'
+/**
+ * Ce qu'on peut gagner (+) ou perdre (−) dans un lieu à l'heure actuelle, pour les badges de la carte.
+ * Seules les activités ouvertes maintenant comptent ; la pause gratuite proposée partout est ignorée.
+ */
+export function getPlaceEffects(zone: string) {
+  const gains = new Set<EffectUnit>(), losses = new Set<EffectUnit>()
+  const add = (gain: EffectUnit[], loss: EffectUnit[] = []) => { gain.forEach(u => gains.add(u)); loss.forEach(u => losses.add(u)) }
+  const now = getGameTime().totalMinutes, day = Math.floor(now / 1440), minute = now % 1440, weekday = day % 7 < 5
+  if (zone === dossierRules.zone && !getDossierBatch().reason) {
+    add(['nkap'], ['energy'])
+    if (getRespoProgress(getPlayerResources().ptRespo).level >= advancedRules.visibleLevel + 1) add(['nkap'], ['energy'])
+  }
+  if (zone === 'ministry') {
+    if (!getUserQueue().reason) add(['nkap', 'mood'], ['energy', 'mood'])
+    if (!getMeetingSchedule().reason) add([], ['energy'])
+    if (!getCanteenService().reason) add(['energy', 'mood'], ['nkap'])
+    if (weekday && minute >= 1080 && minute < 1380) add(['nkap'], ['energy'])
+    if (missionRules.missions.some(m => getMissionState(m.id)?.stage === 'ready')) add(['nkap'])
+  }
+  if (zone === 'home') {
+    if (getHomeMealService().open) add(['energy', 'mood'], ['nkap'])
+    add(['mood'], ['nkap'])
+  }
+  for (const service of getVenueServices(zone)) {
+    if (service.id === 'public-rest') continue
+    add([...(service.energyGain || service.fullEnergy ? ['energy' as const] : []), ...(service.moodGain > 0 ? ['mood' as const] : [])],
+      [...(service.money > 0 ? ['nkap' as const] : []), ...(service.energyCost > 0 ? ['energy' as const] : []), ...(service.moodGain < 0 ? ['mood' as const] : [])])
+  }
+  for (const outing of cityOutings.filter(item => item.zone === zone && !getOutingSchedule(item.id).reason))
+    for (const option of outing.options) add([...(option.mood > 0 ? ['mood' as const] : []), ...(option.energyGain > 0 ? ['energy' as const] : [])], [...(option.money > 0 ? ['nkap' as const] : []), ...(option.energy > 0 ? ['energy' as const] : [])])
+  if (bagFoods.some(food => food.zone === zone)) add([], ['nkap'])
+  if (missionRules.missions.some(m => m.zone === zone && getMissionState(m.id)?.stage === 'active')) add([], ['energy'])
+  const order: EffectUnit[] = ['nkap', 'energy', 'mood', 'influence']
+  return { gains: order.filter(u => gains.has(u)), losses: order.filter(u => losses.has(u)) }
 }

@@ -61,3 +61,5 @@ dialog.game-menu .popup-body :is([role=alert],[class$="-error"]){color:#923b23;f
 
 dialog.game-menu .popup-body .venue-description.game-important-description{display:block;font-size:13px!important;line-height:1.35;color:#496044}
 dialog.game-menu .popup-body .venue-service[hidden]{display:none!important}
+/* Les conteneurs peuvent se répartir sur plusieurs pages ; chaque carte reste entière. */
+dialog.game-menu .game-menu-pages>:is(div,section,form),dialog.game-menu .game-menu-pages :is(#venue-place-panel,.meal-choices,.canteen-choices,.classic-work-cards,.missions-list,.comfort-catalogue,.outing-options,.meeting-options,.extra-choices){break-inside:auto}

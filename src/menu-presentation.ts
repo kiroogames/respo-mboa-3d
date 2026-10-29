@@ -1,12 +1,23 @@
 /* Présentation commune des fenêtres : illustrations et pages de jeu.
  * Les contrôles restent les mêmes nœuds DOM : aucune règle, sauvegarde ou transaction ne change.
  */
-type Theme='food'|'sleep'|'work'|'fun'|'home'|'budget'|'wait'|'relations'
+type Theme='food'|'sleep'|'work'|'fun'|'home'|'budget'|'wait'|'relations'|'jogging'|'football'
 const themes:[string,Theme][]=[['meal-dialog','food'],['canteen-dialog','food'],['food-bag-dialog','food'],['sleep-dialog','sleep'],['work-classic-dialog','work'],['citizen-puzzle-dialog','work'],['extra-dialog','work'],['meeting-dialog','work'],['missions-dialog','work'],['outings-dialog','fun'],['accompanied-dialog','relations'],['comfort-dialog','home'],['bills-dialog','budget'],['toque-dialog','budget'],['wait-dialog','wait'],['sport-energy-dialog','sleep'],['mood-effects-dialog','relations'],['npc-dialogue-dialog','relations']]
 const cardSelector='.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.energy-effect-cards>article'
 const policies='.comfort-policy,.outing-policy,.bills-policy,.wait-rules,.meal-intro,.place-activity-note,.wait-intro,.classic-work-preview>small,.canteen-preview>small,.extra-preview>small,.meeting-preview>small,.comfort-preview>small'
-function themeOf(dialog:HTMLDialogElement):Theme{return themes.find(([name])=>dialog.classList.contains(name))?.[1]??'home'}
+function themeOf(dialog:HTMLDialogElement):Theme{
+ if(dialog.classList.contains('venue-dialog')){
+  const place=dialog.querySelector('h2')?.textContent??''
+  if(/omnisport|stade|stadium/i.test(place))return 'football'
+  if(/minist|présiden/i.test(place))return 'work'
+  if(/marché|restaurant/i.test(place))return 'food'
+  if(/njoka|culture|club/i.test(place))return 'fun'
+ }
+ return themes.find(([name])=>dialog.classList.contains(name))?.[1]??'home'
+}
 function artOf(text:string,fallback:Theme):Theme{
+ if(/entraîn|jogg/i.test(text))return 'jogging'
+ if(/2-0|football/i.test(text))return 'football'
  if(/repas|manger|déjeuner|poisson|poulet|riz|snack|nourriture/i.test(text))return 'food'
  if(/dorm|sommeil|repos|nuit/i.test(text))return 'sleep'
  if(/facture|toqué|cotis|budget|épargne|argent/i.test(text))return 'budget'
@@ -18,7 +29,8 @@ function artOf(text:string,fallback:Theme):Theme{
  return fallback
 }
 export function presentGameMenu(dialog:HTMLDialogElement){
- const base=import.meta.env.BASE_URL,theme=themeOf(dialog),body=dialog.querySelector<HTMLElement>(':scope>.popup-body')!
+ const base=import.meta.env.BASE_URL,body=dialog.querySelector<HTMLElement>(':scope>.popup-body')!
+ let theme=themeOf(dialog)
  dialog.classList.add('game-menu');dialog.dataset.menuTheme=theme
  const illustration=(kind:Theme)=>`${base}ui/menu-${kind}.png`
  const city=dialog.querySelector('.menu-city-art')
@@ -28,13 +40,25 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  // Regroupe uniquement les textes d’aide. Les avertissements, horaires et coûts restent dans leur vue.
  const infos=document.createElement('details');infos.className='game-menu-infos';infos.innerHTML='<summary>Infos</summary>'
  function decorate(){
+  theme=themeOf(dialog);dialog.dataset.menuTheme=theme
+  for(const hero of dialog.querySelectorAll<HTMLImageElement>('.game-menu-hero,.popup-icon>img')){
+   const source=dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:illustration(theme)
+   if(hero.getAttribute('src')!==source)hero.src=source
+  }
   for(const description of dialog.querySelectorAll<HTMLElement>('.venue-description'))description.classList.toggle('game-important-description',/\d/.test(description.textContent??''))
   const shortNames:Record<string,string>={'Retour au lieu':'Retour','Retour au ministère':'Retour','Confirmer le traitement':'Traiter','Confirmer le repas':'Manger','Confirmer la réunion':'Participer','Confirmer la sortie':'Y aller','Confirmer le versement':'Verser','Confirmer l’attente':'Attendre','Confirmer la commande':'Accepter'}
   for(const button of dialog.querySelectorAll('button')){const short=shortNames[button.textContent?.trim()??''];if(short){button.setAttribute('aria-label',button.textContent!.trim());button.textContent=short}}
   for(const node of dialog.querySelectorAll<HTMLElement>(cardSelector)){
    if(node.querySelector(':scope>.game-card-art'))continue
    const art=document.createElement('span');art.className='game-card-art';art.setAttribute('aria-hidden','true')
-   const image=document.createElement('img');image.src=illustration(artOf(node.querySelector('b')?.textContent??node.textContent??'',theme));image.alt='';art.append(image);node.prepend(art)
+   const image=document.createElement('img'),title=node.querySelector('b')?.textContent??node.textContent??''
+   // Les illustrations originales Unity priment lorsqu’elles représentent précisément l’activité.
+   image.src=node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
+    :node.matches('[data-venue-work],[data-venue-advanced]')||node.hasAttribute('data-dossier-index')?`${base}ui/unity/dossiers.png`
+    :node.closest('.missions-list')?`${base}ui/unity/mission.png`
+    :node.dataset.comfortItem?.startsWith('bed-')?`${base}ui/unity/lit.png`
+    :illustration(artOf(title,theme))
+   image.alt='';art.append(image);node.prepend(art)
   }
   for(const node of body.querySelectorAll<HTMLElement>(policies))if(!node.closest('.game-menu-infos'))infos.append(node)
   if(infos.children.length>1&&!infos.isConnected)body.append(infos)
