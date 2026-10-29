@@ -1,0 +1,8 @@
+/* Logos des monnaies dans le texte des fenêtres. */
+.currency-chip{display:inline-flex;align-items:center;gap:0;white-space:nowrap;vertical-align:baseline}
+.currency-icon{display:inline-block;width:1.25em;height:1.25em;margin-left:.1em;object-fit:contain;vertical-align:-.28em;flex:none}
+.currency-chip .currency-icon{margin-left:0}
+.currency-icon-mood{background-size:400% 200%;background-position:66.667% 0;background-repeat:no-repeat;border-radius:50%}
+dialog.travel-dialog .popup-stats>span{flex-direction:row;align-items:center;gap:7px}
+dialog.travel-dialog .popup-stats .currency-icon{width:24px;height:24px;margin:0;vertical-align:middle}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-head .popup-stats>span{flex-direction:row;align-items:center;gap:7px}

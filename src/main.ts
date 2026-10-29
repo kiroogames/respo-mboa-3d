@@ -76,6 +76,8 @@ import '@babylonjs/loaders/glTF'
 import { mountPopupShell } from './popup-shell'
 import { mountHudEnhance } from './hud-enhance'
 import { mountStartMenu } from './start-menu'
+import { mountCurrencyIcons } from './currency-icons'
+import './currency-icons.css'
 import './start-menu.css'
 import './popups.css'
 import './hud.css'
@@ -305,6 +307,7 @@ const moodEffects=mountMoodEffects({button:document.querySelector<HTMLButtonElem
 mountPopupShell()
 mountHudEnhance()
 mountStartMenu(base)
+mountCurrencyIcons(base)
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
  if(guidedVisualPaused&&isGuidedOutingActive()&&!force)return

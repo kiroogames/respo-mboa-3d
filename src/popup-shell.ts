@@ -41,7 +41,9 @@ function shapePopup(dialog: HTMLDialogElement) {
   context.innerHTML=`<span class="menu-brand">LE RESPONSABLE<br><b>MBOA</b></span><div class="menu-city-art"><i></i><i></i><i></i><i></i><i></i><span>✦</span></div><p>${theme}</p><small class="menu-context-clock"></small>`
   dialog.append(context)
   const stats=document.createElement('div');stats.className='popup-stats';stats.setAttribute('role','group');stats.setAttribute('aria-label','Vos ressources actuelles')
-  stats.innerHTML='<span>Nkap <b data-popup-stat="money"></b></span><span>Énergie <b data-popup-stat="energy"></b></span><span>Humeur <b data-popup-stat="mood"></b></span><span>Influence <b data-popup-stat="influence"></b></span>'
+  // Logos à la place des noms des monnaies (texte conservé pour les lecteurs d'écran).
+  const base=import.meta.env.BASE_URL
+  stats.innerHTML=`<span><img class="currency-icon" src="${base}ui/currency-nkap.png" alt="Nkap"/><b data-popup-stat="money"></b></span><span><img class="currency-icon" src="${base}ui/currency-energy.png" alt="Énergie"/><b data-popup-stat="energy"></b></span><span><span class="currency-icon currency-icon-mood" role="img" aria-label="Humeur" style="background-image:url('${base}ui/mood-sprites.png')"></span><b data-popup-stat="mood"></b></span><span><img class="currency-icon" src="${base}ui/currency-respo.png" alt="Influence"/><b data-popup-stat="influence"></b></span>`
   head.append(stats)
 
   const syncContext=()=>{context.querySelector('.menu-context-clock')!.textContent=`${document.querySelector('#game-day')?.textContent??''} · ${document.querySelector('#game-time')?.textContent??''}`}

@@ -78,10 +78,14 @@ export function createTravelRoute(from: TravelPoint, to: TravelPoint) {
 
 // Starting tariffs, centralized here for future gameplay balancing.
 export const travelModes = [
-  { id: 'walk', label: 'À pied', description: 'Sans frais de transport', symbol: '🚶', fare: 0, moneyPerKm: 0, energyPerKm: 4, metersPerMinute: 75, departureMinutes: 0, stopsMinutesPerKm: 0 },
-  { id: 'taxi', label: 'Taxi commun', description: 'Trajet partagé · attente et arrêts possibles', symbol: '🚕', fare: 150, moneyPerKm: 60, energyPerKm: 0, metersPerMinute: 500, departureMinutes: 10, stopsMinutesPerKm: 1.5 },
-  { id: 'yonga', label: 'Yonga — taxi privé', description: 'Véhicule réservé · trajet direct', symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, metersPerMinute: 550, departureMinutes: 5, stopsMinutesPerKm: 0 },
-  { id: 'moto', label: 'Moto', description: 'Plus agile dans la circulation', symbol: '🏍️', fare: 100, moneyPerKm: 50, energyPerKm: .3, metersPerMinute: 450, departureMinutes: 5, stopsMinutesPerKm: 0 },
+  // Marche : gratuite mais lente, fatigante et pénible pour l'humeur.
+  { id: 'walk', label: 'À pied', description: 'Gratuit, mais long et éprouvant', symbol: '🚶', fare: 0, moneyPerKm: 0, energyPerKm: 4, moodPerKm: 3, metersPerMinute: 75, departureMinutes: 0, stopsMinutesPerKm: 0 },
+  // Taxi commun : le moins cher des véhicules, lent (attente, arrêts) et inconfortable.
+  { id: 'taxi', label: 'Taxi commun', description: 'Pas cher · lent, serré, arrêts fréquents', symbol: '🚕', fare: 150, moneyPerKm: 60, energyPerKm: 0, moodPerKm: 1.5, metersPerMinute: 300, departureMinutes: 5, stopsMinutesPerKm: 1.5 },
+  // Yonga : cher et rapide, mais coincé dans les embouteillages comme les autres voitures.
+  { id: 'yonga', label: 'Yonga — taxi privé', description: 'Cher et confortable · ralenti par les bouchons', symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, moodPerKm: 0, metersPerMinute: 600, departureMinutes: 5, stopsMinutesPerKm: 0 },
+  // Moto : plus chère que le taxi commun, un peu plus rapide que Yonga, légèrement éprouvante ; se faufile mais subit aussi les bouchons.
+  { id: 'moto', label: 'Moto', description: 'Pratique et rapide · un peu secouant', symbol: '🏍️', fare: 250, moneyPerKm: 110, energyPerKm: .3, moodPerKm: .5, metersPerMinute: 650, departureMinutes: 3, stopsMinutesPerKm: 0 },
 ] as const
 
 // Convertit la longueur en mètres de ville, applique le mode et le trafic, puis arrondit la durée au multiple de 5 supérieur.
@@ -96,6 +100,7 @@ export function quoteTravel(route: TravelPoint[], mode: TravelMode, traffic: Tra
     mode, label: config.label, length, distanceMeters, traffic,
     money: config.fare + Math.ceil(distanceMeters / 1000 * config.moneyPerKm / 10) * 10,
     energy: Math.ceil(distanceMeters / 1000 * config.energyPerKm),
+    mood: Math.ceil(distanceMeters / 1000 * config.moodPerKm),
     minutes: Math.max(5, Math.ceil(rawMinutes / 5) * 5),
     clearMinutes: Math.max(5, Math.ceil((fixedMinutes + distanceMeters / config.metersPerMinute) / 5) * 5),
   }

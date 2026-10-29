@@ -6,7 +6,7 @@ import { isGuidedOutingActive } from './guided-outing-state'
  */
 
 import { getMoneyBalance, spendMoney } from './currency'
-import { getPlayerResources, spendEnergy } from './player-resources'
+import { getPlayerResources, spendEnergy, changeMood } from './player-resources'
 import { advanceGameTime } from './game-clock'
 import { createTravelRoute, quoteTravel, travelModes } from './travel'
 import type { TravelMode, TravelPoint } from './travel'
@@ -25,7 +25,7 @@ export function mountTravel(options: {
   const dialog = document.createElement('dialog')
   dialog.className = 'travel-dialog transport-dialog'
   dialog.setAttribute('aria-labelledby', 'travel-title')
-  dialog.innerHTML = `<button class="travel-close" aria-label="Fermer">×</button><span class="travel-eyebrow" id="travel-eyebrow">DESTINATION</span><h2 id="travel-title"></h2><p id="travel-origin"></p><span id="travel-distance" class="travel-distance"></span><span id="travel-traffic" class="travel-traffic"></span><div id="travel-place-panel" class="place-activities"></div><div id="travel-go-panel" hidden><div id="travel-options"></div></div><p id="travel-message" role="status"></p><div class="travel-actions"><button type="button" data-travel-back hidden>← Retour</button><button type="button" data-travel-go>Y aller</button></div>`
+  dialog.innerHTML = `<button class="travel-close" aria-label="Fermer">×</button><span class="travel-eyebrow" id="travel-eyebrow">DESTINATION</span><h2 id="travel-title"></h2><p id="travel-origin"></p><div class="transport-route"><span id="travel-distance" class="travel-distance"></span><span id="travel-traffic" class="travel-traffic"></span></div><div id="travel-place-panel" class="place-activities"></div><div id="travel-go-panel" hidden><div id="travel-options"></div></div><p id="travel-message" role="status"></p><div class="travel-actions"><button type="button" data-travel-back hidden>← Retour</button><button type="button" data-travel-go>Y aller</button></div>`
   document.body.append(dialog)
   const status = document.createElement('div')
   status.className = 'travel-status'; status.hidden = true; status.setAttribute('role', 'status')
@@ -83,7 +83,7 @@ export function mountTravel(options: {
       const subtitle={walk:'Le pied, c’est gratuit !',taxi:'On se serre un peu',yonga:'La place du boss',moto:'On faufile !'}[mode.id]
       const title=mode.id==='yonga'?'Yonga privé':mode.label
       const cost=quote.money===0?'0':quote.money.toLocaleString('fr-FR')
-      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${title}, ${quote.money} Nkap, ${quote.energy} énergie, ${quote.minutes} minutes${reason?', '+reason:''}" ${reason ? 'disabled' : ''}><span class="transport-art transport-art-${mode.id}" aria-hidden="true"></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span title="Prix en Nkap"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span title="Énergie dépensée"><img src="${options.base}ui/currency-energy.png" alt="Énergie"/>${quote.energy}</span><span title="Durée du trajet">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">Bouchons +${delay} min</span>`:''}</span></button>`
+      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${title}, ${quote.money} Nkap, ${quote.energy} énergie${quote.mood?`, −${quote.mood} humeur`:''}, ${quote.minutes} minutes${reason?', '+reason:''}" ${reason ? 'disabled' : ''}><span class="transport-art" aria-hidden="true"><img src="${options.base}ui/transport-${mode.id}.png" alt=""/></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span title="Prix en Nkap"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span title="Énergie dépensée"><img src="${options.base}ui/currency-energy.png" alt="Énergie"/>${quote.energy}</span>${quote.mood?`<span title="Humeur perdue" class="transport-mood"><span class="currency-icon currency-icon-mood" role="img" aria-label="Humeur" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>−${quote.mood}</span>`:''}<span title="Durée du trajet">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">Bouchons +${delay} min</span>`:''}</span></button>`
 
     }).join('')
     const from=options.origin(),home=options.place('home'),rescue=previewEmergencyReturn(from.key,from.position,home.position,pending.traffic)
@@ -110,7 +110,7 @@ export function mountTravel(options: {
     }
     // Le paiement et l’avance du calendrier précèdent l’animation ; la fin de l’animation ne doit pas les répéter.
     busy = true
-    spendMoney(quote.money); spendEnergy(quote.energy); advanceGameTime(quote.minutes)
+    spendMoney(quote.money); spendEnergy(quote.energy); if (quote.mood) changeMood(-quote.mood); advanceGameTime(quote.minutes)
     const { key, route } = pending
     pending = null
     dialog.close()
