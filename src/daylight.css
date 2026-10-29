@@ -1,0 +1,4 @@
+/* La période tient sur la ligne de semaine pour conserver la hauteur du HUD mobile. */
+.game-clock-week{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+#game-period{font-size:10px;color:#fff2cd;white-space:nowrap}
+#game-period:before{content:'·';margin-right:6px}

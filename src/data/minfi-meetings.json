@@ -1,0 +1,8 @@
+{
+  "zone":"ministry","opening":480,"closing":960,
+  "topics":["Coordination des dossiers","Suivi des dépenses","Équipements publics","Logistique","Bilan hebdomadaire"],
+  "options":[
+    {"id":"participate","name":"Participer","minutes":30,"energy":10,"respo":5},
+    {"id":"report","name":"Participer et rédiger le compte rendu","minutes":60,"energy":20,"respo":12}
+  ]
+}

@@ -1,0 +1,2 @@
+.sleep-dialog #sleep-duration{width:100%;height:38px;margin:8px 0 0;accent-color:#3e6a47;cursor:pointer}
+.sleep-energy{display:flex;gap:14px;align-items:center;padding:16px;border:1px solid #b7bd88;border-radius:12px;background:#fff6cd}.sleep-energy img{width:48px;height:54px;object-fit:contain}.sleep-energy>div{display:flex;flex-direction:column;gap:5px}.sleep-energy span{font-size:12px;color:#59603e}.sleep-energy strong{font-size:28px;color:#355b36}.sleep-energy small{font-size:13px;color:#405534}.sleep-dialog .sleep-mood{color:#36583e;font-size:13px;line-height:1.5}

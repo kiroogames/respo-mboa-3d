@@ -1,0 +1,29 @@
+
+.citizen-puzzle-dialog{width:min(620px,calc(100vw - 20px));color:#244c3a;background:#fffaf0;border-radius:22px;padding:20px;box-sizing:border-box}
+.citizen-cards{display:grid;gap:10px}.citizen-card{display:flex;align-items:center;gap:12px;padding:12px;text-align:left;background:#fff;border:1px solid #d4dfcc;border-radius:12px;color:#244c3a}.citizen-card b,.citizen-card small{display:block}.citizen-card small{margin-top:6px;line-height:1.5}.citizen-card:disabled{opacity:.6}
+.citizen-icon{display:inline-block;width:42px;height:42px;flex:none;border-radius:10px;background-image:url('/ui/citizen-puzzle-icons.png');background-size:200% 200%;vertical-align:middle;pointer-events:none}.icon-0{background-position:0 0}.icon-1{background-position:100% 0}.icon-2{background-position:0 100%}.icon-3{background-position:100% 100%}
+.citizen-request{display:flex;gap:10px;align-items:center;background:#edf4e7;padding:10px;border-radius:12px}.citizen-avatar{font-size:28px}.citizen-request p{margin:4px 0 0;font-size:12px;line-height:1.4}.citizen-objective{display:flex;justify-content:space-between;gap:6px;font-size:13px;margin:10px 0}.citizen-pair-tabs{display:flex;justify-content:center;gap:10px;margin:6px 0}.citizen-pair-tabs button{display:flex;align-items:center;border:2px solid transparent;background:#fff9ed;border-radius:10px;padding:2px;color:#234b39}.citizen-pair-tabs [aria-pressed=true]{border-color:var(--pair-color)}.citizen-pair-tabs .citizen-icon{width:26px;height:26px}.citizen-pair-tabs small{font-weight:bold}
+.citizen-board{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);position:relative;aspect-ratio:1;width:min(100%,380px);margin:0 auto;background:#e2ead7;border:4px solid #42664e;border-radius:14px;overflow:hidden;touch-action:none;user-select:none;box-sizing:border-box;gap:3px;padding:3px}
+.citizen-cell{border:0;border-radius:6px;background:var(--cell-color,#fffbee);padding:0;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;color:#9d9e8d}.citizen-cell .citizen-icon{width:85%;height:85%;border-radius:7px;position:relative;z-index:2}.citizen-cell.is-blocked{background:#8b9681;color:#d6ddcb;font-size:24px}.citizen-cell.is-current{box-shadow:inset 0 0 0 3px #e4b347}.citizen-board svg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);pointer-events:none;z-index:1}.citizen-board polyline{fill:none;stroke-width:19;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.citizen-feedback{font-size:12px;line-height:1.4;min-height:30px;margin:8px 0}.citizen-controls{display:flex;gap:7px}.citizen-controls button,.citizen-pile{border:1px solid #a4b49b;background:#fffbed;color:#244c3a;border-radius:9px;padding:10px;cursor:pointer}.citizen-controls [data-work-confirm]{flex:1;background:#286047;color:#fff;font-weight:bold}.citizen-controls button:disabled{opacity:.55;cursor:default}.citizen-pile{font-size:11px;margin-top:5px;padding:5px;background:transparent;border:0}.citizen-puzzle-dialog [data-work-receipt] strong{font-size:28px;color:#286047}.citizen-puzzle-dialog button:focus-visible{outline:3px solid #e6a627;outline-offset:1px}
+/* Le jeu de lignes occupe une seule vue : aucun défilement dans la fenêtre en mode puzzle. */
+dialog.citizen-puzzle-dialog[data-mode=puzzle]{height:min(800px,calc(100dvh - 16px));max-height:calc(100dvh - 16px);overflow:hidden!important}
+dialog.citizen-puzzle-dialog[data-mode=puzzle]>.popup-body{overflow:hidden!important;padding:8px 12px!important;min-height:0}
+dialog.citizen-puzzle-dialog[data-mode=puzzle]>.popup-foot{display:none!important}
+dialog.citizen-puzzle-dialog[data-mode=puzzle]>.popup-head{padding:12px 16px!important}
+dialog.citizen-puzzle-dialog[data-mode=puzzle] h2{font-size:19px!important}
+dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-board{width:min(100%,380px,calc(100dvh - 330px))}
+@media(max-height:650px){dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-board{width:min(100%,calc(100dvh - 365px))}.citizen-request{padding:6px}.citizen-request p{font-size:11px}.citizen-objective{margin:5px 0;font-size:11px}.citizen-pair-tabs{margin:3px 0}.citizen-feedback{margin:4px 0;font-size:10px;min-height:24px}.citizen-controls button{padding:8px}.citizen-puzzle-dialog[data-mode=puzzle] .travel-eyebrow{display:none}}
+@media(max-height:450px){dialog.citizen-puzzle-dialog[data-mode=puzzle] [data-work-puzzle]{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}.citizen-request,.citizen-objective,.citizen-pair-tabs,.citizen-feedback,.citizen-controls,.citizen-pile{grid-column:1}dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-board{grid-column:2;grid-row:1/7;width:min(100%,calc(100dvh - 100px))}.citizen-request p{font-size:10px}}
+
+dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-request p{margin:3px 0 0!important;line-height:1.35!important}
+dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-feedback{margin:5px 0!important;line-height:1.35!important}
+
+@media(max-height:450px){
+ dialog.citizen-puzzle-dialog[data-mode=puzzle]{width:min(850px,calc(100vw - 16px))}
+ dialog.citizen-puzzle-dialog[data-mode=puzzle] [data-work-puzzle]{align-items:start;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,min-content);gap:2px 12px}
+ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-board{align-self:start;width:min(100%,calc(100dvh - 110px))}
+ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-feedback{font-size:10px!important;min-height:0}
+ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-pair-tabs{margin:0}
+ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-pile{margin:0}
+}

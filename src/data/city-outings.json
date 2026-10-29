@@ -1,0 +1,263 @@
+[
+  {
+    "id": "cinema",
+    "name": "Cinéma",
+    "zone": "culture",
+    "opening": 480,
+    "closing": 1140,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 08h–19h",
+    "options": [
+      {
+        "id": "standard",
+        "name": "Séance simple",
+        "money": 900,
+        "minutes": 90,
+        "energy": 5,
+        "mood": 20,
+        "energyGain": 0
+      },
+      {
+        "id": "snack",
+        "name": "Séance avec encas",
+        "money": 1200,
+        "minutes": 90,
+        "energy": 5,
+        "mood": 25,
+        "energyGain": 0
+      }
+    ],
+    "repeatable": false
+  },
+  {
+    "id": "snack",
+    "name": "Snack au Matango",
+    "zone": "club",
+    "opening": 1080,
+    "closing": 240,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 18h–04h",
+    "options": [
+      {
+        "id": "drink",
+        "name": "Boisson sans alcool",
+        "money": 350,
+        "minutes": 45,
+        "energy": 0,
+        "mood": 10,
+        "energyGain": 0
+      },
+      {
+        "id": "meal",
+        "name": "Plat et boisson",
+        "money": 800,
+        "minutes": 90,
+        "energy": 5,
+        "mood": 20,
+        "energyGain": 0
+      },
+      {
+        "id": "dance",
+        "name": "Soirée dansante",
+        "money": 1000,
+        "minutes": 90,
+        "energy": 15,
+        "mood": 25,
+        "energyGain": 0
+      }
+    ],
+    "repeatable": false
+  },
+  {
+    "id": "football",
+    "name": "Jouer un 2-0",
+    "zone": "stadium",
+    "opening": 420,
+    "closing": 840,
+    "days": [
+      5,
+      6
+    ],
+    "hours": "Samedi et dimanche · 07h–14h",
+    "options": [
+      {
+        "id": "match",
+        "name": "Match de quartier",
+        "money": 0,
+        "minutes": 90,
+        "energy": 20,
+        "mood": 20,
+        "energyGain": 0
+      }
+    ],
+    "repeatable": false
+  },
+  {
+    "id": "restaurant",
+    "name": "Restaurant",
+    "zone": "pilton",
+    "opening": 660,
+    "closing": 1380,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 11h–23h",
+    "repeatable": true,
+    "options": [
+      {
+        "id": "classic",
+        "name": "Repas classique",
+        "money": 800,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 20,
+        "mood": 8
+      },
+      {
+        "id": "complete",
+        "name": "Menu complet",
+        "money": 1200,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 30,
+        "mood": 12
+      }
+    ]
+  },
+  {
+    "id": "restaurant-market",
+    "name": "Restaurant · Marché",
+    "zone": "market",
+    "opening": 660,
+    "closing": 1380,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 11h–23h",
+    "repeatable": true,
+    "options": [
+      {
+        "id": "classic",
+        "name": "Repas classique",
+        "money": 800,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 20,
+        "mood": 8
+      },
+      {
+        "id": "complete",
+        "name": "Menu complet",
+        "money": 1200,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 30,
+        "mood": 12
+      }
+    ]
+  },
+  {
+    "id": "restaurant-supermarket",
+    "name": "Restaurant · Supermarché",
+    "zone": "supermarket",
+    "opening": 660,
+    "closing": 1380,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 11h–23h",
+    "repeatable": true,
+    "options": [
+      {
+        "id": "classic",
+        "name": "Repas classique",
+        "money": 800,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 20,
+        "mood": 8
+      },
+      {
+        "id": "complete",
+        "name": "Menu complet",
+        "money": 1200,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 30,
+        "mood": 12
+      }
+    ]
+  },
+  {
+    "id": "restaurant-njoka",
+    "name": "Restaurant · Rue du Njoka",
+    "zone": "njoka",
+    "opening": 660,
+    "closing": 1380,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "hours": "Tous les jours · 11h–23h",
+    "repeatable": true,
+    "options": [
+      {
+        "id": "classic",
+        "name": "Repas classique",
+        "money": 800,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 20,
+        "mood": 8
+      },
+      {
+        "id": "complete",
+        "name": "Menu complet",
+        "money": 1200,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 30,
+        "mood": 12
+      }
+    ]
+  }
+]

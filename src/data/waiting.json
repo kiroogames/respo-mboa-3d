@@ -1,0 +1,8 @@
+{
+  "minimumMinutes": 10,
+  "maximumMinutes": 360,
+  "stepMinutes": 10,
+  "boredomAfterMinutes": 180,
+  "boredomPeriodMinutes": 60,
+  "moodLossPerPeriod": 5
+}

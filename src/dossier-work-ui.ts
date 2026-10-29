@@ -1,0 +1,30 @@
+/* Traitement classique des dossiers : choix, aperçu et confirmation ; aucun puzzle de file d’attente. */
+import {completeDossier as standardComplete,dossierRules as standardRules,dossierWorkReason as standardReason,getDossierBatch as standardBatch} from './dossier-work'
+import {getPlayerResources,projectEnergy,onPlayerResourcesChange} from './player-resources'
+import {getGameTime,onGameTimeChange} from './game-clock'
+import './citizen-puzzle.css'
+export function mountDossierWork(options: { base: string; currentZone: () => string; travelling: () => boolean; back: () => void; work?: {rules:typeof standardRules;getBatch:typeof standardBatch;reason:typeof standardReason;complete:typeof standardComplete;draftKey:string;difficulty?:(index:number)=>number;cardInfo?:(index:number)=>string;profile?:(index:number)=>{energyCost:number;minutes:number;moneyGain:number;respoGain:number};presentation?:{id:string;eyebrow:string;intro:string;listTitle:string}} }) {
+
+ const rules=options.work?.rules??standardRules,batchOf=options.work?.getBatch??standardBatch,reason=options.work?.reason??standardReason,complete=options.work?.complete??standardComplete,profile=(i:number)=>options.work?.profile?.(i)??rules
+ const dialog=document.createElement('dialog');dialog.className='travel-dialog work-classic-dialog'+(options.work?.presentation?' advanced-puzzle-dialog':options.work?' extra-puzzle-dialog':'');const heading=options.work?.presentation?.id??(options.work?'extra-work-heading':'classic-work-heading');dialog.setAttribute('aria-labelledby',heading)
+ dialog.innerHTML=`<button class="travel-close" data-work-close aria-label="Fermer">×</button><span class="travel-eyebrow">MINISTÈRE · TRAVAIL ADMINISTRATIF</span><h2 id="${heading}">${options.work?.presentation?.listTitle??'Traiter les dossiers'}</h2><p data-work-notice role="status"></p><div class="classic-work-cards" data-work-cards></div><section class="classic-work-preview" hidden><h3 data-work-title></h3><p data-work-cost></p><strong data-work-reward></strong><p data-work-energy></p><p data-work-error role="alert"></p></section><section data-work-receipt hidden role="status"></section><div class="classic-work-actions"><button data-work-leave>Retour au ministère</button><button data-work-confirm disabled>Confirmer le traitement</button></div>`
+ document.body.append(dialog);const query=(s:string)=>dialog.querySelector<HTMLElement>(s)!,confirm=query('[data-work-confirm]') as HTMLButtonElement
+ let selected:number|null=null,mode='list',paying=false,batchId='',signature=''
+ const onsite=()=>options.currentZone()===rules.zone&&!options.travelling()
+ function render(){
+  const b=batchOf();if(b.id!==batchId){selected=null;batchId=b.id}query('[data-work-notice]').textContent=b.reason||`${b.remaining} traitement(s) disponible(s)`
+  const cards=query('[data-work-cards]');cards.replaceChildren()
+  for(const d of b.dossiers){const p=profile(d.index),button=document.createElement('button');button.dataset.dossierIndex=String(d.index);button.className='citizen-card';button.setAttribute('aria-pressed',String(selected===d.index));const why=reason(options.currentZone(),b.id,d.index);button.disabled=d.done||!!why;button.innerHTML='<span><b></b><small></small></span>';button.querySelector('b')!.textContent=d.title;button.querySelector('small')!.textContent=d.done?'✓ Traité':`${p.energyCost} énergie · ${p.minutes} min · +${p.moneyGain} Nkap · +${p.respoGain} Respo${why?' · '+why:''}`;cards.append(button)}
+  const preview=query('.classic-work-preview');preview.hidden=selected===null||mode==='receipt';confirm.hidden=mode==='receipt';confirm.disabled=true
+  if(selected===null)return
+  const p=profile(selected),r=getPlayerResources(),end=getGameTime().totalMinutes+p.minutes,energy=projectEnergy(0,end,undefined,r.energy,p.energyCost,'awake',r.ptRespo+p.respoGain)
+  query('[data-work-title]').textContent=b.dossiers.find(d=>d.index===selected)!.title;query('[data-work-cost]').textContent=`Coût : ${p.energyCost} énergie · ${p.minutes} min`;query('[data-work-reward]').textContent=`+${p.moneyGain} Nkap · +${p.respoGain} Respo`;query('[data-work-energy]').textContent=`Énergie : ${r.energy} → ${energy.energyAfter} / ${energy.maxEnergyAfter}`
+  const why=reason(options.currentZone(),b.id,selected);query('[data-work-error]').textContent=why;confirm.disabled=!!why||!onsite()||paying
+  signature=JSON.stringify([b.id,selected,r,getGameTime().totalMinutes])
+ }
+ query('[data-work-cards]').onclick=e=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('[data-dossier-index]');if(b&&!b.disabled){selected=Number(b.dataset.dossierIndex);mode='preview';query('[data-work-receipt]').hidden=true;render()}}
+ confirm.onclick=()=>{if(selected===null||confirm.disabled||paying)return;const expected=JSON.stringify([batchOf().id,selected,getPlayerResources(),getGameTime().totalMinutes]);if(expected!==signature){render();return}paying=true;const out=complete(batchId,selected,[],onsite()?options.currentZone():'');paying=false;if(!out.ok){render();query('[data-work-error]').textContent=out.reason;return}mode='receipt';selected=null;render();const receipt=query('[data-work-receipt]');receipt.hidden=false;receipt.innerHTML=`<h3>Travail terminé</h3><strong>+${out.money} Nkap</strong><p>+${out.respo} Respo · −${out.energy} énergie · ${out.minutes} min</p><button data-work-next>Continuer</button>`;query('[data-work-next]').onclick=()=>{mode='list';receipt.hidden=true;render()}}
+ const close=()=>{dialog.close();if(onsite())options.back()};query('[data-work-close]').onclick=()=>dialog.close();query('[data-work-leave]').onclick=close
+ const refresh=()=>{if(dialog.open&&!paying){if(!onsite())dialog.close();else render()}};onGameTimeChange(refresh);onPlayerResourcesChange(refresh)
+ return {open(){if(!onsite())return;selected=null;mode='list';query('[data-work-receipt]').hidden=true;render();dialog.showModal()},snapshot(){return dialog.open?{mode,batch:batchOf().id,dossier:selected,remaining:batchOf().remaining}:{mode:'closed'}}}
+}

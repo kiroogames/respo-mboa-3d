@@ -1,0 +1,4 @@
+{
+  "items":[{"name":"Eau","money":300},{"name":"Électricité","money":700},{"name":"Connexion internet","money":500}],
+  "issueDay":4,"issueMinute":720,"recommendedDeadlineMinute":1080
+}

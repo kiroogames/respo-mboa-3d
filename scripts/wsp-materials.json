@@ -1,0 +1,352 @@
+[
+  {
+    "name": "Airport 1",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Airport 2",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Avion",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Bank",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Bidon ville 1",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 10",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 11",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 12",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 13",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 14",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 15",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 3",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 4",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 5",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 6",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 7",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 8",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Bidon ville 9",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "BOBO 1",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "contenaire",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Fapmous",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Home_player",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Hotel_De_Ville",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 1",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 3",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 4",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 5",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 6",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "JCD 7",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Marché",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel 10",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel 2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel 3",
+    "guid": "c4755bd8971c11c49b6672251e31a8ac",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Mboatel_3.png"
+  },
+  {
+    "name": "Mboatel 4",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel 7",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel 9",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboatel",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Mboavoyage",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Office_2",
+    "guid": "5e44eb871d07fd8438c7a148d4234e81",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_03.png"
+  },
+  {
+    "name": "Office_3",
+    "guid": "5e44eb871d07fd8438c7a148d4234e81",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_03.png"
+  },
+  {
+    "name": "Office_5",
+    "guid": "95fc3da855084d44e86f201c324db376",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_05.png"
+  },
+  {
+    "name": "Office_6",
+    "guid": "284c979f16ab07f4eb14fd5d69856870",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_06.png"
+  },
+  {
+    "name": "Office_7",
+    "guid": "80a329a58e87e5849a594c750e9478a4",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_07.png"
+  },
+  {
+    "name": "Office_8",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Office_9",
+    "guid": "fc440381b62cf3745a84ed6283aa5d8f",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_09.png"
+  },
+  {
+    "name": "Office_principal",
+    "guid": "180128f616f1e024d9f5dc09d6964a39",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_principal.png"
+  },
+  {
+    "name": "Outline",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "panneau 22 export",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "panneau PUB1",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "panneau PUB2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Pilton 1",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Pilton 2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Pilton 3",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Pilton 4",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Plane bg 2",
+    "guid": "057f4784f20e6234ba9f7addb4f926db",
+    "texture": null
+  },
+  {
+    "name": "Plane bg",
+    "guid": "057f4784f20e6234ba9f7addb4f926db",
+    "texture": null
+  },
+  {
+    "name": "Police",
+    "guid": "284c979f16ab07f4eb14fd5d69856870",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_06.png"
+  },
+  {
+    "name": "Rue_joka1 night",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Rue_joka2 night",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Rue_joka2",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Rue_joka3 night",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Rue_joka4 night",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "School",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "stadium",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "station",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Supermarket",
+    "guid": "972ab7645caaf694eb4317bc3fc80f06",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\House\\House level 1 Alpha May21 Redone_vwalters.png"
+  },
+  {
+    "name": "Taxi 1",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  },
+  {
+    "name": "Taxi",
+    "guid": "f919ef98ebdbfd247a878e82a2dfe7f2",
+    "texture": "E:/WORK_DEV_YOUMSI/DEVWORK/LeResponsableMboa/Assets\\Test\\Sprites\\Decor\\WorldMap_WSP\\3D\\textures\\Office_08.png"
+  }
+]

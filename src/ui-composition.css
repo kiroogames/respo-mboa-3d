@@ -1,0 +1,118 @@
+/* Nouvelle composition : console du personnage, bourse indépendante et fenêtres à panneau de contexte. */
+#app header{display:block;position:absolute;inset:24px 24px auto;pointer-events:none}
+#app .resource-stats.hud-command-center{display:contents}
+#app .respo-console{position:absolute;left:0;top:0;width:270px;padding:20px;box-sizing:border-box;border-radius:22px;background:#123d35f5;border:1px solid #8dba9b66;box-shadow:0 15px 45px #082b3350;pointer-events:auto;color:#fff6e3}
+#app .console-caption{display:block;font-size:10px;letter-spacing:2.1px;font-weight:800;color:#ecc880;margin-bottom:17px}
+#app .respo-console .player-card{padding:0;gap:13px;border:0;box-shadow:none;background:none;border-radius:0}
+#app .respo-console .player-ring{width:58px;height:58px;background:conic-gradient(#e3b75c calc(var(--xp,0)*1turn),#467064 0);padding:3px}
+#app .respo-console .player-photo{border-color:#e7cf9a;background:#e0c48d}
+#app .respo-console .player-info{min-width:0}
+#app .respo-console .player-name{font-size:22px;color:#fff5e3;font-weight:900;white-space:nowrap}
+#app .respo-console .player-xp{color:#bed2c4;font-size:11px;margin-top:5px}#app .respo-console .player-xp b{color:#eacc91}
+#app .respo-console .player-xp-bar{background:#416558;height:4px;margin-top:9px}#app .respo-console .player-xp-bar i{background:#e5b957}
+#app .respo-vitals{margin-top:19px;border-top:1px solid #ffffff25}
+#app .respo-vitals .game-wallet{pointer-events:auto;display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:15px 0 0;margin:0;border:0;border-radius:0;background:none;width:100%;box-sizing:border-box}
+#app .respo-vitals .game-wallet>img,#app .respo-vitals .mood-icon{display:block;width:28px;height:28px;padding:0;align-self:start;margin-top:17px;background-color:transparent;box-shadow:none;border-radius:6px}
+#app .respo-vitals .game-wallet-details{width:100%;min-width:0}
+#app .respo-vitals .game-wallet-label{font-size:10px;letter-spacing:1.4px;color:#c9dfcc;font-weight:800}
+#app .respo-vitals .game-wallet-amount{font-size:23px;color:#fff7e5;line-height:1.25;margin-top:2px;letter-spacing:-.5px}
+#app .respo-vitals .game-wallet-details::after{height:6px!important;background-color:#416357;margin-top:7px!important;border-radius:3px}
+#app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{min-height:26px;margin-top:7px;padding:3px 8px;background:#254f42;color:#e5d3a9;border:1px solid #698775;font-size:10px;border-radius:6px}
+#app .city-wallet-strip{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;align-items:stretch;border-radius:15px;background:#fff8e8;border:1px solid #fff6d9;box-shadow:0 8px 30px #183e302c;padding:12px 8px;pointer-events:auto}
+#app .city-wallet-strip .game-wallet{display:flex;align-items:center;padding:0 16px;gap:9px;border:0;border-right:1px solid #d8dbc8;background:none;border-radius:0;pointer-events:auto}
+#app .city-wallet-strip .game-wallet:last-child{border-right:0}
+#app .city-wallet-strip .game-wallet>img{display:block;width:29px;height:29px;padding:0;background:none}
+#app .city-wallet-strip .game-wallet-label{font-size:9px;color:#65725d;letter-spacing:1px}
+#app .city-wallet-strip .game-wallet-amount{font-size:22px;color:#284331;font-weight:900;line-height:1.2}
+#app .city-wallet-strip #bills-open{margin-top:4px;border:0;background:transparent;padding:0;font-size:10px;min-height:18px;color:#4b6a4e;text-decoration:underline;text-underline-offset:3px}
+#app .game-clock{position:absolute;right:0;top:0;width:226px;box-sizing:border-box;border:1px solid #fff4d9;background:#fff8e8!important;color:#234537;box-shadow:0 8px 30px #183e302c;padding:14px 16px;border-radius:15px}
+#app .game-clock-time{font-size:35px;color:#234537}#app .game-clock-day{color:#234537;font-size:13px}#app .game-clock-week{color:#7e6737;font-size:10px}
+#app .clock-wait-button{background:#e8eddd;border:0;color:#315c40;min-height:32px;border-radius:7px;font-size:11px}
+#app #ui-menu-toggle{position:absolute;right:0;top:130px;min-height:42px;padding:0 17px;border-radius:10px;background:#173f35;color:#fff5df;border:1px solid #8caa8b;font:800 13px Nunito,sans-serif;box-shadow:0 5px 20px #123d3530;pointer-events:auto;cursor:pointer}
+#app .header-actions{position:absolute;right:0;top:181px;display:flex;flex-direction:column;gap:7px;background:#fff8e8;padding:12px;border:1px solid #d6dfce;border-radius:12px;box-shadow:0 16px 40px #183e3050;z-index:25;pointer-events:auto}
+#app .header-actions[hidden]{display:none!important}#app .header-actions button{min-height:42px;height:auto;width:190px;justify-content:flex-start;border:0;border-radius:7px;background:#eaf0df;color:#284d38;font-size:13px;padding:10px 12px;box-shadow:none}#app .header-actions #help{width:190px;text-align:left;justify-content:flex-start}#app .header-actions #help::after{content:' Aide et navigation';font-size:12px}#app .header-actions #compare span{display:inline;font-size:12px}
+#app footer{left:24px;right:24px;bottom:20px;display:flex;flex-direction:row;justify-content:space-between;align-items:end}
+#app .tools{background:#123d35f5;border:1px solid #8dba9b66;padding:8px;border-radius:17px;box-shadow:0 12px 35px #123d3540;gap:7px}
+#app .tools button{height:54px;min-width:64px;background:transparent;color:#f5ebd2;border:0;border-radius:10px;font-size:20px}
+#app .tools button span,#app .tools button[data-label]::after{color:#bcd0bf;font-size:10px}
+#app .tools #missions-open{background:#e6ba66;color:#183e30;min-width:92px;font-size:12px}#app .tools #missions-open::before{color:#234939}#app .tools #missions-open:hover:not(:disabled){background:#efd093}
+#app .tools button[aria-pressed=true],#app .tools button:hover:not(:disabled){background:#315b47;color:#fff8dd}#app .tools button[aria-pressed=true]::after{color:#e9c983}
+#app #places-toggle{height:64px;background:#fff8e8;border:1px solid #fff4da;box-shadow:0 8px 30px #123d3530;border-radius:17px;max-width:340px}#app #view-name{font-size:17px}#app .places-text small{font-size:10px}
+/* La fenêtre devient une vraie page de jeu, plutôt qu’une petite pile de cartes. */
+dialog.travel-dialog:not([data-mode=puzzle]){display:none;width:min(880px,calc(100vw - 48px));max-height:min(820px,calc(100dvh - 40px));border-radius:22px;overflow:hidden;background:#fbf6e9;box-shadow:0 28px 100px #082d3673}
+dialog.travel-dialog:not([data-mode=puzzle])[open]{display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:'context head' 'context body' 'context foot'}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-head{grid-area:head;background:#fbf6e9;color:#234438;border:0;padding:28px 65px 20px 28px}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-head h2{font-size:29px;font-weight:900;color:#234438;line-height:1.12;letter-spacing:-.7px}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-head .travel-eyebrow{color:#96702c;font-size:10px;letter-spacing:1.8px}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-head .travel-close{background:#e8e8d9;border:0;border-radius:50%;color:#345943;top:22px;right:20px;width:34px;height:34px}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-body{grid-area:body;padding:4px 28px 24px;background:#fbf6e9;min-height:0;overflow:auto}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-foot{grid-area:foot;padding:16px 24px;background:#f4efdf;border-top:1px solid #dedfcb}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-foot [class$='-actions'] button:last-child:not(:first-child),dialog.travel-dialog:not([data-mode=puzzle])>.popup-foot>button:only-child{background:#e5bb6c;color:#234438;border-color:#d8b061;font-size:14px;font-weight:900}
+dialog.travel-dialog .menu-context{grid-area:context;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:30px 24px;box-sizing:border-box;min-height:430px;background:#123d35;color:#fff4dc;border-right:1px solid #40735b}
+.menu-brand{position:relative;z-index:2;font-size:10px;letter-spacing:1.7px;line-height:1.6;color:#bcd4bf}.menu-brand b{font-size:49px;line-height:1.05;font-weight:900;letter-spacing:-2px;color:#f2cf87}
+dialog.travel-dialog .menu-context>p{position:relative;z-index:2;color:#f5ead3;font-size:20px;line-height:1.3;font-weight:800;margin:35px 0 20px}
+.menu-context-clock{position:relative;z-index:2;color:#b7cdb9;letter-spacing:1px;font-size:11px}
+.menu-city-art{height:190px;position:relative;margin:25px -10px 0;flex:1;min-height:80px;background:radial-gradient(ellipse at 50% 90%,#427e5855,transparent 70%)}
+.menu-city-art i{position:absolute;bottom:0;width:32px;height:95px;background:linear-gradient(90deg,#2d6950,#417c5a);border-top:3px solid #d0b573;border-radius:4px 4px 0 0;box-shadow:inset -9px 0 0 #123d3525}
+.menu-city-art i::after{content:'';position:absolute;inset:12px 8px;background:repeating-linear-gradient(0deg,transparent 0 11px,#d9bf7460 11px 16px)}
+.menu-city-art i:nth-child(1){left:0;height:65px}.menu-city-art i:nth-child(2){left:37px;height:128px;width:39px}.menu-city-art i:nth-child(3){left:80px;height:175px;width:41px}.menu-city-art i:nth-child(4){left:126px;height:106px}.menu-city-art i:nth-child(5){left:163px;height:50px}.menu-city-art span{position:absolute;right:0;top:12px;font-size:38px;color:#dbba6d}
+dialog.citizen-puzzle-dialog[data-mode=puzzle]>.menu-context{display:none}
+@media(max-width:1100px){#app .respo-console{width:245px;padding:17px}#app .respo-console .player-name{font-size:20px}#app .city-wallet-strip{left:48%;padding:10px 4px}#app .city-wallet-strip .game-wallet{padding:0 10px}#app .game-clock{width:205px}}
+@media(max-width:980px) and (min-width:761px){#app .respo-console{position:fixed;top:auto;bottom:106px;left:20px}#app .city-wallet-strip{left:0;transform:none}}
+@media(max-width:760px){
+ #app header{inset:10px 10px auto}
+ #app .respo-console{position:fixed;left:10px;right:10px;top:auto;bottom:134px;width:auto;padding:12px;display:grid;grid-template-columns:70px minmax(0,1fr);gap:13px;border-radius:17px}
+ #app .console-caption{display:none}#app .respo-console .player-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:70px}
+ #app .respo-console .player-ring{width:42px;height:42px;padding:2px}#app .respo-console .player-name{font-size:13px;white-space:nowrap}#app .respo-console .player-info{max-width:70px}#app .respo-console .player-xp{font-size:8px;margin-top:3px;white-space:nowrap}#app .respo-console .player-xp-bar{margin-top:4px;height:3px}
+ #app .respo-vitals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0;border:0;min-width:0}
+ #app .respo-vitals .game-wallet{display:block;padding:0;min-width:0;width:100%}#app .respo-vitals .game-wallet>img,#app .respo-vitals .mood-icon{display:none}
+ #app .respo-vitals .game-wallet-amount{font-size:20px;white-space:nowrap}#app .respo-vitals .game-wallet-label{font-size:9px;letter-spacing:1px}
+ #app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{padding:2px 5px;min-height:24px;font-size:9px;margin-top:5px}
+ #app .city-wallet-strip{left:0;top:0;transform:none;padding:9px 4px;border-radius:12px;max-width:calc(100vw - 140px);box-sizing:border-box}
+ #app .city-wallet-strip .game-wallet{padding:0 8px;gap:0;display:block;min-width:0}#app .city-wallet-strip .game-wallet>img{display:none}
+ #app .city-wallet-strip .game-wallet-amount{font-size:19px}#app .city-wallet-strip .game-wallet-label{font-size:9px;letter-spacing:.4px}#app .city-wallet-strip #bills-open{font-size:9px;min-height:18px;margin-top:3px}
+ #app .game-clock{width:121px;padding:9px 10px;border-radius:12px;grid-template-areas:'time time' 'day week' 'wait wait';gap:3px 5px;grid-template-columns:auto 1fr}
+ #app .game-clock-time{font-size:28px}#app .game-clock-day{font-size:10px}#app .game-clock-week{font-size:8px;flex-wrap:wrap;gap:2px}#app .clock-wait-button{min-height:27px;font-size:10px;margin-top:3px}
+ #app #ui-menu-toggle{top:113px;right:0;min-height:36px;font-size:12px;border-radius:8px;padding:0 12px}
+ #app .header-actions{top:157px;width:210px;box-sizing:border-box}#app .header-actions button,#app .header-actions #help{width:100%;font-size:13px;min-height:42px}
+ #app footer{left:10px;right:10px;bottom:10px;gap:6px;flex-direction:column;align-items:stretch}
+ #app #places-toggle{height:46px;max-width:none;width:100%;border-radius:12px}#app #view-name{font-size:13px}#app .places-text small{font-size:8px}
+ #app .tools{padding:5px;gap:2px;border-radius:12px;justify-content:space-between}#app .tools button{height:44px;min-width:0;flex:1;padding:4px 3px;font-size:17px}#app .tools #missions-open{min-width:72px;flex:1.2;font-size:11px}#app .tools button span,#app .tools button[data-label]::after{font-size:9px}
+ dialog.travel-dialog:not([data-mode=puzzle]){width:calc(100vw - 16px);max-height:calc(100dvh - 16px);border-radius:16px}
+ dialog.travel-dialog:not([data-mode=puzzle])[open]{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:'context' 'head' 'body' 'foot'}
+ dialog.travel-dialog .menu-context{min-height:0;display:flex;flex-direction:row;align-items:center;padding:10px 17px;border-right:0;border-bottom:1px solid #3e6a50}
+ .menu-brand{font-size:7px;letter-spacing:1px;line-height:1.1}.menu-brand br{display:none}.menu-brand b{font-size:22px;letter-spacing:-.5px;margin-left:7px}
+ dialog.travel-dialog .menu-context>p,.menu-city-art{display:none}.menu-context-clock{font-size:10px}
+ dialog.travel-dialog:not([data-mode=puzzle])>.popup-head{padding:18px 55px 16px 18px}dialog.travel-dialog:not([data-mode=puzzle])>.popup-head h2{font-size:25px;letter-spacing:-.5px}
+ dialog.travel-dialog:not([data-mode=puzzle])>.popup-head .travel-close{top:17px;right:15px;width:32px;height:32px}
+ dialog.travel-dialog:not([data-mode=puzzle])>.popup-body{padding:2px 18px 19px}dialog.travel-dialog:not([data-mode=puzzle])>.popup-foot{padding:12px 14px}
+}
+@media(max-width:350px){#app .respo-console{grid-template-columns:58px minmax(0,1fr);gap:9px;padding:11px}#app .respo-console .player-card{width:58px}#app .respo-console .player-info{max-width:58px}#app .respo-console .player-name{font-size:11px}#app .respo-vitals{gap:8px}#app .respo-vitals .game-wallet-amount{font-size:18px}#app .city-wallet-strip .game-wallet-amount{font-size:17px}#app .city-wallet-strip .game-wallet{padding:0 6px}#app .city-wallet-strip .game-wallet-label{font-size:8px}}
+@media(max-height:480px) and (min-width:761px){#app header{inset:8px 12px auto}#app .respo-console{top:auto;bottom:83px;left:12px;width:245px;padding:10px;display:grid;grid-template-columns:62px 1fr;gap:12px}.console-caption{display:none!important}#app .respo-console .player-card{flex-direction:column;align-items:start;gap:4px}#app .respo-console .player-ring{width:35px;height:35px}#app .respo-console .player-name{font-size:11px}#app .respo-console .player-xp{font-size:7px}#app .respo-console .player-xp-bar{margin-top:3px}#app .respo-console .player-info{display:block;max-width:62px}#app .respo-vitals{margin:0;border:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}#app .respo-vitals .game-wallet{display:block;padding:0}#app .respo-vitals .game-wallet>img,#app .respo-vitals .mood-icon{display:none}#app .respo-vitals .game-wallet-amount{font-size:17px}#app .respo-vitals .game-wallet-label{font-size:8px}#app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{font-size:8px;padding:2px 4px;min-height:20px}#app .city-wallet-strip{left:0;transform:none;padding:7px}#app .city-wallet-strip .game-wallet-amount{font-size:18px}#app .game-clock{width:195px;padding:7px 12px}#app .game-clock-time{font-size:26px}#app #ui-menu-toggle{top:99px;min-height:32px}#app .header-actions{top:138px}#app footer{bottom:8px}#app .tools button{height:42px}dialog.travel-dialog:not([data-mode=puzzle]){max-height:calc(100dvh - 16px)}dialog.travel-dialog .menu-context{min-height:0}.menu-city-art{min-height:20px}.menu-brand b{font-size:38px}}
+
+/* Les anciens grid-area ne doivent pas créer de pistes implicites dans la nouvelle console. */
+#app .respo-console .player-card{grid-area:auto}
+#app .respo-console .respo-vitals{grid-area:auto}
+#app .resource-stats .respo-vitals :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:0;max-width:100%}
+#app .respo-vitals .game-wallet{min-width:0}
+#app .game-clock #game-period{color:#7e6737}
+@media(max-width:760px){
+ #app .city-wallet-strip{width:calc(100vw - 154px);max-width:none}
+ #app .city-wallet-strip .game-wallet:first-child{flex:1.8;min-width:0}
+ #app .city-wallet-strip .game-wallet:last-child{flex:1;min-width:0}
+ #app .respo-console .player-card{grid-column:1;grid-row:1}
+ #app .respo-console .respo-vitals{grid-column:2;grid-row:1}
+ #app .game-clock{grid-template-columns:1fr;grid-template-areas:'time' 'day' 'week' 'wait';row-gap:2px;text-align:center}
+ #app .game-clock-week{justify-content:center;flex-wrap:nowrap;white-space:nowrap}
+ #app #ui-menu-toggle{top:124px}
+ #app .header-actions{top:167px}
+}
+
+/* Les ressources restent lisibles : aucun flou derrière les menus, rappel de valeurs dans leur en-tête. */
+dialog.travel-dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#0b2e343d}
+dialog.travel-dialog:not([data-mode=puzzle])>.popup-head{flex-wrap:wrap}
+dialog.travel-dialog .popup-stats{display:flex;flex-basis:100%;gap:16px;padding-top:13px;margin-top:5px;border-top:1px solid #d6dccb;justify-content:space-between;color:#536c59}
+dialog.travel-dialog .popup-stats>span{display:flex;flex-direction:column;gap:3px;font-size:9px;letter-spacing:.5px;font-weight:700}
+dialog.travel-dialog .popup-stats b{font-size:14px;letter-spacing:-.2px;color:#234438;white-space:nowrap;font-variant-numeric:tabular-nums}
+dialog.citizen-puzzle-dialog[data-mode=puzzle] .popup-stats{display:none}
+@media(max-width:760px){dialog.travel-dialog .popup-stats{gap:8px;padding-top:10px}dialog.travel-dialog .popup-stats b{font-size:12px}dialog.travel-dialog .popup-stats>span{font-size:8px}}

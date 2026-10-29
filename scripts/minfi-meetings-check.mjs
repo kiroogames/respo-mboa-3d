@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
+const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),money=await import('../src/currency.ts'),busy=await import('../src/guided-outing-state.ts'),bag=await import('../src/food-bag.ts'),wait=await import('../src/waiting.ts')
+let m=await import('../src/minfi-meetings.ts')
+const ctx=(zone='ministry',extra={})=>({zone,travelling:false,allowed:true,...extra}),at=time=>c.advanceGameTime(time-c.getGameTime().totalMinutes)
+const act=id=>m.confirmMeeting(m.prepareMeeting(id).token,ctx())
+for(let day=0;day<14;day++)for(const minute of [0,479,480,929,930,959,960,1439]){const s=m.getMeetingSchedule(day*1440+minute);assert.equal(s.open,day%7<5&&minute>=480&&minute<960);assert.ok(s.next.totalMinutes>day*1440+minute);assert.equal(!!s.topic,day%7<5)}
+for(const invalid of [-1,NaN,Infinity,.5])assert.throws(()=>m.getMeetingSchedule(invalid));assert.throws(()=>m.prepareMeeting('bad'))
+const original={money:money.getMoneyBalance(),mood:r.getPlayerResources().mood,karma:r.getPlayerResources().karma}
+for(const bad of [ctx('home'),ctx('ministry',{travelling:true}),ctx('ministry',{allowed:false})])assert.equal(m.confirmMeeting(m.prepareMeeting('participate').token,bad).ok,false)
+let q=m.prepareMeeting('participate');m.cancelMeeting(q.token);assert.equal(m.confirmMeeting(q.token,ctx()).ok,false)
+q=m.prepareMeeting('participate');r.spendEnergy(1);assert.equal(m.confirmMeeting(q.token,ctx()).ok,false);r.restoreEnergy(1)
+q=m.prepareMeeting('participate');r.changeRespoPoints(185);assert.equal(m.confirmMeeting(q.token,ctx()).ok,false)
+r.spendEnergy(100);assert.match(m.previewMeeting('participate').reason,/Énergie/);assert.equal(act('participate').ok,false);r.restoreEnergy(100)
+q=m.prepareMeeting('participate');q.option.respo=900;q.option.energy=0;q.option.minutes=0
+let reentrant=false;const unsub=r.onPlayerResourcesChange(()=>{if(!reentrant){reentrant=true;assert.equal(act('report').ok,false)}})
+assert.equal(m.confirmMeeting(q.token,ctx()).ok,true);unsub();assert.equal(m.confirmMeeting(q.token,ctx()).ok,false)
+assert.equal(r.getPlayerResources().energy,90);assert.equal(r.getPlayerResources().ptRespo,190);assert.equal(c.getGameTime().totalMinutes,510);assert.equal(m.getMeetingSchedule().consumed,true);assert.equal(act('report').ok,false)
+m=await import('../src/minfi-meetings.ts?reload');assert.equal(m.getMeetingSchedule().consumed,true);assert.equal(act('report').ok,false);assert.equal(r.getPlayerResources().ptRespo,190)
+at(1440+930);assert.match(m.previewMeeting('report').reason,/16h/);assert.equal(act('participate').ok,true);assert.equal(c.getGameTime().totalMinutes,1440+960)
+at(2*1440+900);assert.equal(m.previewMeeting('report').reason,'');assert.equal(act('report').ok,true);assert.equal(c.getGameTime().totalMinutes,2*1440+960);assert.equal(r.getPlayerResources().ptRespo,207)
+at(3*1440+480);money.addMoney(250);assert.equal(bag.confirmFoodBag(bag.prepareFoodBag('buy','meal',ctx('market')).token,ctx('market')).ok,true);at(3*1440+840)
+const w=wait.prepareWaiting(10);assert.equal(wait.confirmWaiting(w.id,true).ok,true);assert.equal(wait.getContinuousWaiting(),10);assert.equal(act('report').ok,true);assert.equal(wait.getContinuousWaiting(),0);assert.equal(bag.getFoodBag().item.expired,true)
+at(4*1440+480);q=m.prepareMeeting('participate');busy.setGuidedPresentation({npcId:'bae',phase:'outbound',mode:'walk',origin:'home',destination:'club',zone:null,travelling:true,progress:0});assert.equal(m.confirmMeeting(q.token,ctx()).ok,false);busy.setGuidedPresentation(null)
+assert.equal(act('participate').ok,true)
+at(5*1440+480);assert.equal(act('participate').ok,false);assert.equal(m.getMeetingSchedule().next.totalMinutes,7*1440+480)
+at(7*1440+480);r.restoreEnergy(100);q=m.prepareMeeting('report');c.advanceGameTime(5);assert.equal(m.confirmMeeting(q.token,ctx()).ok,false);assert.equal(act('report').ok,true)
+assert.equal(money.getMoneyBalance(),original.money);assert.equal(r.getPlayerResources().mood,original.mood);assert.equal(r.getPlayerResources().karma,original.karma)
+store.set('mboa-minfi-meetings-v1',JSON.stringify({version:1,day:70}));m=await import('../src/minfi-meetings.ts?future');assert.equal(m.getMeetingSchedule().consumed,false)
+store.set('mboa-minfi-meetings-v1','broken');m=await import('../src/minfi-meetings.ts?bad');assert.equal(m.getMeetingSchedule().consumed,false)
+r.changeRespoPoints(Number.MAX_SAFE_INTEGER-r.getPlayerResources().ptRespo);assert.match(m.previewMeeting('report').reason,/limite/);assert.equal(act('report').ok,false)
+console.log('MINFI hours/weekends/agenda, both options, cancellation/context/stale/forged/double/reentrant guards, daily shared limit/reload/week renewal, exact16, level gain, bag expiry, wait reset, guided lock, unchanged economy and corrupt/overflow saves passed')

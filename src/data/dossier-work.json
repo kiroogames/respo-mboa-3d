@@ -1,0 +1,18 @@
+{
+  "zone": "ministry",
+  "openingHour": 7,
+  "closingHour": 23,
+  "refillHours": 3,
+  "batchSize": 5,
+  "energyCost": 20,
+  "minutes": 60,
+  "moneyGain": 500,
+  "respoGain": 5,
+  "titles": [
+    "Demande d’attestation",
+    "Autorisation de commerce",
+    "Bordereau de livraison",
+    "Ordre de mission",
+    "Dossier de marché public"
+  ]
+}

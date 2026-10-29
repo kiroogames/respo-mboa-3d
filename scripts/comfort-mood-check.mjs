@@ -1,0 +1,30 @@
+// Les sauts de date des fixtures représentent une période reposée ; les activités testées restent en temps normal.
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
+const r=await import('../src/player-resources.ts'),h=await import('../src/home-comfort.ts'),e=await import('../src/comfort-mood.ts'),m=await import('../src/currency.ts'),n=await import('../src/npc-relationships.ts'),c=await import('../src/game-clock.ts'),w=await import('../src/waiting.ts'),s=await import('../src/sleeping.ts'),food=await import('../src/home-meals.ts'),v=await import('../src/venue-services.ts')
+for(const [score,bonus] of [[0,0],[79,0],[80,5],[149,5],[150,10],[229,10],[230,15],[299,15],[300,20]])assert.equal(e.getComfortMoodEffect(score).bonus,bonus)
+assert.throws(()=>e.getComfortMoodEffect(-1));assert.throws(()=>r.previewMoodChange(NaN))
+const context={zone:'home',travelling:false,allowed:true},equip=(id,action='equip')=>h.confirmHomeEquipment(h.prepareHomeEquipment(id,action,context).token,context)
+r.setMood(90);m.addMoney(50000);assert.equal(r.getPlayerResources().mood,90)
+equip('bed-comfort','buy');assert.equal(r.getMoodDetails().bonus,0);equip('bed-comfort');assert.equal(r.getMoodDetails().bonus,5);assert.equal(r.getPlayerResources().mood,95)
+for(let i=0;i<3;i++){equip('bed-base');equip('bed-comfort')}
+assert.equal(r.getMoodDetails().base,90);assert.equal(r.getPlayerResources().mood,95);assert.equal(JSON.parse(store.get('mboa-player-resources-v1')).mood,90)
+let q=s.prepareSleeping(60);assert.equal(q.moodGain,1);s.confirmSleeping(q.id,context);assert.equal(r.getMoodDetails().base,91);assert.equal(r.getPlayerResources().mood,96)
+q=w.prepareWaiting(360);assert.equal(q.moodLoss,15);w.confirmWaiting(q.id,true);assert.equal(r.getMoodDetails().base,76);assert.equal(r.getPlayerResources().mood,81)
+equip('sofa-comfort','buy');equip('sofa-comfort');for(const id of ['kitchen','bathroom','television']){n.acceptNPCRequest(id);n.purchaseNPCImprovement(id)}
+assert.equal(h.getHomeComfort().total,300);assert.equal(r.getMoodDetails().bonus,20);assert.equal(r.getPlayerResources().mood,96)
+r.setMood(130);assert.equal(r.getPlayerResources().mood,140)
+q=w.prepareWaiting(30);assert.equal(q.penalty,5);assert.equal(q.moodLoss,0);w.confirmWaiting(q.id,true);assert.equal(r.getMoodDetails().base,125);assert.equal(r.getPlayerResources().mood,140)
+q=w.prepareWaiting(10);r.changeMood(1);assert.equal(w.confirmWaiting(q.id,true).ok,false)
+r.setMood(130);q=s.prepareSleeping(480);assert.equal(q.moodGain,0);s.confirmSleeping(q.id,context);assert.equal(r.getMoodDetails().base,140);assert.equal(r.getPlayerResources().mood,140)
+c.advanceGameTime(2*1440+1080-c.getGameTime().totalMinutes,'sleep');r.setMood(125)
+q=food.prepareHomeMeal('rice');assert.equal(q.moodGain,0);assert.equal(food.confirmHomeMeal(q.id,context).ok,true);assert.equal(r.getMoodDetails().base,131)
+r.setMood(130);assert.equal(r.previewMoodChange(-20).delta,-10);const ground=v.useVenueService('sleep-on-ground','home');assert.equal(ground.mood,-10);assert.equal(r.getMoodDetails().base,110);assert.equal(r.getPlayerResources().mood,130)
+r.setMood(119);assert.equal(r.previewMoodChange(3).delta,1);assert.equal(v.useVenueService('home-rest','home').mood,1);assert.equal(r.getMoodDetails().base,122);assert.equal(r.getPlayerResources().mood,140)
+r.setMood(130);q=s.prepareSleeping(60);r.changeMood(1);assert.equal(s.confirmSleeping(q.id,context).ok,false)
+q=food.prepareHomeMeal('porridge');r.changeMood(1);assert.equal(food.confirmHomeMeal(q.id,context).ok,false)
+r.setMood(0);assert.equal(r.getPlayerResources().mood,20);const bank=m.getMoneyBalance();equip('sofa-base');assert.equal(r.getPlayerResources().mood,15);equip('bed-base');assert.equal(r.getPlayerResources().mood,10);assert.equal(m.getMoneyBalance(),bank)
+r.setMood(90);const loaded=await import('../src/player-resources.ts?reload');assert.equal(loaded.getMoodDetails().base,90);assert.equal(loaded.getPlayerResources().mood,100);loaded.changeMood(0);assert.equal(JSON.parse(store.get('mboa-player-resources-v1')).mood,90)
+const twice=await import('../src/player-resources.ts?again');assert.equal(twice.getPlayerResources().mood,100)
+assert.equal(r.getPlayerResources().maxEnergy,100);assert.equal(r.getPlayerResources().karma,0);assert.equal(r.getPlayerResources().ptRespo,0);assert.equal(n.getConsideration('bae'),50)
+console.log('Comfort mood tiers, base/display separation, no equip/reload stacking, cap/floor, nominal versus visible waiting/sleep/meal/service deltas, hidden-base stale guards, legacy persistence and unchanged other stats passed')

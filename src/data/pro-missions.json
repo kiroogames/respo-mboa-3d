@@ -1,0 +1,11 @@
+{
+ "energyCost":20,"minutes":45,"moneyGain":1000,"respoGain":15,
+ "missions":[
+  {"id":"anneke-market","giver":"anneke","giverName":"Mme Anneke","days":[0,2,4],"title":"Relevé technique du marché","zone":"market","objective":"Vérifier les installations et consigner le relevé technique du marché."},
+  {"id":"anneke-tekno","giver":"anneke","giverName":"Mme Anneke","days":[0,2,4],"title":"Contrôle du matériel informatique","zone":"tekno","objective":"Contrôler les références du matériel chez Tekno shop."},
+  {"id":"anneke-school","giver":"anneke","giverName":"Mme Anneke","days":[0,2,4],"title":"Inspection du complexe scolaire","zone":"education","objective":"Relever l’état des installations du complexe scolaire."},
+  {"id":"kako-airport","giver":"kako","giverName":"Kako Djaraba","days":[1,3],"title":"Pièces de livraison à Nsimaport","zone":"airport","objective":"Vérifier les pièces administratives d’une livraison à Nsimaport."},
+  {"id":"kako-shop","giver":"kako","giverName":"Kako Djaraba","days":[1,3],"title":"Inventaire du supermarché","zone":"supermarket","objective":"Comparer les références d’un inventaire avec les pièces fournies."},
+  {"id":"kako-market","giver":"kako","giverName":"Kako Djaraba","days":[1,3],"title":"Bordereaux des commerçants","zone":"market","objective":"Vérifier les bordereaux de marchandises déposés au marché."}
+ ]
+}

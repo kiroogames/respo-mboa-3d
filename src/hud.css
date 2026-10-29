@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap');
+/* HUD de jeu Mboa : cartes en relief, une couleur par ressource, jauges vivantes, horloge selon l'heure.
+   Préfixe #app : passe devant style.css et les feuilles des modules. */
+
+#app{font-family:Nunito,'Segoe UI',system-ui,sans-serif;--ink:#173326;--muted:#5f7062;--brand:#24503d;--brand2:#2f6c50;--gold:#f0c46a;--card:#fffdf7;--chunk:0 4px 0 #17332629,0 16px 30px -14px #0d2a1fa6;--display:'Baloo 2',Nunito,'Segoe UI',system-ui,sans-serif}
+
+/* ---------- Disposition du haut ---------- */
+#app header{top:14px;left:16px;right:16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"player stats clock" ". . actions";align-items:start;column-gap:14px;row-gap:10px}
+#app .header-right,#app .hud-stats{display:contents}
+#app .brand{display:none}
+
+/* ---------- Carte du Respo ---------- */
+#app .player-card{grid-area:player;position:relative;display:flex;align-items:center;gap:12px;padding:7px 20px 7px 7px;border:2px solid #fff;border-radius:48px 24px 24px 48px;background:var(--card);box-shadow:var(--chunk);pointer-events:auto}
+#app .player-ring{position:relative;flex:none;width:70px;height:70px;padding:5px;border-radius:50%;background:conic-gradient(#f0b02f calc(var(--xp,0) * 1turn),#e4e7dd 0);transition:background .6s}
+#app .player-photo{display:block;width:100%;height:100%;overflow:hidden;border:3px solid #fff;border-radius:50%;background:radial-gradient(circle at 50% 30%,#ffe9bd,#efbd73)}
+#app .player-photo img{display:block;width:100%;height:100%;object-fit:contain;transform:rotate(-90deg) scale(1.18)}
+#app .player-level{position:absolute;right:-7px;bottom:-5px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:32px;height:32px;border:2px solid #fff;border-radius:50%;background:linear-gradient(180deg,#3a8a60,#1f4a37);color:#fff;box-shadow:0 3px 0 #0f2a1f59}
+#app .player-level small{font-size:6px;font-weight:900;letter-spacing:.6px;line-height:1;color:var(--gold)}
+#app .player-level b{font:800 15px/1 var(--display)}
+#app .player-info{display:flex;flex-direction:column;min-width:138px}
+#app .player-name{font:800 21px/1.05 var(--display);color:var(--ink)}
+#app .player-xp{margin-top:2px;font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+#app .player-xp b{color:var(--brand2);font-weight:900}
+#app .player-xp-bar{height:7px;margin-top:5px;overflow:hidden;border-radius:7px;background:#e7ebe1;box-shadow:inset 0 1px 2px #0000001a}
+#app .player-xp-bar i{display:block;width:calc(var(--xp,0) * 100%);min-width:7px;height:100%;border-radius:7px;background:linear-gradient(90deg,#f8d77f,#e8a52a);transition:width .6s}
+
+/* ---------- Ressources : une carte par ressource, une couleur chacune ---------- */
+#app .resource-stats{grid-area:stats;justify-self:center;position:static;display:flex;flex-direction:row;align-items:stretch;width:auto;max-width:100%;gap:10px;padding:0;border:0;background:none;box-shadow:none;backdrop-filter:none}
+#app #respo-counter{display:none}
+#app .resource-stats .game-wallet{--well:#e6f4ea;--accent:#2b7a4b;--g1:#7fd39a;--g2:#2f9a5a;position:relative;inset:auto;display:flex;align-items:center;gap:11px;width:auto;min-width:0;max-width:none;margin:0;padding:7px 16px 7px 7px;border:2px solid #fff;border-radius:22px;background:var(--card);box-shadow:var(--chunk);backdrop-filter:none}
+#app .resource-stats #karma-counter{--well:#f1e8fb;--accent:#7a4cb8}
+#app .resource-stats #energy-counter{--well:#fff2c4;--accent:#b97c00;--g1:#ffd95e;--g2:#f09a00}
+#app .resource-stats #mood-counter{--well:#ffe7d4;--accent:#cf5b17;--g1:#ffbb6e;--g2:#ee6b26}
+#app .resource-stats #mood-counter[data-level=low]{--g1:#f19484;--g2:#c9372a}
+#app .resource-stats .game-wallet>img{flex:none;width:50px;height:50px;margin:0;padding:8px;border-radius:17px;background:var(--well);object-fit:contain;box-shadow:inset 0 -3px 0 #0000000f;filter:none}
+#app .resource-stats .mood-icon{flex:none;width:50px;height:50px;margin:0;border-radius:17px;background-color:var(--well);box-shadow:inset 0 -3px 0 #0000000f}
+#app .resource-stats .game-wallet-details{display:flex;flex-direction:column;min-width:0}
+#app .resource-stats :is(.wallet-heading,.mood-heading){display:flex;align-items:center;gap:6px;white-space:nowrap}
+#app .resource-stats .game-wallet-label{font-size:10px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:var(--accent)}
+#app .resource-stats .game-wallet-amount{display:block;margin:1px 0 0;font:800 25px/1 var(--display);letter-spacing:-.2px;color:var(--ink);white-space:nowrap;overflow:visible;max-width:none}
+#app .resource-stats .mood-label{margin:2px 0 0;font-size:11px;font-weight:800;color:var(--muted)}
+/* Jauges : énergie et humeur se lisent d'un coup d'œil. */
+#app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:118px}
+#app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details::after{content:'';order:5;display:block;height:8px;margin-top:6px;border-radius:8px;background:linear-gradient(90deg,var(--g1),var(--g2)) 0 0/calc(var(--fill,1) * 100%) 100% no-repeat,#efe9da;box-shadow:inset 0 1px 2px #0000001f;transition:background-size .6s}
+#app .resource-stats #mood-counter .mood-label{order:6}
+/* Accès rapides : factures, effets, état. */
+#app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open){pointer-events:auto;display:inline-flex;align-items:center;height:20px;margin:0;padding:0 8px;border:0;border-radius:999px;background:var(--well);color:var(--accent);font:900 10px/1 Nunito,'Segoe UI',system-ui,sans-serif;cursor:pointer;box-shadow:inset 0 -2px 0 #0000000f;transition:background .15s,color .15s,transform .15s}
+#app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open):hover:not(:disabled){background:var(--accent);color:#fff;transform:translateY(-1px)}
+#app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open):disabled{opacity:.45;cursor:default}
+#app .resource-stats #energy-effects-open{position:absolute;top:8px;right:10px}
+#app .resource-stats #energy-counter .game-wallet-details{padding-right:34px}
+#app .resource-stats #bills-open[data-budget=insufficient]{background:#fde1d8;color:#a33a26}
+#app .resource-stats #bills-open[data-budget=tight]{background:#fff0c9;color:#8a5a0a}
+#app .resource-stats .house-budget-indicator{align-self:flex-start;margin-top:4px;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:900}
+#app .resource-stats .energy-change{top:-10px;right:-6px;font-family:var(--display)}
+#app .resource-stats .energy-gained{box-shadow:0 0 0 3px #f6c94a,var(--chunk)}
+#app .hud-bump{animation:hud-bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes hud-bump{35%{transform:translateY(-4px) scale(1.04)}}
+
+/* ---------- Horloge : le ciel suit l'heure du jeu ---------- */
+#app .game-clock{grid-area:clock;position:relative;overflow:hidden;display:grid;grid-template-columns:auto auto;grid-template-areas:"time day" "time week" "wait wait";align-items:center;column-gap:14px;min-width:0;padding:12px 16px;border:2px solid #ffffff4d;border-radius:24px;color:#fff9e8;background:linear-gradient(160deg,#2f7d5a,#1b4734);box-shadow:0 4px 0 #0b241a73,0 16px 30px -14px #0d2a1fa6;transition:background .8s}
+#app .game-clock[data-period=Aube]{background:linear-gradient(160deg,#ef9a62,#8a4f6e)}
+#app .game-clock[data-period=Crépuscule]{background:linear-gradient(160deg,#e07448,#5d3762)}
+#app .game-clock[data-period=Nuit]{background:linear-gradient(160deg,#2c3b6e,#111a36)}
+#app .game-clock::before{content:'';position:absolute;right:-18px;top:-22px;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle,#ffe58f 0 34%,#ffe58f66 35% 52%,#ffe58f00 53%);box-shadow:0 0 30px 6px #ffe58f40;pointer-events:none;transition:all .8s}
+#app .game-clock[data-period=Aube]::before,#app .game-clock[data-period=Crépuscule]::before{top:auto;bottom:-40px;right:-6px;background:radial-gradient(circle,#ffc773 0 34%,#ffc77366 35% 52%,#ffc77300 53%)}
+#app .game-clock[data-period=Nuit]::before{top:-6px;right:8px;width:34px;height:34px;background:transparent;box-shadow:10px -6px 0 0 #fff1c4,0 0 0 0 transparent;transform:rotate(-20deg)}
+#app .game-clock>*{position:relative}
+#app .game-clock-time{grid-area:time;font:800 38px/1 var(--display);letter-spacing:.5px;text-shadow:0 2px 0 #0003}
+#app .game-clock-day{grid-area:day;align-self:end;margin:0;font-size:15px;font-weight:900}
+#app .game-clock-week{grid-area:week;align-self:start;justify-content:flex-start;margin:2px 0 0;font-size:10px;font-weight:800;color:var(--gold)}
+#app .clock-wait-button{grid-area:wait;margin-top:10px;min-height:34px;border:0;border-radius:13px;background:#fffdf7;color:var(--brand);font:900 12px/1 Nunito,'Segoe UI',system-ui,sans-serif;box-shadow:0 3px 0 #0b241a59;transition:transform .12s,box-shadow .12s}
+#app .clock-wait-button:hover:not(:disabled){transform:translateY(-1px)}
+#app .clock-wait-button:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #0b241a59}
+#app .clock-wait-button:disabled{background:#ffffff26;color:#ffffffa6;box-shadow:none}
+
+/* ---------- Raccourcis du haut ---------- */
+#app .header-actions{grid-area:actions;justify-self:end;position:static;display:flex;gap:7px;margin:0}
+#app .header-actions .edition{display:none}
+#app .header-actions button{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:2px solid #fff;border-radius:14px;background:var(--card);color:var(--brand);font:900 12px/1 Nunito,'Segoe UI',system-ui,sans-serif;box-shadow:var(--chunk);backdrop-filter:none;transition:transform .12s,box-shadow .12s}
+#app .header-actions button:hover:not(:disabled){transform:translateY(-2px)}
+#app .header-actions button:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #17332629}
+#app .header-actions button[aria-pressed=true]{background:var(--brand);color:#fff9e8}
+#app .header-actions #bag-open::before{content:'🎒';font-size:15px}
+#app .header-actions #help{width:40px;padding:0;justify-content:center;font-size:16px}
+#app .header-actions #bag-open:disabled{opacity:.6}
+#app #help-panel{top:144px;right:16px;padding:18px 20px;border:2px solid #fff;border-radius:20px;background:var(--card);box-shadow:var(--chunk);font-size:13px}
+#app #help-panel b{font:800 18px/1.2 var(--display);color:var(--ink)}
+
+/* ---------- Bas : sélecteur de lieu ---------- */
+#app footer{left:16px;right:16px;bottom:14px;display:flex;flex-direction:row;justify-content:space-between;align-items:flex-end;gap:12px}
+#app .place-picker{position:relative;min-width:0}
+#app #places-toggle{display:flex;align-items:center;gap:12px;height:62px;max-width:min(460px,calc(100vw - 470px));padding:0 18px 0 8px;border:2px solid #fff;border-radius:22px;background:var(--card);color:var(--ink);text-align:left;box-shadow:var(--chunk);transition:transform .12s,box-shadow .12s}
+#app #places-toggle:hover{transform:translateY(-2px)}
+#app #places-toggle:active{transform:translateY(2px);box-shadow:0 1px 0 #17332629}
+#app .places-pin{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:15px;background:linear-gradient(180deg,#3a8a60,#1f4a37);font-size:20px;box-shadow:inset 0 -3px 0 #0000002e}
+#app .places-text{display:flex;flex-direction:column;min-width:0}
+#app .places-text small{font-size:10px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:#a67a1f}
+#app #view-name{overflow:hidden;font:800 18px/1.15 var(--display);white-space:nowrap;text-overflow:ellipsis}
+#app .places-caret{flex:none;display:grid;place-items:center;width:26px;height:26px;margin-left:2px;border-radius:50%;background:#eef2e8;color:var(--brand2);font-size:11px;transition:transform .2s}
+#app #places-toggle[aria-expanded=true] .places-caret{transform:rotate(180deg)}
+#app .places{position:absolute;left:0;bottom:calc(100% + 12px);display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px;width:min(600px,calc(100vw - 32px));max-width:none;max-height:min(62vh,540px);overflow:auto;padding:16px;border:2px solid #fff;border-radius:26px;background:var(--card);box-shadow:0 4px 0 #17332629,0 30px 70px -20px #0d2a1fbf;animation:hud-pop .22s cubic-bezier(.2,.9,.3,1.15);transform-origin:bottom left}
+#app .places-title{grid-column:1/-1;margin:0 2px 4px;font:800 18px/1.2 var(--display);color:var(--ink)}
+#app .places button{min-height:44px;padding:9px 12px;border:0;border-radius:14px;background:#f2f4ec;color:var(--ink);text-align:left;font:800 13px/1.25 Nunito,'Segoe UI',system-ui,sans-serif;white-space:normal;box-shadow:inset 0 -3px 0 #1733260f;transition:background .15s,transform .12s}
+#app .places button:hover{background:#e3efd9;transform:translateY(-1px)}
+#app .places button.active{background:linear-gradient(180deg,#3a8a60,#1f4a37);color:#fffdf3;box-shadow:inset 0 -3px 0 #0000002e}
+@keyframes hud-pop{from{opacity:0;transform:translateY(10px) scale(.97)}}
+
+/* ---------- Bas : dock d'outils, icône et libellé ---------- */
+#app .tools{display:flex;align-items:stretch;gap:6px;padding:7px;border:2px solid #fff;border-radius:24px;background:var(--card);box-shadow:var(--chunk);backdrop-filter:none}
+#app .tools button{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:58px;min-width:62px;padding:6px 10px 5px;border:0;border-radius:17px;background:#f2f4ec;color:var(--brand);font:800 19px/1 Nunito,'Segoe UI',system-ui,sans-serif;box-shadow:inset 0 -3px 0 #17332614;backdrop-filter:none;transition:background .15s,transform .12s}
+#app .tools button:hover:not(:disabled){background:#e3efd9;transform:translateY(-1px);filter:none}
+#app .tools button:active:not(:disabled){transform:translateY(1px)}
+#app .tools button span,#app .tools button[data-label]::after{margin:0;font:900 10px/1 Nunito,'Segoe UI',system-ui,sans-serif;letter-spacing:.2px;color:var(--muted)}
+#app .tools button[data-label]::after{content:attr(data-label)}
+#app .tools button[aria-pressed=true]{background:linear-gradient(180deg,#3a8a60,#1f4a37);color:#fff;box-shadow:inset 0 -3px 0 #0000002e}
+#app .tools button[aria-pressed=true] span,#app .tools button[aria-pressed=true]::after{color:var(--gold)}
+#app .tools #missions-open{padding:6px 14px 5px;background:linear-gradient(180deg,#f6c74f,#e09a1c);color:#4a2d00;font-size:10px;font-weight:900;box-shadow:inset 0 -3px 0 #00000026}
+#app .tools #missions-open::before{content:'📋';font-size:19px;line-height:1}
+#app .tools #missions-open:hover:not(:disabled){background:linear-gradient(180deg,#f9d168,#e8a52a)}
+#app .tools #missions-open:disabled{background:#eceee6;color:#8a9387;box-shadow:none}
+
+/* Repères de la carte : même relief que le HUD. */
+#app .landmark{border:2px solid #fff;font-family:inherit;font-weight:800;background:var(--card);box-shadow:0 3px 0 #17332624,0 10px 20px -10px #0d2a1f99}
+
+/* ---------- Écran moyen ---------- */
+@media(max-width:1300px){
+ #app header{grid-template-areas:"player . clock" "stats stats actions"}
+ #app .resource-stats{justify-self:start;gap:8px}
+ #app .resource-stats .game-wallet{padding:6px 12px 6px 6px;gap:8px;border-radius:19px}
+ #app .resource-stats .game-wallet>img{width:40px;height:40px;padding:6px;border-radius:14px}
+ #app .resource-stats .mood-icon{width:40px;height:40px;border-radius:14px}
+ #app .resource-stats .game-wallet-amount{font-size:21px}
+ #app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:96px}
+ #app .header-actions{align-self:center}
+ #app #help-panel{top:176px}
+}
+@media(max-width:980px){
+ #app header{grid-template-areas:"player clock" "stats stats" "actions actions";grid-template-columns:minmax(0,1fr) auto}
+ #app .resource-stats{justify-self:stretch}
+ #app .resource-stats .game-wallet{flex:1 1 0}
+ #app #help-panel{top:auto;bottom:100px}
+}
+
+/* ---------- Téléphone ---------- */
+@media(max-width:760px){
+ #app header{top:8px;left:8px;right:8px;row-gap:7px;column-gap:7px}
+ #app .player-card{gap:8px;padding:5px 12px 5px 5px}
+ #app .player-ring{width:50px;height:50px;padding:4px}
+ #app .player-photo{border-width:2px}
+ #app .player-level{width:24px;height:24px;right:-6px;bottom:-4px}
+ #app .player-level small{display:none}
+ #app .player-level b{font-size:13px}
+ #app .player-info{min-width:0}
+ #app .player-name{font-size:16px}
+ #app .player-xp{font-size:10px}
+ #app .player-xp-bar{height:5px;margin-top:3px}
+ #app .resource-stats{gap:5px}
+ #app .resource-stats .game-wallet{flex-direction:column;align-items:stretch;gap:3px;padding:5px 6px 6px;border-radius:15px}
+ #app .resource-stats .game-wallet>img,#app .resource-stats .mood-icon{display:none}
+ #app .resource-stats .game-wallet-label{font-size:8px;letter-spacing:.5px}
+ #app .resource-stats .game-wallet-amount{font-size:17px}
+ #app .resource-stats .mood-label,#app .resource-stats .house-budget-indicator{display:none}
+ #app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:0}
+ #app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details::after{height:5px;margin-top:4px}
+ #app .resource-stats #energy-counter .game-wallet-details{padding-right:0}
+ #app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open){height:16px;padding:0 5px;font-size:8px}
+ #app .resource-stats #energy-effects-open{top:5px;right:5px}
+ #app .resource-stats :is(.wallet-heading,.mood-heading){gap:3px;flex-wrap:wrap}
+ #app .game-clock{padding:8px 11px;border-radius:18px;column-gap:9px}
+ #app .game-clock::before{transform:scale(.75)}
+ #app .game-clock-time{font-size:26px}
+ #app .game-clock-day{font-size:12px}
+ #app .game-clock-week{font-size:9px}
+ #app .clock-wait-button{margin-top:6px;min-height:27px;font-size:11px}
+ #app .header-actions{justify-self:end}
+ #app .header-actions button{height:32px;padding:0 10px;border-radius:11px;font-size:11px}
+ #app .header-actions #help{width:32px}
+ #app #help-panel{left:8px;right:8px;max-width:none;bottom:160px}
+ #app footer{left:8px;right:8px;bottom:8px;flex-direction:column-reverse;align-items:stretch;gap:7px}
+ #app .tools{align-self:stretch;justify-content:space-between;padding:5px;border-radius:20px}
+ #app .tools button{flex:1;min-width:0;height:50px;padding:5px 4px 4px;border-radius:14px;font-size:17px}
+ #app #places-toggle{width:100%;max-width:none;height:54px}
+ #app .places{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));max-height:52vh}
+ #app footer:has(#places-toggle[aria-expanded=true]) .tools{visibility:hidden}
+}
+@media(prefers-reduced-motion:reduce){#app .hud-bump,#app .places{animation:none}#app *{transition:none!important}}
+
+/* L’état peut être plus long que l’ancien bouton État : conserver une ligne dédiée. */
+#app .resource-stats #energy-counter #energy-effects-open{position:static;align-self:flex-start;order:3;height:auto;min-height:20px;max-width:100%;margin-top:4px;padding:3px 6px;white-space:normal;line-height:1.3;text-align:left}
+#app .resource-stats #energy-counter .game-wallet-details{padding-right:0}

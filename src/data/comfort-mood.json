@@ -1,0 +1,7 @@
+[
+ {"minimum":0,"bonus":0,"name":"Confort simple"},
+ {"minimum":80,"bonus":5,"name":"Un peu de confort"},
+ {"minimum":150,"bonus":10,"name":"Maison agréable"},
+ {"minimum":230,"bonus":15,"name":"Maison confortable"},
+ {"minimum":300,"bonus":20,"name":"Bien installé"}
+]

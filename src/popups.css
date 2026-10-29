@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap');
+/* Système commun des fenêtres du jeu.
+   Toutes les fenêtres partagent la même lecture : en-tête vert avec le titre, contenu qui défile,
+   actions fixées en bas. Les composants (choix, aperçu, alerte, résultat) ont une seule apparence
+   quel que soit l'écran, pour que le joueur reconnaisse immédiatement quoi faire.
+   Préfixe dialog.travel-dialog : passe devant les feuilles propres à chaque fenêtre. */
+
+:root{
+ --pp-ink:#173326;--pp-muted:#56685b;--pp-paper:#fffdf7;--pp-line:#e3e2d3;--pp-soft:#f2f5ee;
+ --pp-brand:#24503d;--pp-brand-2:#2f6c50;--pp-gold:#f0c46a;--pp-gold-soft:#fff6df;--pp-gold-line:#efdcaa;
+ --pp-ok:#24663a;--pp-ok-bg:#e9f4e3;--pp-ok-line:#c3dfb5;--pp-err:#992f1d;--pp-err-bg:#fdeee8;--pp-err-line:#f1c6b7
+}
+
+/* ---------- Coque ---------- */
+dialog.travel-dialog{width:min(500px,calc(100vw - 24px));max-width:none;max-height:min(780px,calc(100dvh - 24px));padding:0;border:0;border-radius:24px;background:var(--pp-paper);color:var(--pp-ink);overflow:hidden;box-shadow:0 32px 90px #03130d8c,0 0 0 1px #ffffff40;font-family:Nunito,'Segoe UI',system-ui,sans-serif}
+dialog.travel-dialog:is(.dossier-dialog,.bills-dialog,.missions-dialog,.comfort-dialog,.npc-dialogue-dialog){width:min(560px,calc(100vw - 24px))}
+dialog.travel-dialog[open]{display:flex;flex-direction:column;animation:popup-in .24s cubic-bezier(.2,.9,.3,1.1)}
+dialog.travel-dialog::backdrop{background:radial-gradient(circle at 50% 35%,#0d2a2066,#04120dd9);backdrop-filter:blur(5px)}
+@keyframes popup-in{from{opacity:0;transform:translateY(16px) scale(.97)}}
+
+/* ---------- En-tête ---------- */
+dialog.travel-dialog .popup-head{position:relative;flex:none;padding:22px 66px 20px 24px;background:radial-gradient(circle at 92% -30%,#f0c46a40,transparent 55%),linear-gradient(135deg,#1f4a37,#2f6c50);color:#fff9e8}
+dialog.travel-dialog .popup-head{display:flex;align-items:center;gap:15px}
+dialog.travel-dialog .popup-titles{min-width:0}
+dialog.travel-dialog .popup-icon{flex:none;display:grid;place-items:center;width:54px;height:54px;border:1.5px solid #f0c46a8c;border-radius:18px;background:linear-gradient(160deg,#ffffff2e,#ffffff0d);box-shadow:inset 0 1px 0 #ffffff40,0 6px 16px -6px #0006;font-size:28px;line-height:1;transform:rotate(-4deg)}
+dialog.travel-dialog .popup-head .travel-eyebrow{display:block;margin:0;font-size:10px;font-weight:700;letter-spacing:1.8px;line-height:1.4;color:var(--pp-gold)}
+dialog.travel-dialog .popup-head h2{margin:5px 0 0;padding:0;border:0;font-size:23px;line-height:1.2;font-weight:800;letter-spacing:-.3px;color:#fffdf3}
+dialog.travel-dialog .popup-head .travel-close{position:absolute;top:16px;right:16px;display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid #ffffff38;border-radius:50%;background:#ffffff1c;color:#fffdf3;font-size:20px;line-height:1;box-shadow:none;transition:background .15s,transform .15s}
+dialog.travel-dialog .popup-head .travel-close:hover{background:#ffffff38;transform:rotate(90deg)}
+dialog.travel-dialog .popup-head .dossier-heading{padding-right:0;gap:14px}
+dialog.travel-dialog .popup-head .dossier-emblem{border-color:var(--pp-gold);color:var(--pp-gold);background:#ffffff12}
+dialog.travel-dialog .popup-head .dossier-heading h2{margin-top:4px}
+dialog.travel-dialog .popup-head .npc-conversation-header{padding-right:0;gap:16px}
+dialog.travel-dialog .popup-head .npc-conversation-header img{border-radius:50%;background:#fff3dc;border:3px solid #ffffffb3;box-shadow:0 4px 14px #0003}
+dialog.travel-dialog .popup-head .npc-consideration{margin:6px 0 0;color:#fff2d4;font-size:13px}
+dialog.travel-dialog .popup-head .npc-consideration>span{color:#ff9fb5;font-size:20px}
+dialog.travel-dialog .popup-head .npc-consideration strong{margin-left:4px;color:var(--pp-gold);font-size:17px}
+
+/* ---------- Contenu ---------- */
+dialog.travel-dialog .popup-body{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;padding:20px 24px 24px;scrollbar-width:thin;scrollbar-color:#c9d3c3 transparent}
+dialog.travel-dialog .popup-body>*:first-child{margin-top:0}
+dialog.travel-dialog .popup-body>*+*{margin-top:14px}
+dialog.travel-dialog .popup-body>p{margin-bottom:0;font-size:14px;line-height:1.55;color:var(--pp-muted)}
+dialog.travel-dialog .popup-body h3{margin:0 0 10px;font-size:17px;line-height:1.3;color:var(--pp-ink)}
+dialog.travel-dialog .popup-body small{font-size:12px;line-height:1.5;color:#6c7b6d}
+dialog.travel-dialog .popup-body label:not(.wait-duration){display:block;margin:16px 0 7px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#4f6656}
+dialog.travel-dialog .popup-body :is(select,input[type=number],#meal-variant,#toque-amount,#comfort-room){display:block;margin:0;width:100%;min-height:46px;padding:0 14px;border:1.5px solid var(--pp-line);border-radius:12px;background:#fff;color:var(--pp-ink);font-size:15px;box-shadow:0 1px 2px #17332608;transition:border-color .15s,box-shadow .15s}
+dialog.travel-dialog .popup-body :is(select,input[type=number],#meal-variant,#toque-amount,#comfort-room):focus{outline:none;border-color:var(--pp-brand-2);box-shadow:0 0 0 4px #2f6c5026}
+dialog.travel-dialog .popup-body input[type=range]{accent-color:var(--pp-brand-2)}
+dialog.travel-dialog .popup-body progress{accent-color:var(--pp-brand-2)}
+
+/* Bandeau d'information : état du service, horaires, solde. */
+dialog.travel-dialog .popup-body :is(.meal-service,.meal-bae-status,.queue-service,.queue-status,.outing-schedule,.canteen-status,.meeting-status,.missions-summary,.dossier-economy,.bills-summary,.comfort-work,[data-bag-item]){margin-bottom:0;padding:13px 15px 13px 42px;position:relative;border:1px solid #dfe7d8;border-radius:14px;background:var(--pp-soft);color:#3a5243;font-size:13px;line-height:1.55}
+dialog.travel-dialog .popup-body :is(.meal-service,.meal-bae-status,.queue-service,.queue-status,.outing-schedule,.canteen-status,.meeting-status,.missions-summary,.comfort-work,[data-bag-item])::before{content:'i';position:absolute;left:14px;top:13px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#2f6c50;color:#fff;font:700 11px/1 Georgia,serif}
+dialog.travel-dialog .popup-body :is(.dossier-economy,.bills-summary){padding-left:15px}
+dialog.travel-dialog .popup-body :is(.meal-service,.meal-bae-status,.queue-service,.queue-status,.outing-schedule,.canteen-status,.meeting-status,.missions-summary,.comfort-work,[data-bag-item]):empty{display:none}
+
+/* Grands indicateurs : jauges et chiffres clés en tête de fenêtre. */
+dialog.travel-dialog .popup-body :is(.toque-progress,.comfort-score,.mood-effective,.wait-dates,.sleep-energy){border:1px solid #d3e3c9;border-radius:18px;background:linear-gradient(135deg,#f5f9f0,#e6f1de);box-shadow:inset 0 1px 0 #fff}
+dialog.travel-dialog .popup-body :is(.toque-progress,.comfort-score,.mood-effective,.sleep-energy) strong,dialog.travel-dialog .popup-body .wait-dates strong{color:var(--pp-brand)}
+
+/* ---------- Choix ---------- */
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue,#travel-options,#venue-services,.dossier-list,#npc-conversation-actions){display:grid;gap:10px;margin-left:0;margin-right:0}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue,#travel-options,#venue-services,.dossier-list,#npc-conversation-actions)>button,dialog.travel-dialog .popup-body .venue-person-service{position:relative;width:100%;min-height:58px;padding:14px 16px;border:1.5px solid var(--pp-line);border-radius:16px;background:#fff;color:var(--pp-ink);text-align:left;font:inherit;font-size:14px;line-height:1.4;box-shadow:0 1px 3px #1733260f;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s,background .15s}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue,#travel-options,#venue-services,.dossier-list,#npc-conversation-actions)>button:hover:not(:disabled),dialog.travel-dialog .popup-body .venue-person-service:hover:not(:disabled){border-color:#8fb796;background:#fbfdf8;box-shadow:0 10px 22px -12px #17332666;transform:translateY(-2px)}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue,#travel-options,#venue-services,.dossier-list,#npc-conversation-actions)>button:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 6px #17332620}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button[aria-pressed]{padding-right:46px}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button[aria-pressed]::after{content:'';position:absolute;top:14px;right:14px;width:20px;height:20px;border:2px solid #c8cfc2;border-radius:50%;background:#fff;box-sizing:border-box;transition:all .15s}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button[aria-pressed=true]{border-color:var(--pp-brand-2);background:#eef7ea;color:var(--pp-ink);box-shadow:0 0 0 4px #2f6c501f}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button[aria-pressed=true]::after{content:'✓';display:grid;place-items:center;border-color:var(--pp-brand-2);background:var(--pp-brand-2);color:#fff;font-size:12px;font-weight:900;line-height:1}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue,#travel-options,#venue-services,.dossier-list,#npc-conversation-actions)>button:disabled,dialog.travel-dialog .popup-body .venue-person-service:disabled{opacity:1;border-style:dashed;border-color:#cfd2c7;background:#f5f5f0;color:#7a8378;box-shadow:none;transform:none;cursor:not-allowed}
+dialog.travel-dialog .popup-body #venue-services>.dossier-launch{border-color:#e2c98a;background:linear-gradient(180deg,#fffaf0,#fff3d6)}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button b{font-size:15px;color:inherit}
+dialog.travel-dialog .popup-body :is(.meal-choices,.queue-choices,.outing-options,.canteen-choices,.meeting-options,.extra-choices,.missions-list,.comfort-catalogue)>button :is(span,small){opacity:.82}
+dialog.travel-dialog .popup-body .queue-number{border-color:#b8c7b2;background:#f2f5ee;color:var(--pp-brand)}
+dialog.travel-dialog .popup-body .queue-choices>button[aria-pressed=true] .queue-number{background:var(--pp-brand-2);border-color:var(--pp-brand-2);color:#fff}
+
+/* Déplacement : chaque moyen de transport est une carte avec son pictogramme. */
+dialog.travel-dialog .popup-body .travel-option{gap:14px;padding:14px}
+dialog.travel-dialog .popup-body .travel-symbol{display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:14px;background:var(--pp-soft);font-size:24px}
+dialog.travel-dialog .popup-body .travel-option-body>b{font-size:16px}
+dialog.travel-dialog .popup-body .travel-mode-description{color:var(--pp-muted)}
+dialog.travel-dialog .popup-body .travel-costs>span{padding:4px 9px;border-radius:999px;background:var(--pp-soft);font-weight:700;color:#2f4b3a}
+dialog.travel-dialog .popup-body .travel-option small{color:var(--pp-brand-2);font-weight:700}
+dialog.travel-dialog .popup-body .travel-option:disabled small{color:var(--pp-err)}
+dialog.travel-dialog .popup-body .travel-arrow{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;background:var(--pp-soft);color:var(--pp-brand);font-size:17px;transition:background .15s,color .15s}
+dialog.travel-dialog .popup-body .travel-option:hover:not(:disabled) .travel-arrow{background:var(--pp-brand-2);color:#fff}
+dialog.travel-dialog .popup-body :is(.travel-distance,.travel-traffic){margin:0 6px 0 0;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700}
+dialog.travel-dialog .popup-body #travel-origin{margin-bottom:10px}
+
+/* Lieux : onglets en segments, services et personnes en cartes. */
+dialog.travel-dialog .popup-body .venue-tabs{gap:4px;padding:4px;border:0;border-radius:14px;background:#ebefe4}
+dialog.travel-dialog .popup-body .venue-tabs [role=tab]{border-radius:11px;color:#4a604f;transition:background .15s,color .15s}
+dialog.travel-dialog .popup-body .venue-tabs [aria-selected=true]{background:#fff;color:var(--pp-brand);box-shadow:0 2px 8px #1733261f}
+dialog.travel-dialog .popup-body .venue-tabs [aria-selected=true] #venue-people-count{background:var(--pp-brand-2);color:#fff}
+dialog.travel-dialog .popup-body .venue-service>b{font-size:16px}
+dialog.travel-dialog .popup-body .venue-description{color:var(--pp-muted)}
+dialog.travel-dialog .popup-body .venue-gains{border-top-color:var(--pp-line)}
+dialog.travel-dialog .popup-body .venue-resident{border:1.5px solid var(--pp-line);border-radius:18px;background:#fff;box-shadow:0 1px 3px #1733260f}
+dialog.travel-dialog .popup-body .venue-resident-header img{border:3px solid #fff;box-shadow:0 0 0 1.5px var(--pp-line)}
+dialog.travel-dialog .popup-body .venue-person-service{background:var(--pp-soft)}
+dialog.travel-dialog .popup-body .venue-people-empty{border:1.5px dashed #c9d3c3;border-radius:16px;background:var(--pp-soft);color:var(--pp-muted)}
+dialog.travel-dialog .popup-body .npc-request{border-left:5px solid #c53a4c!important;background:#fff6f2!important}
+
+/* Lieux : fenêtre plus large, services côte à côte pour limiter le défilement. */
+dialog.travel-dialog.venue-dialog{width:min(680px,calc(100vw - 24px))}
+dialog.travel-dialog .popup-body #venue-services{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));align-items:start}
+dialog.travel-dialog .popup-body #venue-services>button{display:flex;flex-direction:column;padding:16px 16px 14px}
+dialog.travel-dialog .popup-body .venue-section-label{margin-top:10px;font-size:9px;letter-spacing:1.2px;color:#7b8a7c}
+dialog.travel-dialog .popup-body .venue-service .venue-gains{padding-top:10px}
+dialog.travel-dialog .popup-body .venue-service .venue-energy-gain{margin-top:6px;font-size:17px}
+dialog.travel-dialog .popup-body .venue-service .venue-energy-gain img{width:20px;height:24px}
+
+/* Indice d'action : tout ce qui ouvre ou lance quelque chose porte une flèche. */
+dialog.travel-dialog .popup-body :is(#venue-services>button,.venue-person-service,.dossier-list>button,#npc-conversation-actions>button){padding-right:52px}
+dialog.travel-dialog .popup-body :is(#venue-services>button,.venue-person-service,.dossier-list>button,#npc-conversation-actions>button)::after{content:'›';position:absolute;right:14px;top:16px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pp-soft);color:var(--pp-brand);font-size:20px;font-weight:800;line-height:1;transition:background .15s,color .15s,transform .15s}
+dialog.travel-dialog .popup-body :is(#venue-services>button,.venue-person-service,.dossier-list>button,#npc-conversation-actions>button):hover:not(:disabled)::after{background:var(--pp-brand-2);color:#fff;transform:translateX(2px)}
+dialog.travel-dialog .popup-body :is(#venue-services>button,.venue-person-service,.dossier-list>button,#npc-conversation-actions>button):disabled::after{content:'🔒';background:transparent;font-size:14px}
+dialog.travel-dialog .popup-body .venue-person-service::after{top:50%;margin-top:-14px;background:#fff}
+dialog.travel-dialog .popup-body .travel-symbol{font-size:26px}
+
+/* Factures : historique et pagination. */
+dialog.travel-dialog .popup-body .house-budget-panel{border-radius:18px}
+dialog.travel-dialog .popup-body .bill-row{border-radius:12px}
+dialog.travel-dialog .popup-body .bills-pages button{min-height:36px;padding:0 14px;border:1.5px solid var(--pp-line);border-radius:999px;background:#fff;color:var(--pp-brand);font-size:12px;font-weight:700}
+dialog.travel-dialog .popup-body .bills-pages button:disabled{background:#eceee7;color:#9aa296;cursor:not-allowed}
+
+/* Durées rapides : pastilles. */
+dialog.travel-dialog .popup-body :is(.wait-presets,.toque-presets){gap:8px}
+dialog.travel-dialog .popup-body :is(.wait-presets,.toque-presets) button{min-height:40px;border:1.5px solid var(--pp-line);border-radius:999px;background:#fff;color:var(--pp-brand);font-size:13px;font-weight:700;transition:all .15s}
+dialog.travel-dialog .popup-body :is(.wait-presets,.toque-presets) button:hover{border-color:#8fb796}
+dialog.travel-dialog .popup-body :is(.wait-presets,.toque-presets) button[aria-pressed=true]{border-color:var(--pp-brand-2);background:var(--pp-brand-2);color:#fff}
+
+/* ---------- Aperçu : ce qui va se passer si l'on confirme ---------- */
+dialog.travel-dialog .popup-body :is(.meal-preview,.queue-preview,.outing-preview,.canteen-preview,.meeting-preview,.extra-preview,.bag-preview,.comfort-preview,.bill-preview,.toque-preview,.accompanied-quote,.mission-detail,.mood-effect-card,.wait-mood){position:relative;padding:18px 18px 16px;border:1px solid var(--pp-gold-line);border-radius:18px;background:linear-gradient(180deg,#fffaf0,var(--pp-gold-soft));box-shadow:inset 0 1px 0 #fff}
+dialog.travel-dialog .popup-body :is(.meal-preview,.queue-preview,.outing-preview,.canteen-preview,.meeting-preview,.extra-preview,.bag-preview,.comfort-preview,.bill-preview,.mission-detail)::before{content:'APERÇU';display:block;margin-bottom:8px;font-size:10px;font-weight:700;letter-spacing:1.6px;color:#a67a1f}
+dialog.travel-dialog .popup-body :is(.meal-preview,.queue-preview,.outing-preview,.canteen-preview,.meeting-preview,.extra-preview,.bag-preview,.comfort-preview,.bill-preview,.toque-preview,.accompanied-quote,.mission-detail,.mood-effect-card) p{margin:7px 0;font-size:13px;line-height:1.5;color:#4b5a43}
+dialog.travel-dialog .popup-body :is(.meal-preview,.queue-preview,.outing-preview,.canteen-preview,.meeting-preview,.extra-preview,.bag-preview,.comfort-preview,.bill-preview,.toque-preview,.accompanied-quote,.mission-detail,.mood-effect-card) strong{color:var(--pp-brand)}
+dialog.travel-dialog .popup-body .wait-mood[data-loss=true]{border-color:var(--pp-err-line);background:linear-gradient(180deg,#fff8f4,var(--pp-err-bg))}
+
+/* ---------- Alertes et résultats ---------- */
+dialog.travel-dialog .popup-body :is(.meal-error,.queue-error,.outing-error,.canteen-error,.meeting-error,.toque-error,.comfort-error,.bill-error,.accompanied-error,.wait-error,[data-extra-error],[data-bag-error],.dossier-notice){position:relative;margin-bottom:0;padding:12px 15px 12px 44px;border:1px solid var(--pp-err-line);border-radius:14px;background:var(--pp-err-bg);color:var(--pp-err);font-size:13px;font-weight:600;line-height:1.5}
+dialog.travel-dialog .popup-body :is(.meal-error,.queue-error,.outing-error,.canteen-error,.meeting-error,.toque-error,.comfort-error,.bill-error,.accompanied-error,.wait-error,[data-extra-error],[data-bag-error],.dossier-notice)::before{content:'!';position:absolute;left:14px;top:12px;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pp-err);color:#fff;font-size:13px;font-weight:900}
+dialog.travel-dialog .popup-body .mission-reason:empty{display:none}
+dialog.travel-dialog .popup-body .mission-reason{padding:10px 14px;border-radius:12px;border:1px solid var(--pp-ok-line);background:var(--pp-ok-bg);color:var(--pp-ok);font-weight:600}
+dialog.travel-dialog .popup-body :is(.meal-result,.queue-result,.outing-result,.canteen-result,.meeting-result,.toque-result,.comfort-result,.bill-result,.accompanied-result,.mission-result,[data-extra-result],[data-bag-result],#venue-result:not(:empty)){position:relative;padding:18px 18px 18px 58px;border:1px solid var(--pp-ok-line);border-radius:18px;background:linear-gradient(135deg,#f1f9ec,var(--pp-ok-bg));color:#2f4b37;animation:popup-result .35s cubic-bezier(.2,.9,.3,1.2)}
+dialog.travel-dialog .popup-body :is(.meal-result,.queue-result,.outing-result,.canteen-result,.meeting-result,.toque-result,.comfort-result,.bill-result,.accompanied-result,.mission-result,[data-extra-result],[data-bag-result],#venue-result:not(:empty))::before{content:'✓';position:absolute;left:16px;top:18px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#2f8a4a;color:#fff;font-size:15px;font-weight:900;box-shadow:0 4px 10px #2f8a4a55}
+dialog.travel-dialog .popup-body :is(.meal-result,.queue-result,.outing-result,.canteen-result,.meeting-result,.toque-result,.comfort-result,.bill-result,.accompanied-result,.mission-result) strong{color:var(--pp-ok)}
+@keyframes popup-result{from{opacity:0;transform:scale(.96)}}
+
+/* Petites lignes : règles et précisions, en retrait visuel. */
+dialog.travel-dialog .popup-body :is(.outing-policy,.bills-policy,.toque-policy,.comfort-policy,.wait-rules,.mood-explanation,.dossier-note,.dossier-help,.mood-cap){font-size:12px;line-height:1.55;color:#6c7b6d}
+dialog.travel-dialog .popup-body .wait-neutral{padding:2px 0 2px 12px;border-left:3px solid #c5d3bb;font-size:12px;color:#55695a}
+dialog.travel-dialog .popup-body details summary{font-weight:700;color:var(--pp-brand-2)}
+
+/* ---------- Boutons d'action ---------- */
+dialog.travel-dialog [class$="-actions"]:not(#npc-conversation-actions){display:flex;flex-wrap:wrap;gap:10px;margin:0}
+dialog.travel-dialog .popup-body [class$="-actions"]{margin-top:14px}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) button,dialog.travel-dialog .popup-foot>:is(.travel-cancel,.mood-effects-back,[data-sport-back]){display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;margin:0;padding:0 20px;border:1.5px solid var(--pp-line);border-radius:14px;background:#fff;color:var(--pp-brand);font-family:inherit;font-weight:700;font-size:14px;line-height:1.2;box-shadow:0 1px 2px #17332610;filter:none;opacity:1;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s,transform .1s}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) button:hover:not(:disabled){border-color:#9fbea4;background:#f6faf3}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) button:active:not(:disabled){transform:scale(.98)}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) :is([data-accompanied-confirm],[data-bag-confirm],[data-bill-confirm],[data-bill-another],[data-canteen-confirm],[data-comfort-confirm],[data-comfort-continue],[data-extra-confirm],[data-meal-confirm],[data-meeting-confirm],[data-mission-confirm],[data-outing-confirm],[data-queue-confirm],[data-sleep-confirm],[data-toque-confirm],[data-toque-another],[data-wait-confirm],[data-work-confirm]){flex:1 1 180px;border-color:transparent;background:linear-gradient(180deg,#348059,#24503d);color:#fffdf3;box-shadow:0 8px 18px -8px #24503dcc,inset 0 1px 0 #ffffff33}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) :is([data-accompanied-confirm],[data-bag-confirm],[data-bill-confirm],[data-bill-another],[data-canteen-confirm],[data-comfort-confirm],[data-comfort-continue],[data-extra-confirm],[data-meal-confirm],[data-meeting-confirm],[data-mission-confirm],[data-outing-confirm],[data-queue-confirm],[data-sleep-confirm],[data-toque-confirm],[data-toque-another],[data-wait-confirm],[data-work-confirm]):hover:not(:disabled){background:linear-gradient(180deg,#3b8f64,#2a5c46);border-color:transparent}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) button:disabled{border-color:#e1e3da;background:#eceee7;color:#8b9488;box-shadow:none;cursor:not-allowed}
+dialog.travel-dialog .popup-body .dossier-puzzle-actions [data-work-undo]{flex:none;min-width:48px;padding:0;font-size:22px}
+dialog.travel-dialog .popup-body .dossier-next{min-height:48px;border:0;border-radius:14px;background:linear-gradient(180deg,#348059,#24503d);color:#fffdf3;font-weight:700}
+dialog.travel-dialog .popup-body .dossier-back{color:var(--pp-brand-2);font-weight:700}
+
+/* ---------- Pied : actions toujours visibles ---------- */
+dialog.travel-dialog .popup-foot{flex:none;display:flex;flex-wrap:wrap;gap:10px;padding:14px 24px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--pp-line);background:#fffdf7f2;box-shadow:0 -12px 24px -18px #17332640}
+dialog.travel-dialog .popup-foot>*{flex:1 1 auto}
+dialog.travel-dialog .popup-foot>[class$="-actions"]{width:100%}
+dialog.travel-dialog .popup-foot>[class$="-actions"] button:not(:disabled):first-child:not(:only-child){flex:0 0 auto}
+
+dialog.travel-dialog button:focus-visible,dialog.travel-dialog select:focus-visible,dialog.travel-dialog input:focus-visible{outline:3px solid #d9a441;outline-offset:2px}
+
+/* ---------- Notifications non bloquantes : même famille visuelle ---------- */
+:is(.travel-status,.wait-result,.accompanied-progress,.sport-expiry-toast){border:1px solid #ffffff2e;border-radius:18px;background:#173326f2;color:#fff9e8;box-shadow:0 14px 34px -10px #04120db3;backdrop-filter:blur(10px);animation:popup-toast .3s cubic-bezier(.2,.9,.3,1.1)}
+.sport-expiry-toast{padding:14px 18px;text-align:center}
+.respo-level-notice{border-radius:20px;border-color:var(--pp-gold-line);background:linear-gradient(180deg,#fffaf0,#fff0c8);box-shadow:0 18px 40px -12px #5a3f0880;animation:popup-toast .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes popup-toast{from{opacity:0;transform:translate(-50%,12px)}}
+
+/* ---------- Téléphone : la fenêtre devient un panneau qui monte du bas ---------- */
+@media(max-width:600px){
+ dialog.travel-dialog,dialog.travel-dialog:is(.dossier-dialog,.bills-dialog,.missions-dialog,.comfort-dialog,.npc-dialogue-dialog,.venue-dialog){width:100%;max-height:92dvh;margin:auto 0 0;border-radius:24px 24px 0 0}
+ dialog.travel-dialog[open]{animation:popup-sheet .3s cubic-bezier(.2,.9,.3,1)}
+ dialog.travel-dialog .popup-head{padding:24px 60px 18px 20px}
+ dialog.travel-dialog .popup-head::before{content:'';position:absolute;top:8px;left:50%;width:42px;height:4px;margin-left:-21px;border-radius:4px;background:#ffffff4d}
+ dialog.travel-dialog .popup-head h2{font-size:21px}
+ dialog.travel-dialog .popup-icon{width:44px;height:44px;border-radius:14px;font-size:23px}
+ dialog.travel-dialog .popup-body{padding:18px 18px 22px}
+ dialog.travel-dialog .popup-foot{padding:12px 18px calc(14px + env(safe-area-inset-bottom))}
+ dialog.travel-dialog .popup-body :is(.missions-list,.comfort-catalogue){grid-template-columns:1fr}
+}
+@keyframes popup-sheet{from{transform:translateY(100%)}}
+@media(prefers-reduced-motion:reduce){dialog.travel-dialog[open],dialog.travel-dialog .popup-body *,:is(.travel-status,.wait-result,.accompanied-progress,.sport-expiry-toast,.respo-level-notice){animation:none!important;transition:none!important}}
+
+/* Fenêtre de déplacement : onglet « À faire sur place ». */
+dialog.travel-dialog .popup-body .travel-tabs{margin:14px 0 12px}
+dialog.travel-dialog .popup-body .travel-place-count{display:inline-grid;place-items:center;min-width:20px;height:20px;margin-left:4px;padding:0 5px;border-radius:10px;background:#d9e2d2;color:#2f4a38;font-size:11px}
+dialog.travel-dialog .popup-body .travel-tabs [aria-selected=true] .travel-place-count{background:var(--pp-brand-2);color:#fff}
+dialog.travel-dialog .popup-body .place-activity-list,dialog.travel-dialog .popup-body .place-people{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+dialog.travel-dialog .popup-body .place-activity-list li{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;border:1px solid #dde4d4;border-radius:14px;background:#fbfcf7}
+dialog.travel-dialog .popup-body .place-activity-icon{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:11px;background:#eef3e7;font-size:19px}
+dialog.travel-dialog .popup-body .place-activity-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+dialog.travel-dialog .popup-body .place-activity-body b{font-size:14px;color:#1f3a2c}
+dialog.travel-dialog .popup-body .place-activity-body span{font-size:12px;line-height:1.45;color:#5a6b5c}
+dialog.travel-dialog .popup-body .place-activity-body small{align-self:flex-start;margin-top:4px;padding:2px 8px;border-radius:999px;background:var(--pp-ok-bg);color:var(--pp-ok);font-size:11px;font-weight:700}
+dialog.travel-dialog .popup-body .place-people-title{margin:18px 0 8px;font-size:13px;color:#3d5444}
+dialog.travel-dialog .popup-body .place-people li{display:flex;gap:10px;align-items:center}
+dialog.travel-dialog .popup-body .place-people img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#eef3e7}
+dialog.travel-dialog .popup-body .place-people span{display:flex;flex-direction:column}
+dialog.travel-dialog .popup-body .place-people b{font-size:13px;color:#1f3a2c}
+dialog.travel-dialog .popup-body .place-people em{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:4px;border-radius:50%;background:#bd2439;color:#fff;font-style:normal;font-size:11px}
+dialog.travel-dialog .popup-body .place-people small{font-size:12px;color:#5a6b5c}
+dialog.travel-dialog .popup-body .place-activity-empty{margin:0;font-size:12px;color:#6b786c}
+dialog.travel-dialog .popup-body .place-activity-note{margin:16px 0 0;font-size:12px;color:#6b786c}
+dialog.travel-dialog .popup-body .place-activity-body small[data-closed]{background:#f4ecdc;color:#8a5a1c}
+dialog.travel-dialog .popup-body .travel-distance:empty,dialog.travel-dialog .popup-body .travel-traffic:empty{display:none}

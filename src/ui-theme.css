@@ -1,0 +1,128 @@
+/* Direction Mboa : panneaux ivoire, encre profonde et accent or. Les règles du jeu restent dans leurs modules. */
+:root{--pp-ink:#203b36;--pp-muted:#52655e;--pp-paper:#fbf9f3;--pp-line:#dedfd5;--pp-soft:#f0f2e9;--pp-brand:#174e43;--pp-brand-2:#246855;--pp-gold:#e5bf71;--pp-gold-soft:#f8efda;--pp-gold-line:#e5d4af}
+#app{--ink:#203b36;--muted:#52655e;--brand:#174e43;--brand2:#246855;--gold:#dfb45f;--card:#fbf9f3;--display:Nunito,'Segoe UI',sans-serif;--chunk:0 6px 24px #092d2624;font-family:Nunito,'Segoe UI',sans-serif}
+#app header{left:24px;right:24px;top:20px;grid-template-columns:auto 1fr auto;grid-template-areas:"player stats clock" ". . actions";gap:10px 20px}
+#app .player-card{border:1px solid #fff9;border-radius:18px;gap:10px;padding:8px 16px 8px 8px;box-shadow:var(--chunk);background:#fbf9f3f5}
+#app .player-ring{width:52px;height:52px;padding:3px;background:conic-gradient(#c58f33 calc(var(--xp,0)*1turn),#e0e5d9 0)}
+#app .player-photo{border:2px solid #fbf9f3}#app .player-level{width:23px;height:23px;right:-4px;bottom:-3px;border:2px solid #fbf9f3;box-shadow:none;background:#174e43}#app .player-level small{display:none}#app .player-level b{font-size:11px}
+#app .player-info{min-width:110px}#app .player-name{font-size:18px;line-height:1.1;letter-spacing:-.4px}#app .player-xp{font-size:10px;font-weight:600}#app .player-xp-bar{height:3px;background:#e2e5dc;box-shadow:none}#app .player-xp-bar i{min-width:0;background:#c59037}
+#app .resource-stats{align-self:start;gap:0;justify-self:center;background:#fbf9f3f5;border:1px solid #fff9;border-radius:18px;padding:8px;box-shadow:var(--chunk)}
+#app .resource-stats .game-wallet{flex-direction:row;align-items:center;gap:8px;padding:2px 15px;border:0;border-right:1px solid #dfe3d8;border-radius:0;background:transparent;box-shadow:none}
+#app .resource-stats .game-wallet:last-child{border-right:0}#app .resource-stats .game-wallet>img,#app .resource-stats .mood-icon{display:block;flex:none;width:32px;height:32px;padding:3px;border-radius:9px;box-shadow:none;background-color:transparent}
+#app .resource-stats .mood-icon{background-color:#f3e8d5;background-size:400% 200%}
+#app .resource-stats .game-wallet-label{font-size:9px;letter-spacing:1px;font-weight:800;color:#53675c}
+#app .resource-stats .game-wallet-amount{font-family:Nunito,'Segoe UI',sans-serif;font-size:21px;line-height:1.15;font-weight:900;color:#203b36;font-variant-numeric:tabular-nums}
+#app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:100px}
+#app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details::after{height:4px;margin-top:5px;box-shadow:none;border-radius:4px}
+#app .resource-stats #energy-counter{--g1:#d0aa52;--g2:#b97e22}#app .resource-stats #mood-counter{--g1:#5b9d7c;--g2:#28634d}
+#app .resource-stats .mood-label{font-size:10px;font-weight:600;order:3}
+#app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open){height:auto;min-height:23px;padding:3px 7px;border:1px solid #dce3d7;border-radius:6px;box-shadow:none;background:#eef2e8;color:#315849;font:700 10px/1.2 Nunito,sans-serif}
+#app .resource-stats #energy-counter #energy-effects-open{margin-top:4px;min-height:23px;padding:3px 7px;line-height:1.2}
+#app .resource-stats .wallet-heading,#app .resource-stats .mood-heading{gap:6px;flex-wrap:wrap}
+#app .resource-stats .house-budget-indicator{border-radius:4px;font-weight:700}
+#app .game-clock{border:1px solid #7fa28e70;background:#174e43!important;border-radius:18px;grid-template-areas:"time day" "time week" "wait wait";padding:10px 14px;gap:3px 12px;box-shadow:var(--chunk)}
+#app .game-clock::before{display:none}#app .game-clock-time{font:900 32px/1 Nunito,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:#fffaf1}
+#app .game-clock-day{font-size:12px;font-weight:800}#app .game-clock-week{font-size:10px;color:#e0c68d}#app .clock-wait-button{min-height:30px;margin-top:7px;background:#ffffff14;border:1px solid #ffffff30;border-radius:7px;color:#fffaf1;box-shadow:none;font-size:11px}
+#app .header-actions{gap:6px}#app .header-actions button{height:36px;padding:0 12px;border:1px solid #ffffffa0;border-radius:9px;background:#fbf9f3f5;box-shadow:0 3px 12px #092d261a;font-size:11px;font-weight:700;color:#25483d}
+#app .header-actions #bag-open::before{display:none}#app .header-actions #help{width:36px}#app .header-actions button:hover:not(:disabled){transform:none;background:#fff}
+#app .hud-bump{animation:none}#app .scene-caption{display:none}
+#app footer{left:24px;right:24px;bottom:20px;gap:12px;align-items:end;flex-direction:row}
+#app #places-toggle{height:58px;max-width:min(430px,calc(100vw - 450px));padding:0 16px 0 10px;border:1px solid #fff9;border-radius:15px;background:#fbf9f3f5;box-shadow:var(--chunk);gap:10px}
+#app .places-pin{width:34px;height:34px;border-radius:10px;background:#174e43;box-shadow:none;font-size:17px}#app .places-text small{font-size:9px;letter-spacing:1.2px;color:#6c775e;font-weight:700}#app #view-name{font:800 15px/1.3 Nunito,sans-serif}#app .places-caret{border-radius:6px;background:#e9eee2}
+#app .places{border:1px solid #e0e6d7;border-radius:16px;box-shadow:0 15px 50px #0c2e3938;padding:14px;background:#fbf9f3;gap:6px}#app .places-title{font:800 17px/1.3 Nunito,sans-serif}#app .places button{min-height:44px;border-radius:8px;background:#eef2e8;font-weight:700;box-shadow:none}#app .places button.active{background:#174e43;box-shadow:none}#app .places button:hover{transform:none}
+#app .tools{border:1px solid #fff9;border-radius:15px;background:#fbf9f3f5;padding:6px;gap:3px;box-shadow:var(--chunk)}#app .tools button{height:46px;min-width:55px;border-radius:9px;box-shadow:none;background:transparent;font-size:17px;gap:4px;font-weight:700}#app .tools button span,#app .tools button[data-label]::after{font-size:9px;font-weight:700;letter-spacing:.1px}#app .tools button[aria-pressed=true]{background:#e2eadb;color:#174e43;box-shadow:none}#app .tools button[aria-pressed=true]::after{color:#174e43}
+#app .tools #missions-open{min-width:78px;border-radius:9px;background:#174e43;color:#fff9ed;box-shadow:none;font-size:10px}#app .tools #missions-open::before{content:'◇';font-size:19px;color:#e7c37d}#app .tools #missions-open:hover:not(:disabled){background:#246855}#app .tools button:hover:not(:disabled){transform:none;background:#e9eee2}
+#app .landmark{border:1px solid #ffffffbc;border-radius:8px;background:#fbf9f3ed;font:700 12px/1.3 Nunito,sans-serif;padding:7px 10px;box-shadow:0 3px 10px #153b2b20}#app .landmark i{background:#ad8037}
+/* Coque des menus : lecture stable et action principale claire. */
+dialog.travel-dialog{border-radius:18px;background:#fbf9f3;box-shadow:0 30px 100px #041e2266,0 0 0 1px #fff9;font-family:Nunito,'Segoe UI',sans-serif}
+dialog.travel-dialog::backdrop{background:#102d36a8;backdrop-filter:blur(7px)}
+dialog.travel-dialog .popup-head{background:#174e43;border-bottom:3px solid #cda354;padding:20px 68px 18px 24px;gap:12px}
+dialog.travel-dialog .popup-head .popup-icon{display:none}dialog.travel-dialog .popup-head h2{font:800 23px/1.2 Nunito,sans-serif;letter-spacing:-.5px;margin:5px 0 0}dialog.travel-dialog .popup-head .travel-eyebrow{font-size:9px;letter-spacing:1.8px;color:#ebd4a2}
+dialog.travel-dialog .popup-head .travel-close{border-radius:9px;width:36px;height:36px;top:18px;right:18px;background:#ffffff0f;border:1px solid #ffffff38;font-size:21px}dialog.travel-dialog .popup-head .travel-close:hover{transform:none;background:#ffffff25}
+dialog.travel-dialog .popup-body{padding:20px 24px;scrollbar-color:#b5c4b1 transparent}
+dialog.travel-dialog .popup-body>p{font-size:14px;line-height:1.6;color:#52655e}dialog.travel-dialog .popup-body h3{font-size:17px;letter-spacing:-.2px}
+dialog.travel-dialog .popup-body :is(.meal-service,.meal-bae-status,.queue-service,.queue-status,.outing-schedule,.canteen-status,.meeting-status,.missions-summary,.dossier-economy,.bills-summary,.comfort-work,[data-bag-item]){border-radius:10px;background:#edf1e7;border-color:#dfe5d8;color:#3b5c4d}
+dialog.travel-dialog .popup-body :is(.meal-preview,.queue-preview,.outing-preview,.canteen-preview,.meeting-preview,.extra-preview,.bag-preview,.comfort-preview,.bill-preview,.toque-preview,.accompanied-quote,.mission-detail,.mood-effect-card){border-radius:12px;background:#fffdf8;border-color:#dbe2d6;box-shadow:0 3px 14px #153a2610}
+dialog.travel-dialog .popup-body :is(.venue-service,.travel-option,.dossier-item,.citizen-card,[data-comfort-item],[data-meal],[data-outing-option]){border-radius:11px;border:1px solid #dce3d7;background:#fffdf9;box-shadow:0 2px 8px #193b2610;transition:background .15s,border-color .15s}
+dialog.travel-dialog .popup-body :is(.venue-service,.travel-option,.citizen-card,[data-comfort-item],[data-meal],[data-outing-option]):hover:not(:disabled){transform:none;border-color:#87a58f;background:#f4f6ed}
+dialog.travel-dialog .popup-body [aria-pressed=true]{border-color:#3b8165;background:#edf3e6}
+dialog.travel-dialog .popup-body :is(select,input[type=number]){border-radius:9px;min-height:46px;border-color:#cbd6c4;box-shadow:none}
+dialog.travel-dialog .popup-foot{background:#f7f6ee;border-top:1px solid #dfe4d8;padding:14px 20px;box-shadow:0 -5px 16px #17332605}
+dialog.travel-dialog :is([class$="-actions"],.popup-foot) button{border-radius:10px;min-height:46px;box-shadow:none;font-size:13px;border-color:#cbd7c4}
+dialog.travel-dialog .popup-foot [class$="-actions"] button:last-child:not(:first-child),dialog.travel-dialog .popup-foot>button:only-child{background:#174e43;border-color:#174e43;color:#fffaf0;box-shadow:none}
+dialog.travel-dialog .popup-foot [class$="-actions"] button:last-child:not(:first-child):hover:not(:disabled){background:#246855;color:#fff}
+dialog.travel-dialog .popup-body :is(.travel-costs,.venue-gains){gap:8px}dialog.travel-dialog button:focus-visible,#app button:focus-visible{outline:3px solid #d8a84d;outline-offset:3px}
+@media(max-width:1300px){#app header{grid-template-areas:"player . clock" "stats stats actions"}#app .resource-stats{justify-self:start}#app .resource-stats .game-wallet{padding:2px 12px}}
+@media(max-width:980px){#app header{grid-template-columns:1fr auto;grid-template-areas:"player clock" "stats stats" "actions actions";left:14px;right:14px;top:12px;gap:8px}#app .resource-stats{justify-self:stretch;justify-content:space-between}#app .resource-stats .game-wallet{flex:1;justify-content:center;padding:2px 8px}#app .header-actions{justify-self:end}}
+@media(max-width:760px){
+ #app header{left:10px;right:10px;top:10px;gap:7px;grid-template-columns:minmax(0,1fr) auto}
+ #app .player-card{padding:6px 8px 6px 6px;gap:7px;border-radius:13px;min-width:0;align-self:start}
+ #app .player-ring{width:38px;height:38px;padding:2px}#app .player-info{min-width:0}#app .player-name{font-size:15px;white-space:nowrap}#app .player-xp{font-size:9px;white-space:nowrap}#app .player-xp-bar{height:3px;margin-top:3px}#app .player-level{width:20px;height:20px;right:-3px;bottom:-3px}#app .player-level b{font-size:10px}
+ #app .game-clock{grid-template-areas:"time day" "time week" "wait wait";padding:7px 10px;gap:2px 9px;border-radius:13px;min-width:0}
+ #app .game-clock-time{font-size:26px}#app .game-clock-day{font-size:10px}#app .game-clock-week{font-size:8px}#app .clock-wait-button{min-height:28px;margin-top:4px;font-size:10px}
+ #app .resource-stats{padding:6px 2px;gap:0;border-radius:13px;width:100%;box-sizing:border-box}
+ #app .resource-stats .game-wallet{padding:0 6px;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;min-width:0;border-radius:0}
+ #app .resource-stats .game-wallet>img,#app .resource-stats .mood-icon{display:none}
+ #app .resource-stats .game-wallet-amount{font-size:17px;letter-spacing:-.4px;line-height:1.2}#app .resource-stats .game-wallet-label{font-size:8px;letter-spacing:.6px}
+ #app .resource-stats :is(#energy-counter,#mood-counter) .game-wallet-details{min-width:0}
+ #app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open),#app .resource-stats #energy-counter #energy-effects-open{min-height:27px;height:auto;padding:3px 4px;border:0;background:#edf1e7;font-size:9px;max-width:100%;border-radius:5px;line-height:1.2;white-space:normal}
+ #app .resource-stats .wallet-heading,#app .resource-stats .mood-heading{display:contents}
+ #app .resource-stats #bills-open,#app .resource-stats #mood-effects-open{order:4;align-self:flex-start;margin-top:4px}
+ #app .resource-stats .mood-label{display:none}#app .resource-stats .house-budget-indicator{display:none}
+ #app .resource-stats .game-wallet-details::after{height:3px!important}
+ #app .header-actions{gap:5px}#app .header-actions button{height:32px;padding:0 10px;border-radius:7px;font-size:10px}#app .header-actions #help{width:32px}#app .header-actions #compare span{display:none}
+ #app footer{left:10px;right:10px;bottom:10px;flex-direction:column;align-items:stretch;gap:7px}
+ #app #places-toggle{height:48px;max-width:none;width:100%;border-radius:12px;padding:0 10px}#app .places-pin{width:29px;height:29px;font-size:14px;border-radius:7px}#app .places-text small{font-size:8px}#app #view-name{font-size:13px}
+ #app .tools{align-self:stretch;justify-content:space-between;border-radius:12px;padding:4px}#app .tools button{height:43px;min-width:0;flex:1;padding:4px 3px;border-radius:7px;font-size:16px}#app .tools #missions-open{min-width:68px;flex:1.3}#app .tools button span,#app .tools button[data-label]::after{font-size:9px}
+ #app .places{grid-template-columns:repeat(2,minmax(0,1fr));max-height:45dvh;box-sizing:border-box}
+ #app .landmark{font-size:10px;padding:6px 8px;border-radius:7px}
+ dialog.travel-dialog:not([data-mode=puzzle]){width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:16px}
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-head{padding:16px 58px 16px 18px}dialog.travel-dialog:not([data-mode=puzzle]) .popup-head h2{font-size:21px}
+ dialog.travel-dialog .popup-body{padding:16px 18px}dialog.travel-dialog .popup-foot{padding:12px 14px}
+}
+@media(max-width:370px){#app .player-name{font-size:13px}#app .player-card{gap:5px}#app .player-info{max-width:88px}#app .player-xp{font-size:8px}#app .game-clock{padding:7px 8px;column-gap:6px}#app .game-clock-time{font-size:23px}#app .resource-stats .game-wallet{padding:0 4px}#app .resource-stats .game-wallet-amount{font-size:15px}#app .resource-stats .game-wallet-label{font-size:7px}}
+@media(max-height:480px) and (min-width:761px){#app header{grid-template-areas:"player stats clock" ". . actions";grid-template-columns:auto 1fr auto;left:12px;right:12px;top:8px}#app .resource-stats{justify-self:center}#app .resource-stats .game-wallet{padding:0 8px}#app .resource-stats .game-wallet>img,#app .resource-stats .mood-icon{display:none}#app .player-info{display:none}#app .player-ring{width:38px;height:38px}#app .game-clock-time{font-size:24px}#app .game-clock{padding:6px 10px}#app .resource-stats .game-wallet-amount{font-size:17px}#app footer{bottom:8px}#app .tools button{height:38px}}
+@media(prefers-reduced-motion:reduce){dialog.travel-dialog[open]{animation:none}#app *{animation:none!important}}
+
+/* Les explications détaillées restent disponibles, les effets utiles se lisent comme des cartes. */
+dialog.sport-energy-dialog .energy-overview{padding:18px;border:1px solid #dce4d5;border-radius:12px;background:#edf3e7}
+dialog.sport-energy-dialog .energy-overview [data-sport-capacity]{margin:0;font-size:27px;line-height:1.2;font-weight:900;color:#1c4b3b}
+dialog.sport-energy-dialog .energy-overview [data-energy-status]{display:inline-block;margin:9px 0 0;padding:4px 9px;border-radius:6px;background:#fffdf6;color:#315745;font-size:12px;font-weight:800}
+dialog.sport-energy-dialog .energy-fatigue-summary{font-size:12px;line-height:1.5;color:#52655e}
+dialog.sport-energy-dialog .energy-effect-cards{display:grid;gap:8px}
+dialog.sport-energy-dialog .energy-effect-cards article{padding:12px 14px;border:1px solid #dde3d7;border-radius:10px;background:#fffdf8}
+dialog.sport-energy-dialog .energy-effect-cards article b{font-size:13px;color:#234c3b}
+dialog.sport-energy-dialog .energy-effect-cards article p{margin:4px 0 0;font-size:12px;line-height:1.5;color:#57695d}
+dialog.sport-energy-dialog .energy-calculations{border-top:1px solid #dce3d6;padding-top:12px}
+dialog.sport-energy-dialog .energy-calculations summary{cursor:pointer;color:#315b49;font-weight:700;font-size:12px;min-height:30px}
+dialog.sport-energy-dialog .energy-calculations p{font-size:12px;line-height:1.6;color:#52655e}
+dialog.travel-dialog .popup-foot [class$="-actions"] button:disabled,dialog.travel-dialog .popup-foot>button:only-child:disabled{background:#e6e9df;border-color:#dce1d4;color:#77836f;box-shadow:none}
+@media(max-width:760px){#app .header-actions #compare span{display:inline;font-size:10px}}
+
+#app .resource-stats #energy-counter #energy-effects-open[data-state=starving]{background:#fbe7df;color:#8e3425}
+#app .resource-stats #energy-counter #energy-effects-open[data-state=hungry],#app .resource-stats #energy-counter #energy-effects-open[data-state=fatigued]{background:#f7ebd0;color:#795319}
+#app .resource-stats #energy-counter #energy-effects-open[data-state=fit]{background:#e5efdc;color:#28533a}
+#app .resource-stats #bills-open[data-budget=insufficient]{background:#fbe7df;color:#8e3425}
+#app .resource-stats #bills-open[data-budget=tight]{background:#f7ebd0;color:#795319}
+
+/* Aligner les libellés et les valeurs, réserver la ligne suivante à l’action. */
+#app .resource-stats .game-wallet{align-items:flex-start}
+#app .resource-stats .wallet-heading,#app .resource-stats .mood-heading{display:contents}
+#app .resource-stats .game-wallet-label{order:0}
+#app .resource-stats .game-wallet-amount{order:1}
+#app .resource-stats .game-wallet-details::after{order:2!important}
+#app .resource-stats :is(#bills-open,#mood-effects-open,#energy-effects-open){order:3;align-self:flex-start;margin-top:5px}
+#app .resource-stats .mood-label{display:none}
+#app .resource-stats .game-wallet>img,#app .resource-stats .mood-icon{align-self:center}
+#app .resource-stats .house-budget-indicator[data-budget=covered]{display:none}
+dialog.travel-dialog .popup-foot button:disabled{background:#e6e9df!important;border-color:#dce1d4!important;color:#77836f!important;box-shadow:none!important}
+dialog.travel-dialog .venue-tabs{display:flex;gap:0;padding:0;border:0;border-bottom:1px solid #dce3d5;border-radius:0;background:transparent;margin-bottom:16px}
+dialog.travel-dialog .venue-tabs button{flex:1;min-height:44px;padding:8px 10px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#69786a;box-shadow:none;font-size:12px}
+dialog.travel-dialog .venue-tabs button[aria-selected=true]{border-bottom-color:#246855;background:transparent;color:#174e43;font-weight:800;box-shadow:none}
+dialog.travel-dialog .bill-preview summary{font-size:13px;font-weight:700;color:#315b49;cursor:pointer;min-height:28px}
+@media(max-width:370px){#app .resource-stats .game-wallet-label{font-size:9px;letter-spacing:.1px}#app .resource-stats .game-wallet-amount{font-size:15px}}
+
+/* La nouvelle bordure d’en-tête réserve quelques pixels supplémentaires au puzzle en paysage. */
+@media(max-height:450px){dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-board{width:min(100%,calc(100dvh - 122px))}}
+
+#app .landmark:hover,#app .landmark:focus-visible{background:#174e43;color:#fffaf0;border-color:#cda354}

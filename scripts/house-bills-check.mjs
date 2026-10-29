@@ -1,0 +1,26 @@
+// Les sauts de calendrier des fixtures représentent des périodes reposées, sans activité testée.
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)}
+const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),m=await import('../src/currency.ts')
+let b=await import('../src/house-bills.ts')
+const at=n=>c.advanceGameTime(n-c.getGameTime().totalMinutes,'sleep'),issue=4*1440+720
+const before=r.getPlayerResources()
+assert.equal(b.getHouseBilling().nextIssue.totalMinutes,issue);assert.equal(b.getHouseBilling().unpaid,0);assert.equal(b.prepareHouseBillPayment(),null)
+at(issue-1);assert.equal(b.getHouseBilling().issued,0)
+at(issue);assert.equal(b.getHouseBilling().issued,1);assert.equal(b.getHouseBilling().oldest.forWeek,2);assert.equal(b.getHouseBilling().oldest.overdue,false);assert.equal(m.getMoneyBalance(),0)
+let q=b.prepareHouseBillPayment();assert.equal(b.confirmHouseBillPayment(q.token,true).ok,false);assert.equal(b.getHouseBilling().paid,0)
+m.addMoney(10000);q=b.prepareHouseBillPayment();b.cancelHouseBillPayment(q.token);assert.equal(b.confirmHouseBillPayment(q.token,true).ok,false)
+q=b.prepareHouseBillPayment();assert.equal(b.confirmHouseBillPayment(q.token,false).ok,false)
+q=b.prepareHouseBillPayment();m.addMoney(1);assert.equal(b.confirmHouseBillPayment(q.token,true).ok,false)
+q=b.prepareHouseBillPayment();c.advanceGameTime(1);assert.equal(b.confirmHouseBillPayment(q.token,true).ok,false)
+at(issue+359);assert.equal(b.getHouseBilling().oldest.overdue,false)
+at(issue+360);assert.equal(b.getHouseBilling().oldest.overdue,true)
+q=b.prepareHouseBillPayment();q.amount=0;q.bill.index=99;const time=c.getGameTime().totalMinutes;assert.equal(b.confirmHouseBillPayment(q.token,true).ok,true);assert.equal(m.getMoneyBalance(),8501);assert.equal(b.getHouseBilling().unpaid,0);assert.equal(c.getGameTime().totalMinutes,time);assert.equal(b.confirmHouseBillPayment(q.token,true).ok,false)
+b=await import('../src/house-bills.ts?reload');assert.equal(b.getHouseBilling().paid,1)
+at(issue+5*10080);assert.equal(b.getHouseBilling().issued,6);assert.equal(b.getHouseBilling().unpaid,5);assert.equal(b.getHouseBilling().totalDue,7500);assert.equal(m.getMoneyBalance(),8501)
+q=b.prepareHouseBillPayment();assert.equal(q.bill.index,1);assert.equal(b.confirmHouseBillPayment(q.token,true).ok,true);assert.equal(b.getHouseBilling().oldest.index,2);assert.equal(m.getMoneyBalance(),7001)
+assert.equal(b.getHouseBill(0).paid,true);assert.equal(b.getHouseBill(-1),null);assert.equal(b.getHouseBill(6),null)
+assert.deepEqual(r.getPlayerResources(),before)
+store.delete('mboa-house-bills-v1');const legacy=await import('../src/house-bills.ts?legacy');assert.equal(legacy.getHouseBilling().issued,0);assert.equal(legacy.getHouseBilling().nextIssue.totalMinutes,issue+6*10080)
+store.set('mboa-house-bills-v1',JSON.stringify({firstIssue:issue,paid:999}));const corrupt=await import('../src/house-bills.ts?corrupt');assert.equal(corrupt.getHouseBilling().issued,0)
+console.log('Bill Friday12/18 boundaries, manual/late payment, exact debit, skipped weeks, oldest first, cancellation, stale/forged/duplicate guards, reload, legacy anchor, corrupt saves and unchanged resources/time passed')

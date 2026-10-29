@@ -1,0 +1,20 @@
+/* Deux cartes par rangée pour éviter les longues listes de services. */
+dialog.travel-dialog .popup-body :is(#venue-place-panel,.classic-work-cards,.citizen-cards,.comfort-catalogue,.meal-choices,.outing-options,.extra-choices,.canteen-choices,.meeting-options,.missions-list){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+dialog.travel-dialog .popup-body #venue-services{display:contents}
+dialog.travel-dialog .popup-body #venue-result{grid-column:1/-1}
+dialog.travel-dialog .popup-body #venue-place-panel>.venue-service,dialog.travel-dialog .popup-body #venue-services>.venue-service{margin:0;min-width:0;width:100%;height:100%;box-sizing:border-box}
+dialog.travel-dialog .popup-body :is(.classic-work-cards,.citizen-cards) .citizen-card{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+dialog.travel-dialog .popup-body .citizen-card[aria-pressed=true]{border-color:#3b8165;background:#edf3e6}
+dialog.travel-dialog .classic-work-preview{margin-top:16px;padding:16px;border:1px solid #d5ddc9;border-radius:12px;background:#fffaf0}
+dialog.travel-dialog .classic-work-preview strong{font-size:20px;color:#234d37}
+dialog.travel-dialog .classic-work-actions{display:flex;gap:10px}
+dialog.travel-dialog .popup-body :is(.venue-service,.citizen-card,[data-meal],[data-outing-option],[data-comfort-item]){overflow-wrap:anywhere;min-width:0}
+@media(max-width:760px){dialog.travel-dialog .popup-body :is(#venue-place-panel,.classic-work-cards,.citizen-cards,.comfort-catalogue,.meal-choices,.outing-options,.extra-choices,.canteen-choices,.meeting-options,.missions-list){gap:9px}dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.venue-service,.citizen-card) b{font-size:15px;line-height:1.3}dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.venue-description,.travel-costs,.venue-section-label,.venue-other-gains){font-size:12px;line-height:1.5}dialog.travel-dialog .popup-body :is(.venue-service,.citizen-card){padding:12px 10px}dialog.travel-dialog .popup-body .citizen-card small{font-size:12px}}
+
+/* Les boutons ajoutés par les modules doivent s’aligner en haut comme ceux du catalogue. */
+dialog.travel-dialog .popup-body #venue-place-panel .venue-service{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;height:auto;align-self:stretch;padding:14px;gap:0}
+dialog.travel-dialog .popup-body #venue-place-panel .venue-service::after{display:none}
+dialog.travel-dialog .popup-body #venue-place-panel .venue-service>b{padding-right:0}
+dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-gains{margin-top:8px;padding-top:7px}
+dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-section-label{margin-top:7px;font-size:10px}
+@media(max-width:760px){dialog.travel-dialog .popup-body #venue-place-panel .venue-service{padding:12px 10px}dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-energy-gain{font-size:16px}dialog.travel-dialog .popup-body #venue-place-panel .venue-service .travel-costs{gap:5px;font-size:12px}}

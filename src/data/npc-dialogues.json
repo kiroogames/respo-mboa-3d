@@ -1,0 +1,225 @@
+{
+  "source": "Assets/Resources_moved/bd_messages/zonedialog_1_1.asset",
+  "topics": {
+    "elanga": [
+      {
+        "id": "elanga-0",
+        "label": "Faire connaissance",
+        "lines": [
+          {
+            "id": 53,
+            "speaker": "Mr Elanga",
+            "text": "Je suis Elanga Gaston, je gère les Ressources humaines du ministère.\nC'est moi qui doit valider ton matricule après le stage ci.",
+            "key": "Message1_1_53"
+          }
+        ]
+      },
+      {
+        "id": "elanga-1",
+        "label": "Parler du travail",
+        "lines": [
+          {
+            "id": 13,
+            "speaker": "Mr Elanga",
+            "text": "Bon va alors travailler. ",
+            "key": "Message1_1_13"
+          }
+        ]
+      }
+    ],
+    "kako": [
+      {
+        "id": "kako-0",
+        "label": "Faire connaissance",
+        "lines": [
+          {
+            "id": 36,
+            "speaker": "Mr Kako Djaraba",
+            "text": "Hey, le nouveau stagiaire ! Je suis Monsieur Kako Djaraba.\nJe suis le Directeur des marchés ici.",
+            "key": "Message1_1_36"
+          },
+          {
+            "id": 37,
+            "speaker": "Mr Kako Djaraba",
+            "text": "Travailler c'est bien, mais avoir les réseaux au mboa c'est mieux.\nIl faut me chercher si tu veux vite perçer ici.",
+            "key": "Message1_1_37"
+          }
+        ]
+      },
+      {
+        "id": "kako-1",
+        "label": "Écouter ses conseils",
+        "lines": [
+          {
+            "id": 35,
+            "speaker": "Mr Kako Djaraba",
+            "text": "Il faut écouter les conseils de ceux qui sont arrivés.\nEt un jour tu seras aussi un grand.",
+            "key": "Message1_1_35"
+          },
+          {
+            "id": 40,
+            "speaker": "Mr Kako Djaraba",
+            "text": "Le mboa que tu vois ci, est très compliqué.\nil faut avoir les bons parrains pour ta carrière.",
+            "key": "Message1_1_40"
+          }
+        ]
+      }
+    ],
+    "anneke": [
+      {
+        "id": "anneke-0",
+        "label": "Faire connaissance",
+        "lines": [
+          {
+            "id": 22,
+            "speaker": "Mme Anneke",
+            "text": "Bonjour, c'est toi le nouveau stagiaire ?  Je suis Madame Anneke. Avec moi c'est le travail avant tout.",
+            "key": "Message1_1_22"
+          }
+        ]
+      },
+      {
+        "id": "anneke-1",
+        "label": "Parler du ministère",
+        "lines": [
+          {
+            "id": 21,
+            "speaker": "Mme Anneke",
+            "text": "Le mboa a besoin de personnes qui travaillent pour le bien  de tous.",
+            "key": "Message1_1_21"
+          }
+        ]
+      }
+    ],
+    "hector": [
+      {
+        "id": "hector-0",
+        "label": "Faire connaissance",
+        "lines": [
+          {
+            "id": 27,
+            "speaker": "Hector",
+            "text": "Bienvenue le nouveau. Je suis Hector Kizikan.  Je suis l'assistant de Mme Anneke.",
+            "key": "Message1_1_27"
+          },
+          {
+            "id": 28,
+            "speaker": "Hector",
+            "text": "Oui je suis le fils de l'ancien gouverneur Kizikan.  Mais je vais vous montrer que nous les \"fils de\" on sait travailler.",
+            "key": "Message1_1_28"
+          }
+        ]
+      },
+      {
+        "id": "hector-1",
+        "label": "Parler du travail",
+        "lines": [
+          {
+            "id": 26,
+            "speaker": "Hector",
+            "text": "J'espère que tu vas être un bon élément du ministère.\nMme Anneke et moi on n'aime pas les paresseux.",
+            "key": "Message1_1_26"
+          },
+          {
+            "id": 76,
+            "speaker": "Hector",
+            "text": "Le travail c'est la seule vérité pour réussir.\nEn tout cas chacun se fera son idée.",
+            "key": "Message1_1_76"
+          }
+        ]
+      }
+    ],
+    "sidonie": [
+      {
+        "id": "sidonie-0",
+        "label": "Faire connaissance",
+        "lines": [
+          {
+            "id": 42,
+            "speaker": "Sidonie",
+            "text": "Je suis Sidonie Ogado. Je suis l'assistante de M. Kako.  Mais bon je ne vais pas durer ici. J'attends mon visa.",
+            "key": "Message1_1_42"
+          }
+        ]
+      },
+      {
+        "id": "sidonie-1",
+        "label": "Prendre de ses nouvelles",
+        "lines": [
+          {
+            "id": 41,
+            "speaker": "Sidonie",
+            "text": "Mon père est le DG de Mboatel. Il m'a seulement puni avec\nle travail çi. Alors que je devais être avec Kendra Mougabiang à Ibiza.",
+            "key": "Message1_1_41"
+          }
+        ]
+      }
+    ],
+    "delphine": [
+      {
+        "id": "delphine-0",
+        "label": "La saluer",
+        "lines": [
+          {
+            "id": 48,
+            "speaker": "Delphine de la réception",
+            "text": "Oui c'est pour quoi ?",
+            "key": "Message1_1_48"
+          }
+        ]
+      },
+      {
+        "id": "delphine-1",
+        "label": "Parler des usagers",
+        "lines": [
+          {
+            "id": 46,
+            "speaker": "Delphine de la réception",
+            "text": "Les usagers du ministère ci sont trop impolis.\nIls font souvent comme si c'est eux qui nous ont mis là. *tsuips*",
+            "key": "Message1_1_46"
+          }
+        ]
+      }
+    ],
+    "crystal": [
+      {
+        "id": "crystal-0",
+        "label": "Discuter avec Crystal",
+        "lines": [
+          {
+            "id": 71,
+            "speaker": "Crystal",
+            "text": "Tu es mignon hein. N'oublie pas de m'appeler.  Qu'on sorte discuter un peu.",
+            "key": "Message1_1_71"
+          }
+        ]
+      },
+      {
+        "id": "crystal-1",
+        "label": "Prendre de ses nouvelles",
+        "lines": [
+          {
+            "id": 65,
+            "speaker": "Crystal",
+            "text": "N'oublie pas de m'appeler hein.",
+            "key": "Message1_1_65"
+          }
+        ]
+      }
+    ],
+    "makala": [
+      {
+        "id": "makala-0",
+        "label": "La saluer",
+        "lines": [
+          {
+            "id": 117,
+            "speaker": "Mamy Makala",
+            "text": "Oui mon fils il y a quoi ?",
+            "key": "Message1_1_117"
+          }
+        ]
+      }
+    ]
+  }
+}

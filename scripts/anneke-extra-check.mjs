@@ -1,0 +1,32 @@
+// Les sauts de date des fixtures représentent une période reposée ; les activités testées restent en temps normal.
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)}
+const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),m=await import('../src/currency.ts'),p=await import('../src/dossier-puzzle.ts'),draft=await import('../src/dossier-draft.ts'),busy=await import('../src/guided-outing-state.ts'),work=await import('../src/dossier-work.ts')
+let e=await import('../src/anneke-extra.ts')
+const ctx=(zone='ministry',extra={})=>({zone,travelling:false,allowed:true,...extra}),at=t=>c.advanceGameTime(t-c.getGameTime().totalMinutes,'sleep'),quote=(action,index)=>e.prepareExtra(action,index,ctx()),act=(action,index)=>e.confirmExtra(quote(action,index).token,ctx())
+function solve(b){const path=[b.start],seen=new Set(path);function visit(cell){if(cell===b.goal)return b.visas.every(v=>seen.has(v));const x=cell%b.size,y=Math.floor(cell/b.size);for(const next of [x>0?cell-1:-1,x<b.size-1?cell+1:-1,y>0?cell-b.size:-1,y<b.size-1?cell+b.size:-1]){if(next<0||seen.has(next)||b.blocked.includes(next))continue;const arrow=b.arrows.find(a=>a.cell===cell);if(arrow&&next!==cell+({up:-b.size,right:1,down:b.size,left:-1}[arrow.direction]))continue;seen.add(next);path.push(next);if(visit(next))return true;path.pop();seen.delete(next)}return false}assert.ok(visit(b.start));return path}
+assert.equal(e.getExtraState().order,null);assert.throws(()=>quote('accept',-1))
+for(const context of [ctx('home'),ctx('ministry',{travelling:true}),ctx('ministry',{allowed:false})])assert.equal(e.confirmExtra(e.prepareExtra('accept',0,context).token,context).ok,false)
+let q=quote('accept',0);e.cancelExtra(q.token);assert.equal(e.confirmExtra(q.token,ctx()).ok,false)
+q=quote('accept',0);m.addMoney(1);assert.equal(e.confirmExtra(q.token,ctx()).ok,false)
+const bag=await import('../src/food-bag.ts');m.addMoney(250);assert.equal(bag.confirmFoodBag(bag.prepareFoodBag('buy','meal',ctx('market')).token,ctx('market')).ok,true)
+const initial={money:m.getMoneyBalance(),resources:r.getPlayerResources(),time:c.getGameTime().totalMinutes};q=quote('accept',0);q.index=2;assert.equal(e.confirmExtra(q.token,ctx()).ok,true);assert.equal(e.getExtraState().order.index,0);assert.equal(e.confirmExtra(q.token,ctx()).ok,false);assert.deepEqual(r.getPlayerResources(),initial.resources);assert.equal(c.getGameTime().totalMinutes,initial.time)
+assert.equal(act('accept',1).ok,false);assert.equal(act('start',0).ok,false)
+e=await import('../src/anneke-extra.ts?accepted');assert.equal(e.getExtraState().order.index,0)
+at(1080);assert.equal(bag.getFoodBag().item.expired,true);assert.equal(e.getExtraState().giverAvailable,false);const batch=e.getExtraBatch(),board=p.createDossierPuzzle(batch.id+'/0',0),solution=solve(board);assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false)
+assert.equal(act('start',0).ok,true);assert.equal(e.completeExtra(batch.id,0,[],ctx()).ok,false)
+draft.saveDossierDraft('ordinary',2,[1]);draft.saveDossierDraft(batch.id,0,solution.slice(0,3),e.extraDraftKey);assert.deepEqual(draft.restoreDossierDraft(board,batch.id,0,e.extraDraftKey),solution.slice(0,3));assert.equal(JSON.parse(store.get('mboa-dossier-draft-v1')).batch,'ordinary')
+e=await import('../src/anneke-extra.ts?started');assert.equal(e.getExtraState().order.started,true);assert.deepEqual(p.createDossierPuzzle(e.getExtraBatch().id+'/0',0),board);assert.equal(m.getMoneyBalance(),initial.money)
+r.spendEnergy(76);assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false);r.restoreEnergy(100)
+for(const context of [ctx('home'),ctx('ministry',{travelling:true}),ctx('ministry',{allowed:false})])assert.equal(e.completeExtra(batch.id,0,solution,context).ok,false)
+busy.setGuidedPresentation({npcId:'bae',mode:'walk',phase:'outbound',origin:'home',destination:'club',zone:null,travelling:true,progress:0});assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false);busy.setGuidedPresentation(null)
+r.changeRespoPoints(185);let nested=false;const unsub=r.onPlayerResourcesChange(()=>{if(!nested){nested=true;assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false)}})
+assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,true);unsub();assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false);assert.equal(m.getMoneyBalance(),901);assert.equal(r.getPlayerResources().energy,75);assert.equal(r.getPlayerResources().ptRespo,193);assert.equal(c.getGameTime().totalMinutes,1140);assert.equal(work.getDossierBatch().remaining,5)
+e=await import('../src/anneke-extra.ts?paid');assert.equal(e.getExtraState().order.done,true);assert.equal(e.completeExtra(batch.id,0,solution,ctx()).ok,false)
+for(const index of [1,2]){at(index*1440+480);assert.equal(act('accept',index).ok,true);at(index*1440+1320);assert.equal(act('start',index).ok,true);const b=e.getExtraBatch();assert.equal(e.completeExtra(b.id,index,solve(p.createDossierPuzzle(b.id+'/'+index,index)),ctx()).ok,true);assert.equal(c.getGameTime().minuteOfDay,1380)}
+at(3*1440+480);assert.equal(act('accept',1).ok,true);at(3*1440+1321);assert.match(e.extraWorkReason('ministry'),/heure complète/);at(3*1440+1380);assert.equal(e.getExtraState().expired,true);assert.equal(act('start',1).ok,false)
+e=await import('../src/anneke-extra.ts?expired');assert.equal(e.getExtraState().expired,true)
+at(4*1440+480);assert.equal(act('accept',2).ok,true);at(4*1440+1080);assert.equal(act('start',2).ok,true);at(5*1440+480);assert.equal(e.getExtraState().expired,true);assert.equal(act('accept',0).ok,false)
+at(7*1440+480);assert.equal(act('accept',0).ok,true);assert.equal(r.getPlayerResources().mood,90);assert.equal(r.getPlayerResources().karma,0)
+store.set('mboa-anneke-extra-v1',JSON.stringify({version:1,day:70,index:0,started:true,done:false}));e=await import('../src/anneke-extra.ts?bad');assert.equal(e.getExtraState().order,null)
+console.log('Extra: onsite giver/day guards, three commands/shared daily choice, cancel/stale/forged/double/reentrant guards, free acceptance/start/abandon, saved deterministic independent drafts, exact23/expiry/weekend/new week, energy/context/guided locks, unique successful rewards and ordinary-pile independence passed')

@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
+const r=await import('../src/player-resources.ts'),m=await import('../src/currency.ts'),c=await import('../src/game-clock.ts'),busy=await import('../src/guided-outing-state.ts')
+let h=await import('../src/home-comfort.ts')
+const ctx=(zone='home',extra={})=>({zone,travelling:false,allowed:true,...extra}),act=(id,action)=>h.confirmHomeEquipment(h.prepareHomeEquipment(id,action,ctx()).token,ctx())
+assert.equal(act('bed-base','sell').ok,false);assert.equal(act('bed-comfort','sell').ok,false);m.addMoney(50000)
+assert.equal(act('bed-comfort','buy').ok,true);assert.equal(act('bed-comfort','equip').ok,true);assert.equal(h.getHomeComfort().total,80);assert.equal(r.getPlayerResources().mood,95)
+const base=r.getMoodDetails().base,time=c.getGameTime().totalMinutes,energy=r.getPlayerResources().energy
+let q=h.prepareHomeEquipment('bed-comfort','sell',ctx());assert.equal(q.refund,4000);assert.equal(q.afterComfort,0);assert.equal(q.replacement,'bed-base');h.cancelHomeEquipment(q.token);assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,false)
+for(const context of [ctx('market'),ctx('home',{travelling:true}),ctx('home',{allowed:false})])assert.equal(h.confirmHomeEquipment(h.prepareHomeEquipment('bed-comfort','sell',context).token,context).ok,false)
+q=h.prepareHomeEquipment('bed-comfort','sell',ctx());m.addMoney(1);assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,false)
+q=h.prepareHomeEquipment('bed-comfort','sell',ctx());q.refund=40000;q.replacement='sofa-base';const before=m.getMoneyBalance();let nested=false;const unsub=m.onMoneyBalanceChange(()=>{if(!nested){nested=true;assert.equal(act('bed-comfort','sell').ok,false)}})
+assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,true);unsub();assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,false);assert.equal(m.getMoneyBalance(),before+4000);assert.equal(h.getHomeComfort().total,0);assert.equal(r.getPlayerResources().mood,90);assert.equal(r.getMoodDetails().base,base);assert.equal(h.getHomeComfort().equipment.find(i=>i.id==='bed-base').equipped,true)
+h=await import('../src/home-comfort.ts?reload');assert.equal(h.getHomeComfort().equipment.find(i=>i.id==='bed-comfort').owned,false);assert.equal(act('bed-comfort','sell').ok,false);assert.equal(m.getMoneyBalance(),before+4000)
+assert.equal(act('sofa-comfort','buy').ok,true);q=h.prepareHomeEquipment('sofa-comfort','sell',ctx());assert.equal(q.refund,3250);assert.equal(q.afterComfort,0);assert.equal(q.replacement,null);assert.equal(act('sofa-comfort','sell').ok,true)
+const rebuy=m.getMoneyBalance();assert.equal(act('bed-comfort','buy').ok,true);assert.equal(m.getMoneyBalance(),rebuy-8000);assert.equal(act('bed-comfort','equip').ok,true);r.setMood(140);assert.equal(act('bed-comfort','sell').ok,true);assert.equal(r.getPlayerResources().mood,140);assert.equal(r.getMoodDetails().base,140)
+assert.equal(act('bed-comfort','buy').ok,true);q=h.prepareHomeEquipment('bed-comfort','sell',ctx());assert.equal(act('bed-comfort','equip').ok,true);assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,false)
+q=h.prepareHomeEquipment('bed-comfort','sell',ctx());busy.setGuidedPresentation({npcId:'bae',phase:'outbound',mode:'walk',origin:'home',destination:'club',zone:null,travelling:true,progress:0});assert.equal(h.confirmHomeEquipment(q.token,ctx()).ok,false);busy.setGuidedPresentation(null)
+m.addMoney(Number.MAX_SAFE_INTEGER-m.getMoneyBalance());assert.equal(act('bed-comfort','sell').ok,false);assert.equal(h.getHomeComfort().equipment.find(i=>i.id==='bed-comfort').owned,true)
+assert.equal(c.getGameTime().totalMinutes,time);assert.equal(r.getPlayerResources().energy,energy);assert.equal(r.getPlayerResources().ptRespo,0);assert.equal(r.getPlayerResources().karma,0)
+console.log('Resale ownership/freebase, equipped fallback/unequipped,50percent refunds,cancel/context/stale/forged/double/reentrant,reload/fullprice rebuy,comfort/visible capped mood/base preservation,guided lock,wallet overflow and unchanged time/stats passed')

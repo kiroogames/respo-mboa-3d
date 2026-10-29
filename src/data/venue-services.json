@@ -1,0 +1,175 @@
+[
+  {
+    "id": "home-rest",
+    "zones": [
+      "home"
+    ],
+    "name": "Se reposer à la maison",
+    "description": "Une pause pour reprendre des forces.",
+    "money": 0,
+    "energyCost": 0,
+    "minutes": 30,
+    "energyGain": 20,
+    "moodGain": 3,
+    "respoGain": 0
+  },
+  {
+    "id": "home-sleep",
+    "zones": [
+      "home"
+    ],
+    "name": "Dormir",
+    "description": "Huit heures de sommeil pour récupérer toute son énergie.",
+    "money": 0,
+    "energyCost": 0,
+    "minutes": 480,
+    "energyGain": 0,
+    "fullEnergy": true,
+    "moodGain": 10,
+    "respoGain": 0
+  },
+  {
+    "id": "hotel-rest",
+    "zones": [
+      "hotel",
+      "pilton"
+    ],
+    "name": "Repos court",
+    "description": "Louer une chambre pour souffler pendant une heure.",
+    "money": 1500,
+    "energyCost": 0,
+    "minutes": 60,
+    "energyGain": 35,
+    "moodGain": 5,
+    "respoGain": 0
+  },
+  {
+    "id": "hotel-meal",
+    "zones": [
+      "hotel",
+      "pilton"
+    ],
+    "name": "Repas au restaurant",
+    "description": "Prendre un repas au restaurant de l’hôtel.",
+    "money": 800,
+    "energyCost": 0,
+    "minutes": 45,
+    "energyGain": 20,
+    "moodGain": 8,
+    "respoGain": 0
+  },
+  {
+    "id": "hotel-night",
+    "zones": [
+      "hotel",
+      "pilton"
+    ],
+    "name": "Prendre une chambre",
+    "description": "Une nuit de huit heures avec récupération complète de l’énergie.",
+    "money": 4500,
+    "energyCost": 0,
+    "minutes": 480,
+    "energyGain": 0,
+    "fullEnergy": true,
+    "moodGain": 15,
+    "respoGain": 0
+  },
+  {
+    "id": "market-meal",
+    "zones": [
+      "market"
+    ],
+    "name": "Manger au marché",
+    "description": "S’arrêter chez un vendeur pour un repas.",
+    "money": 250,
+    "energyCost": 0,
+    "minutes": 30,
+    "energyGain": 12,
+    "moodGain": 4,
+    "respoGain": 0
+  },
+  {
+    "id": "shop-snack",
+    "zones": [
+      "supermarket"
+    ],
+    "name": "Prendre une collation",
+    "description": "Acheter et manger une collation sur place.",
+    "money": 150,
+    "energyCost": 0,
+    "minutes": 15,
+    "energyGain": 8,
+    "moodGain": 2,
+    "respoGain": 0
+  },
+  {
+    "id": "training",
+    "zones": [
+      "education"
+    ],
+    "name": "Suivre une formation",
+    "description": "Se former pour gagner des points Respo.",
+    "money": 200,
+    "energyCost": 10,
+    "minutes": 60,
+    "energyGain": 0,
+    "moodGain": 2,
+    "respoGain": 10
+  },
+  {
+    "id": "relax",
+    "zones": [
+      "njoka"
+    ],
+    "name": "Se détendre",
+    "description": "Profiter de l’ambiance du quartier.",
+    "money": 300,
+    "energyCost": 5,
+    "minutes": 45,
+    "energyGain": 0,
+    "moodGain": 15,
+    "respoGain": 0
+  },
+  {
+    "id": "culture-visit",
+    "zones": [
+      "culture"
+    ],
+    "name": "Visiter une exposition",
+    "description": "Une sortie culturelle pour se changer les idées.",
+    "money": 250,
+    "energyCost": 4,
+    "minutes": 45,
+    "energyGain": 0,
+    "moodGain": 10,
+    "respoGain": 3
+  },
+  {
+    "id": "sport",
+    "zones": [
+      "stadium"
+    ],
+    "name": "S’entraîner",
+    "description": "Une séance de sport pour se sentir mieux.",
+    "money": 0,
+    "energyCost": 15,
+    "minutes": 30,
+    "energyGain": 0,
+    "moodGain": 10,
+    "respoGain": 3
+  },
+  {
+    "id": "public-rest",
+    "zones": [
+      "*"
+    ],
+    "name": "Faire une pause",
+    "description": "S’asseoir un moment pour reprendre son souffle.",
+    "money": 0,
+    "energyCost": 0,
+    "minutes": 15,
+    "energyGain": 5,
+    "moodGain": 1,
+    "respoGain": 0
+  }
+]

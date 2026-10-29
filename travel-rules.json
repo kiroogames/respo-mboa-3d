@@ -1,0 +1,6 @@
+{
+  "cityMetersPerMapUnit": 12,
+  "trafficPeriodMinutes": 30,
+  "clearTrafficProbability": 0.5,
+  "busyTrafficProbability": 0.3
+}

@@ -1,0 +1,67 @@
+/* Lisibilité : valeurs et textes plus grands, contrastes francs sans flouter les ressources. */
+:root{--pp-ink:#203c30;--pp-muted:#3d5545}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body{font-size:16px;line-height:1.6;color:#263f32}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body p{font-size:16px;line-height:1.6;color:#344d3c}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body small{font-size:14px;line-height:1.5;color:#405744}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body h3{font-size:20px;color:#203f2f;line-height:1.3}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(label,summary){font-size:14px;line-height:1.5;color:#304e3a}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.travel-costs,.venue-description,.venue-other-gains,.venue-section-label,.travel-mode-description,.outing-cost,.meal-price){font-size:14px;line-height:1.5;color:#344f3c}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.venue-service,.travel-option,.citizen-card) b{font-size:18px;color:#213e2f}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(select,input[type=number]){font-size:17px}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body .energy-effect-cards article b{font-size:16px}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body .energy-effect-cards article p{font-size:15px;color:#344d3c}
+dialog.travel-dialog:not([data-mode=puzzle]) .energy-calculations summary{font-size:15px}
+dialog.travel-dialog:not([data-mode=puzzle]) .energy-overview [data-energy-status]{font-size:14px;color:#264c36}
+dialog.travel-dialog:not([data-mode=puzzle]) .energy-overview [data-sport-capacity]{font-size:30px;color:#183f2d}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body .venue-tabs button{font-size:15px;color:#40533e}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body .venue-tabs button[aria-selected=true]{color:#163f2d}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-foot button{font-size:16px;min-height:48px}
+dialog.travel-dialog .popup-foot button:disabled{color:#56614e!important}
+dialog.travel-dialog .popup-stats>span{font-size:11px;color:#3a533f;letter-spacing:.2px}
+dialog.travel-dialog .popup-stats b{font-size:17px;color:#173f2b}
+dialog.travel-dialog .menu-context-clock{font-size:13px;color:#d0e0cf}
+dialog.travel-dialog .menu-brand{font-size:12px;color:#d0e0cf}
+#app .respo-console .console-caption{font-size:12px;letter-spacing:1.5px;color:#f0d493}
+#app .respo-console .player-xp{font-size:12px;color:#d0e0cf}
+#app .respo-vitals .game-wallet-label{font-size:12px;color:#d7ead8;letter-spacing:1px}
+#app .respo-vitals .game-wallet-amount{font-size:27px;color:#fff9e9}
+#app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{font-size:12px;min-height:30px;color:#fff0c9;background:#2c5845}
+#app .city-wallet-strip .game-wallet-label{font-size:11px;color:#42573d}
+#app .city-wallet-strip .game-wallet-amount{font-size:26px;color:#203f2b}
+#app .city-wallet-strip #bills-open{font-size:12px;min-height:24px;color:#2a4e32}
+#app .game-clock-day{font-size:15px;color:#203f2b}
+#app .game-clock-week,#app .game-clock #game-period{font-size:12px;color:#665027}
+#app .clock-wait-button{font-size:13px;color:#254b30}
+#app .tools button span,#app .tools button[data-label]::after{font-size:12px;color:#d9e8d6}
+#app .tools button[aria-pressed=true]::after{color:#ffe0a0}
+#app .landmark{font-size:14px;color:#203f2e}
+#app .landmark:hover,#app .landmark:focus-visible{color:#fff9e8}
+#app .places-text small{font-size:11px;color:#4d6246}
+@media(max-width:760px){
+ dialog.travel-dialog .popup-stats{gap:7px}
+ dialog.travel-dialog .popup-stats>span{font-size:11px}
+ dialog.travel-dialog .popup-stats b{font-size:14px;letter-spacing:-.3px}
+ dialog.travel-dialog .menu-brand{font-size:9px}
+ dialog.travel-dialog .menu-context-clock{font-size:11px}
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-body p{font-size:15px}
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-body small{font-size:13px}
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-body .venue-tabs button{font-size:13px}
+ #app .respo-console .player-name{font-size:13px}
+ #app .respo-console .player-xp{font-size:10px;white-space:normal;line-height:1.25}
+ #app .respo-vitals .game-wallet-label{font-size:10px;letter-spacing:.5px}
+ #app .respo-vitals .game-wallet-amount{font-size:21px;letter-spacing:-.7px}
+ #app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{font-size:11px;min-height:28px;padding:3px 5px}
+ #app .city-wallet-strip .game-wallet-label{font-size:10px}
+ #app .city-wallet-strip .game-wallet-amount{font-size:20px}
+ #app .city-wallet-strip #bills-open{font-size:11px;min-height:23px}
+ #app .game-clock-day{font-size:12px}
+ #app .game-clock-week,#app .game-clock #game-period{font-size:10px}
+ #app .clock-wait-button{font-size:12px;min-height:30px}
+ #app #ui-menu-toggle{top:134px}
+ #app .header-actions{top:178px}
+ #app .tools button span,#app .tools button[data-label]::after{font-size:10px}
+ #app .places-text small{font-size:10px}
+ #app .landmark{font-size:12px}
+}
+@media(max-width:350px){#app .respo-vitals .game-wallet-amount{font-size:20px}#app .respo-console .player-name{font-size:12px}#app .city-wallet-strip .game-wallet-amount{font-size:19px}}
+@media(max-height:480px) and (min-width:761px){#app .respo-vitals .game-wallet-label{font-size:9px}#app .respo-vitals .game-wallet-amount{font-size:18px}#app .respo-console .player-xp{font-size:9px}#app .respo-vitals #energy-counter #energy-effects-open,#app .respo-vitals #mood-effects-open{font-size:10px;min-height:25px}#app .city-wallet-strip .game-wallet-amount{font-size:22px}#app .game-clock-week,#app .game-clock #game-period{font-size:10px}#app .tools button span,#app .tools button[data-label]::after{font-size:11px}}

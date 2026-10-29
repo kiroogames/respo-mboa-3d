@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict'
+import {execFileSync} from 'node:child_process'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
+const r=await import('../src/player-resources.ts'),c=await import('../src/game-clock.ts'),sport=await import('../src/sport-energy.ts'),sleep=await import('../src/sleeping.ts'),meal=await import('../src/home-meals.ts'),m=await import('../src/currency.ts')
+r.spendEnergy(30);const ctx={zone:'home',travelling:false,allowed:true},time=c.getGameTime().totalMinutes
+for(const [points,max] of [[189,100],[190,105],[474,105],[475,110],[854,110],[855,115],[1329,115],[1330,120],[1899,120],[1900,120],[10000,120]]){r.changeRespoPoints(points-r.getPlayerResources().ptRespo);assert.equal(r.getPlayerResources().maxEnergy,max);assert.equal(r.getPlayerResources().energy,70);assert.equal(r.getEnergyDetails().reference,100)}
+assert.equal(c.getGameTime().totalMinutes,time);assert.equal(m.getMoneyBalance(),0);assert.equal(JSON.parse(store.get('mboa-player-resources-v1')).maxEnergy,100)
+sport.grantSportEffect();assert.equal(r.getPlayerResources().maxEnergy,130);assert.equal(r.getPlayerResources().energy,70);r.restoreEnergy(55);assert.equal(r.getPlayerResources().energy,125);const end=sport.getSportEffect().end;c.advanceGameTime(end-c.getGameTime().totalMinutes);assert.equal(r.getPlayerResources().maxEnergy,120);assert.equal(r.getPlayerResources().energy,120)
+r.spendEnergy(50);let q=sleep.prepareSleeping(480);assert.equal(q.energyAfter,120);assert.equal(sleep.confirmSleeping(q.id,ctx).ok,true);assert.equal(r.getPlayerResources().energy,120)
+q=sleep.prepareSleeping(30);r.changeRespoPoints(-10000);assert.equal(sleep.confirmSleeping(q.id,ctx).ok,false);assert.equal(r.getPlayerResources().maxEnergy,100);assert.equal(r.getPlayerResources().energy,100)
+r.changeRespoPoints(190);m.addMoney(1000);c.advanceGameTime((Math.floor(c.getGameTime().totalMinutes/1440)+1)*1440+1080-c.getGameTime().totalMinutes);q=meal.prepareHomeMeal('rice');r.changeRespoPoints(285);assert.equal(meal.confirmHomeMeal(q.id,ctx).ok,false)
+// Des processus indépendants vérifient le chargement à froid, sans ancien module vivant en mémoire.
+for(const fixture of [{maxEnergy:100,ptRespo:1330,energy:70,want:120},{maxEnergy:135,ptRespo:855,energy:140,want:150},{maxEnergy:100,ptRespo:1330,energy:125,want:130,active:true},{maxEnergy:100,ptRespo:1330,energy:125,want:120,expired:true}]){
+ const saved={karma:3,mood:87,respoNext:190,...fixture};const code=`import assert from 'node:assert/strict';const s=new Map([['mboa-game-minutes-v1','1000'],['mboa-player-resources-v1',${JSON.stringify(JSON.stringify(saved))}]]);globalThis.localStorage={getItem:k=>s.get(k)??null,setItem:(k,v)=>s.set(k,v)};${fixture.active||fixture.expired?`s.set('mboa-sport-energy-v1',JSON.stringify({version:1,start:${fixture.active?900:600},end:${fixture.active?1260:960}}));`:''}const r=await import('./src/player-resources.ts');assert.equal(r.getPlayerResources().maxEnergy,${fixture.want});assert.equal(r.getPlayerResources().energy,${Math.min(fixture.energy,fixture.want)});assert.equal(r.getEnergyDetails().reference,${fixture.maxEnergy});r.setMood(87);assert.equal(JSON.parse(s.get('mboa-player-resources-v1')).maxEnergy,${fixture.maxEnergy});assert.equal(r.getPlayerResources().maxEnergy,${fixture.want});`
+ execFileSync(process.execPath,['--experimental-strip-types','--input-type=module','-e',code],{cwd:process.cwd()})
+}
+assert.equal(r.getPlayerResources().karma,0);console.log('Level capacity all thresholds/no refill/cap20, unchanged reference/time/money, sport130->120 clamp, full sleep, stale quotes and cold legacy/custom/active/expired saves passed')
+

@@ -1,0 +1,1887 @@
+{
+  "note": "Routines de gameplay ajustables, inspirées des rôles Unity. Horaires et pauses adaptés à la carte 3D ; Bae conserve son absence quotidienne 08:00–15:30.",
+  "people": {
+    "elanga": {
+      "rank": "Cadre · Ressources humaines",
+      "transport": "yonga",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 420,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 420,
+          "until": 465,
+          "zone": "palms",
+          "activity": "Petit-déjeuner et préparation",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 465,
+          "until": 510,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 510,
+          "until": 750,
+          "zone": "ministry",
+          "activity": "Gestion du personnel",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 750,
+          "until": 780,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "pilton",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 780,
+          "until": 840,
+          "zone": "pilton",
+          "activity": "Déjeuner professionnel",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 840,
+          "until": 870,
+          "zone": null,
+          "origin": "pilton",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 870,
+          "until": 990,
+          "zone": "ministry",
+          "activity": "Suivi des dossiers",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1035,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1035,
+          "until": 1230,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1230,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "kako": {
+      "rank": "Direction · Marchés",
+      "transport": "yonga",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 450,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 450,
+          "until": 495,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 495,
+          "until": 540,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 540,
+          "until": 750,
+          "zone": "ministry",
+          "activity": "Rendez-vous et marchés",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 750,
+          "until": 780,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "pilton",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 780,
+          "until": 870,
+          "zone": "pilton",
+          "activity": "Déjeuner et rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 870,
+          "until": 900,
+          "zone": null,
+          "origin": "pilton",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 900,
+          "until": 1020,
+          "zone": "ministry",
+          "activity": "Suivi des marchés",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1020,
+          "until": 1065,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1065,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "anneke": {
+      "rank": "Direction · Technique",
+      "transport": "yonga",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 390,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 390,
+          "until": 435,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 435,
+          "until": 480,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 480,
+          "until": 750,
+          "zone": "ministry",
+          "activity": "Travail et encadrement",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 750,
+          "until": 795,
+          "zone": "ministry",
+          "activity": "Pause déjeuner à la cantine",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 795,
+          "until": 1020,
+          "zone": "ministry",
+          "activity": "Suivi technique des dossiers",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1020,
+          "until": 1065,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1065,
+          "until": 1230,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1230,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "hector": {
+      "rank": "Assistant · Technique",
+      "transport": "taxi",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 390,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 390,
+          "until": 435,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 435,
+          "until": 480,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 480,
+          "until": 720,
+          "zone": "ministry",
+          "activity": "Assistance et dossiers",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 720,
+          "until": 750,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 750,
+          "until": 795,
+          "zone": "market",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 795,
+          "until": 825,
+          "zone": null,
+          "origin": "market",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 825,
+          "until": 990,
+          "zone": "ministry",
+          "activity": "Travail avec Mme Anneke",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1035,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "education",
+          "activity": "Trajet vers le complexe scolaire",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1035,
+          "until": 1110,
+          "zone": "education",
+          "activity": "Formation personnelle",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1110,
+          "until": 1155,
+          "zone": null,
+          "origin": "education",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1155,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "friday": [
+        {
+          "from": 0,
+          "until": 390,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 390,
+          "until": 435,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 435,
+          "until": 480,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 480,
+          "until": 720,
+          "zone": "ministry",
+          "activity": "Assistance et dossiers",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 720,
+          "until": 750,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 750,
+          "until": 795,
+          "zone": "market",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 795,
+          "until": 825,
+          "zone": null,
+          "origin": "market",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 825,
+          "until": 990,
+          "zone": "ministry",
+          "activity": "Travail avec Mme Anneke",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1035,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "njoka",
+          "activity": "Trajet vers la rue du Njoka",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1035,
+          "until": 1260,
+          "zone": "njoka",
+          "activity": "Sortie du vendredi",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1305,
+          "zone": null,
+          "origin": "njoka",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1305,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "sidonie": {
+      "rank": "Assistante · Marchés",
+      "transport": "taxi",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 450,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 450,
+          "until": 495,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 495,
+          "until": 540,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 540,
+          "until": 735,
+          "zone": "ministry",
+          "activity": "Assistance et rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 735,
+          "until": 765,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 765,
+          "until": 810,
+          "zone": "market",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 810,
+          "until": 840,
+          "zone": null,
+          "origin": "market",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 840,
+          "until": 960,
+          "zone": "ministry",
+          "activity": "Suivi administratif",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 960,
+          "until": 1005,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "supermarket",
+          "activity": "Trajet pour les courses",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1005,
+          "until": 1065,
+          "zone": "supermarket",
+          "activity": "Courses",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1065,
+          "until": 1110,
+          "zone": null,
+          "origin": "supermarket",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1110,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "friday": [
+        {
+          "from": 0,
+          "until": 450,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 450,
+          "until": 495,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 495,
+          "until": 540,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 540,
+          "until": 735,
+          "zone": "ministry",
+          "activity": "Assistance et rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 735,
+          "until": 765,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 765,
+          "until": 810,
+          "zone": "market",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 810,
+          "until": 840,
+          "zone": null,
+          "origin": "market",
+          "destination": "ministry",
+          "activity": "Retour au ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 840,
+          "until": 960,
+          "zone": "ministry",
+          "activity": "Suivi administratif",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 960,
+          "until": 1005,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "njoka",
+          "activity": "Trajet vers la rue du Njoka",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1005,
+          "until": 1260,
+          "zone": "njoka",
+          "activity": "Sortie du vendredi",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1305,
+          "zone": null,
+          "origin": "njoka",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1305,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "delphine": {
+      "rank": "Accueil · Réception",
+      "transport": "moto",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 360,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 360,
+          "until": 405,
+          "zone": "palms",
+          "activity": "Préparation de la journée",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 405,
+          "until": 450,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 450,
+          "until": 720,
+          "zone": "ministry",
+          "activity": "Accueil des usagers",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 720,
+          "until": 750,
+          "zone": "ministry",
+          "activity": "Pause déjeuner à la cantine",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 750,
+          "until": 930,
+          "zone": "ministry",
+          "activity": "Accueil et orientation",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 930,
+          "until": 975,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Trajet pour les courses",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 975,
+          "until": 1035,
+          "zone": "market",
+          "activity": "Courses",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1035,
+          "until": 1080,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1080,
+          "until": 1230,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1230,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "crystal": {
+      "rank": "Indépendante · Rendez-vous",
+      "transport": "taxi",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 555,
+          "zone": "palms",
+          "activity": "Préparation et temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 555,
+          "until": 600,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 600,
+          "until": 720,
+          "zone": "ministry",
+          "activity": "Rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 720,
+          "until": 750,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "pilton",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 750,
+          "until": 840,
+          "zone": "pilton",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 840,
+          "until": 885,
+          "zone": null,
+          "origin": "pilton",
+          "destination": "supermarket",
+          "activity": "Trajet pour les courses",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 885,
+          "until": 990,
+          "zone": "supermarket",
+          "activity": "Courses et rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1020,
+          "zone": null,
+          "origin": "supermarket",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1020,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 525,
+          "zone": null,
+          "origin": "palms",
+          "destination": "market",
+          "activity": "En route pour le marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 525,
+          "until": 660,
+          "zone": "market",
+          "activity": "Courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 705,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 705,
+          "until": 900,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 900,
+          "until": 945,
+          "zone": null,
+          "origin": "palms",
+          "destination": "stadium",
+          "activity": "En route pour les loisirs",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 945,
+          "until": 1080,
+          "zone": "stadium",
+          "activity": "Loisirs",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1080,
+          "until": 1125,
+          "zone": null,
+          "origin": "stadium",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1125,
+          "until": 1260,
+          "zone": "palms",
+          "activity": "Temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "friday": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 555,
+          "zone": "palms",
+          "activity": "Préparation et temps libre",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 555,
+          "until": 600,
+          "zone": null,
+          "origin": "palms",
+          "destination": "ministry",
+          "activity": "Trajet vers le ministère",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 600,
+          "until": 720,
+          "zone": "ministry",
+          "activity": "Rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 720,
+          "until": 750,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "pilton",
+          "activity": "Trajet pour le déjeuner",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 750,
+          "until": 840,
+          "zone": "pilton",
+          "activity": "Pause déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 840,
+          "until": 885,
+          "zone": null,
+          "origin": "pilton",
+          "destination": "supermarket",
+          "activity": "Trajet pour les courses",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 885,
+          "until": 990,
+          "zone": "supermarket",
+          "activity": "Courses et rendez-vous",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1035,
+          "zone": null,
+          "origin": "supermarket",
+          "destination": "njoka",
+          "activity": "Trajet vers la rue du Njoka",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1035,
+          "until": 1260,
+          "zone": "njoka",
+          "activity": "Sortie du vendredi",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1260,
+          "until": 1305,
+          "zone": null,
+          "origin": "njoka",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1305,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "makala": {
+      "rank": "Restauration · Cantine",
+      "transport": "taxi",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 330,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 330,
+          "until": 420,
+          "zone": "market",
+          "activity": "Approvisionnement de la cantine",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 420,
+          "until": 465,
+          "zone": null,
+          "origin": "market",
+          "destination": "ministry",
+          "activity": "Transport des provisions",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 465,
+          "until": 660,
+          "zone": "ministry",
+          "activity": "Préparation des repas",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 660,
+          "until": 840,
+          "zone": "ministry",
+          "activity": "Service du déjeuner",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 840,
+          "until": 885,
+          "zone": "ministry",
+          "activity": "Rangement de la cantine",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 885,
+          "until": 930,
+          "zone": null,
+          "origin": "ministry",
+          "destination": "market",
+          "activity": "Retour au marché",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 930,
+          "until": 990,
+          "zone": "market",
+          "activity": "Approvisionnement",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 990,
+          "until": 1035,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 1035,
+          "until": 1230,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1230,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 360,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 360,
+          "until": 780,
+          "zone": "market",
+          "activity": "Vente et courses du week-end",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 780,
+          "until": 825,
+          "zone": null,
+          "origin": "market",
+          "destination": "palms",
+          "activity": "Retour au quartier",
+          "available": false,
+          "travelling": true
+        },
+        {
+          "from": 825,
+          "until": 1230,
+          "zone": "palms",
+          "activity": "Temps en famille",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 1230,
+          "until": 1440,
+          "zone": null,
+          "activity": "Repos",
+          "available": false,
+          "travelling": false
+        }
+      ]
+    },
+    "bae": {
+      "rank": "Fiancée",
+      "transport": "taxi",
+      "weekday": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": "home",
+          "activity": "À la maison",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 930,
+          "zone": null,
+          "activity": "Au travail · absente de la maison",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 930,
+          "until": 1440,
+          "zone": "home",
+          "activity": "À la maison",
+          "available": true,
+          "travelling": false
+        }
+      ],
+      "weekend": [
+        {
+          "from": 0,
+          "until": 480,
+          "zone": "home",
+          "activity": "À la maison",
+          "available": true,
+          "travelling": false
+        },
+        {
+          "from": 480,
+          "until": 930,
+          "zone": null,
+          "activity": "Absente de la maison",
+          "available": false,
+          "travelling": false
+        },
+        {
+          "from": 930,
+          "until": 1440,
+          "zone": "home",
+          "activity": "À la maison",
+          "available": true,
+          "travelling": false
+        }
+      ]
+    }
+  }
+}

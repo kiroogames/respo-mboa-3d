@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict'
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
+store.set('mboa-npc-relationships-v1',JSON.stringify({consideration:67,accepted:['kitchen'],completed:['kitchen']}))
+const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),money=await import('../src/currency.ts'),relations=await import('../src/npc-relationships.ts'),w=await import('../src/waiting.ts')
+let t=await import('../src/bae-toque.ts')
+const context={zone:'home',travelling:false,allowed:true},at=n=>c.advanceGameTime(n-c.getGameTime().totalMinutes)
+const pay=amount=>t.confirmToque(t.prepareToque(amount,context).token,context)
+assert.equal(t.getToqueState().contributed,0);assert.equal(relations.getCompletedNPCRequests('bae').length,1)
+money.addMoney(250000);const baseline=r.getPlayerResources(),consideration=relations.getConsideration('bae')
+assert.equal(pay(500).ok,false);at(929);assert.equal(pay(500).ok,false);at(930)
+for(const bad of [{...context,zone:'market'},{...context,travelling:true},{...context,allowed:false}]){const q=t.prepareToque(500,bad);assert.equal(t.confirmToque(q.token,bad).ok,false)}
+for(const amount of [0,1,99,101,NaN,Infinity,1.5,150100])assert.equal(pay(amount).ok,false)
+let q=t.prepareToque(500,context);t.cancelToque(q.token);assert.equal(t.confirmToque(q.token,context).ok,false)
+q=t.prepareToque(500,context);q.amount=10000;q.contributed=140000
+const time=c.getGameTime().totalMinutes;assert.equal(t.confirmToque(q.token,context).ok,true);assert.equal(t.confirmToque(q.token,context).ok,false);assert.equal(t.getToqueState().contributed,500);assert.equal(money.getMoneyBalance(),249500);assert.equal(c.getGameTime().totalMinutes,time)
+t=await import('../src/bae-toque.ts?reload');assert.equal(t.getToqueState().contributed,500)
+q=t.prepareToque(100,context);c.advanceGameTime(5);assert.equal(t.confirmToque(q.token,context).ok,false)
+q=t.prepareToque(100,context);money.spendMoney(1);assert.equal(t.confirmToque(q.token,context).ok,false)
+const balance=money.getMoneyBalance();money.spendMoney(balance);assert.equal(pay(100).ok,false);money.addMoney(balance)
+at(1440+480);assert.equal(pay(100).ok,false);at(1440+930);assert.equal(pay(100).ok,true)
+at(10080+930);assert.equal(t.getToqueState().contributed,600)
+const wait=w.prepareWaiting(180);w.confirmWaiting(wait.id,true);assert.equal(pay(100).ok,true);assert.equal(w.getContinuousWaiting(),180)
+const remaining=t.getToqueState().remaining;assert.equal(pay(remaining+100).ok,false)
+const beforeComplete=money.getMoneyBalance();assert.equal(pay(remaining).ok,true);assert.equal(money.getMoneyBalance(),beforeComplete-remaining);assert.equal(t.getToqueState().complete,true);assert.equal(t.getToqueState().contributed,150000);assert.equal(pay(100).ok,false)
+assert.deepEqual(r.getPlayerResources(),baseline);assert.equal(relations.getConsideration('bae'),consideration);assert.equal(relations.getCompletedNPCRequests('bae').length,1)
+store.set('mboa-bae-toque-v1',JSON.stringify({contributed:150001}));const corrupt=await import('../src/bae-toque.ts?corrupt');assert.equal(corrupt.getToqueState().contributed,0)
+console.log('Toque availability, bounds/steps, context guards, cancel/stale/forged/duplicate quotes, reload/week persistence, exact final amount, no overshoot, existing improvements, unchanged stats/time and waiting-chain preservation passed')

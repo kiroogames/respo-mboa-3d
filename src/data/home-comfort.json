@@ -1,0 +1,11 @@
+{
+ "target":300,
+ "rooms":[{"id":"bedroom","name":"Chambre"},{"id":"living","name":"Salon"},{"id":"kitchen","name":"Cuisine"},{"id":"bathroom","name":"Salle de bain"}],
+ "equipment":[
+  {"id":"bed-base","slot":"bed","room":"bedroom","name":"Lit de base","money":0,"comfort":0},
+  {"id":"bed-comfort","slot":"bed","room":"bedroom","name":"Lit confortable","money":8000,"comfort":80},
+  {"id":"sofa-base","slot":"sofa","room":"living","name":"Canapé de base","money":0,"comfort":0},
+  {"id":"sofa-comfort","slot":"sofa","room":"living","name":"Canapé confortable","money":6500,"comfort":70}
+ ],
+ "improvements":[{"id":"kitchen","room":"kitchen","comfort":60},{"id":"bathroom","room":"bathroom","comfort":60},{"id":"television","room":"living","comfort":30}]
+}

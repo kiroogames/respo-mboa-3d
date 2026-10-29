@@ -1,0 +1,169 @@
+[
+  {
+    "id": "bae",
+    "name": "Bae",
+    "type": "PNJ",
+    "relationship": "Fiancée du personnage principal",
+    "portrait": "portraits/bae.png",
+    "zone": "home",
+    "unavailable": [
+      {
+        "from": 480,
+        "until": 930
+      }
+    ],
+    "greeting": "Coucou, te voilà !",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Bae",
+        "description": "Prendre de ses nouvelles.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "elanga",
+    "name": "Elanga Gaston",
+    "type": "PNJ",
+    "relationship": "Responsable des ressources humaines",
+    "portrait": "portraits/elanga.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Je suis Elanga Gaston, je gère les Ressources humaines du ministère.\nC'est moi qui doit valider ton matricule après le stage ci.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Elanga Gaston",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "kako",
+    "name": "Kako Djaraba",
+    "type": "PNJ",
+    "relationship": "Directeur des marchés",
+    "portrait": "portraits/kako.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Hey, le nouveau stagiaire ! Je suis Monsieur Kako Djaraba.\nJe suis le Directeur des marchés ici.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Kako Djaraba",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "anneke",
+    "name": "Mme Anneke",
+    "type": "PNJ",
+    "relationship": "Directrice technique",
+    "portrait": "portraits/anneke.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Bonjour, c'est toi le nouveau stagiaire ?  Je suis Madame Anneke. Avec moi c'est le travail avant tout.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Mme Anneke",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "hector",
+    "name": "Hector Kizikan",
+    "type": "PNJ",
+    "relationship": "Assistant de Mme Anneke",
+    "portrait": "portraits/hector.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Bienvenue le nouveau. Je suis Hector Kizikan.  Je suis l'assistant de Mme Anneke.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Hector Kizikan",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "sidonie",
+    "name": "Sidonie Ogado",
+    "type": "PNJ",
+    "relationship": "Assistante de M. Kako",
+    "portrait": "portraits/sidonie.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Je suis Sidonie Ogado. Je suis l'assistante de M. Kako.  Mais bon je ne vais pas durer ici. J'attends mon visa.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Sidonie Ogado",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "delphine",
+    "name": "Delphine",
+    "type": "PNJ",
+    "relationship": "Réceptionniste du ministère",
+    "portrait": "portraits/delphine.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Oui c'est pour quoi ?",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Delphine",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "crystal",
+    "name": "Crystal",
+    "type": "PNJ",
+    "relationship": "Connaissance du ministère",
+    "portrait": "portraits/crystal.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Tu es mignon hein. N'oublie pas de m'appeler.  Qu'on sorte discuter un peu.",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Crystal",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  },
+  {
+    "id": "makala",
+    "name": "Mami Makala",
+    "type": "PNJ",
+    "relationship": "Cuisinière de la cantine",
+    "portrait": "portraits/makala.png",
+    "zone": "ministry",
+    "unavailable": [],
+    "greeting": "Oui mon fils il y a quoi ?",
+    "services": [
+      {
+        "id": "talk",
+        "label": "Discuter avec Mami Makala",
+        "description": "Faire connaissance et échanger.",
+        "costLabel": "Gratuit · immédiat"
+      }
+    ]
+  }
+]

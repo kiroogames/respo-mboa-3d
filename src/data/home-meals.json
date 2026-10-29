@@ -1,0 +1,5 @@
+[
+  {"id":"porridge","name":"Bouillie et beignets","money":150,"minutes":15,"energy":12,"mood":3},
+  {"id":"rice","name":"Riz sauce arachide","money":350,"minutes":30,"energy":25,"mood":6},
+  {"id":"ndole","name":"Ndolé et plantain","money":500,"minutes":45,"energy":35,"mood":8}
+]

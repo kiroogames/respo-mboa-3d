@@ -1,0 +1,275 @@
+{
+  "source": "Assets/Resources_moved/bd_messages/zonedialog_1_2.asset",
+  "initialConsideration": 50,
+  "topics": [
+    {
+      "id": "welcome",
+      "label": "Prendre de ses nouvelles",
+      "lines": [
+        {
+          "id": 3,
+          "speaker": "Bae",
+          "text": "Chéri de moi tu es rentré ?",
+          "key": "Message1_2_3"
+        },
+        {
+          "id": 2,
+          "speaker": "Bae",
+          "text": "Chérie ô, je suis contente quand tu es à la maison.\nVraiment je prie que tu valides le matricule là.",
+          "key": "Message1_2_2"
+        }
+      ]
+    },
+    {
+      "id": "support",
+      "label": "Parler du travail",
+      "lines": [
+        {
+          "id": 22,
+          "speaker": "Bae",
+          "text": "J'ai confiance !!",
+          "key": "Message1_2_22"
+        },
+        {
+          "id": 23,
+          "speaker": "Bae",
+          "text": "il ne faut pas stresser. Fais seulement de ton mieux là bas.\nMoi je sais que tu vas y arriver.",
+          "key": "Message1_2_23"
+        }
+      ]
+    },
+    {
+      "id": "anita",
+      "label": "Écouter ses soucis avec Anita",
+      "lines": [
+        {
+          "id": 27,
+          "speaker": "Bae",
+          "text": "Les gens sont quand même jaloux au mboa hein.",
+          "key": "Message1_2_27",
+          "choices": [
+            "(Manger vite et partir)",
+            "Comment ça chérie ?",
+            "",
+            ""
+          ]
+        },
+        {
+          "id": 31,
+          "speaker": "Bae",
+          "text": "Tu te souviens de mon amie Anita à la fac non ?\nElle sait que tu as eu le concours des fonctionnaires.",
+          "key": "Message1_2_31"
+        },
+        {
+          "id": 32,
+          "speaker": "Bae",
+          "text": "Et au lieu de nous encourager, elle prend sa bouche là pour me dire\n\"Wowowo tant qu'il n'a pas validé, ce n'est pas le matricule\" *tsuips*",
+          "key": "Message1_2_32",
+          "choices": [
+            "On va lui montrer chérie",
+            "Haka laisse là",
+            "Elle a peut-être raison hein",
+            "Tu me déranges pour ça ?"
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "label": "On va lui montrer chérie",
+          "lines": [
+            {
+              "id": 33,
+              "speaker": "Bae",
+              "text": "N'est ce pas !? Tu as même raison.\nValide ton matricule, elle aura encore plus le macabo.",
+              "key": "Message1_2_33"
+            }
+          ]
+        },
+        {
+          "label": "Haka laisse là",
+          "lines": [
+            {
+              "id": 36,
+              "speaker": "Bae",
+              "text": "Tu as même raison. Elle ne mérite pas que je m'énerve.",
+              "key": "Message1_2_36"
+            }
+          ]
+        },
+        {
+          "label": "Elle a peut-être raison hein",
+          "lines": [
+            {
+              "id": 38,
+              "speaker": "Bae",
+              "text": "Donc tu lui donnes raison? *tsuips*.  Je n'aime pas quand on veut marcher sur nous, tu laisses faire.",
+              "key": "Message1_2_38"
+            }
+          ]
+        },
+        {
+          "label": "Tu me déranges pour ça ?",
+          "lines": [
+            {
+              "id": 39,
+              "speaker": "Bae",
+              "text": "Si tu ne voulais pas qu'on parle il fallait me dire hein.\nAu lieu de me répondre comme ça. Tu es de son côté ?",
+              "key": "Message1_2_39"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "marriage",
+      "label": "Parler de votre avenir",
+      "lines": [
+        {
+          "id": 40,
+          "speaker": "Bae",
+          "text": "Ce qui fait même que ça m'énerve, c'est parce que ma mère m'a écrit.\nElle me fait les problèmes parce que j'habite avec toi hors mariage.",
+          "key": "Message1_2_40",
+          "choices": [
+            "Dès que  je valide mon matricule, on se marie",
+            "Laisse,  quand on va se marier elle va voir",
+            "Ta dot est d'abord cher hein",
+            "Ne me met pas la préssion !"
+          ]
+        }
+      ],
+      "responses": [
+        {
+          "label": "Dès que  je valide mon matricule, on se marie",
+          "lines": [
+            {
+              "id": 41,
+              "speaker": "Bae",
+              "text": "Awwwn. J'imagine déjà ma robe avec les tissus pagnes partout.\nLaisse notre mariage sera seulement la mort qui tue !",
+              "key": "Message1_2_41"
+            }
+          ]
+        },
+        {
+          "label": "Laisse,  quand on va se marier elle va voir",
+          "lines": [
+            {
+              "id": 42,
+              "speaker": "Bae",
+              "text": "Je sais que tu es sérieux avec moi. Mais bon parfois c'est dur.\nMa mère ne comprends pas qu'on est plus comme à son époque.",
+              "key": "Message1_2_42"
+            }
+          ]
+        },
+        {
+          "label": "Ta dot est d'abord cher hein",
+          "lines": [
+            {
+              "id": 43,
+              "speaker": "Bae",
+              "text": "*tsuips* C'est comme ça que vous êtes.\nAprès tu vas aller payer les choses chères aux petites.",
+              "key": "Message1_2_43"
+            }
+          ]
+        },
+        {
+          "label": "Ne me met pas la préssion !",
+          "lines": [
+            {
+              "id": 44,
+              "speaker": "Bae",
+              "text": "Pression comment ? Ne commence pas hein.  Si tu sens que tu me perds le temps, dis moi.",
+              "key": "Message1_2_44"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "id": "kitchen",
+      "title": "Améliorer la cuisine",
+      "lines": [
+        {
+          "id": 5,
+          "speaker": "Bae",
+          "text": "Justement chéri, maintenant qu'on a la maison,\nil faut quand même qu'on fasse quelques travaux non ?",
+          "key": "Message1_2_5"
+        },
+        {
+          "id": 6,
+          "speaker": "Bae",
+          "text": "Il faut qu'on équipe la cuisine. Quand je rentre du travail,\nje suis trop fatiguée pour écraser les condiments à la pierre.",
+          "key": "Message1_2_6"
+        },
+        {
+          "id": 9,
+          "speaker": "Bae",
+          "text": "Là où tu paniques déjà là. Tu ne vas pas payer ça seul hein.\nDonne ce que tu peux pour chaque travaux. Je vais compléter.",
+          "key": "Message1_2_9"
+        },
+        {
+          "id": 10,
+          "speaker": "Bae",
+          "text": "Mais si tu peux déjà arranger la cuisine ce soir, \nje te fais un bon plat pour le travail demain.",
+          "key": "Message1_2_10"
+        }
+      ],
+      "objective": "Faire les travaux dans la cuisine.",
+      "money": 7000
+    },
+    {
+      "id": "bathroom",
+      "title": "Améliorer la salle de bain",
+      "lines": [
+        {
+          "id": 5,
+          "speaker": "Bae",
+          "text": "Justement chéri, maintenant qu'on a la maison,\nil faut quand même qu'on fasse quelques travaux non ?",
+          "key": "Message1_2_5"
+        },
+        {
+          "id": 7,
+          "speaker": "Bae",
+          "text": "Il faut aussi arranger  la salle de bain.\nChaque matin on puise l'eau pour se laver, c'est pénible.",
+          "key": "Message1_2_7"
+        },
+        {
+          "id": 9,
+          "speaker": "Bae",
+          "text": "Là où tu paniques déjà là. Tu ne vas pas payer ça seul hein.\nDonne ce que tu peux pour chaque travaux. Je vais compléter.",
+          "key": "Message1_2_9"
+        }
+      ],
+      "objective": "Faire les travaux dans la salle de bain.",
+      "money": 7000
+    },
+    {
+      "id": "television",
+      "title": "Acheter une nouvelle télé",
+      "lines": [
+        {
+          "id": 5,
+          "speaker": "Bae",
+          "text": "Justement chéri, maintenant qu'on a la maison,\nil faut quand même qu'on fasse quelques travaux non ?",
+          "key": "Message1_2_5"
+        },
+        {
+          "id": 8,
+          "speaker": "Bae",
+          "text": "La télé ci alors hein. Je sens que même l'usine\noù on a fabriqué ça a déjà fermé depuis.",
+          "key": "Message1_2_8"
+        },
+        {
+          "id": 9,
+          "speaker": "Bae",
+          "text": "Là où tu paniques déjà là. Tu ne vas pas payer ça seul hein.\nDonne ce que tu peux pour chaque travaux. Je vais compléter.",
+          "key": "Message1_2_9"
+        }
+      ],
+      "objective": "Remplacer la télévision de la maison.",
+      "money": 5500
+    }
+  ],
+  "priceSource": "Assets/Resources_moved/bd_causalites/causalites_1_2.asset (upgrade debits: 7304, 8344, 11918)"
+}
