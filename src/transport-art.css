@@ -1,0 +1,28 @@
+/* Transport : illustration d’abord, coûts lisibles et vocabulaire court. */
+dialog.transport-dialog .popup-body #travel-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
+dialog.transport-dialog .popup-body #travel-options>.transport-card{display:flex;flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;border:2px solid #d1d9c5;background:#fffaf0}
+dialog.transport-dialog .transport-art{display:block;width:100%;aspect-ratio:1.3;background-image:url('/ui/transport-mboa-atlas.png');background-size:200% 200%;background-repeat:no-repeat;background-color:#fff8e8}
+dialog.transport-dialog .transport-art-walk{background-position:0 0}
+dialog.transport-dialog .transport-art-taxi{background-position:100% 0}
+dialog.transport-dialog .transport-art-yonga{background-position:0 100%}
+dialog.transport-dialog .transport-art-moto{background-position:100% 100%}
+dialog.transport-dialog .transport-copy{display:flex;flex-direction:column;gap:5px;padding:12px 14px}
+dialog.transport-dialog .transport-quip{font-size:14px;color:#48604c}
+dialog.transport-dialog .transport-costs{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:8px;font-size:19px;font-weight:800;color:#234438}
+dialog.transport-dialog .transport-costs>span{display:inline-flex;align-items:center;gap:4px}
+dialog.transport-dialog .transport-costs img{width:23px;height:23px;object-fit:contain}
+dialog.transport-dialog .transport-unit{font-size:13px;font-weight:600}
+dialog.transport-dialog :is(.transport-warning,.transport-delay){font-size:13px;font-weight:700;color:#8a3c20}
+dialog.transport-dialog .transport-card:disabled .transport-art{filter:saturate(.4)}
+dialog.transport-dialog #travel-options>[data-emergency-home]{grid-column:1/-1}
+dialog.transport-dialog[data-travel-step=go] .menu-context p{display:none}
+@media(max-width:760px){
+ dialog.transport-dialog .popup-body #travel-options{gap:10px}
+ dialog.transport-dialog .transport-art{aspect-ratio:1.15}
+ dialog.transport-dialog .transport-copy{padding:9px;gap:4px}
+ dialog.transport-dialog .transport-quip{font-size:12px}
+ dialog.transport-dialog .transport-costs{font-size:16px;gap:5px 8px;margin-top:5px}
+ dialog.transport-dialog .transport-costs img{width:20px;height:20px}
+ dialog.transport-dialog .transport-costs>span:last-child{flex-basis:100%}
+ dialog.transport-dialog .transport-warning,dialog.transport-dialog .transport-delay{font-size:12px}
+}

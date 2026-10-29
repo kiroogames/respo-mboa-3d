@@ -1,0 +1,30 @@
+/* Écran titre : au-dessus du chargement, la ville se prépare derrière pendant le choix. */
+.start-menu{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 35%,#1d5a49ee,#0b2a24f5 70%);backdrop-filter:blur(6px);font-family:Nunito,system-ui,sans-serif}
+.start-menu[hidden]{display:none}
+.start-card{position:relative;width:min(420px,100%);padding:84px 32px 30px;border-radius:26px;background:#fbf6e9;color:#234438;text-align:center;box-shadow:0 30px 90px #04161299;animation:start-in .35s ease-out}
+.start-portrait{position:absolute;left:50%;top:-56px;width:112px;height:112px;margin-left:-56px;border-radius:50%;border:5px solid #f2cf87;background:#123d35;object-fit:cover;transform:rotate(-90deg);box-shadow:0 10px 30px #04161266}
+.start-eyebrow{display:block;font-size:12px;font-weight:800;letter-spacing:3px;color:#96702c}
+.start-card h1{margin:0;font-family:'Baloo 2',Nunito,sans-serif;font-size:72px;line-height:.95;font-weight:800;letter-spacing:-2px;color:#123d35}
+.start-tagline{margin:10px 0 26px;font-size:15px;color:#536c59}
+.start-actions{display:flex;flex-direction:column;gap:12px}
+.start-actions[hidden]{display:none}
+.start-actions button,.start-confirm button{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;min-height:62px;padding:12px 18px;border:0;border-radius:16px;font:inherit;cursor:pointer;transition:transform .12s,box-shadow .12s,background .12s}
+.start-actions button b{font-size:19px;font-weight:900}
+.start-actions button small{font-size:12px;font-weight:600;opacity:.8}
+.start-actions button[hidden]{display:none}
+.start-continue{background:#e5bb6c;color:#234438;box-shadow:0 5px 0 #b98e3f}
+.start-new{background:#123d35;color:#fff4dc;box-shadow:0 5px 0 #08241f}
+.start-continue:hover,.start-new:hover{transform:translateY(-2px)}
+.start-continue:active,.start-new:active{transform:translateY(3px);box-shadow:0 2px 0 #08241f}
+.start-actions button:focus-visible,.start-confirm button:focus-visible{outline:3px solid #2f7a5c;outline-offset:3px}
+.start-confirm{padding:16px;border:1px solid #e8c9a8;border-radius:16px;background:#fff4e8;text-align:left}
+.start-confirm[hidden]{display:none}
+.start-confirm p{margin:0 0 14px;font-size:14px;line-height:1.5;color:#5a3d22}
+.start-confirm p b{display:block;margin-bottom:4px;font-size:16px;color:#7a2e1c}
+.start-confirm>div{display:flex;gap:10px}
+.start-confirm button{min-height:48px;font-size:14px;font-weight:800;background:#ebe6d6;color:#234438}
+.start-confirm .start-danger{background:#b3402a;color:#fff}
+#start-menu-open{white-space:nowrap}
+@keyframes start-in{from{opacity:0;transform:translateY(14px) scale(.97)}}
+@media(max-width:420px){.start-card{padding:76px 20px 22px}.start-card h1{font-size:58px}.start-confirm>div{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.start-card{animation:none}}

@@ -75,12 +75,15 @@ import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent'
 import '@babylonjs/loaders/glTF'
 import { mountPopupShell } from './popup-shell'
 import { mountHudEnhance } from './hud-enhance'
+import { mountStartMenu } from './start-menu'
+import './start-menu.css'
 import './popups.css'
 import './hud.css'
 import './ui-theme.css'
 import './ui-composition.css'
 import './ui-readability.css'
 import './menu-cards.css'
+import './travel-steps.css'
 
 
 
@@ -90,13 +93,13 @@ const app = document.querySelector<HTMLDivElement>('#app')!
 
 app.innerHTML = `
 
-<canvas id="city" aria-label="Mboa Ville en 3D : glisser pour tourner, molette pour zoomer"></canvas>
+<canvas id="city" aria-label="Mboa Ville en 3D : clic gauche pour se déplacer, clic molette pour tourner, molette pour zoomer"></canvas>
 
-<header><a class="brand" href="${base}" aria-label="Mboa Ville, accueil"><span class="brand-icon">M</span><span>MBOA<span class="brand-light">VILLE</span><small>LA VILLE PREND DU RELIEF</small></span></a><div class="player-card" role="group" aria-label="Le Respo, votre personnage"><span class="player-ring"><span class="player-photo"><img class="hero-portrait" src="${base}portraits/respo.png" alt=""/></span><span class="player-level" aria-label="Niveau"><small>NIV</small><b id="player-level">1</b></span></span><span class="player-info"><b class="player-name">Le Respo</b><span class="player-xp"><b id="player-xp-text">0 / 190</b> pts Respo</span><span class="player-xp-bar"><i></i></span></span></div><div class="header-right"><div class="hud-stats"><div class="resource-stats"><div class="game-wallet" role="group" aria-label="Argent disponible"><img src="${base}ui/currency-nkap.png" alt="" width="58" height="48"/><div class="game-wallet-details"><span class="wallet-heading"><span class="game-wallet-label">Argent</span><button id="bills-open" type="button" title="Factures de la maison" aria-label="Ouvrir les factures">Factures</button></span><span id="money-amount" class="game-wallet-amount">0</span></div></div><div id="karma-counter" class="game-wallet karma-wallet" role="group" aria-label="Karma : points de moralité"><img src="${base}ui/currency-karma.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Karma</span><span id="karma-amount" class="game-wallet-amount">0</span></div></div><div id="energy-counter" class="game-wallet energy-wallet" role="group" aria-label="Énergie : 100 sur 100"><img src="${base}ui/currency-energy.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Énergie</span><span id="energy-amount" class="game-wallet-amount">100 / 100</span></div></div><div id="respo-counter" class="game-wallet respo-wallet" role="group" aria-label="Points Respo"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="respo-heading"><span class="game-wallet-label">Points Respo</span><span id="respo-level">Niv. 1</span></span><span id="respo-amount" class="game-wallet-amount">0 / 190</span><progress id="respo-progress" max="190" value="0" aria-label="Progression vers le prochain niveau"></progress></div></div><div id="mood-counter" class="game-wallet mood-wallet" role="group" aria-label="Humeur"><span id="mood-icon" class="mood-icon" style="background-image:url('${base}ui/mood-sprites.png')" aria-hidden="true"></span><div class="game-wallet-details"><span class="mood-heading"><span class="game-wallet-label">Humeur</span><button id="mood-effects-open" type="button" aria-label="Consulter les effets sur l’humeur">Effets</button></span><span id="mood-amount" class="game-wallet-amount">90</span><span id="mood-label" class="mood-label">Content</span></div></div></div><div class="game-clock" role="group" aria-label="Calendrier du jeu"><span id="game-time" class="game-clock-time">08:00</span><span id="game-day" class="game-clock-day">Lundi</span><span class="game-clock-week"><span id="game-week">Semaine 1</span><span id="game-period">Jour</span></span><button id="wait-open" class="clock-wait-button" type="button" disabled>◷ Attendre</button></div></div><div class="header-actions"><span class="edition"><i></i> EXPLOREZ LE MBOA</span><button id="bag-open" type="button" disabled>Sac · 0/1</button><button id="compare" aria-pressed="false">▧ <span>Voir la référence</span></button><button id="help" aria-expanded="false" aria-controls="help-panel" aria-label="Aide à la navigation">?</button></div></div></header>
+<header><a class="brand" href="${base}" aria-label="Mboa Ville, accueil"><span class="brand-icon">M</span><span>MBOA<span class="brand-light">VILLE</span><small>LA VILLE PREND DU RELIEF</small></span></a><div class="player-card" role="group" aria-label="Le Respo, votre personnage"><span class="player-ring"><span class="player-photo"><img class="hero-portrait" src="${base}portraits/respo.png" alt=""/></span><span class="player-level" aria-label="Niveau"><small>NIV</small><b id="player-level">1</b></span></span><span class="player-info"><b class="player-name">Le Respo</b><span class="player-xp"><b id="player-xp-text">0 / 190</b> pts Respo</span><span class="player-xp-bar"><i></i></span></span></div><div class="header-right"><div class="hud-stats"><div class="resource-stats"><div class="game-wallet" role="group" aria-label="Argent disponible"><img src="${base}ui/currency-nkap.png" alt="" width="58" height="48"/><div class="game-wallet-details"><span class="wallet-heading"><span class="game-wallet-label">Argent</span><button id="bills-open" type="button" title="Factures de la maison" aria-label="Ouvrir les factures">Factures</button></span><span id="money-amount" class="game-wallet-amount">0</span></div></div><div id="influence-counter" class="game-wallet influence-wallet" role="group" aria-label="Influence : points d’influence"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Influence</span><span id="influence-amount" class="game-wallet-amount">0</span></div></div><div id="energy-counter" class="game-wallet energy-wallet" role="group" aria-label="Énergie : 100 sur 100"><img src="${base}ui/currency-energy.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Énergie</span><span id="energy-amount" class="game-wallet-amount">100 / 100</span></div></div><div id="respo-counter" class="game-wallet respo-wallet" role="group" aria-label="Points Respo"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="respo-heading"><span class="game-wallet-label">Points Respo</span><span id="respo-level">Niv. 1</span></span><span id="respo-amount" class="game-wallet-amount">0 / 190</span><progress id="respo-progress" max="190" value="0" aria-label="Progression vers le prochain niveau"></progress></div></div><div id="mood-counter" class="game-wallet mood-wallet" role="group" aria-label="Humeur"><span id="mood-icon" class="mood-icon" style="background-image:url('${base}ui/mood-sprites.png')" aria-hidden="true"></span><div class="game-wallet-details"><span class="mood-heading"><span class="game-wallet-label">Humeur</span><button id="mood-effects-open" type="button" aria-label="Consulter les effets sur l’humeur">Effets</button></span><span id="mood-amount" class="game-wallet-amount">90</span><span id="mood-label" class="mood-label">Content</span></div></div></div><div class="game-clock" role="group" aria-label="Calendrier du jeu"><span id="game-time" class="game-clock-time">08:00</span><span id="game-day" class="game-clock-day">Lundi</span><span class="game-clock-week"><span id="game-week">Semaine 1</span><span id="game-period">Jour</span></span><button id="wait-open" class="clock-wait-button" type="button" disabled>◷ Attendre</button></div></div><div class="header-actions"><span class="edition"><i></i> EXPLOREZ LE MBOA</span><button id="bag-open" type="button" disabled>Sac · 0/1</button><button id="compare" aria-pressed="false">▧ <span>Voir la référence</span></button><button id="help" aria-expanded="false" aria-controls="help-panel" aria-label="Aide à la navigation">?</button></div></div></header>
 
 <div id="reference" hidden><img src="${base}reference/worldmap-wsp.png" alt="Vue de la ville dans la scène Unity de référence"/><span>LA VILLE D’ORIGINE</span></div>
 
-<aside id="help-panel" hidden><b>Explorez la ville</b><p>Glissez pour tourner autour de la ville.<br>Utilisez la molette ou pincez pour zoomer.<br>Clic droit + glisser ou flèches du clavier pour vous déplacer (Maj pour aller plus vite).</p><p>Choisissez un lieu en bas pour vous en approcher.</p></aside>
+<aside id="help-panel" hidden><b>Explorez la ville</b><p>Clic gauche + glisser, flèches ou ZQSD pour vous déplacer (Maj pour aller plus vite).<br>Clic molette ou clic droit + glisser pour tourner.<br>Molette ou pincement pour zoomer. Au doigt, glissez pour tourner.</p><p>Choisissez un lieu en bas pour vous en approcher.</p></aside>
 
 <div id="landmarks" aria-label="Lieux de la ville"></div>
 
@@ -151,6 +154,17 @@ camera.lowerBetaLimit=.22; camera.upperBetaLimit=1.4
 camera.lowerRadiusLimit=30; camera.upperRadiusLimit=650*cityScale
 
 camera.wheelDeltaPercentage=.025; camera.panningSensibility=90;camera.pinchDeltaPercentage=.006
+
+// Souris façon jeu de gestion : clic gauche + glisser déplace la vue sur le sol (comme les flèches),
+// clic molette ou clic droit + glisser fait tourner. Au doigt, un glissé fait toujours tourner.
+camera.mapPanning=true
+const pointerMap=camera.movement.input
+const leftButton={source:'pointer' as const,button:0,interaction:'pan' as 'pan'|'rotate'}
+pointerMap.inputMap=[leftButton,{source:'pointer',button:1,interaction:'rotate'},{source:'pointer',button:2,interaction:'rotate'},...pointerMap.inputMap.filter(entry=>entry.source!=='pointer')]
+// Babylon lit la table au moment de l'appui : on choisit le rôle du bouton gauche avant lui, selon souris ou doigt.
+window.addEventListener('pointerdown',event=>{if(event.target===canvas)leftButton.interaction=event.pointerType==='mouse'?'pan':'rotate'},{capture:true})
+// Sans cela, Windows active le défilement automatique au clic molette.
+canvas.addEventListener('mousedown',event=>{if(event.button===1)event.preventDefault()})
 
 const ambient = new HemisphericLight('Lumière du ciel',new Vector3(.2,1,.1),scene)
 
@@ -228,6 +242,8 @@ for(const [key,view] of Object.entries(views)){
 }
 
 let destination:View|null=null, orbit=false
+// Le menu attend le cadrage du lieu ; une nouvelle sélection remplace la précédente.
+let pendingPlaceMenu:{key:string;view:View}|null=null
 
 let cityLife:ReturnType<typeof createCityLife>|undefined
 
@@ -235,7 +251,7 @@ let motionPaused=matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function setOrbit(value:boolean){orbit=value;const b=document.querySelector<HTMLButtonElement>('#orbit')!;b.innerHTML=orbit?'Ⅱ <span>Pause</span>':'▷ <span>Visite</span>';b.setAttribute('aria-pressed',String(orbit))}
 
-function select(key:string){destination=views[key]!;setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=destination.label
+function select(key:string){pendingPlaceMenu=null;destination=views[key]!;setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=destination.label
 
  if(key==='home')showDialogue(`${base}portraits/respo.png`,'Le Respo','Me revoilà à la maison… direction la mairie, j’ai un pays à gérer.')
 
@@ -288,6 +304,7 @@ const moodEffects=mountMoodEffects({button:document.querySelector<HTMLButtonElem
  &&![...document.querySelectorAll<HTMLElement>('.wait-transition')].some(mask=>!mask.hidden)})
 mountPopupShell()
 mountHudEnhance()
+mountStartMenu(base)
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
  if(guidedVisualPaused&&isGuidedOutingActive()&&!force)return
@@ -301,8 +318,23 @@ function tickJourney(delta:number,force=false){
  playerPosition.copyFrom(Vector3.Lerp(trip.points[i-1]!,trip.points[i]!,span>0?(progress-trip.distances[i-1]!)/span:1))
  if(t===1){playerZone=trip.key;activeTrip=null;if(trip.done){trip.done();return}select(playerZone);travel.arrive(playerZone);hideDialogue();venues.open(playerZone);document.querySelector('.player-pin')?.setAttribute('aria-label',`Le Respo, ${views[playerZone]!.label}`)}
 }
-// Un clic regarde la ville, ouvre le menu si le joueur est sur place, ou propose un trajet dans les autres cas.
-function requestZone(key:string){if(isGuidedOutingActive()){destination=views[key]!;setOrbit(false);return}if(key==='city')select(key);else if(key===playerZone&&!travel.isTravelling()){select(key);hideDialogue();venues.open(key)}else travel.open(key)}
+// Un clic cadre d’abord le lieu, puis propose ses services ou les moyens de s’y rendre.
+function requestZone(key:string){
+ if(!views[key])return
+ select(key);hideDialogue()
+ if(key!=='city'&&!isGuidedOutingActive())pendingPlaceMenu={key,view:views[key]!}
+}
+function openFocusedPlace(){
+ const pending=pendingPlaceMenu
+ if(!pending)return
+ if(destination!==pending.view){pendingPlaceMenu=null;return}
+ const view=pending.view
+ if(Vector3.Distance(camera.target,view.target)>.5||Math.abs(camera.radius-view.radius)>.5||Math.abs(Math.atan2(Math.sin(camera.alpha-view.alpha),Math.cos(camera.alpha-view.alpha)))>.01||Math.abs(camera.beta-view.beta)>.01)return
+ pendingPlaceMenu=null
+ if(isGuidedOutingActive()||document.querySelector('dialog[open]'))return
+ if(pending.key===playerZone&&!travel.isTravelling())venues.open(pending.key)
+ else travel.open(pending.key)
+}
 document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b=>b.onclick=()=>requestZone(b.dataset.view!))
 
 document.querySelector<HTMLButtonElement>('#reset')!.onclick=()=>select('city')
@@ -361,19 +393,20 @@ canvas.addEventListener('pointerdown',()=>{destination=null;setOrbit(false)})
 
 canvas.addEventListener('contextmenu',event=>event.preventDefault())
 
-// Déplacement de la caméra au clavier : les flèches font glisser la vue sur le sol, dans le sens de l'écran.
+// Déplacement de la caméra au clavier : flèches ou ZQSD font glisser la vue sur le sol, dans le sens de l'écran.
+// event.code désigne la touche physique : ZQSD sur clavier AZERTY, WASD sur QWERTY.
 camera.inputs.removeByType('ArcRotateCameraKeyboardMoveInput')
 const panKeys=new Set<string>()
-const panDirections:Record<string,[number,number]>={ArrowUp:[1,0],ArrowDown:[-1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]}
+const panDirections:Record<string,[number,number]>={ArrowUp:[1,0],ArrowDown:[-1,0],ArrowLeft:[0,-1],ArrowRight:[0,1],KeyW:[1,0],KeyS:[-1,0],KeyA:[0,-1],KeyD:[0,1]}
 let panFast=false
 window.addEventListener('keydown',event=>{
  panFast=event.shiftKey
- if(!(event.key in panDirections)||event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey)return
+ if(!(event.code in panDirections)||event.defaultPrevented||event.altKey||event.ctrlKey||event.metaKey)return
  const target=event.target as HTMLElement|null
- if(target?.closest('input,textarea,select,[contenteditable="true"],dialog')||document.querySelector('dialog[open]'))return
- event.preventDefault();panKeys.add(event.key);destination=null;setOrbit(false)
+ if(target?.closest('input,textarea,select,[contenteditable="true"],dialog')||document.querySelector('dialog[open],.start-menu:not([hidden])'))return
+ event.preventDefault();panKeys.add(event.code);destination=null;setOrbit(false)
 })
-window.addEventListener('keyup',event=>{panFast=event.shiftKey;panKeys.delete(event.key)})
+window.addEventListener('keyup',event=>{panFast=event.shiftKey;panKeys.delete(event.code)})
 window.addEventListener('blur',()=>panKeys.clear())
 function tickKeyboardPan(delta:number){
  if(!panKeys.size)return
@@ -398,7 +431,9 @@ scene.onBeforeRenderObservable.add(()=>{
 
  const blend=1-Math.exp(-engine.getDeltaTime()*.005)
 
- if(destination){camera.target=Vector3.Lerp(camera.target,destination.target,blend);camera.radius+=(destination.radius-camera.radius)*blend;camera.alpha+=Math.atan2(Math.sin(destination.alpha-camera.alpha),Math.cos(destination.alpha-camera.alpha))*blend;camera.beta+=(destination.beta-camera.beta)*blend;if(Math.abs(camera.radius-destination.radius)<.02&&Vector3.Distance(camera.target,destination.target)<.02)destination=null}
+ if(destination){camera.target=Vector3.Lerp(camera.target,destination.target,blend);camera.radius+=(destination.radius-camera.radius)*blend;camera.alpha+=Math.atan2(Math.sin(destination.alpha-camera.alpha),Math.cos(destination.alpha-camera.alpha))*blend;camera.beta+=(destination.beta-camera.beta)*blend;openFocusedPlace();if(Math.abs(camera.radius-destination.radius)<.02&&Vector3.Distance(camera.target,destination.target)<.02)destination=null}
+
+ if(pendingPlaceMenu&&destination!==pendingPlaceMenu.view)pendingPlaceMenu=null
 
  if(!destination){camera.target.x=Math.max(-245*cityScale,Math.min(165*cityScale,camera.target.x));camera.target.z=Math.max(-175*cityScale,Math.min(175*cityScale,camera.target.z));camera.target.y=Math.max(0,Math.min(80,camera.target.y))}
 
@@ -407,6 +442,9 @@ scene.onBeforeRenderObservable.add(()=>{
  // Keep millimetre-scale surface gaps distinct as the enlarged city recedes.
 
  camera.minZ=Math.max(.5,camera.radius*.02)
+
+ // Glisser au clic gauche : le sol suit à peu près la souris, de près comme de loin.
+ camera.panningSensibility=11800/camera.radius
 
 })
 
@@ -507,6 +545,14 @@ function updateNPCNotifications(){
  }
 }
 
+// Taille des étiquettes mesurée une fois (texte fixe) : éviter une relecture de mise en page à chaque image.
+const labelSizes=new WeakMap<HTMLElement,{w:number;h:number}>()
+function labelSize(label:HTMLElement){
+ let size=labelSizes.get(label)
+ if(!size||!size.w){size={w:label.offsetWidth,h:label.offsetHeight};if(size.w)labelSizes.set(label,size)}
+ return size
+}
+
 // Projette les positions 3D dans l’interface, puis espace les GPS pour éviter les chevauchements et les compteurs.
 scene.onAfterRenderObservable.add(()=>{
 
@@ -517,6 +563,7 @@ scene.onAfterRenderObservable.add(()=>{
  const viewport=camera.viewport.toGlobal(engine.getRenderWidth(),engine.getRenderHeight())
  const resourceBounds=document.querySelector<HTMLElement>('.resource-stats')!.getBoundingClientRect()
  const upperControls=[...document.querySelectorAll<HTMLElement>('.game-clock,.header-actions,.player-card')].map(node=>node.getBoundingClientRect())
+ const hudPanels=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,.respo-console,#ui-menu-toggle')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width&&rect.top<innerHeight/2)
  const states=new Map(npcTemplates.map(npc=>[npc.id,getNPCState(npc.id)]))
  const markerGroup=(id:string)=>{if(guided?.npcId===id)return '__guided';const state=states.get(id);return state?.zone??(state?.travelling?`${state.origin}>${state.destination}`:'')}
  const shownNPCs=npcTemplates.filter(npc=>{
@@ -528,12 +575,25 @@ scene.onAfterRenderObservable.add(()=>{
  if(guided)groups.set('__guided',['__player',guided.npcId])
  if(!travel.isTravelling())groups.set(playerZone,['__player',...(groups.get(playerZone)??[])])
  const placedCharacters:{x:number;y:number}[]=[]
+ // Étiquettes des lieux déjà placées : les têtes s'empilent au-dessus et ne doivent jamais les recouvrir.
+ const placedLabels:{l:number;r:number;t:number;b:number}[]=[],labelTops=new Map<string,number>(),labelBottoms=new Map<string,number>()
+
+ // Vue rapprochée : les noms disparaissent, sauf celui du bâtiment regardé (le plus proche du centre de la vue).
+ let focusedLabel:HTMLButtonElement|null=null
+ if(!visible){
+  let best=70*cityScale
+  for(const pin of pins){
+   if(!pin.button.classList.contains('landmark'))continue
+   const distance=Math.hypot(pin.position.x-camera.target.x,pin.position.z-camera.target.z)
+   if(distance<best){best=distance;focusedLabel=pin.button}
+  }
+ }
 
  for(const pin of pins){
 
   const point=Vector3.Project(pin.position,Matrix.Identity(),scene.getTransformMatrix(),viewport)
 
-  pin.button.hidden=(!visible&&!pin.alwaysVisible&&!(pin.npcId&&guided?.npcId===pin.npcId))||point.z<0||point.z>1||!!(pin.npcId&&!shownNPCs.some(npc=>npc.id===pin.npcId))
+  pin.button.hidden=(!visible&&!pin.alwaysVisible&&pin.button!==focusedLabel&&!(pin.npcId&&guided?.npcId===pin.npcId))||point.z<0||point.z>1||!!(pin.npcId&&!shownNPCs.some(npc=>npc.id===pin.npcId))
 
   // Clamp to the safe area instead of hiding outright, so a label near the edge stays readable rather than disappearing.
 
@@ -541,7 +601,7 @@ scene.onAfterRenderObservable.add(()=>{
   const characterZone=pin.npcId?markerGroup(pin.npcId):guided?'__guided':playerZone
   const group=isCharacter?(groups.get(characterZone)??['__player']):[]
   const index=Math.max(0,group.indexOf(pin.npcId??'__player'))
-  const columns=Math.min(3,Math.max(1,group.length)),rows=Math.max(1,Math.ceil(group.length/columns))
+  const columns=Math.min(labelTops.has(characterZone)?5:3,Math.max(1,group.length)),rows=Math.max(1,Math.ceil(group.length/columns))
   const groupHalfWidth=isCharacter?((columns-1)*68+54)/2:40
   const groupHeight=isCharacter?(rows-1)*68+74:0
   const offsetX=isCharacter?(index%columns-(columns-1)/2)*68:0
@@ -554,14 +614,23 @@ scene.onAfterRenderObservable.add(()=>{
    if(clearCenter<=innerWidth-groupHalfWidth-12)center=Math.max(center,clearCenter)
    else y=Math.min(innerHeight-145,Math.max(y,resourceBounds.bottom+groupHeight+10))
   }
+  // Groupe posé sur un lieu : la pointe des têtes se place juste au-dessus du nom du lieu.
+  if(isCharacter&&labelTops.has(characterZone)){
+   const labelTop=labelTops.get(characterZone)!,above=labelTop-6
+   // Pas de place au-dessus (panneau du HUD juste au-dessus) : le groupe passe sous le nom du lieu.
+   const ceiling=Math.max(8,...hudPanels.filter(panel=>center+groupHalfWidth>panel.left&&center-groupHalfWidth<panel.right).map(panel=>panel.bottom+6))
+   // Il manque un peu de place : les têtes mordent légèrement sur le nom (qui reste au premier plan) ; sinon elles passent dessous.
+   const lowest=ceiling+groupHeight
+   y=lowest<=above?Math.min(y,above):lowest-above<=24?lowest:Math.min(innerHeight-145,labelBottoms.get(characterZone)!+groupHeight+4)
+  }
   let x=center+offsetX
   y+=offsetY
   if(isCharacter&&innerWidth<=760)for(const obstacle of upperControls){
    if(x+30>obstacle.left&&x-30<obstacle.right&&y>obstacle.top&&y-74<obstacle.bottom)y=Math.min(innerHeight-145,obstacle.bottom+84)
   }
   if(isCharacter&&!pin.button.hidden){
-   const overlaps=(cx:number,cy:number)=>placedCharacters.some(other=>Math.abs(cx-other.x)<60&&Math.abs(cy-other.y)<66)
-   if(overlaps(x,y))for(const [dx,dy] of [[0,72],[0,-72],[-68,0],[68,0],[0,144],[0,-144],[-68,72],[68,72],[-68,-72],[68,-72]]){
+   const overlaps=(cx:number,cy:number)=>placedCharacters.some(other=>Math.abs(cx-other.x)<60&&Math.abs(cy-other.y)<66)||hudPanels.some(panel=>cx+27>panel.left&&cx-27<panel.right&&cy-70<panel.bottom&&cy>panel.top)
+   if(overlaps(x,y))for(const [dx,dy] of [[-68,0],[68,0],[0,-72],[-68,-72],[68,-72],[-136,0],[136,0],[0,72],[-68,72],[68,72]]){
     const cx=x+dx!,cy=y+dy!
     if(cx<35||cx>innerWidth-35||cy<95||cy>innerHeight-145||overlaps(cx,cy))continue
     if(innerWidth<=760&&[resourceBounds,...upperControls].some(obstacle=>cx+30>obstacle.left&&cx-30<obstacle.right&&cy>obstacle.top&&cy-74<obstacle.bottom))continue
@@ -571,6 +640,20 @@ scene.onAfterRenderObservable.add(()=>{
   }
 
   pin.button.style.left=x+'px';pin.button.style.top=y+'px'
+  if(!isCharacter&&!pin.button.hidden&&pin.button.dataset.view){
+   const size=labelSize(pin.button)
+   // Un nom caché sous un panneau du HUD (toit du bâtiment regardé de près) descend juste en dessous.
+   for(const panel of hudPanels)if(x+size.w/2>panel.left&&x-size.w/2<panel.right&&y>panel.top&&y-size.h<panel.bottom+6)y=panel.bottom+size.h+8
+   // Deux noms de lieux qui se chevauchent : le second descend juste sous le premier.
+   for(let pass=0;pass<4;pass++){
+    const hit=placedLabels.find(label=>x+size.w/2>label.l&&x-size.w/2<label.r&&y>label.t&&y-size.h<label.b)
+    if(!hit)break
+    y=hit.b+size.h+2
+   }
+   pin.button.style.top=y+'px'
+   placedLabels.push({l:x-size.w/2-4,r:x+size.w/2+4,t:y-size.h-2,b:y+10})
+   labelTops.set(pin.button.dataset.view,y-size.h);labelBottoms.set(pin.button.dataset.view,y+10)
+  }
 
  }
 
@@ -794,3 +877,5 @@ void loadCity()
 
 
 
+
+import './transport-art.css'

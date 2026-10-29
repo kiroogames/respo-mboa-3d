@@ -1,0 +1,11 @@
+/* Fenêtre de destination en deux étapes : activités du lieu, puis choix du transport. */
+dialog.travel-dialog .popup-foot .travel-actions{display:flex;gap:10px;width:100%}
+dialog.travel-dialog .popup-foot .travel-actions button{min-height:48px;border-radius:14px;font-size:15px;font-weight:900}
+dialog.travel-dialog .popup-foot .travel-actions [data-travel-go]{flex:1;background:#e5bb6c;color:#234438;border:1px solid #d8b061}
+dialog.travel-dialog .popup-foot .travel-actions [data-travel-go]:disabled{background:#e1e6d8;color:#62705b;border-color:#d0d6c6;cursor:default}
+dialog.travel-dialog .popup-foot .travel-actions [data-travel-back]{flex:1;background:#fff;color:#234438;border:1px solid #cfd6c4}
+dialog.travel-dialog .popup-foot .travel-actions button[hidden]{display:none}
+dialog.travel-dialog .popup-body #travel-message:empty,dialog.travel-dialog .popup-body #travel-message[hidden]{display:none}
+@media(min-width:900px){
+ dialog.travel-dialog .popup-body .place-activity-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}

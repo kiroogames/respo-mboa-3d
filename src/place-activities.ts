@@ -49,7 +49,7 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
     const schedule = getOutingSchedule(outing.id)
     items.push({ icon: '🎉', title: `Sorties · ${outing.name}`, detail: outing.hours, closed: !!schedule.reason, status: schedule.reason || 'Ouvert' })
   }
-  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: `${food.name} à emporter`, detail: `${nkap(food.money)} · +${food.energy} énergie plus tard` })
+  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: /emporter/i.test(food.name) ? food.name : `${food.name} à emporter`, detail: `${nkap(food.money)} · +${food.energy} énergie plus tard` })
   for (const mission of missionRules.missions.filter(item => item.zone === zone && getMissionState(item.id)?.stage === 'active')) items.push({ icon: '🎯', title: `Mission : ${mission.title}`, detail: 'Vérification à effectuer ici', status: 'À faire' })
   return items
 }

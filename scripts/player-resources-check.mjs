@@ -7,7 +7,7 @@ import {readFileSync,writeFileSync} from 'node:fs'
 const saved=new Map()
 globalThis.localStorage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)}
 const resources=await import('../src/player-resources.ts')
-assert.deepEqual(resources.getPlayerResources(),{karma:0,energy:100,maxEnergy:100,ptRespo:0,respoNext:190,mood:90})
+assert.deepEqual(resources.getPlayerResources(),{karma:0,influence:0,energy:100,maxEnergy:100,ptRespo:0,respoNext:190,mood:90})
 resources.changeKarma(-10);resources.changeKarma(15);assert.equal(resources.getPlayerResources().karma,5)
 assert.equal(resources.spendEnergy(101),false);assert.equal(resources.spendEnergy(25),true)
 resources.restoreEnergy(1000);assert.equal(resources.getPlayerResources().energy,100)

@@ -26,7 +26,7 @@ export function mountHomeMeals(options:{base:string;currentZone:()=>string;trave
     text('[data-meal-mood]',`Humeur : +${p.moodGain} · ${p.moodBefore} → ${p.moodAfter} / 140${p.variant==='bae'?` · bonus Bae +5 inclus (${p.moodDelta} nominaux au total)`:''}`)
     text('[data-meal-end]',`Fin du repas : ${p.to.day} ${p.to.time} · semaine ${p.to.week}`)
     text('[data-meal-effect]',`Repas maison : +5 de capacité pendant 3 h, jusqu’à ${p.mealEffectEnd.day} ${p.mealEffectEnd.time} · semaine ${p.mealEffectEnd.week}. Le plat garde sa recharge habituelle ; aucun cumul avec lui-même.`)
-    text('[data-meal-price]',`${p.meal.money} Nkap · ${p.meal.minutes} min · aucun gain de karma ou Respo`)
+    text('[data-meal-price]',`${p.meal.money} Nkap · ${p.meal.minutes} min · aucun gain de influence ou Respo`)
     dialog.querySelector<HTMLElement>('.meal-preview')!.hidden=s.consumed
     error.hidden=!p.reason||s.consumed;error.textContent=p.reason
     confirm.disabled=!!p.reason||!allowed()||committing

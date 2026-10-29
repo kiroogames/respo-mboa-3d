@@ -13,13 +13,15 @@ import { getRespoProgress,levelEnergyBonus } from './respo-level.ts'
  */
 
 const storageKey = 'mboa-player-resources-v1'
-let state = { karma: 0, energy: 100, maxEnergy: 100, ptRespo: 0, respoNext: 190, mood: 90 }
+let state = { karma: 0, influence: 0, energy: 100, maxEnergy: 100, ptRespo: 0, respoNext: 190, mood: 90 }
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null')
   if (saved && Number.isSafeInteger(saved.karma) && Number.isSafeInteger(saved.maxEnergy) && saved.maxEnergy > 0 &&
     Number.isSafeInteger(saved.energy) && saved.energy >= 0 && saved.energy <= saved.maxEnergy + 45) {
     state = {
       karma: saved.karma, energy: saved.energy, maxEnergy: saved.maxEnergy,
+      // L’influence est indépendante : ne jamais convertir la moralité sauvegardée.
+      influence: Number.isSafeInteger(saved.influence) && saved.influence >= 0 ? saved.influence : 0,
       ptRespo: Number.isSafeInteger(saved.ptRespo) && saved.ptRespo >= 0 ? saved.ptRespo : 0,
       respoNext: Number.isSafeInteger(saved.respoNext) && saved.respoNext > 0 ? saved.respoNext : 190,
       mood: Number.isFinite(saved.mood) ? Math.max(0, Math.min(140, saved.mood)) : 90,
@@ -142,12 +144,12 @@ export function mountPlayerResources(element: HTMLElement) {
   feedback.hidden = true
   counter.append(feedback)
   const update = () => {
-    const karma = element.querySelector<HTMLElement>('#karma-amount')!
+    const influence = element.querySelector<HTMLElement>('#influence-amount')!
     const energy = element.querySelector<HTMLElement>('#energy-amount')!
-    karma.textContent = format.format(state.karma)
-    karma.title = `Karma : ${format.format(state.karma)} points de moralité`
+    influence.textContent = format.format(state.influence)
+    influence.title = `Influence : ${format.format(state.influence)} points · accès aux opportunités multijoueurs`
     energy.textContent = `${format.format(state.energy)} / ${format.format(getEnergyMaximumAt())}`
-    element.querySelector('#karma-counter')!.setAttribute('aria-label', karma.title)
+    element.querySelector('#influence-counter')!.setAttribute('aria-label', influence.title)
     element.querySelector('#energy-counter')!.setAttribute('aria-label', `Énergie : ${state.energy} sur ${getEnergyMaximumAt()}, ${getEnergyStatus().label}`)
     const difference = state.energy - previousEnergy
     if (difference !== 0) {

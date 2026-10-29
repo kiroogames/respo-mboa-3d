@@ -41,7 +41,7 @@ function shapePopup(dialog: HTMLDialogElement) {
   context.innerHTML=`<span class="menu-brand">LE RESPONSABLE<br><b>MBOA</b></span><div class="menu-city-art"><i></i><i></i><i></i><i></i><i></i><span>✦</span></div><p>${theme}</p><small class="menu-context-clock"></small>`
   dialog.append(context)
   const stats=document.createElement('div');stats.className='popup-stats';stats.setAttribute('role','group');stats.setAttribute('aria-label','Vos ressources actuelles')
-  stats.innerHTML='<span>Nkap <b data-popup-stat="money"></b></span><span>Énergie <b data-popup-stat="energy"></b></span><span>Humeur <b data-popup-stat="mood"></b></span><span>Karma <b data-popup-stat="karma"></b></span>'
+  stats.innerHTML='<span>Nkap <b data-popup-stat="money"></b></span><span>Énergie <b data-popup-stat="energy"></b></span><span>Humeur <b data-popup-stat="mood"></b></span><span>Influence <b data-popup-stat="influence"></b></span>'
   head.append(stats)
 
   const syncContext=()=>{context.querySelector('.menu-context-clock')!.textContent=`${document.querySelector('#game-day')?.textContent??''} · ${document.querySelector('#game-time')?.textContent??''}`}
@@ -52,9 +52,9 @@ function shapePopup(dialog: HTMLDialogElement) {
 export function mountPopupShell() {
   const shapeAll = () => document.querySelectorAll<HTMLDialogElement>('dialog.travel-dialog').forEach(shapePopup)
   shapeAll()
-  const syncStats=()=>{for(const [name,id] of Object.entries({money:'money-amount',energy:'energy-amount',mood:'mood-amount',karma:'karma-amount'})){const value=document.getElementById(id)?.textContent??'—';document.querySelectorAll(`[data-popup-stat="${name}"]`).forEach(node=>{if(node.textContent!==value)node.textContent=value})}}
+  const syncStats=()=>{for(const [name,id] of Object.entries({money:'money-amount',energy:'energy-amount',mood:'mood-amount',influence:'influence-amount'})){const value=document.getElementById(id)?.textContent??'—';document.querySelectorAll(`[data-popup-stat="${name}"]`).forEach(node=>{if(node.textContent!==value)node.textContent=value})}}
   const observer=new MutationObserver(syncStats)
-  for(const id of ['money-amount','energy-amount','mood-amount','karma-amount']){const node=document.getElementById(id);if(node)observer.observe(node,{childList:true,characterData:true,subtree:true})}
+  for(const id of ['money-amount','energy-amount','mood-amount','influence-amount']){const node=document.getElementById(id);if(node)observer.observe(node,{childList:true,characterData:true,subtree:true})}
   syncStats()
   new MutationObserver(()=>{shapeAll();syncStats()}).observe(document.body, { childList: true })
 }

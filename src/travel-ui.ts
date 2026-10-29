@@ -6,12 +6,13 @@ import { isGuidedOutingActive } from './guided-outing-state'
  */
 
 import { getMoneyBalance, spendMoney } from './currency'
-import { projectEnergy,getPlayerResources, spendEnergy } from './player-resources'
-import { getGameTime,advanceGameTime } from './game-clock'
+import { getPlayerResources, spendEnergy } from './player-resources'
+import { advanceGameTime } from './game-clock'
 import { createTravelRoute, quoteTravel, travelModes } from './travel'
 import type { TravelMode, TravelPoint } from './travel'
 import { getTrafficConditions } from './traffic-conditions'
 import { getPlaceActivities, getPlacePeople } from './place-activities'
+import { popupScroller } from './popup-shell'
 import type { TrafficConditions } from './traffic-conditions'
 
 type Place = { key: string; label: string; position: TravelPoint }
@@ -22,9 +23,9 @@ export function mountTravel(options: {
   depart: (key: string, route: TravelPoint[], mode: TravelMode) => void
 }) {
   const dialog = document.createElement('dialog')
-  dialog.className = 'travel-dialog'
+  dialog.className = 'travel-dialog transport-dialog'
   dialog.setAttribute('aria-labelledby', 'travel-title')
-  dialog.innerHTML = `<button class="travel-close" aria-label="Fermer">×</button><span class="travel-eyebrow">DÉPLACEMENT</span><h2 id="travel-title"></h2><p id="travel-origin"></p><span id="travel-distance" class="travel-distance"></span><span id="travel-traffic" class="travel-traffic"></span><div class="venue-tabs travel-tabs" role="tablist" aria-label="Lieu"><button id="travel-go-tab" role="tab" aria-selected="true" aria-controls="travel-go-panel" data-travel-tab="go">Y aller</button><button id="travel-place-tab" role="tab" aria-selected="false" aria-controls="travel-place-panel" tabindex="-1" data-travel-tab="place">À faire sur place <span id="travel-place-count" class="travel-place-count">0</span></button></div><div id="travel-go-panel" role="tabpanel" aria-labelledby="travel-go-tab"><div id="travel-options"></div><p id="travel-message" role="status"></p></div><div id="travel-place-panel" class="place-activities" role="tabpanel" aria-labelledby="travel-place-tab" hidden></div><button class="travel-cancel">Rester ici</button>`
+  dialog.innerHTML = `<button class="travel-close" aria-label="Fermer">×</button><span class="travel-eyebrow" id="travel-eyebrow">DESTINATION</span><h2 id="travel-title"></h2><p id="travel-origin"></p><span id="travel-distance" class="travel-distance"></span><span id="travel-traffic" class="travel-traffic"></span><div id="travel-place-panel" class="place-activities"></div><div id="travel-go-panel" hidden><div id="travel-options"></div></div><p id="travel-message" role="status"></p><div class="travel-actions"><button type="button" data-travel-back hidden>← Retour</button><button type="button" data-travel-go>Y aller</button></div>`
   document.body.append(dialog)
   const status = document.createElement('div')
   status.className = 'travel-status'; status.hidden = true; status.setAttribute('role', 'status')
@@ -35,30 +36,27 @@ export function mountTravel(options: {
   const message = dialog.querySelector<HTMLElement>('#travel-message')!
   const choices = dialog.querySelector<HTMLElement>('#travel-options')!
   dialog.querySelector('.travel-close')!.addEventListener('click', () => dialog.close())
-  dialog.querySelector('.travel-cancel')!.addEventListener('click', () => dialog.close())
   dialog.addEventListener('click', event => { if (event.target === dialog) {
     const r = dialog.getBoundingClientRect()
     if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close()
   } })
 
-  // Onglets : comparer les transports, ou voir ce que le lieu propose avant de partir.
-  const tabs = [...dialog.querySelectorAll<HTMLButtonElement>('[data-travel-tab]')]
-  function setTab(tab: string) {
-    for (const button of tabs) { const selected = button.dataset.travelTab === tab; button.setAttribute('aria-selected', String(selected)); button.tabIndex = selected ? 0 : -1 }
-    dialog.querySelector<HTMLElement>('#travel-go-panel')!.hidden = tab !== 'go'
-    dialog.querySelector<HTMLElement>('#travel-place-panel')!.hidden = tab !== 'place'
+  // Deux étapes : d'abord ce que le lieu propose, puis « Y aller » ouvre le choix du transport.
+  const goButton = dialog.querySelector<HTMLButtonElement>('[data-travel-go]')!, backButton = dialog.querySelector<HTMLButtonElement>('[data-travel-back]')!
+  function setStep(step: 'place' | 'go') {
+    dialog.dataset.travelStep=step
+    dialog.querySelector<HTMLElement>('#travel-place-panel')!.hidden = step !== 'place'
+    dialog.querySelector<HTMLElement>('#travel-go-panel')!.hidden = step !== 'go'
+    dialog.querySelector('#travel-eyebrow')!.textContent = step === 'place' ? 'DESTINATION' : 'CHOISIR UN TRANSPORT'
+    goButton.hidden = step !== 'place'; backButton.hidden = step !== 'go'
+    message.hidden = step !== 'go' && !goButton.disabled
+    popupScroller(dialog).scrollTop = 0
   }
-  tabs.forEach((button, index) => {
-    button.addEventListener('click', () => setTab(button.dataset.travelTab!))
-    button.addEventListener('keydown', event => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return
-      event.preventDefault(); const next = tabs[(index + 1) % tabs.length]!; setTab(next.dataset.travelTab!); next.focus()
-    })
-  })
+  goButton.addEventListener('click', () => { if (pending) { setStep('go'); choices.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus() } })
+  backButton.addEventListener('click', () => { setStep('place'); goButton.focus() })
   const escape = (text: string) => text.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
   function renderPlace(key: string) {
     const activities = getPlaceActivities(key), people = getPlacePeople(key)
-    dialog.querySelector('#travel-place-count')!.textContent = String(activities.length)
     dialog.querySelector('#travel-place-panel')!.innerHTML = (activities.length
       ? `<ul class="place-activity-list">${activities.map(item => `<li><span class="place-activity-icon" aria-hidden="true">${item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail)}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
       : '<p class="place-activity-empty">Aucune activité particulière dans ce lieu.</p>')
@@ -66,7 +64,7 @@ export function mountTravel(options: {
       + (people.length
         ? `<ul class="place-people">${people.map(person => `<li><img src="${options.base}${person.portrait}" alt="" width="40" height="40"/><span><b>${escape(person.name)}${person.request ? ' <em>!</em>' : ''}</b><small>${escape(person.activity)}</small></span></li>`).join('')}</ul>`
         : '<p class="place-activity-empty">Personne pour le moment.</p>')
-      + '<p class="place-activity-note">Les activités se lancent une fois arrivé, depuis le menu du lieu.</p>'
+      + '<p class="place-activity-note">Sur place après le trajet.</p>'
   }
 
   function renderChoices() {
@@ -74,16 +72,19 @@ export function mountTravel(options: {
     const resources = getPlayerResources(), money = getMoneyBalance()
     const length = quoteTravel(pending.route, 'walk', pending.traffic).distanceMeters
     const formatted = length >= 1000 ? `${(length / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} km` : `${Math.round(length)} m`
-    dialog.querySelector('#travel-distance')!.textContent = `${formatted} · par les rues de la ville`
+    dialog.querySelector('#travel-distance')!.textContent = `${formatted}`
     const trafficBadge = dialog.querySelector<HTMLElement>('#travel-traffic')!
     trafficBadge.textContent = pending.traffic.label
     trafficBadge.dataset.traffic = pending.traffic.id
     choices.innerHTML = travelModes.map(mode => {
       const quote = quoteTravel(pending!.route, mode.id, pending!.traffic)
       const reason = money < quote.money ? 'Argent insuffisant' : resources.energy < quote.energy ? 'Énergie insuffisante' : ''
-      const projection=projectEnergy(0, getGameTime().totalMinutes+quote.minutes,undefined,resources.energy,quote.energy)
       const delay = quote.minutes - quote.clearMinutes
-      return `<button class="travel-option" data-travel-mode="${mode.id}" ${reason ? 'disabled' : ''}><span class="travel-symbol" aria-hidden="true">${mode.symbol}</span><span class="travel-option-body"><b>${mode.label}</b><span class="travel-mode-description">${mode.description}</span><span class="travel-costs"><span><img src="${options.base}ui/currency-nkap.png" alt="Argent"/>${quote.money === 0 ? 'Gratuit' : quote.money.toLocaleString('fr-FR')}</span><span><img src="${options.base}ui/currency-energy.png" alt="Énergie"/>${quote.energy}</span><span>◷ ${quote.minutes} min</span></span><small>Énergie finale : ${projection.energyAfter} / ${projection.maxEnergyAfter} · ${reason || (delay > 0 ? `Dont ${delay} min liées à la circulation` : 'Choisir ce déplacement')}</small></span><span class="travel-arrow" aria-hidden="true">→</span></button>`
+      const subtitle={walk:'Le pied, c’est gratuit !',taxi:'On se serre un peu',yonga:'La place du boss',moto:'On faufile !'}[mode.id]
+      const title=mode.id==='yonga'?'Yonga privé':mode.label
+      const cost=quote.money===0?'0':quote.money.toLocaleString('fr-FR')
+      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${title}, ${quote.money} Nkap, ${quote.energy} énergie, ${quote.minutes} minutes${reason?', '+reason:''}" ${reason ? 'disabled' : ''}><span class="transport-art transport-art-${mode.id}" aria-hidden="true"></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span title="Prix en Nkap"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span title="Énergie dépensée"><img src="${options.base}ui/currency-energy.png" alt="Énergie"/>${quote.energy}</span><span title="Durée du trajet">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">Bouchons +${delay} min</span>`:''}</span></button>`
+
     }).join('')
     const from=options.origin(),home=options.place('home'),rescue=previewEmergencyReturn(from.key,from.position,home.position,pending.traffic)
     if(!rescue.reason){
@@ -127,13 +128,15 @@ export function mountTravel(options: {
       choices.innerHTML = ''; message.textContent = ''; pending = null
       dialog.querySelector('#travel-distance')!.textContent = ''
       dialog.querySelector('#travel-traffic')!.textContent = ''
-      renderPlace(key); setTab('go')
+      renderPlace(key)
       if (from.key === key) message.textContent = 'Vous êtes déjà dans cette zone.'
       else {
         try { pending = { key, route: createTravelRoute(from.position, to.position), traffic: getTrafficConditions() }; renderChoices() }
         catch (error) { message.textContent = error instanceof Error ? error.message : 'Trajet indisponible.' }
       }
+      goButton.disabled = !pending
       if (!dialog.open) dialog.showModal()
+      setStep('place')
     },
     // La durée visuelle est terminée : libère seulement le déplacement et affiche l’arrivée.
     arrive(key: string) {

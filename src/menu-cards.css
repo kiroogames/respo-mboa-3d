@@ -1,4 +1,23 @@
 /* Deux cartes par rangée pour éviter les longues listes de services. */
+/* Taille de lecture prioritaire sur les anciennes règles compactes des cartes. */
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body{font-size:18px;line-height:1.6}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(p,small,label,summary,.venue-description,.travel-costs,.venue-other-gains,.venue-section-label,.travel-mode-description,.meal-price,.outing-cost){font-size:17px!important;line-height:1.55}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.venue-service,.citizen-card,.travel-option) b{font-size:21px!important;line-height:1.35}
+dialog.travel-dialog:not([data-mode=puzzle]) .popup-body h3{font-size:23px}
+dialog.travel-dialog:not([data-mode=puzzle]) :is(.popup-foot button,.venue-tabs button){font-size:18px!important;min-height:48px}
+dialog.travel-dialog .popup-stats>span{font-size:14px}
+dialog.travel-dialog .popup-stats b{font-size:20px}
+#app .city-wallet-strip .game-wallet-label,#app .respo-vitals .game-wallet-label{font-size:14px;letter-spacing:0}
+#app .respo-console .player-xp{font-size:14px}
+#app .respo-vitals .game-wallet-amount{font-size:29px}
+#app .city-wallet-strip .game-wallet-amount{font-size:29px}
+@media(max-width:760px){
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(p,small,label,summary,.venue-description,.travel-costs,.venue-other-gains,.venue-section-label,.travel-mode-description,.meal-price,.outing-cost){font-size:16px!important}
+ dialog.travel-dialog:not([data-mode=puzzle]) .popup-body :is(.venue-service,.citizen-card,.travel-option) b{font-size:18px!important}
+ #app .respo-vitals .game-wallet-amount,#app .city-wallet-strip .game-wallet-amount{font-size:23px}
+ #app .respo-console .player-xp{font-size:12px}
+ #app .respo-vitals .game-wallet-label,#app .city-wallet-strip .game-wallet-label{font-size:12px}
+}
 dialog.travel-dialog .popup-body :is(#venue-place-panel,.classic-work-cards,.citizen-cards,.comfort-catalogue,.meal-choices,.outing-options,.extra-choices,.canteen-choices,.meeting-options,.missions-list){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
 dialog.travel-dialog .popup-body #venue-services{display:contents}
 dialog.travel-dialog .popup-body #venue-result{grid-column:1/-1}
@@ -18,3 +37,6 @@ dialog.travel-dialog .popup-body #venue-place-panel .venue-service>b{padding-rig
 dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-gains{margin-top:8px;padding-top:7px}
 dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-section-label{margin-top:7px;font-size:10px}
 @media(max-width:760px){dialog.travel-dialog .popup-body #venue-place-panel .venue-service{padding:12px 10px}dialog.travel-dialog .popup-body #venue-place-panel .venue-service .venue-energy-gain{font-size:16px}dialog.travel-dialog .popup-body #venue-place-panel .venue-service .travel-costs{gap:5px;font-size:12px}}
+
+/* Deux colonnes de ressources sur petit écran pour afficher Influence en entier. */
+@media(max-width:350px){dialog.travel-dialog .popup-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}}
