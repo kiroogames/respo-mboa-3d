@@ -6,11 +6,11 @@ import {mkdir,writeFile,readFile} from 'node:fs/promises'
 import path from 'node:path'
 const settings=JSON.parse(await readFile(new URL('../city-layout.json',import.meta.url),'utf8'));const layoutScale=settings.horizontalScale
 const out=path.resolve('artifacts');await mkdir(out,{recursive:true})
-const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--no-sandbox','--disable-extensions','--disable-dev-shm-usage','--disable-gpu-sandbox','--no-first-run','--no-default-browser-check','--remote-debugging-port=9231',`--user-data-dir=${path.join(out,'transport-art-profile')}`,'--use-angle=swiftshader','--enable-unsafe-swiftshader','--window-size=1557,831','about:blank'],{stdio:'ignore',windowsHide:true})
+const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--no-sandbox','--disable-extensions','--disable-dev-shm-usage','--disable-gpu-sandbox','--no-first-run','--no-default-browser-check','--remote-debugging-port=9240',`--user-data-dir=${path.join(out,'transport-menu-regression-profile')}`,'--use-angle=d3d11','--enable-unsafe-swiftshader','--window-size=1557,831','about:blank'],{stdio:'ignore',windowsHide:true})
 let ws;const errors=[];const messages=[]
 try {
  let targets
- for(let i=0;i<60;i++){try{targets=await(await fetch('http://127.0.0.1:9231/json/list')).json();break}catch{await new Promise(r=>setTimeout(r,300))}}
+ for(let i=0;i<60;i++){try{targets=await(await fetch('http://127.0.0.1:9240/json/list')).json();break}catch{await new Promise(r=>setTimeout(r,300))}}
  console.log('Chrome prêt');const target=targets.find(t=>t.type==='page');ws=new WebSocket(target.webSocketDebuggerUrl)
  await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject})
  let id=0;const pending=new Map()
@@ -41,12 +41,13 @@ try {
 
 
 
+ await evaluate("document.querySelector('[data-start-continue]')?.click()")
  await click('.places [data-view=market]');for(let i=0;i<100;i++){if(await evaluate("!!document.querySelector('dialog[open]')"))break;await pause(100)}await click('[data-travel-go]')
  for(const [width,height] of [[1557,831],[390,844],[320,568],[844,390]]){
  await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<500});await pause(200)
- const fit=await evaluate(`(()=>{const cards=[...document.querySelectorAll('[data-travel-mode]')],a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();return document.querySelector('dialog[open] .popup-body').scrollHeight<=document.querySelector('dialog[open] .popup-body').clientHeight+2&&cards.length===4&&Math.abs(a.top-b.top)<2&&b.left>a.left&&cards.every(c=>c.scrollWidth<=c.clientWidth+2&&c.querySelector('.transport-art').getBoundingClientRect().height>=40)})()`);check(fit,'Illustrated grid overflow');await capture('transport-art-'+width+'.png')
+ const fit=await evaluate(`(()=>{const cards=[...document.querySelectorAll('[data-travel-mode]')],a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();return document.querySelector('dialog[open] .popup-body').scrollHeight<=document.querySelector('dialog[open] .popup-body').clientHeight+2&&cards.length===4&&Math.abs(a.top-b.top)<2&&b.left>a.left&&cards.every(c=>c.scrollWidth<=c.clientWidth+2&&c.querySelector('.transport-art').getBoundingClientRect().height>=40)})()`);await capture('transport-art-'+width+'.png');if(!fit)console.log(width,await evaluate(`(()=>{const d=document.querySelector('dialog[open]'),b=d.querySelector('.popup-body');return {body:[b.clientHeight,b.scrollHeight],cards:[...d.querySelectorAll('[data-travel-mode]')].map(c=>({h:c.clientHeight,w:c.clientWidth,sw:c.scrollWidth,art:c.querySelector('.transport-art').getBoundingClientRect().height}))}})()`));check(fit,'Illustrated grid overflow')
  }
  check(await evaluate(`[...document.querySelectorAll('.transport-art img')].every(el=>el.complete&&el.naturalWidth>0)`),'Atlas missing')
- const before=await stats();await click('[data-travel-mode=yonga]');const after=await stats();check(after.money<before.money,'Fare not paid');check(after.energy===before.energy,'Yonga consumed energy');check(!errors.length,'JS exceptions');console.log('4 illustrated cards, two columns desktop/390/320, no overflow, Yonga payment/energy/departure passed')
+ const before=await stats();await click('[data-travel-mode=yonga]');const after=await stats();check(after.money<before.money,'Fare not paid');check(after.resources.energy===before.resources.energy,'Yonga consumed energy');check(!errors.length,'JS exceptions');console.log('4 illustrated cards, two columns desktop/390/320, no overflow, Yonga payment/energy/departure passed')
 }catch(error){console.error(error);process.exitCode=1}finally{ws?.close();chrome.kill()}
 

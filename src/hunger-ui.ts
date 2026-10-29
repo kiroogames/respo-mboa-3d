@@ -26,7 +26,8 @@ export function mountHungerUI() {
       let banner = dialog.querySelector<HTMLElement>(':scope > .popup-head .hunger-banner')
       if (!hunger.missed) { banner?.remove(); continue }
       if (!banner) { banner = document.createElement('p'); banner.className = 'hunger-banner'; dialog.querySelector(':scope > .popup-head')?.append(banner) }
-      banner.textContent = `🍽️ ${hunger.label}. Mangez pour retrouver vos forces.`
+      banner.title = `${hunger.label}. Mangez pour retrouver vos forces.`
+      banner.textContent = `🍽 Repas sauté : coût ⚡ +${Math.round(hunger.surcharge * 100)} %`
     }
   }
   function warn(missedNow: number) {

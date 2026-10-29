@@ -44,6 +44,7 @@ try {
 
 
  await evaluate("document.querySelector('[data-start-continue]')?.click()")
+ const initialStats=await stats()
  const closeAll=async()=>{await evaluate("document.querySelectorAll('dialog[open]').forEach(d=>d.close())");await pause(350)}
  const inspect=async(name)=>{
  await pause(400);const layout=await evaluate(`(()=>{const d=document.querySelector('dialog[open]'),b=d.querySelector('.popup-body'),f=d.querySelector('.popup-foot'),p=d.querySelector('.game-menu-pager');return {name:d.className,vertical:b.scrollHeight-b.clientHeight,pages:p?.textContent,footer:f?.getBoundingClientRect().bottom,viewport:innerHeight,art:[...d.querySelectorAll('.game-card-art img')].every(i=>i.complete&&i.naturalWidth>0)}})()`);console.log(name,layout);await capture('game-menu-'+name+'.png');check(layout.vertical<=3,'Vertical overflow '+name);check(layout.footer<=layout.viewport,'Footer outside viewport '+name);check(layout.art,'Missing artwork '+name)
@@ -58,7 +59,11 @@ try {
  await closeAll();await click('#money-amount');await inspect('bills-'+width)
  }
  await closeAll();await evaluate('window.__MBOA_QA__.openVenue("ministry")');await click('[data-venue-work]');await inspect('work-320');await click('[data-dossier-index="0"]');await inspect('work-preview-320')
+ const b=await stats();await click('dialog[open] [data-work-confirm]');check((await stats()).money===b.money+500,'Work confirmation no longer pays once');await capture('game-menu-work-receipt-320.png')
+ await closeAll();await evaluate('window.__MBOA_QA__.openVenue("stadium")');await inspect('stadium-320');check(await evaluate(`document.querySelector('[data-service="sport"] .game-card-art img').src.endsWith('menu-jogging.jpg')&&document.querySelector('[data-venue-outing] .game-card-art img').src.endsWith('menu-football.jpg')`),'Sport illustrations mismatch')
+ await closeAll();await evaluate('window.__MBOA_QA__.openVenue("ministry")');await pause(250);check(await evaluate(`document.querySelector('[data-venue-queue] .game-card-art img')?.src.endsWith('unity/usagers.png')`),'Original Unity queue art missing')
  await closeAll();await click('#missions-open');await inspect('missions-320')
  await closeAll();await click('#mood-effects-open');await inspect('mood-320')
+ check((await stats()).time===initialStats.time+60,'Menus changed time unexpectedly')
  if(errors.length)throw Error(JSON.stringify(errors));console.log('Illustrated menus desktop/mobile, fixed pages, preserved controls, no JS errors passed')
 }catch(error){console.error(error);process.exitCode=1}finally{ws?.close();chrome.kill()}
