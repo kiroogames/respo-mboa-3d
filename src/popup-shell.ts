@@ -29,7 +29,7 @@ function shapePopup(dialog: HTMLDialogElement) {
   if (title) {
     const titles = document.createElement('div'); titles.className = 'popup-titles'
     title.before(titles); titles.append(...[eyebrow, title].filter(Boolean) as Element[])
-    const icon = icons.find(([name]) => dialog.classList.contains(name))?.[1] ?? (dialog.className.trim() === 'travel-dialog' ? '🧭' : '')
+    const icon = icons.find(([name]) => dialog.classList.contains(name))?.[1] ?? (dialog.classList.contains('work-classic-dialog')?'📋':dialog.classList.contains('citizen-puzzle-dialog')?'🙋':dialog.className.trim() === 'travel-dialog' ? '🧭' : '')
     if (icon) { const badge = document.createElement('span'); badge.className = 'popup-icon'; badge.setAttribute('aria-hidden', 'true'); badge.textContent = icon; titles.before(badge) }
   }
   let end = parts.length

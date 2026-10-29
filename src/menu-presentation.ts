@@ -32,7 +32,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  const base=import.meta.env.BASE_URL,body=dialog.querySelector<HTMLElement>(':scope>.popup-body')!
  let theme=themeOf(dialog)
  dialog.classList.add('game-menu');dialog.dataset.menuTheme=theme
- const illustration=(kind:Theme)=>`${base}ui/menu-${kind}.png`
+ const illustration=(kind:Theme)=>`${base}ui/menu-${kind}.jpg`
  const city=dialog.querySelector('.menu-city-art')
  if(city){city.replaceChildren();const image=document.createElement('img');image.src=illustration(theme);image.alt='';image.className='game-menu-hero';city.append(image)}
  const badge=dialog.querySelector('.popup-icon')
@@ -42,9 +42,11 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  function decorate(){
   theme=themeOf(dialog);dialog.dataset.menuTheme=theme
   for(const hero of dialog.querySelectorAll<HTMLImageElement>('.game-menu-hero,.popup-icon>img')){
-   const source=dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:illustration(theme)
+   const portrait=dialog.querySelector<HTMLImageElement>('.npc-conversation-header img')?.getAttribute('src')
+   const source=portrait??(dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:dialog.classList.contains('sport-energy-dialog')?`${base}ui/unity/sommeil.png`:illustration(theme))
    if(hero.getAttribute('src')!==source)hero.src=source
   }
+  for(const tab of dialog.querySelectorAll('[data-venue-tab]')){const text=tab.firstChild;if(text?.nodeType===Node.TEXT_NODE){const value=tab.getAttribute('data-venue-tab')==='place'?'Activités':'Habitants ';if(text.textContent!==value)text.textContent=value}}
   for(const description of dialog.querySelectorAll<HTMLElement>('.venue-description'))description.classList.toggle('game-important-description',/\d/.test(description.textContent??''))
   const shortNames:Record<string,string>={'Retour au lieu':'Retour','Retour au ministère':'Retour','Confirmer le traitement':'Traiter','Confirmer le repas':'Manger','Confirmer la réunion':'Participer','Confirmer la sortie':'Y aller','Confirmer le versement':'Verser','Confirmer l’attente':'Attendre','Confirmer la commande':'Accepter'}
   for(const button of dialog.querySelectorAll('button')){const short=shortNames[button.textContent?.trim()??''];if(short){button.setAttribute('aria-label',button.textContent!.trim());button.textContent=short}}

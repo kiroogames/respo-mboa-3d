@@ -79,6 +79,7 @@ import { mountStartMenu } from './start-menu'
 import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
+import { mountCurrencyFly } from './currency-fly'
 import './currency-icons.css'
 import './start-menu.css'
 import './popups.css'
@@ -330,6 +331,7 @@ mountStartMenu(base)
 mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
+mountCurrencyFly(base)
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
  if((journeyVisualPaused||guidedVisualPaused&&isGuidedOutingActive())&&!force)return
