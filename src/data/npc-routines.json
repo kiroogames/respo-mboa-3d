@@ -236,7 +236,7 @@
           "until": 780,
           "zone": null,
           "origin": "ministry",
-          "destination": "pilton",
+          "destination": "restaurant",
           "activity": "Trajet pour le déjeuner",
           "available": false,
           "travelling": true
@@ -244,8 +244,8 @@
         {
           "from": 780,
           "until": 870,
-          "zone": "pilton",
-          "activity": "Déjeuner et rendez-vous",
+          "zone": "restaurant",
+          "activity": "Déjeuner et rendez-vous au Restaurant du Mboa",
           "available": true,
           "travelling": false
         },
@@ -253,7 +253,7 @@
           "from": 870,
           "until": 900,
           "zone": null,
-          "origin": "pilton",
+          "origin": "restaurant",
           "destination": "ministry",
           "activity": "Retour au ministère",
           "available": false,
@@ -600,7 +600,7 @@
           "until": 750,
           "zone": null,
           "origin": "ministry",
-          "destination": "market",
+          "destination": "restaurant",
           "activity": "Trajet pour le déjeuner",
           "available": false,
           "travelling": true
@@ -608,8 +608,8 @@
         {
           "from": 750,
           "until": 795,
-          "zone": "market",
-          "activity": "Pause déjeuner",
+          "zone": "restaurant",
+          "activity": "Déjeuner au Restaurant du Mboa",
           "available": true,
           "travelling": false
         },
@@ -617,7 +617,7 @@
           "from": 795,
           "until": 825,
           "zone": null,
-          "origin": "market",
+          "origin": "restaurant",
           "destination": "ministry",
           "activity": "Retour au ministère",
           "available": false,
@@ -806,7 +806,7 @@
           "until": 750,
           "zone": null,
           "origin": "ministry",
-          "destination": "market",
+          "destination": "restaurant",
           "activity": "Trajet pour le déjeuner",
           "available": false,
           "travelling": true
@@ -814,8 +814,8 @@
         {
           "from": 750,
           "until": 795,
-          "zone": "market",
-          "activity": "Pause déjeuner",
+          "zone": "restaurant",
+          "activity": "Déjeuner au Restaurant du Mboa",
           "available": true,
           "travelling": false
         },
@@ -823,7 +823,7 @@
           "from": 795,
           "until": 825,
           "zone": null,
-          "origin": "market",
+          "origin": "restaurant",
           "destination": "ministry",
           "activity": "Retour au ministère",
           "available": false,

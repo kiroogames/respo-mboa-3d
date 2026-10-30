@@ -1,7 +1,5 @@
 {
   "zone": "ministry",
-  "openingHour": 7,
-  "closingHour": 23,
   "refillHours": 3,
   "batchSize": 5,
   "energyCost": 20,

@@ -10,6 +10,8 @@ export function mountHouseBills(options:{button:HTMLButtonElement;canOpen:()=>bo
  const badge=document.createElement('span');badge.id='house-budget-indicator';badge.className='house-budget-indicator'
  options.button.closest('.game-wallet-details')?.append(badge)
  document.body.append(dialog)
+ // Les factures et leur paiement passent avant les conseils de prévision du budget.
+ dialog.querySelector('.bills-summary')!.after(dialog.querySelector('.bills-history')!,dialog.querySelector('.bills-pages')!)
  const confirm=dialog.querySelector<HTMLButtonElement>('[data-bill-confirm]')!,error=dialog.querySelector<HTMLElement>('[data-bill-error]')!,result=dialog.querySelector<HTMLElement>('[data-bill-result]')!,prev=dialog.querySelector<HTMLButtonElement>('[data-bill-prev]')!,next=dialog.querySelector<HTMLButtonElement>('[data-bill-next-page]')!
  let page=0,committing=false,paidReceipt=false,pending:ReturnType<typeof prepareHouseBillPayment>=null
  const format=(n:number)=>n.toLocaleString('fr-FR')+' Nkap'
@@ -34,15 +36,20 @@ export function mountHouseBills(options:{button:HTMLButtonElement;canOpen:()=>bo
   const remaining=s.nextIssue?s.nextIssue.totalMinutes-getGameTime().totalMinutes:0
   text('[data-bill-next]',s.nextIssue?`Prochaine facture : ${date(s.nextIssue)} · dans ${Math.floor(remaining/60)} h ${remaining%60} min.`:'Limite du calendrier atteinte.')
   const rows=[]
-  for(let index=page*6;index<Math.min(s.issued,(page+1)*6);index++){const bill=getHouseBill(index)!;rows.push(`<div class="bill-row" data-bill-index="${index}" data-paid="${bill.paid}"><div><b>Semaine ${bill.forWeek}</b><small>Émise ${date(bill.issue)}</small></div><span>${format(bill.amount)}<small>${bill.paid?'Payée':bill.overdue?'En retard':'À régler'}</small></span></div>`)}
+  for(let index=page*6;index<Math.min(s.issued,(page+1)*6);index++){const bill=getHouseBill(index)!;rows.push(`<div class="bill-row" data-bill-index="${index}" data-paid="${bill.paid}"><div><b>Semaine ${bill.forWeek}</b><small>Émise ${date(bill.issue)}</small></div><span>${format(bill.amount)}<small>${bill.paid?'Payée':bill.overdue?'En retard':'À régler'}</small></span>${!bill.paid?(index===s.oldest?.index?'<div data-bill-pay-slot></div>':'<button type="button" class="bill-pay-waiting" disabled title="Réglez d’abord la facture la plus ancienne">Payer</button>'):''}</div>`)}
   dialog.querySelector('.bills-history')!.innerHTML=rows.join('')||'<p>Aucune facture émise. La première échéance figure ci-dessus.</p>'
+  // Réutilise le même bouton et la transaction existante, au plus près du montant concerné.
+  const paySlot=dialog.querySelector('[data-bill-pay-slot]')
+  ;(paySlot??dialog.querySelector('.bill-actions')!).append(confirm)
+  confirm.textContent='Payer'
+  confirm.setAttribute('aria-label',s.oldest?`Payer ${format(s.amount)}, facture semaine ${s.oldest.forWeek}`:'Payer la facture')
   dialog.querySelector<HTMLElement>('.bills-pages')!.hidden=pages<=1
   text('[data-bill-page]',`Page ${page+1} / ${pages}`);prev.disabled=page===0;next.disabled=page>=pages-1
   text('[data-bill-title]',s.oldest?`À régler en premier : semaine ${s.oldest.forWeek}`:'Détail de la facture hebdomadaire')
   text('[data-bill-price]',`Total : ${format(s.amount)}`)
   text('[data-bill-after]',s.oldest?`Solde après paiement : ${s.balance>=s.amount?format(s.balance-s.amount):'solde insuffisant'}`:'Aucun paiement demandé pour le moment.')
   error.hidden=!s.oldest||s.balance>=s.amount;error.textContent='Argent insuffisant pour régler cette facture.'
-  confirm.hidden=paidReceipt||!s.oldest
+  confirm.hidden=paidReceipt||!s.oldest||!paySlot
   dialog.querySelector<HTMLButtonElement>('[data-bill-another]')!.hidden=!paidReceipt||!s.oldest
   confirm.disabled=committing||!pending||s.balance<s.amount||!allowed()
  }

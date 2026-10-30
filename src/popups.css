@@ -218,3 +218,12 @@ dialog.travel-dialog .popup-body .place-activity-empty{margin:0;font-size:12px;c
 dialog.travel-dialog .popup-body .place-activity-note{margin:16px 0 0;font-size:12px;color:#6b786c}
 dialog.travel-dialog .popup-body .place-activity-body small[data-closed]{background:#f4ecdc;color:#8a5a1c}
 dialog.travel-dialog .popup-body .travel-distance:empty,dialog.travel-dialog .popup-body .travel-traffic:empty{display:none}
+/* Fermeture animée : l’état de la fenêtre change tout de suite (open retiré), seul l’affichage s’efface. */
+dialog.travel-dialog{transition:opacity .18s ease-in,transform .18s ease-in,overlay .18s allow-discrete,display .18s allow-discrete}
+dialog.travel-dialog:not([open]){opacity:0;transform:translateY(12px) scale(.97);pointer-events:none}
+dialog.travel-dialog::backdrop{transition:opacity .18s ease-in,overlay .18s allow-discrete,display .18s allow-discrete}
+dialog.travel-dialog:not([open])::backdrop{opacity:0}
+dialog.travel-dialog[open]::backdrop{animation:popup-backdrop-in .24s ease-out}
+@keyframes popup-backdrop-in{from{opacity:0}}
+@media(max-width:600px){dialog.travel-dialog:not([open]){transform:translateY(100%)}}
+@media(prefers-reduced-motion:reduce){dialog.travel-dialog,dialog.travel-dialog::backdrop{transition:none}dialog.travel-dialog[open]::backdrop{animation:none}}

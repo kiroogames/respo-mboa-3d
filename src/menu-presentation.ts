@@ -71,18 +71,19 @@ export function presentGameMenu(dialog:HTMLDialogElement){
   const shortNames:Record<string,string>={'Retour au lieu':'Retour','Retour au ministère':'Retour','Confirmer le traitement':'Traiter','Confirmer le repas':'Manger','Confirmer la réunion':'Participer','Confirmer la sortie':'Y aller','Confirmer le versement':'Verser','Confirmer l’attente':'Attendre','Confirmer la commande':'Accepter'}
   for(const button of dialog.querySelectorAll('button')){const short=shortNames[button.textContent?.trim()??''];if(short){button.setAttribute('aria-label',button.textContent!.trim());button.textContent=short}}
   for(const node of dialog.querySelectorAll<HTMLElement>(cardSelector)){
-   if(node.querySelector(':scope>.game-card-art'))continue
-   const art=document.createElement('span');art.className='game-card-art';art.setAttribute('aria-hidden','true')
-   const image=document.createElement('img'),title=node.querySelector('b')?.textContent??node.textContent??''
+   const existing=node.querySelector<HTMLElement>(':scope>.game-card-art')
+   const art=existing??document.createElement('span');art.className='game-card-art';art.setAttribute('aria-hidden','true')
+   const image=existing?.querySelector('img')??document.createElement('img'),title=node.querySelector('b')?.textContent??node.textContent??''
    const dishArt:Record<string,Theme>={classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'}
    // Les illustrations originales Unity priment lorsqu’elles représentent précisément l’activité.
-   image.src=node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
+   const source=node.dataset.menuArt?illustration(node.dataset.menuArt as Theme):node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
     :node.matches('[data-venue-work],[data-venue-advanced]')||node.hasAttribute('data-dossier-index')?`${base}ui/unity/dossiers.png`
     :node.closest('.missions-list')?`${base}ui/unity/mission.png`
     :node.dataset.comfortItem?.startsWith('bed-')?`${base}ui/unity/lit.png`
     :dialog.classList.contains('outings-dialog')&&dialog.querySelector('h2')?.textContent==='Restaurant du Mboa'&&dishArt[node.dataset.outingOption??'']?illustration(dishArt[node.dataset.outingOption!]!)
     :illustration(artOf(title,theme))
-   image.alt='';art.append(image);node.prepend(art)
+   if(image.getAttribute('src')!==source)image.setAttribute('src',source)
+   if(!existing){image.alt='';art.append(image);node.prepend(art)}
   }
   for(const node of body.querySelectorAll<HTMLElement>(policies))if(!node.closest('.game-menu-infos'))infos.append(node)
   if(infos.children.length>1&&!infos.isConnected)body.append(infos)

@@ -1,0 +1,22 @@
+/* Retours de jeu : appui des boutons, refus, pertes et besoins au plus bas. */
+/* « scale » se compose avec le transform existant : les boutons centrés par transform (lieux, têtes) ne bougent pas.
+   Les boutons posés sur la carte 3D sont exclus : seuls ceux des fenêtres et du bandeau s'enfoncent. */
+:is(dialog.travel-dialog,#app header,#app footer) button:not(:disabled){transition:scale .08s ease-out,filter .12s}
+:is(dialog.travel-dialog,#app header,#app footer) button:not(:disabled):active{scale:.97;filter:brightness(.95)}
+
+/* Refus : secousse horizontale courte. */
+.feedback-shake,dialog.travel-dialog[open].feedback-shake{animation:feedback-shake .36s cubic-bezier(.36,.07,.19,.97)}
+@keyframes feedback-shake{15%,85%{translate:-2px 0}30%,70%{translate:4px 0}45%,55%{translate:-6px 0}}
+
+/* Perte : la case du bandeau rougit brièvement, le montant perdu descend sous elle. */
+#app .hud-drop,dialog.travel-dialog .popup-stats>span.hud-drop{animation:hud-drop .55s ease-out}
+@keyframes hud-drop{30%{transform:translateY(2px) scale(.97);filter:drop-shadow(0 0 6px #e0483599) saturate(1.3)}}
+.currency-fly-label.is-loss{background:#fff1ee;border-color:#e7a191;color:#b23a24}
+
+/* Énergie au plus bas, humeur basse : le compteur pulse doucement. */
+#app #energy-counter[data-alert=low],#app #mood-counter[data-level=low]{animation:need-low 1.6s ease-in-out infinite}
+@keyframes need-low{50%{box-shadow:0 0 0 3px #e0483566;background-color:#fff1ee}}
+
+#sound-toggle span{font-size:inherit}
+
+@media(prefers-reduced-motion:reduce){:is(dialog.travel-dialog,#app header,#app footer) button:not(:disabled):active{scale:none}.feedback-shake,dialog.travel-dialog[open].feedback-shake,#app .hud-drop,#app #energy-counter[data-alert=low],#app #mood-counter[data-level=low]{animation:none}}

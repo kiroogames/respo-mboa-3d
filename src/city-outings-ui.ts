@@ -26,7 +26,7 @@ export function mountCityOutings(options:{currentZone:()=>string;travelling:()=>
   text('[data-outing-schedule]',`${s.reason||(s.end!==null?`Ouvert jusqu’à ${date(getGameTimeAt(s.end))}.`:'')} ${s.next?`Prochaine ouverture : ${date(s.next)}.`:''}`)
   // Les horaires sont déjà au-dessus : évite un second pavé avant la carte des plats.
   dialog.querySelector<HTMLElement>('[data-outing-schedule]')!.hidden=meal&&s.open&&!s.consumed
-  list.innerHTML=a.options.map(o=>`<button type="button" data-outing-option="${o.id}" aria-pressed="${o.id===optionId}" ${s.consumed?'disabled':''}><b>${o.name}</b><span>${o.money?format(o.money):'Gratuit'} · ${o.minutes} min · ${o.energy?`−${o.energy} énergie`:'Sans coût d’énergie'}</span></button>`).join('')
+  list.innerHTML=a.options.map(o=>`<button type="button" data-outing-option="${o.id}" data-menu-art="${a.id==='restaurant'?({classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'} as Record<string,string>)[o.id]??'food':''}" aria-pressed="${o.id===optionId}" ${s.consumed?'disabled':''}><b>${o.name}</b><span>${o.money?format(o.money):'Gratuit'} · ${o.minutes} min · ${o.energy?`−${o.energy} énergie`:'Sans coût d’énergie'}</span></button>`).join('')
   text('.outing-policy',a.repeatable?'Repas en solo. Disponible à nouveau tant que vous pouvez en bénéficier. Aucun gain de Respo, influence ou considération.':'Sortie en solo. Une utilisation par jour, ou par soirée pour le snack. Aucun gain de Respo, influence ou considération.')
   text('[data-outing-title]',p.option.name)
   text('[data-outing-gain]',`+${p.moodGain}`);text('[data-outing-mood]',`${p.moodBefore} → ${p.moodAfter} / 140`)

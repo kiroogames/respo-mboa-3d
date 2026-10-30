@@ -80,6 +80,7 @@ import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
 import { mountCurrencyFly } from './currency-fly'
+import { mountGameFeedback } from './game-feedback'
 import './currency-icons.css'
 import './start-menu.css'
 import './popups.css'
@@ -279,6 +280,8 @@ const journeyFeedback=document.createElement('div');journeyFeedback.className='j
 journeyFeedback.innerHTML='<span data-journey-symbol aria-hidden="true"></span><span class="journey-caption"><b data-journey-label></b><span class="journey-progress"><i></i></span></span><button type="button" data-journey-skip title="Passer l’animation du trajet" aria-label="Passer l’animation du trajet">››</button>'
 document.querySelector('#app')!.append(journeyFeedback)
 let journeyVisualPaused=false
+// Cadrage propre au trajet en cours, distinct des vues des lieux pour pouvoir le déplacer avec le Respo.
+let tripView:View|null=null
 let activeTrip:{key:string;mode:TravelMode;points:TravelPoint[];road:TravelPoint[];exit:TravelPoint[];entry:TravelPoint[];elapsed:number;duration:number;timing:ReturnType<typeof journeyTiming>;minutes:number;done?:()=>void}|null=null
 journeyFeedback.querySelector('button')!.onclick=()=>{if(activeTrip){activeTrip.elapsed=activeTrip.duration;tickJourney(0,true)}}
 function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void,minutes=quoteTravel(route,mode).minutes){
@@ -294,9 +297,9 @@ function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void
  playerPosition.copyFromFloats(...points[0]!)
  try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position à reprendre après rechargement. */}
  hideDialogue();setOrbit(false)
- // Cadrage haut mais proche, fixé une seule fois : aucun suivi du véhicule.
- const xs=points.map(p=>p[0]),zs=points.map(p=>p[2])
- destination={...views.city!,target:new Vector3((Math.min(...xs)+Math.max(...xs))/2,8,(Math.min(...zs)+Math.max(...zs))/2),radius:Math.max(110,Math.min(180,camera.radius)),alpha:camera.alpha,beta:.65}
+ // Cadrage haut mais proche ; tickJourney recentre ensuite la vue sur le Respo tout au long du trajet.
+ tripView={...views.city!,target:new Vector3(points[0]![0],8,points[0]![2]),radius:Math.max(110,Math.min(180,camera.radius)),alpha:camera.alpha,beta:.65}
+ destination=tripView
  tickJourney(0)
 }
 const travel=mountTravel({
@@ -335,6 +338,7 @@ mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
 mountCurrencyFly(base)
+mountGameFeedback()
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
 function tickJourney(delta:number,force=false){
  if((journeyVisualPaused||guidedVisualPaused&&isGuidedOutingActive())&&!force)return
@@ -347,6 +351,10 @@ function tickJourney(delta:number,force=false){
  const sample=sampleJourneyPath(path,progress)
  const visualPoint=journeyVisual.update({...frame,point:sample.point,yaw:sample.yaw,seconds:trip.elapsed,cameraAlpha:camera.alpha,vehiclePoint:frame.phase==='exit'?trip.road[0]:frame.phase==='enter'?trip.road.at(-1):undefined})
  playerPosition.copyFromFloats(visualPoint[0],visualPoint[1]+8,visualPoint[2])
+ // La caméra suit le Respo, même vue de haut ; un lieu choisi pendant le trajet garde la main.
+ const follow=new Vector3(visualPoint[0],8,visualPoint[2])
+ if(destination&&destination===tripView)tripView.target=follow
+ else if(!destination)camera.target=Vector3.Lerp(camera.target,follow,1-Math.exp(-delta*.005))
  if(isGuidedOutingActive())setGuidedProgress(frame.total)
  const labels={exit:'Le Respo sort…',board:trip.mode==='moto'?'En selle !':'On embarque !',travel:trip.mode==='walk'?'À pied':trip.mode==='moto'?'En bendskin':trip.mode==='taxi'?'Taxi commun':'Yonga privé',alight:'On descend…',enter:'Arrivée sur place',done:'Arrivée'}
  journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')

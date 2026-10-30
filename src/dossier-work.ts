@@ -17,21 +17,18 @@ try {
   if (saved && typeof saved.batch === 'string' && Array.isArray(saved.done)) ledger = { batch: saved.batch, done: [...new Set<number>(saved.done.filter((index: unknown): index is number => Number.isInteger(index) && Number(index) >= 0 && Number(index) < rules.batchSize))] }
 } catch { /* Sans sauvegarde exploitable, la session utilise une nouvelle pile. */ }
 function save() { try { localStorage.setItem(key, JSON.stringify(ledger)) } catch { /* Le verrou de session reste actif. */ } }
-const workingDay = (day: number) => day % 7 < 5
-function nextOpening(day: number) { while (!workingDay(day)) day++; return day * 1440 + rules.openingHour * 60 }
-
+// Service ouvert en continu, week-end compris : une nouvelle pile arrive toutes les refillHours heures depuis minuit.
 export function getDossierBatch(totalMinutes = getGameTime().totalMinutes) {
   const day = Math.floor(totalMinutes / 1440), minute = totalMinutes % 1440
-  const open = workingDay(day) && minute >= rules.openingHour * 60 && minute < rules.closingHour * 60
-  const start = rules.openingHour * 60 + Math.floor(Math.max(0, minute - rules.openingHour * 60) / (rules.refillHours * 60)) * rules.refillHours * 60
+  const open = true, canFinish = true
+  const start = Math.floor(minute / (rules.refillHours * 60)) * rules.refillHours * 60
   const id = `${day}:${start}`
-  if (open && ledger.batch !== id) { ledger = { batch: id, done: [] }; save() }
-  const nextRefill = open && start + rules.refillHours * 60 < rules.closingHour * 60 ? day * 1440 + start + rules.refillHours * 60 : nextOpening(day + (minute < rules.openingHour * 60 && workingDay(day) ? 0 : 1))
-  const done = ledger.batch === id ? [...ledger.done] : []
-  const canFinish = open && minute + rules.minutes <= rules.closingHour * 60
+  if (ledger.batch !== id) { ledger = { batch: id, done: [] }; save() }
+  const nextRefill = day * 1440 + start + rules.refillHours * 60
+  const done = [...ledger.done]
   return {
-    id, open, canFinish, nextRefill, remaining: open ? rules.batchSize - done.length : 0,
-    reason: !open ? 'Le service des dossiers ouvre du lundi au vendredi, de 7 h à 23 h.' : !canFinish ? 'Il faut une heure avant la fermeture pour traiter un dossier.' : '',
+    id, open, canFinish, nextRefill, remaining: rules.batchSize - done.length,
+    reason: '',
     dossiers: rules.titles.map((title, index) => ({ index, title, done: done.includes(index) })),
   }
 }

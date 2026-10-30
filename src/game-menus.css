@@ -126,3 +126,9 @@ dialog.game-menu.transport-dialog[data-travel-step=go] .game-menu-infos{display:
 @media(max-width:760px){dialog.game-menu.transport-dialog[data-travel-step=place][open]{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);margin:auto;grid-template-columns:minmax(0,1fr);grid-template-areas:'head' 'body' 'foot'}dialog.game-menu.transport-dialog[data-travel-step=place] .menu-context{display:none}dialog.game-menu.transport-dialog[data-travel-step=place]>.popup-body{padding:6px 12px 8px}}
 /* La carte du restaurant peut commencer par une seule rangée sur un petit écran. */
 dialog.game-menu.outings-dialog .game-menu-pages{orphans:1;widows:1}
+/* Paiement dans la ligne de facture, avec le montant immédiatement à côté. */
+dialog.game-menu.bills-dialog .bill-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;break-inside:avoid}
+dialog.game-menu.bills-dialog .bill-row button{min-height:44px;padding:8px 14px;border:1px solid #c29542;border-radius:10px;background:#e9bc65;color:#173d31;font-size:16px;font-weight:800;white-space:nowrap}
+dialog.game-menu.bills-dialog .bill-row button:disabled{background:#e8e8df;border-color:#c6cbbf;color:#687261;cursor:default}
+dialog.game-menu.bills-dialog .bill-row small{font-size:12px}
+@media(max-width:400px){dialog.game-menu.bills-dialog .bill-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}dialog.game-menu.bills-dialog .bill-row>[data-bill-pay-slot],dialog.game-menu.bills-dialog .bill-row>.bill-pay-waiting{grid-column:2;justify-self:end}dialog.game-menu.bills-dialog .bill-row>div:first-child{grid-row:1 / span 2}}

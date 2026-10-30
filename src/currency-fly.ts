@@ -4,6 +4,7 @@
  * Le calque est un popover : il passe au-dessus des fenêtres ouvertes (couche supérieure du navigateur).
  */
 import './currency-fly.css'
+import { playSound } from './game-feedback'
 
 type Unit = 'money' | 'energy' | 'mood' | 'influence'
 const sources: Record<Unit, { amount: string; tile: string }> = {
@@ -42,11 +43,30 @@ export function mountCurrencyFly(base: string) {
     try { if (layer.matches(':popover-open')) layer.hidePopover(); layer.showPopover() } catch { /* Navigateur sans popover : calque ordinaire. */ }
   }
   let active = 0
-  function fly(unit: Unit, delta: number) {
+  function tileOf(unit: Unit) {
     // Fenêtre ouverte : le bandeau du haut est caché derrière ; viser la ligne de ressources de la fenêtre.
     const stat = document.querySelector<HTMLElement>(`dialog[open] [data-popup-stat="${unit}"]`)?.parentElement
-    const tile = stat && stat.getBoundingClientRect().width ? stat : document.querySelector<HTMLElement>(sources[unit].tile)
+    return stat && stat.getBoundingClientRect().width ? stat : document.querySelector<HTMLElement>(sources[unit].tile)
+  }
+  // Dépense : pas d'envol, seulement le montant perdu qui descend sous la case et une case qui rougit.
+  function lose(unit: Unit, delta: number) {
+    const tile = tileOf(unit)
     if (!tile) return
+    if (unit === 'money') playSound('loss')
+    tile.classList.remove('hud-drop'); void tile.offsetWidth; tile.classList.add('hud-drop')
+    if (reduced.matches) return
+    const box = tile.getBoundingClientRect()
+    showLayer(); active++
+    const label = document.createElement('span'); label.className = `currency-fly-label is-${unit} is-loss`
+    label.textContent = `−${delta.toLocaleString('fr-FR')}`; label.style.left = `${box.left + box.width / 2}px`; label.style.top = `${box.bottom + 6}px`
+    label.prepend(icon(unit)); layer.append(label)
+    const done = () => { label.remove(); if (--active === 0) try { layer.hidePopover() } catch { /* Sans popover. */ } }
+    label.animate([{ opacity: 0, transform: 'translate(-50%,-40%) scale(.85)' }, { opacity: 1, transform: 'translate(-50%,0) scale(1)', offset: .2 }, { opacity: 0, transform: 'translate(-50%,40px) scale(.95)' }], { duration: 1200, easing: 'ease-out' }).finished.then(done, done)
+  }
+  function fly(unit: Unit, delta: number) {
+    const tile = tileOf(unit)
+    if (!tile) return
+    playSound(unit === 'money' ? 'coin' : 'gain')
     const bump = () => { tile.classList.remove('hud-bump'); void tile.offsetWidth; tile.classList.add('hud-bump') }
     if (reduced.matches) { bump(); return }
     const target = (tile.querySelector<HTMLElement>(':scope > img, :scope > .mood-icon, :scope > .currency-icon') ?? tile)
@@ -80,7 +100,7 @@ export function mountCurrencyFly(base: string) {
       }, () => coin.remove())
     }
   }
-  // Observer les compteurs : seule une hausse déclenche l'envol (les dépenses restent discrètes).
+  // Observer les compteurs : une hausse déclenche l'envol, une baisse affiche la perte sous la case.
   for (const unit of Object.keys(sources) as Unit[]) {
     const element = document.querySelector<HTMLElement>(sources[unit].amount)
     if (!element) continue
@@ -90,6 +110,8 @@ export function mountCurrencyFly(base: string) {
     new MutationObserver(() => {
       const value = read(element.textContent)
       if (ready && value > previous) fly(unit, value - previous)
+      // L'énergie a déjà sa pastille de variation (player-resources.ts).
+      else if (ready && value < previous && unit !== 'energy') lose(unit, previous - value)
       previous = value
     }).observe(element, { childList: true, characterData: true, subtree: true })
   }
