@@ -156,7 +156,7 @@ export function mountVenues(options: {
 
     const outing=cityOutings.find(a=>a.zone===zone)
     outingEntry.hidden=!outing
-    if(outing){const schedule=getOutingSchedule(outing.id);outingEntry.innerHTML=`<b>Sorties · ${outing.name}</b><span class="venue-description">${outing.hours}</span><span class="venue-gains">Choisir une sortie</span><small>${schedule.reason||'Disponible sur place'}</small>`}
+    if(outing){const schedule=getOutingSchedule(outing.id),meal=outing.id.startsWith('restaurant');outingEntry.innerHTML=`<b>${meal?'À la carte':`Sorties · ${outing.name}`}</b><span class="venue-description">${outing.hours}</span><span class="venue-gains">${meal?'Choisir un plat':'Choisir une sortie'}</span><small>${schedule.reason||'Disponible sur place'}</small>`}
 
     comfortEntry.hidden=zone!=='home'
     if(!comfortEntry.hidden){const state=getHomeComfort();comfortEntry.innerHTML=`<b>Confort et équipements</b><span class="venue-description">Chambre, salon, cuisine et salle de bain.</span><span class="venue-gains">Confort : ${state.total} / ${state.target}${state.complete?' · objectif atteint':''}</span><small>Acheter · équiper · revendre</small>`}

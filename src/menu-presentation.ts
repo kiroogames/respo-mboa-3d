@@ -74,11 +74,13 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    if(node.querySelector(':scope>.game-card-art'))continue
    const art=document.createElement('span');art.className='game-card-art';art.setAttribute('aria-hidden','true')
    const image=document.createElement('img'),title=node.querySelector('b')?.textContent??node.textContent??''
+   const dishArt:Record<string,Theme>={classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'}
    // Les illustrations originales Unity priment lorsqu’elles représentent précisément l’activité.
    image.src=node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
     :node.matches('[data-venue-work],[data-venue-advanced]')||node.hasAttribute('data-dossier-index')?`${base}ui/unity/dossiers.png`
     :node.closest('.missions-list')?`${base}ui/unity/mission.png`
     :node.dataset.comfortItem?.startsWith('bed-')?`${base}ui/unity/lit.png`
+    :dialog.classList.contains('outings-dialog')&&dialog.querySelector('h2')?.textContent==='Restaurant du Mboa'&&dishArt[node.dataset.outingOption??'']?illustration(dishArt[node.dataset.outingOption!]!)
     :illustration(artOf(title,theme))
    image.alt='';art.append(image);node.prepend(art)
   }

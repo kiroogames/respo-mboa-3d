@@ -6,8 +6,5 @@
 #app .landmark .effect-group .currency-icon{width:17px;height:17px;margin:0 0 0 1px;vertical-align:middle}
 #app .landmark:hover .effect-group,#app .landmark:focus-visible .effect-group{filter:brightness(1.05)}
 @media(max-width:760px){#app .landmark .effect-group{font-size:12px;padding:0 4px}#app .landmark .effect-group .currency-icon{width:14px;height:14px}}
-/* Badges visibles seulement au survol (ou au focus clavier) du nom du lieu, pour ne pas surcharger la carte. */
-#app .landmark .landmark-effects{display:none;z-index:6}
-#app .landmark:hover .landmark-effects,#app .landmark:focus-visible .landmark-effects{display:flex;animation:effects-in .15s ease-out}
-@keyframes effects-in{from{opacity:0;transform:translate(-50%,4px)}}
-@media(prefers-reduced-motion:reduce){#app .landmark:hover .landmark-effects{animation:none}}
+/* Badges affichés en permanence au-dessus du nom du lieu. */
+#app .landmark .landmark-effects{z-index:6}

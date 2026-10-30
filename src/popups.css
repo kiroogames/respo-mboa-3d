@@ -213,6 +213,7 @@ dialog.travel-dialog .popup-body .place-people span{display:flex;flex-direction:
 dialog.travel-dialog .popup-body .place-people b{font-size:13px;color:#1f3a2c}
 dialog.travel-dialog .popup-body .place-people em{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:4px;border-radius:50%;background:#bd2439;color:#fff;font-style:normal;font-size:11px}
 dialog.travel-dialog .popup-body .place-people small{font-size:12px;color:#5a6b5c}
+dialog.travel-dialog .popup-body .place-people small.place-person-stay{color:#1f6b3a;font-weight:700}
 dialog.travel-dialog .popup-body .place-activity-empty{margin:0;font-size:12px;color:#6b786c}
 dialog.travel-dialog .popup-body .place-activity-note{margin:16px 0 0;font-size:12px;color:#6b786c}
 dialog.travel-dialog .popup-body .place-activity-body small[data-closed]{background:#f4ecdc;color:#8a5a1c}

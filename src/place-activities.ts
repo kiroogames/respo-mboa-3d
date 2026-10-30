@@ -20,7 +20,7 @@ import { getGameTime } from './game-clock'
 import { getHomeMealService } from './home-meals'
 
 export type PlaceActivity = { icon: string; title: string; detail: string; status?: string; closed?: boolean }
-export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean }
+export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean; stay: string }
 
 const nkap = (value: number) => value ? `${value.toLocaleString('fr-FR')} Nkap` : 'Gratuit'
 
@@ -58,10 +58,28 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
 
 /** Personnes présentes à l’heure actuelle ; elles peuvent être parties à l’arrivée. */
 export function getPlacePeople(zone: string): PlacePerson[] {
+  const now = getGameTime().totalMinutes
   return getNPCsAtZone(zone).map(npc => {
     const state = getNPCState(npc.id)
-    return { name: npc.name, portrait: npc.portrait, activity: state ? `${state.activity}` : npc.relationship, request: npcNeedsService(npc.id) }
+    return { name: npc.name, portrait: npc.portrait, activity: state ? `${state.activity}` : npc.relationship, request: npcNeedsService(npc.id), stay: describeStay(npc.id, zone, now) }
   })
+}
+
+// Heure où la personne quitte le lieu (ou cesse d'être disponible), en suivant sa routine par pas de 5 minutes sur 24 h.
+function presenceEnd(id: string, zone: string, now: number) {
+  for (let t = now - now % 5 + 5; t <= now + 1440; t += 5) {
+    const state = getNPCState(id, t)
+    if (state?.zone !== zone || !state.available) return t
+  }
+  return null
+}
+const clock = (total: number) => { const minute = ((total % 1440) + 1440) % 1440; return `${Math.floor(minute / 60)} h ${String(minute % 60).padStart(2, '0')}` }
+const span = (minutes: number) => minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${String(minutes % 60).padStart(2, '0')}` : ''}`
+function describeStay(id: string, zone: string, now: number) {
+  const end = presenceEnd(id, zone, now)
+  if (end === null) return 'Ici toute la journée'
+  const nextDay = Math.floor(end / 1440) > Math.floor(now / 1440) && end % 1440 !== 0 ? ' (demain)' : ''
+  return `Ici jusqu’à ${end % 1440 === 0 ? 'minuit' : clock(end)}${nextDay} · encore ${span(end - now)}`
 }
 
 export type EffectUnit = 'nkap' | 'energy' | 'mood' | 'influence'

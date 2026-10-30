@@ -110,8 +110,8 @@
   },
   {
     "id": "restaurant",
-    "name": "Restaurant",
-    "zone": "pilton",
+    "name": "Restaurant du Mboa",
+    "zone": "restaurant",
     "opening": 660,
     "closing": 1380,
     "days": [
@@ -128,7 +128,7 @@
     "options": [
       {
         "id": "classic",
-        "name": "Repas classique",
+        "name": "Ndolé · plantain",
         "money": 800,
         "minutes": 45,
         "energy": 0,
@@ -137,12 +137,39 @@
       },
       {
         "id": "complete",
-        "name": "Menu complet",
+        "name": "Poulet DG",
         "money": 1200,
         "minutes": 60,
         "energy": 0,
         "energyGain": 30,
         "mood": 12
+      },
+      {
+        "id": "rice-beans",
+        "name": "Riz · haricots",
+        "money": 450,
+        "minutes": 30,
+        "energy": 0,
+        "energyGain": 12,
+        "mood": 4
+      },
+      {
+        "id": "grilled-chicken",
+        "name": "Poulet braisé · plantain",
+        "money": 1000,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 25,
+        "mood": 10
+      },
+      {
+        "id": "mafe",
+        "name": "Mafé · riz sauce arachide",
+        "money": 900,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 23,
+        "mood": 9
       }
     ]
   },

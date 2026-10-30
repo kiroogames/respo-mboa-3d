@@ -124,3 +124,5 @@ dialog.game-menu.transport-dialog[data-travel-step=place]>.popup-body{overflow:h
 dialog.game-menu.transport-dialog[data-travel-step=place] .game-menu-pages{width:100%;column-count:auto;column-gap:24px;column-fill:auto;overflow:visible}
 dialog.game-menu.transport-dialog[data-travel-step=go] .game-menu-infos{display:none!important}
 @media(max-width:760px){dialog.game-menu.transport-dialog[data-travel-step=place][open]{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);margin:auto;grid-template-columns:minmax(0,1fr);grid-template-areas:'head' 'body' 'foot'}dialog.game-menu.transport-dialog[data-travel-step=place] .menu-context{display:none}dialog.game-menu.transport-dialog[data-travel-step=place]>.popup-body{padding:6px 12px 8px}}
+/* La carte du restaurant peut commencer par une seule rangée sur un petit écran. */
+dialog.game-menu.outings-dialog .game-menu-pages{orphans:1;widows:1}

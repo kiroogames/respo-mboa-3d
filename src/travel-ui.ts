@@ -62,7 +62,7 @@ export function mountTravel(options: {
       : '<p class="place-activity-empty">Aucune activité particulière dans ce lieu.</p>')
       + `<h3 class="place-people-title">Personnes présentes en ce moment</h3>`
       + (people.length
-        ? `<ul class="place-people">${people.map(person => `<li><img src="${options.base}${person.portrait}" alt="" width="40" height="40"/><span><b>${escape(person.name)}${person.request ? ' <em>!</em>' : ''}</b><small>${escape(person.activity)}</small></span></li>`).join('')}</ul>`
+        ? `<ul class="place-people">${people.map(person => `<li><img src="${options.base}${person.portrait}" alt="" width="40" height="40"/><span><b>${escape(person.name)}${person.request ? ' <em>!</em>' : ''}</b><small>${escape(person.activity)}</small><small class="place-person-stay">🕒 ${escape(person.stay)}</small></span></li>`).join('')}</ul>`
         : '<p class="place-activity-empty">Personne pour le moment.</p>')
       + '<p class="place-activity-note">Sur place après le trajet.</p>'
   }

@@ -113,7 +113,7 @@ app.innerHTML = `
 
 <div id="landmarks" aria-label="Lieux de la ville"></div>
 
-<footer><div class="place-picker"><button id="places-toggle" type="button" aria-expanded="false" aria-controls="places-panel"><span class="places-pin" aria-hidden="true">📍</span><span class="places-text"><small>Vous regardez</small><span id="view-name">Au cœur de Mboa Ville</span></span><span class="places-caret" aria-hidden="true">▴</span></button><nav id="places-panel" class="places" aria-label="Points de vue" hidden><span class="places-title">Aller voir un lieu</span><button data-view="city" class="active">Vue d’ensemble</button><button data-view="square">Rond-point</button><button data-view="market">Marché</button><button data-view="ministry">Ministère</button><button data-view="pilton">Petit Tripl (Pilton, Farmous, ...)</button><button data-view="hill">Présidence</button><button data-view="stadium">Omnisport</button><button data-view="airport">Nsimaport</button><button data-view="culture">Avenue Culturel</button><button data-view="njoka">Njoka</button><button data-view="home">Maison</button><button data-view="palms">Cité des palmiers</button><button data-view="jcd">Rue JCD</button><button data-view="baos">Rue des BAOs</button><button data-view="education">Education</button><button data-view="supermarket">Supermarché</button><button data-view="tekno">Tekno shop</button><button data-view="ahann">Plateau Ahannn</button><button data-view="club">Club matango 2-0</button><button data-view="village">Mboa village</button></nav></div><div class="tools"><button id="orbit" aria-pressed="false" title="Visite automatique">▷ <span>Visite</span></button><button id="motion" data-label="Pause" aria-pressed="false" aria-label="Mettre la ville en pause" title="Mettre la ville en pause">Ⅱ</button><button id="reset" data-label="Recentrer" aria-label="Retrouver la vue de référence" title="Vue de référence">↺</button><button id="light" data-label="Ambiance" aria-pressed="false" aria-label="Activer l’ambiance du soir" title="Changer l’ambiance">☀</button></div></footer>
+<footer><div class="place-picker"><button id="places-toggle" type="button" aria-expanded="false" aria-controls="places-panel"><span class="places-pin" aria-hidden="true">📍</span><span class="places-text"><small>Vous regardez</small><span id="view-name">Au cœur de Mboa Ville</span></span><span class="places-caret" aria-hidden="true">▴</span></button><nav id="places-panel" class="places" aria-label="Points de vue" hidden><span class="places-title">Aller voir un lieu</span><button data-view="city" class="active">Vue d’ensemble</button><button data-view="square">Rond-point</button><button data-view="market">Marché</button><button data-view="ministry">Ministère</button><button data-view="restaurant">Restaurant du Mboa</button><button data-view="pilton">Petit Tripl (Pilton, Farmous, ...)</button><button data-view="hill">Présidence</button><button data-view="stadium">Omnisport</button><button data-view="airport">Nsimaport</button><button data-view="culture">Avenue Culturel</button><button data-view="njoka">Njoka</button><button data-view="home">Maison</button><button data-view="palms">Cité des palmiers</button><button data-view="jcd">Rue JCD</button><button data-view="baos">Rue des BAOs</button><button data-view="education">Education</button><button data-view="supermarket">Supermarché</button><button data-view="tekno">Tekno shop</button><button data-view="ahann">Plateau Ahannn</button><button data-view="club">Club matango 2-0</button><button data-view="village">Mboa village</button></nav></div><div class="tools"><button id="orbit" aria-pressed="false" title="Visite automatique">▷ <span>Visite</span></button><button id="motion" data-label="Pause" aria-pressed="false" aria-label="Mettre la ville en pause" title="Mettre la ville en pause">Ⅱ</button><button id="reset" data-label="Recentrer" aria-label="Retrouver la vue de référence" title="Vue de référence">↺</button><button id="light" data-label="Ambiance" aria-pressed="false" aria-label="Activer l’ambiance du soir" title="Changer l’ambiance">☀</button></div></footer>
 
 <div class="loading" role="status"><div class="loading-mark">M</div><b>Mboa prend du relief.</b><span id="load-status">Chargement de la ville et de ses textures…</span><div class="loading-track"><i></i></div></div>
 
@@ -218,6 +218,9 @@ const views:Record<string,View>={
  culture:{target:new Vector3(110,10,20),radius:60,alpha:Math.PI/2+.12,beta:.78,label:'Avenue Culturel'},
 
  njoka:{target:new Vector3(53,3,37),radius:80,alpha:Math.PI/2+.08,beta:.8,label:'La rue du Njoka'},
+
+ // Le FAPMOUS dans le modèle Unity : les couverts croisés identifient le restaurant.
+ restaurant:{target:new Vector3(5.576,6,-3.849),radius:48,alpha:Math.PI/2+.1,beta:.72,label:'Restaurant du Mboa'},
 
  pilton:{target:new Vector3(38,16,-75),radius:90,alpha:Math.PI/2+.1,beta:.84,label:'Petit Tripl (Pilton, Farmous, ...)'},
 
@@ -515,6 +518,8 @@ function createLandmarks(){
   ['stadium','Omnisport',[96,15,12]],['airport','Nsimaport',[86,26,-44]],['culture','Avenue Culturel',[110,20,20]],
 
   ['market','Marché',[-55,8,28]],['njoka','Rue du Njoka',[54,16,37]],
+
+  ['restaurant','Restaurant du Mboa',[5.576,19,-3.849]],
 
   ['pilton','Petit Tripl (Pilton, Farmous, ...)',[38,42,-75]],['home','Maison',[-18,14,71]],
 

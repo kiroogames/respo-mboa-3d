@@ -4,14 +4,14 @@ import {readFileSync} from 'node:fs'
 const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}
 const c=await import('../src/game-clock.ts'),r=await import('../src/player-resources.ts'),m=await import('../src/currency.ts'),s=await import('../src/city-outings.ts'),v=await import('../src/venue-services.ts'),t=await import('../src/traffic-conditions.ts'),rel=await import('../src/npc-relationships.ts'),b=await import('../src/food-bag.ts')
 let g=await import('../src/accompanied-outings.ts')
-const context=(zone='pilton',extra={})=>({zone,travelling:false,allowed:true,...extra}),at=time=>c.advanceGameTime(time-c.getGameTime().totalMinutes)
+const context=(zone='restaurant',extra={})=>({zone,travelling:false,allowed:true,...extra}),at=time=>c.advanceGameTime(time-c.getGameTime().totalMinutes)
 const main=readFileSync('src/main.ts','utf8'),scale=JSON.parse(readFileSync('city-layout.json')).horizontalScale,places={}
-for(const match of main.matchAll(/(home|palms|culture|club|pilton):\{target:new Vector3\(([^)]+)\)/g)){const [x,y,z]=match[2].split(',').map(Number);places[match[1]]=[x*scale,Math.max(10,y+12),z*scale]}
+for(const match of main.matchAll(/(home|palms|culture|club|pilton|restaurant):\{target:new Vector3\(([^)]+)\)/g)){const [x,y,z]=match[2].split(',').map(Number);places[match[1]]=[x*scale,Math.max(10,y+12),z*scale]}
 const home=JSON.parse(readFileSync('public/data/wsp-traffic.json')).layout.home;places.home=[home[0],18,home[1]];const locate=id=>places[id]
 for(let day=0;day<7;day++)for(const minute of [659,660,1379,1380])assert.equal(s.getOutingSchedule('restaurant',day*1440+minute).open,minute>=660&&minute<1380)
 assert.ok(!v.getVenueServices('pilton').some(x=>x.id==='hotel-meal'));assert.ok(v.getVenueServices('pilton').some(x=>x.id==='hotel-rest'));assert.equal(v.useVenueService('hotel-meal','pilton').ok,false)
 at(660);assert.match(s.previewCityOuting('restaurant','classic').reason,/Nkap/);m.addMoney(100000)
-for(const bad of [context('home'),context('pilton',{travelling:true}),context('pilton',{allowed:false})])assert.equal(s.confirmCityOuting(s.prepareCityOuting('restaurant','classic').token,bad).ok,false)
+for(const bad of [context('home'),context('pilton'),context('restaurant',{travelling:true}),context('restaurant',{allowed:false})])assert.equal(s.confirmCityOuting(s.prepareCityOuting('restaurant','classic').token,bad).ok,false)
 let q=s.prepareCityOuting('restaurant','classic');s.cancelCityOuting(q.token);assert.equal(s.confirmCityOuting(q.token,context()).ok,false)
 q=s.prepareCityOuting('restaurant','classic');r.setMaxEnergy(110);assert.equal(s.confirmCityOuting(q.token,context()).ok,false);r.setMaxEnergy(100)
 r.spendEnergy(30);const balance=m.getMoneyBalance();q=s.prepareCityOuting('restaurant','classic');q.option.money=0;assert.equal(s.confirmCityOuting(q.token,context()).ok,true);assert.equal(s.confirmCityOuting(q.token,context()).ok,false)

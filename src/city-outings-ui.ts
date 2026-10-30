@@ -19,8 +19,13 @@ export function mountCityOutings(options:{currentZone:()=>string;travelling:()=>
   if(pending)cancelCityOuting(pending.token)
   pending=prepareCityOuting(activityId,optionId)
   const p=pending,a=p.activity,s=p.schedule
+  const meal=a.id.startsWith('restaurant')
+  confirm.textContent=meal?'Commander':'Confirmer la sortie'
+  dialog.querySelector('.travel-eyebrow')!.textContent=meal?'À LA CARTE':'PRENDRE DU TEMPS POUR SOI'
   text('#outings-heading',a.name);text('[data-outing-hours]',a.hours)
   text('[data-outing-schedule]',`${s.reason||(s.end!==null?`Ouvert jusqu’à ${date(getGameTimeAt(s.end))}.`:'')} ${s.next?`Prochaine ouverture : ${date(s.next)}.`:''}`)
+  // Les horaires sont déjà au-dessus : évite un second pavé avant la carte des plats.
+  dialog.querySelector<HTMLElement>('[data-outing-schedule]')!.hidden=meal&&s.open&&!s.consumed
   list.innerHTML=a.options.map(o=>`<button type="button" data-outing-option="${o.id}" aria-pressed="${o.id===optionId}" ${s.consumed?'disabled':''}><b>${o.name}</b><span>${o.money?format(o.money):'Gratuit'} · ${o.minutes} min · ${o.energy?`−${o.energy} énergie`:'Sans coût d’énergie'}</span></button>`).join('')
   text('.outing-policy',a.repeatable?'Repas en solo. Disponible à nouveau tant que vous pouvez en bénéficier. Aucun gain de Respo, influence ou considération.':'Sortie en solo. Une utilisation par jour, ou par soirée pour le snack. Aucun gain de Respo, influence ou considération.')
   text('[data-outing-title]',p.option.name)
