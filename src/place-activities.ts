@@ -82,6 +82,17 @@ function describeStay(id: string, zone: string, now: number) {
   return `Ici jusqu’à ${end % 1440 === 0 ? 'minuit' : clock(end)}${nextDay} · encore ${span(end - now)}`
 }
 
+export type PlaceOffer = 'earn' | 'eat' | 'open'
+/** Ce qu'un lieu propose à l'heure actuelle, pour le filtre de la carte. */
+export function getPlaceOffers(zone: string): PlaceOffer[] {
+  const { gains, losses } = getPlaceEffects(zone), offers: PlaceOffer[] = []
+  if (gains.includes('nkap')) offers.push('earn')
+  const outing = cityOutings.some(item => item.zone === zone && (item.id.startsWith('restaurant') || item.id === 'snack') && !getOutingSchedule(item.id).reason)
+  if (outing || bagFoods.some(food => food.zone === zone) || (zone === 'ministry' && !getCanteenService().reason) || (zone === 'home' && getHomeMealService().open)) offers.push('eat')
+  if (gains.length || losses.length) offers.push('open')
+  return offers
+}
+
 export type EffectUnit = 'nkap' | 'energy' | 'mood' | 'influence'
 /**
  * Ce qu'on peut gagner (+) ou perdre (−) dans un lieu à l'heure actuelle, pour les badges de la carte.

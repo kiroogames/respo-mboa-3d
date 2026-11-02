@@ -79,6 +79,10 @@ import { mountStartMenu } from './start-menu'
 import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
+import { mountMapFilter } from './map-filter'
+import { applyToon, inkEdges, isBuildingMaterial } from './toon-buildings'
+import { mountPlaceFx } from './place-fx'
+import { roadHeight } from './road-network'
 import { mountCurrencyFly } from './currency-fly'
 import { mountGameFeedback } from './game-feedback'
 import './currency-icons.css'
@@ -337,6 +341,7 @@ mountStartMenu(base)
 mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
+mountMapFilter()
 mountCurrencyFly(base)
 mountGameFeedback()
 // Animation du GPS en secondes réelles : le coût et les minutes de jeu ont déjà été appliqués par travel-ui.
@@ -625,11 +630,20 @@ scene.onAfterRenderObservable.add(()=>{
  })
  const groups=new Map<string,string[]>()
  for(const npc of shownNPCs){const key=markerGroup(npc.id),group=groups.get(key)??[];group.push(npc.id);groups.set(key,group)}
+ // Vue d'ensemble : une seule tête par lieu, avec le nombre des autres ; le détail revient en se rapprochant.
+ const collapsed=new Set<string>(),extraCount=new Map<string,number>()
+ if(camera.radius>110*cityScale)for(const [key,ids] of groups){
+  if(key==='__guided'||ids.length<2)continue
+  const lead=ids.find(id=>npcNeedsService(id))??ids[0]!
+  extraCount.set(lead,ids.length-1)
+  for(const id of ids)if(id!==lead)collapsed.add(id)
+  groups.set(key,[lead])
+ }
  if(guided)groups.set('__guided',['__player',guided.npcId])
  if(!travel.isTravelling())groups.set(playerZone,['__player',...(groups.get(playerZone)??[])])
  const placedCharacters:{x:number;y:number}[]=[]
  // Étiquettes des lieux déjà placées : les têtes s'empilent au-dessus et ne doivent jamais les recouvrir.
- const placedLabels:{l:number;r:number;t:number;b:number}[]=[],labelTops=new Map<string,number>(),labelBottoms=new Map<string,number>()
+ const placedLabels:{view:string;l:number;r:number;t:number;b:number}[]=[],labelTops=new Map<string,number>(),labelBottoms=new Map<string,number>()
 
  // Vue rapprochée : les noms disparaissent, sauf celui du bâtiment regardé (le plus proche du centre de la vue).
  let focusedLabel:HTMLButtonElement|null=null
@@ -646,7 +660,8 @@ scene.onAfterRenderObservable.add(()=>{
 
   const point=Vector3.Project(pin.position,Matrix.Identity(),scene.getTransformMatrix(),viewport)
 
-  pin.button.hidden=(!visible&&!pin.alwaysVisible&&pin.button!==focusedLabel&&!(pin.npcId&&guided?.npcId===pin.npcId))||point.z<0||point.z>1||!!(pin.npcId&&!shownNPCs.some(npc=>npc.id===pin.npcId))
+  pin.button.hidden=(!visible&&!pin.alwaysVisible&&pin.button!==focusedLabel&&!(pin.npcId&&guided?.npcId===pin.npcId))||point.z<0||point.z>1||!!(pin.npcId&&(collapsed.has(pin.npcId)||!shownNPCs.some(npc=>npc.id===pin.npcId)))
+  if(pin.npcId){const more=extraCount.get(pin.npcId);if(more)pin.button.dataset.more=`+${more}`;else delete pin.button.dataset.more}
 
   // Clamp to the safe area instead of hiding outright, so a label near the edge stays readable rather than disappearing.
 
@@ -682,7 +697,7 @@ scene.onAfterRenderObservable.add(()=>{
    if(x+30>obstacle.left&&x-30<obstacle.right&&y>obstacle.top&&y-74<obstacle.bottom)y=Math.min(innerHeight-145,obstacle.bottom+84)
   }
   if(isCharacter&&!pin.button.hidden){
-   const overlaps=(cx:number,cy:number)=>placedCharacters.some(other=>Math.abs(cx-other.x)<60&&Math.abs(cy-other.y)<66)||hudPanels.some(panel=>cx+27>panel.left&&cx-27<panel.right&&cy-70<panel.bottom&&cy>panel.top)
+   const overlaps=(cx:number,cy:number)=>placedCharacters.some(other=>Math.abs(cx-other.x)<60&&Math.abs(cy-other.y)<66)||hudPanels.some(panel=>cx+27>panel.left&&cx-27<panel.right&&cy-70<panel.bottom&&cy>panel.top)||placedLabels.some(label=>label.view!==characterZone&&cx+27>label.l&&cx-27<label.r&&cy>label.t&&cy-70<label.b)
    if(overlaps(x,y))for(const [dx,dy] of [[-68,0],[68,0],[0,-72],[-68,-72],[68,-72],[-136,0],[136,0],[0,72],[-68,72],[68,72]]){
     const cx=x+dx!,cy=y+dy!
     if(cx<35||cx>innerWidth-35||cy<95||cy>innerHeight-145||overlaps(cx,cy))continue
@@ -697,14 +712,18 @@ scene.onAfterRenderObservable.add(()=>{
    const size=labelSize(pin.button)
    // Un nom caché sous un panneau du HUD (toit du bâtiment regardé de près) descend juste en dessous.
    for(const panel of hudPanels)if(x+size.w/2>panel.left&&x-size.w/2<panel.right&&y>panel.top&&y-size.h<panel.bottom+6)y=panel.bottom+size.h+8
-   // Deux noms de lieux qui se chevauchent : le second descend juste sous le premier.
-   for(let pass=0;pass<4;pass++){
-    const hit=placedLabels.find(label=>x+size.w/2>label.l&&x-size.w/2<label.r&&y>label.t&&y-size.h<label.b)
-    if(!hit)break
-    y=hit.b+size.h+2
+   // Deux noms de lieux qui se chevauchent : le second prend la place libre la plus proche de son bâtiment.
+   const free=(cx:number,cy:number)=>!placedLabels.some(label=>cx+size.w/2>label.l&&cx-size.w/2<label.r&&cy>label.t&&cy-size.h<label.b)&&!hudPanels.some(panel=>cx+size.w/2>panel.left&&cx-size.w/2<panel.right&&cy>panel.top&&cy-size.h<panel.bottom+6)&&cx-size.w/2>4&&cx+size.w/2<innerWidth-4&&cy<innerHeight-100
+   if(!free(x,y)){
+    let best:[number,number]|null=null,bestCost=Infinity
+    for(let dy=-size.h*3;dy<=size.h*3;dy+=size.h/2)for(let dx=-size.w*1.2;dx<=size.w*1.2;dx+=size.w/4){
+     const cost=Math.hypot(dx,dy*1.6)
+     if(cost<bestCost&&free(x+dx,y+dy)){best=[x+dx,y+dy];bestCost=cost}
+    }
+    if(best){x=best[0];y=best[1]}
    }
-   pin.button.style.top=y+'px'
-   placedLabels.push({l:x-size.w/2-4,r:x+size.w/2+4,t:y-size.h-2,b:y+10})
+   pin.button.style.left=x+'px';pin.button.style.top=y+'px'
+   placedLabels.push({view:pin.button.dataset.view,l:x-size.w/2-4,r:x+size.w/2+4,t:y-size.h-2,b:y+10})
    labelTops.set(pin.button.dataset.view,y-size.h);labelBottoms.set(pin.button.dataset.view,y+10)
   }
 
@@ -754,7 +773,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-7`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-19`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
 
   container.addAllToScene()
 
@@ -763,6 +782,7 @@ async function loadCity(){
   if(traffic.layout){views.home!.target.x=traffic.layout.home[0]!;views.home!.target.z=traffic.layout.home[1]!}
 
   const trafficPrototypes:Mesh[]=[]
+  let planePrototype:Mesh|undefined
 
   const mapped=new Map<number,StandardMaterial>()
 
@@ -772,7 +792,9 @@ async function loadCity(){
 
    const m=new StandardMaterial(source.name,scene);m.diffuseTexture=source.albedoTexture;m.diffuseColor=source.albedoColor.toGammaSpace();m.specularColor=Color3.Black();m.emissiveColor=new Color3(.025,.025,.025);m.backFaceCulling=source.backFaceCulling
 
+   if(source.emissiveTexture){m.emissiveTexture=source.emissiveTexture;surfaces.addNightGlow(m)}
    surfaces.styleMaterial(source.name,m)
+   if(isBuildingMaterial(source.name))applyToon(m)
 
    mapped.set(source.uniqueId,m)
 
@@ -803,6 +825,7 @@ async function loadCity(){
    if(mesh.name==='Mougabiang statue')mesh.material=statueMaterial
 
    if(mesh.name.startsWith('WSP Traffic prototype')){trafficPrototypes.push(mesh);mesh.setEnabled(false);continue}
+   if(mesh.name==='WSP Avion prototype'){planePrototype=mesh;mesh.setEnabled(false);continue}
 
    surfaces.prepareMesh(mesh)
 
@@ -821,12 +844,14 @@ async function loadCity(){
    if(!merged)continue
 
    merged.name=merged.material?.name??'Mboa';merged.receiveShadows=true;merged.freezeWorldMatrix();merged.isPickable=false
+   if(isBuildingMaterial(merged.name))inkEdges(merged)
 
    if(!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg\.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))shadows.addShadowCaster(merged)
 
   }
 
-  cityLife=createCityLife(scene,trafficPrototypes,shadows);updateMotion()
+  cityLife=createCityLife(scene,trafficPrototypes,planePrototype,shadows);updateMotion()
+  mountPlaceFx(scene,{zone:()=>playerZone,travelling:()=>travel.isTravelling(),point:zone=>{const {x,z}=views[zone]!.target;return new Vector3(x,roadHeight(x,z)+.5,z)}})
 
   createLandmarks()
 

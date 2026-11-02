@@ -201,6 +201,34 @@ def minibus():
     return b.build('WSP Traffic prototype Minibus')
 
 
+def moto():
+    """Moto-taxi (bendskin) et son conducteur : le réservoir et la selle prennent la couleur, le reste garde la palette."""
+    b, r = Builder(), .3
+    b.wheel(.08, .82, r, .09, n=10); b.wheel(.08, -.82, r, .09, n=10)
+    b.box(0, 0, .3, .22, 1.2, .14, 'dark')
+    b.box(0, .25, .46, .3, .55, .26, 'paint')
+    b.box(0, -.38, .5, .32, .75, .14, 'seat')
+    b.box(0, -.72, .42, .26, .3, .16, 'paint')
+    b.box(0, .78, .36, .08, .16, .62, 'hub')
+    b.box(0, .72, .95, .62, .07, .06, 'dark')
+    b.box(0, .84, .8, .2, .08, .16, 'head')
+    b.box(0, -.9, .54, .14, .05, .08, 'tail')
+    # Conducteur.
+    b.box(0, -.18, .62, .42, .32, .62, 'sign')
+    b.box(0, -.18, 1.24, .2, .2, .12, 'seat')
+    b.box(0, -.15, 1.34, .3, .32, .28, 'dark')
+    for side in (-1, 1):
+        b.box(side * .26, .25, .92, .1, .75, .1, 'sign')
+        b.box(side * .24, -.05, .3, .12, .45, .38, 'dark')
+    return b.build('WSP Traffic prototype Moto')
+
+
+def add_moto():
+    made = moto(); made.location.z = -20
+    bpy.context.view_layer.update()
+    return made.name
+
+
 def build_vehicles():
     old = bpy.data.objects.get('WSP Traffic prototype')
     parked = bpy.data.objects.get('Voiture')
@@ -216,3 +244,94 @@ def build_vehicles():
         copy = bpy.data.objects.new('Voiture', made[0].data.copy()); bpy.context.collection.objects.link(copy)
         copy.location = (cx, cy, 0)
     return [o.name for o in made]
+
+
+# Défauts techniques des bâtiments d'origine : forme et textures inchangées.
+FLIPPED = ('bank', 'comissariat', 'contenair_police', 'station')
+FLOATING = ('comissariat', 'contenair_police', 'HotelDePolilce fontaine')
+
+
+def fix_building_defects():
+    """Remet à l'endroit les faces retournées (le jeu ne dessine pas leur dos) et pose au sol ce qui flotte."""
+    import bmesh
+    for name in FLIPPED:
+        mesh = bpy.data.objects[name].data
+        bm = bmesh.new(); bm.from_mesh(mesh); bmesh.ops.reverse_faces(bm, faces=bm.faces); bm.to_mesh(mesh); bm.free(); mesh.update()
+    for name in FLOATING:
+        obj = bpy.data.objects[name]
+        obj.location.z -= min((obj.matrix_world @ v.co).z for v in obj.data.vertices)
+    bpy.context.view_layer.update()
+
+
+def raise_church_walls(extra=2.6):
+    """Le toit de l'église tombait à 1 m du sol : on allonge les murs, sans changer sa forme ni son dessin."""
+    church = bpy.data.objects['eglise']
+    for v in church.data.vertices:
+        if v.co.z >= .95: v.co.z += extra
+    church.data.update()
+    for name in ('WSP Baies eglise', 'WSP Cadres eglise'): bpy.data.objects[name].location.z += extra
+    bpy.context.view_layer.update()
+
+
+def plane_prototype():
+    """L'avion garé devient le modèle animé : centré, nez vers +Y, roues à z = 0, rangé sous le sol comme les véhicules."""
+    from mathutils import Matrix, Vector
+    plane = bpy.data.objects['Avion']
+    world = [plane.matrix_world @ v.co for v in plane.data.vertices]
+    lo = Vector((min(p.x for p in world), min(p.y for p in world), min(p.z for p in world)))
+    hi = Vector((max(p.x for p in world), max(p.y for p in world), max(p.z for p in world)))
+    center = Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z))
+    nose = Vector((-.397, -.918, 0))
+    turn = Matrix.Rotation(math.atan2(nose.x, nose.y), 4, 'Z')
+    for v, p in zip(plane.data.vertices, world): v.co = turn @ (p - center)
+    plane.data.update(); plane.matrix_world = Matrix.Translation((0, 0, -20)); plane.name = 'WSP Avion prototype'
+    bpy.context.view_layer.update()
+
+
+# Fenêtres allumées la nuit : une texture d'émission par façade, uniquement sur ce qui ressemble à du vitrage.
+NIGHT_SKIP = ('WSP', 'bg.', 'Panneau', 'Outline', 'taxi', 'Avion', 'N116', 'WM ', 'Material', 'Marché', 'Stadium', 'Chantier', 'Fapmous')
+NIGHT_SOURCES = {'Rue_joka1': 'Rue_Joka_1_Night.png', 'Rue_joka2': 'Rue_Joka_2_Night.png', 'Rue_joka3': 'Rue_Joka_3_Night.png', 'Rue_joka4': 'Rue_Joka_4_Night.png'}
+
+
+def night_windows(textures_dir):
+    """Rue du Njoka : les néons d'origine. Autres façades : vitrages en lumière chaude, par blocs irréguliers."""
+    done = []
+    rng = np.random.default_rng(5)
+    for m in bpy.data.materials:
+        if not m.use_nodes: continue
+        for old in [n for n in m.node_tree.nodes if n.type == 'TEX_IMAGE' and n.image and n.image.name.endswith(' nuit')]:
+            m.node_tree.nodes.remove(old)
+        if m.name.startswith(NIGHT_SKIP): continue
+        principled = next((n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None)
+        image = base_image(m)
+        if not principled or not image or not m.users: continue
+        if m.name in NIGHT_SOURCES:
+            night = bpy.data.images.load(textures_dir + NIGHT_SOURCES[m.name], check_existing=True)
+            w, h = night.size; px = np.empty(w * h * 4, np.float32); night.pixels.foreach_get(px); px = px.reshape(h, w, 4)
+            lum = px[..., :3].max(2)
+            out = np.zeros_like(px); out[..., :3] = px[..., :3] * np.clip((lum - .32) / .25, 0, 1)[..., None] * 1.15
+        else:
+            w, h = image.size; px = np.empty(w * h * 4, np.float32); image.pixels.foreach_get(px); px = px.reshape(h, w, 4)
+            r, g, b = px[..., 0], px[..., 1], px[..., 2]
+            mx = px[..., :3].max(2); sat = (mx - px[..., :3].min(2)) / np.maximum(mx, 1e-3)
+            # Vitrage : seulement les carreaux sombres et bleutés ; un mur clair ou gris reste éteint.
+            glass = (b >= r * 1.12) & (mx < .46) & (mx > .05) & (sat > .14) & (px[..., 3] > .5)
+            if glass.mean() < .002 or glass.mean() > .25: continue
+            cell = max(3, w // 64)
+            lit = rng.random((h // cell + 2, w // cell + 2)) < .4
+            on = np.kron(lit, np.ones((cell, cell), bool))[:h, :w]
+            warm = rng.random((h // cell + 2, w // cell + 2))
+            tone = np.kron(warm, np.ones((cell, cell), np.float32))[:h, :w]
+            out = np.zeros_like(px); mask = (glass & on).astype(np.float32)
+            out[..., 0] = mask * (.85 + .15 * tone); out[..., 1] = mask * (.6 + .2 * tone); out[..., 2] = mask * (.22 + .22 * tone)
+        out[..., 3] = 1
+        glow = bpy.data.images.new(m.name.strip() + ' nuit', w, h, alpha=False)
+        glow.pixels.foreach_set(out.astype(np.float32).ravel()); glow.pack(); glow.file_format = 'JPEG'
+        node = m.node_tree.nodes.new('ShaderNodeTexImage'); node.image = glow
+        # Mêmes coordonnées de texture que la façade.
+        base = next((n for n in m.node_tree.nodes if n.type == 'TEX_IMAGE' and n is not node), None)
+        if base and base.inputs['Vector'].is_linked: m.node_tree.links.new(base.inputs['Vector'].links[0].from_socket, node.inputs['Vector'])
+        m.node_tree.links.new(node.outputs['Color'], principled.inputs['Emission Color'])
+        principled.inputs['Emission Strength'].default_value = 1
+        done.append(m.name)
+    return done

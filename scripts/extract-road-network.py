@@ -30,17 +30,15 @@ def ground():
     position, uv = accessor(primitive['attributes']['POSITION']), accessor(primitive['attributes']['TEXCOORD_0'])
     design = np.column_stack([position[:, 0], position[:, 2], np.ones(len(position))])
     cu = np.linalg.lstsq(design, uv[:, 0], rcond=None)[0]; cv = np.linalg.lstsq(design, uv[:, 1], rcond=None)[0]
-    image = next(i for i in gltf['images'] if i.get('name') == 'large map extended')
-    view = gltf['bufferViews'][image['bufferView']]
-    start = offset + view.get('byteOffset', 0)
-    texture = Image.open(io.BytesIO(data[start:start + view['byteLength']])).convert('RGB')
+    # Le sol du jeu est repeint (paint_ground.py) : les routes se lisent toujours sur la peinture d'origine.
+    texture = Image.open(ROOT / 'scripts/data/large-map-original.jpg').convert('RGB')
     return texture, cu, cv
 
 
 GROUND = ('bg.002', 'WSP Prairie de la colline', 'WSP Eau turquoise', 'WSP Terre des abords', 'WSP Mer vivante',
           'WSP Route de la presidence', 'WSP Bordures de la presidence', 'WSP Tablier du pont', 'WSP Garde corps')
 PROPS = ('Arbre', 'Passant', 'banc', 'Banc', 'Bac', 'Arbuste', 'Lampadaire', 'lampadaire', 'Traffic', 'Voiture', 'Moto', 'Bus',
-         'Avion', 'panneau', 'Panneau', 'Pont', 'Rive', 'Horizon', 'Socle', 'Surface')
+         'Avion', 'panneau', 'Panneau', 'Pont', 'Pile du pont', 'reseau', 'Rive', 'Horizon', 'Socle', 'Surface')
 
 
 def footprint(shape, cu, cv, margin_px=3):
@@ -366,11 +364,85 @@ def simplify(path, tolerance):
     return simplify(path[:i + 1], tolerance)[:-1] + simplify(path[i:], tolerance)
 
 
+# Axe du pont : mêmes points que scripts/rebuild_bridge.py (Blender : y = -z).
+BRIDGE_START, BRIDGE_END = (139.81, -145.67), (216.91, -274.37)
+
+
+def align_bridge(paths):
+    """La peinture du sol s'écarte du pont 3D : la voie du pont suit son axe, jusqu'au tunnel."""
+    span = math.dist(BRIDGE_START, BRIDGE_END); count = int(span / 4)
+    straight = [[round(BRIDGE_START[0] + (BRIDGE_END[0] - BRIDGE_START[0]) * i / count, 2), round(BRIDGE_START[1] + (BRIDGE_END[1] - BRIDGE_START[1]) * i / count, 2)] for i in range(count + 1)]
+    # La route qui part vers la mer : son bout sur la rive reste le carrefour, le reste suit l'axe du pont.
+    for i, p in enumerate(paths):
+        for start, end in ((p[0], p[-1]), (p[-1], p[0])):
+            if end[0] > 100 and end[1] < BRIDGE_START[1] - 20:
+                paths[i] = [start] + straight; return paths
+    raise AssertionError('Voie du pont introuvable')
+
+
+def drop_inner_stubs(paths, box=(-170, -130, 100, 130), shortest=90):
+    """Retire les impasses du centre : une voiture y disparaîtrait en pleine ville. Les sorties lointaines restent."""
+    for _ in range(3):
+        degree = {}
+        for p in paths:
+            for q in (p[0], p[-1]):
+                key = (round(q[0] / 2), round(q[1] / 2)); degree[key] = degree.get(key, 0) + 1
+        def stub(p):
+            for q in (p[0], p[-1]):
+                inside = box[0] < q[0] < box[2] and box[1] < q[1] < box[3]
+                if inside and degree[(round(q[0] / 2), round(q[1] / 2))] == 1 and length(p) < shortest: return True
+            return False
+        kept = [p for p in paths if not stub(p)]
+        if len(kept) == len(paths): break
+        paths = kept
+    return paths
+
+
+def relax(path, step=3.0, passes=6):
+    """Lisse les ondulations du squelette sans resserrer les courbes (filtre de Taubin) ; extrémités fixes pour les carrefours."""
+    total = length(path)
+    if total < step * 3: return path
+    cum = [0.0]
+    for a, b in zip(path, path[1:]): cum.append(cum[-1] + math.dist(a, b))
+    n = int(total / step); points = np.column_stack([np.interp(np.linspace(0, total, n + 1), cum, [q[i] for q in path]) for i in (0, 1)])
+    for _ in range(passes):
+        for factor in (.5, -.53):
+            points[1:-1] += factor * ((points[:-2] + points[2:]) / 2 - points[1:-1])
+    return [[round(float(x), 2), round(float(z), 2)] for x, z in points]
+
+
+def sidewalks(paths, blocked, cu, cv, offset=5.15, step=4.0, trim=9.0, shortest=18.0):
+    """Trottoirs de part et d'autre des routes, coupés dès qu'un bâtiment ou une autre chaussée les gêne."""
+    h, w = blocked.shape
+    centre = np.array([q for p in paths for a, b in zip(p, p[1:]) for q in (a, ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2))])
+    walks = []
+    for path in paths:
+        total = length(path)
+        if total < trim * 2 + shortest: continue
+        cum = [0.0]
+        for a, b in zip(path, path[1:]): cum.append(cum[-1] + math.dist(a, b))
+        at = np.linspace(trim, total - trim, int((total - trim * 2) / step) + 2)
+        xs, zs = np.interp(at, cum, [q[0] for q in path]), np.interp(at, cum, [q[1] for q in path])
+        dx, dz = np.gradient(xs), np.gradient(zs); n = np.hypot(dx, dz) + 1e-6
+        for side in (-1, 1):
+            run = []
+            for x, z in zip(xs - side * dz / n * offset, zs + side * dx / n * offset):
+                u, v = (x * cu[0] + z * cu[1] + cu[2]) * w, (x * cv[0] + z * cv[1] + cv[2]) * h
+                inside = 0 <= v < h and 0 <= u < w and not blocked[int(v), int(u)]
+                if inside and np.hypot(centre[:, 0] - x, centre[:, 1] - z).min() > 4.6: run.append([round(float(x), 1), round(float(z), 1)])
+                else:
+                    if len(run) * step >= shortest: walks.append(run)
+                    run = []
+            if len(run) * step >= shortest: walks.append(run)
+    return walks
+
+
 def main():
     texture, cu, cv = ground()
     small, mask = road_mask(texture)
     # Une rue peinte sous un bâtiment 3D n'est pas praticable : on retire l'emprise exacte des bâtiments (marge ≈ 1,3 unité).
-    mask = mask & ~footprint(mask.shape, cu, cv)
+    blocked = footprint(mask.shape, cu, cv)
+    mask = mask & ~blocked
     mask = keep_large(mask, 1500)
     skeleton = thin(mask)
     circles = islands(mask)
@@ -390,9 +462,10 @@ def main():
         x, z = inverse @ np.array([u - cu[2], v - cv[2]])
         return [round(float(x), 2), round(float(z), 2)]
     paths = [[world(p) for p in smooth(simplify(e, 1.6))] for e in edges]
+    paths = align_bridge(drop_inner_stubs(paths))
     total = sum(sum(math.dist(a, b) for a, b in zip(p, p[1:])) for p in paths)
     out = ROOT / 'src/data/road-network.json'
-    out.write_text(json.dumps({'source': 'Chaussée peinte du sol 3D (large map extended), squelette automatique', 'paths': paths, 'heights': height_grid()}, separators=(',', ':')), encoding='utf8')
+    out.write_text(json.dumps({'source': 'Chaussée peinte du sol 3D (large map extended), squelette automatique', 'paths': paths, 'walks': sidewalks(paths, blocked, cu, cv), 'heights': height_grid()}, separators=(',', ':')), encoding='utf8')
     print(json.dumps({'roundabouts': len(circles), 'paths': len(paths), 'length': round(total), 'mask_pixels': int(mask.sum()), 'skeleton_pixels': int(skeleton.sum())}))
     if DEBUG:
         DEBUG.mkdir(parents=True, exist_ok=True)

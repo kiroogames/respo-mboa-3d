@@ -12,6 +12,7 @@ import type { Scene } from '@babylonjs/core/scene'
 import type { Mesh } from '@babylonjs/core/Meshes/mesh'
 
 export function createSurfaceKit(scene:Scene){
+  const nightGlows:StandardMaterial[]=[]
   const waterNames=new Set(['WSP Eau turquoise','WSP Mer vivante'])
   const water=new DynamicTexture('Reflets du littoral',{width:512,height:512},scene,true)
   const context=water.getContext();context.fillStyle='#dae6dd';context.fillRect(0,0,512,512)
@@ -51,7 +52,10 @@ export function createSurfaceKit(scene:Scene){
       mesh.setVerticesData('uv',uv,false,2)
     },
     // Les surfaces émissives simulent les fenêtres et lampadaires sans multiplier les sources lumineuses.
+    // Fenêtres et enseignes dessinées dans la texture de nuit du bâtiment : éteintes le jour.
+    addNightGlow(m:StandardMaterial){nightGlows.push(m);if(m.emissiveTexture)m.emissiveTexture.level=0},
     setEvening(value:boolean){
+      for(const m of nightGlows)if(m.emissiveTexture)m.emissiveTexture.level=value?1:0
       for(const m of lamps)m.emissiveColor=value?new Color3(1,.65,.19):new Color3(.14,.12,.045)
       for(const m of windows)m.emissiveColor=value?new Color3(.35,.24,.09):new Color3(.025,.025,.025)
       for(const m of nightSigns)m.emissiveColor=value?new Color3(.24,.22,.2):new Color3(.06,.06,.06)

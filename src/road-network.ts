@@ -4,6 +4,8 @@
 import network from './data/road-network.json' with { type: 'json' }
 
 export const roadPaths = network.paths as [number, number][][]
+// Trottoirs dégagés, où marchent les passants.
+export const walkPaths = (network as unknown as { walks: [number, number][][] }).walks
 
 const { x0, z0, step, cols, rows, values } = network.heights
 const at = (i: number, j: number) => values[Math.max(0, Math.min(rows - 1, i)) * cols + Math.max(0, Math.min(cols - 1, j))]!

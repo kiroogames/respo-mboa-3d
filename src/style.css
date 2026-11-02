@@ -65,3 +65,6 @@ header{align-items:flex-start}.header-right{display:flex;flex-direction:column;a
 /* Programme quotidien : présentation des horaires sans déplacer les objets 3D. */
 .npc-agenda{margin:8px 0 14px;border:1px solid #9dad97;border-radius:8px;padding:9px 11px;font-size:12px;color:#34543b}.npc-agenda summary{cursor:pointer;font-weight:700}.npc-agenda ol{list-style:none;padding:0;margin:8px 0}.npc-agenda li{padding:7px 0;border-top:1px solid #d4dfcd;line-height:1.5}.npc-agenda p{line-height:1.5}
 
+
+/* Vue d'ensemble : la tête d'un groupe annonce le nombre des autres personnes présentes. */
+.npc-pin[data-more]::before{content:attr(data-more);position:absolute;top:-4px;left:-6px;z-index:2;min-width:24px;padding:2px 5px;border:2px solid #fffdf5;border-radius:12px;background:#1f5a44;color:#fffdf5;font:800 12px/1.2 var(--display,Arial);text-align:center;pointer-events:none}

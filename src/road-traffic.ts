@@ -398,8 +398,16 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
     }
   }
   populate(true)
+  // Feux visibles : un par arrivée sur un carrefour, sur le bord droit de la voie.
+  const signals = lanes.flatMap((lane, index) => {
+    if (degree[lane.to]! < 3) return []
+    const { p, dir } = at(lane, lane.length)
+    return [{ lane: index, node: lane.to, x: p[0] - dir[1] * 2.7, z: p[2] + dir[0] * 2.7, yaw: Math.atan2(-dir[0], -dir[1]) }]
+  })
   return {
     states: cars,
+    signals,
+    signalRed: (lane: number, node: number) => red(lane, node),
     step, configure, separation,
     get stats() { return { borderExits, stuckRemovals } },
     lanePaths: () => lanes.map(l => l.pts.filter((_, i) => i % 3 === 0 || i === l.pts.length - 1)),

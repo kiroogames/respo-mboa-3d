@@ -1,0 +1,4 @@
+/* Le nom du lieu rebondit quand une action vient de s'y terminer. */
+#app .landmark.place-fx-pop{animation:place-fx-pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes place-fx-pop{35%{scale:1.16}}
+@media(prefers-reduced-motion:reduce){#app .landmark.place-fx-pop{animation:none}}
