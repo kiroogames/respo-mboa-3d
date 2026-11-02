@@ -8,7 +8,7 @@
 
 type P2 = [number, number]
 type P3 = [number, number, number]
-export type TrafficOptions = { radius: number; laneOffset?: number; height?: (x: number, z: number) => number; seed?: number }
+export type TrafficOptions = { radius: number; laneOffset?: number; height?: (x: number, z: number) => number; seed?: number; ignoresLights?: (index: number) => boolean; hotspots?: P2[] }
 type Path = { pts: P3[]; cum: number[]; length: number }
 type Lane = Path & { from: number; to: number; reverse: number; exits: number[] }
 type Connector = Path & { node: number; from: number; to: number }
@@ -269,7 +269,18 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   const cars: Car[] = Array.from({ length: count }, () => ({ active: false, lane: 0, connector: -1, s: 0, speed: 0, next: -1, position: [0, 0, 0], yaw: 0, holding: -1, holdingTurn: -1, waited: 0, atLine: 0 }))
   const reserved = new Map<number, Set<number>>()
   const pathOf = (car: Car): Path => car.connector >= 0 ? connectors[car.connector]! : lanes[car.lane]!
-  const chooseExit = (lane: number) => { const exits = lanes[lane]!.exits; return exits.length ? exits[Math.floor(random() * exits.length)]! : -1 }
+  // Points de bouchon : les voies qui y arrivent attirent les voitures et leur feu reste vert moins longtemps.
+  const hotNodes = new Set(nodes.flatMap((node, index) => (options.hotspots ?? []).some(h => dist(node, h) < 32) && degree[index]! >= 3 ? [index] : []))
+  const hotLanes = lanes.flatMap((lane, index) => hotNodes.has(lane.to) && lane.length > 10 ? [index] : [])
+  const chooseExit = (lane: number) => {
+    const exits = lanes[lane]!.exits
+    if (!exits.length) return -1
+    if (congestion > 0 && random() < (congestion === 2 ? .92 : .4)) {
+      const towards = exits.filter(exit => hotNodes.has(lanes[connectors[exit]!.to]!.to))
+      if (towards.length) return towards[Math.floor(random() * towards.length)]!
+    }
+    return exits[Math.floor(random() * exits.length)]!
+  }
   // Sans distance parcourue, la voiture prend le cap de la voie. Sinon elle y revient en roulant, comme sur ses essieux :
   // à l'arrêt elle ne pivote pas, et les cassures de la voie ne se voient pas.
   function place(car: Car, moved?: number) {
@@ -284,7 +295,8 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   function spawn(car: Car, atEntry: boolean) {
     for (let attempt = 0; attempt < 30; attempt++) {
       let lane: number, s: number
-      if (atEntry && entries.length && attempt < 15) { lane = entries[Math.floor(random() * entries.length)]!; s = 0 }
+      if (congestion > 0 && hotLanes.length && attempt < 25 && random() < (congestion === 2 ? .95 : .45)) { lane = hotLanes[Math.floor(random() * hotLanes.length)]!; s = lanes[lane]!.length * (.15 + random() * .85) }
+      else if (atEntry && entries.length && attempt < 15) { lane = entries[Math.floor(random() * entries.length)]!; s = 0 }
       else {
         let pick = random() * totalLength; lane = 0
         while (lane < lanes.length - 1 && pick > lanes[lane]!.length) { pick -= lanes[lane]!.length; lane++ }
@@ -300,7 +312,23 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   let desired = count, speedMultiplier = 1, congestion = 0, elapsed = 0, borderExits = 0, stuckRemovals = 0
   function configure(activeCars: number, multiplier: number, jam: number) {
     desired = Math.max(0, Math.min(count, Math.floor(activeCars)))
-    speedMultiplier = Math.max(.1, Math.min(1, multiplier)); congestion = Math.max(0, Math.min(2, jam))
+    speedMultiplier = Math.max(.1, Math.min(1, multiplier))
+    const previous = congestion; congestion = Math.max(0, Math.min(2, jam))
+    if (congestion > previous && hotLanes.length) packQueues()
+  }
+  // Début de bouchon : les voitures se rangent en file, de la ligne d'arrêt vers l'arrière, sur les voies qui mènent aux points chauds.
+  function packQueues() {
+    const free = cars.filter((car, index) => car.connector < 0 && car.holding < 0 && !options.ignoresLights?.(index))
+    const wanted = Math.floor(desired * (congestion === 2 ? .8 : .4)), order = [...hotLanes].sort((a, b) => lanes[b]!.length - lanes[a]!.length)
+    let used = 0
+    for (const lane of order) {
+      for (let s = lanes[lane]!.length - 1; s > 1 && used < wanted && used < free.length; s -= separation + .3) {
+        const car = free[used]!
+        if (cars.some(o => o !== car && o.active && dist(o.position, at(lanes[lane]!, s).p) < separation * (o.lane === lane ? 1 : 1.4))) continue
+        Object.assign(car, { active: true, lane, connector: -1, s, speed: 0, next: chooseExit(lane), holding: -1, holdingTurn: -1, waited: 0, atLine: 0 })
+        place(car); used++
+      }
+    }
   }
   function populate(initial: boolean) {
     let active = cars.filter(c => c.active).length
@@ -332,7 +360,7 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   // Feu rouge pour cette arrivée : le cycle dure 24 s, les deux phases alternent, plus longtemps quand ça bouchonne.
   const red = (lane: number, node: number) => {
     if (congestion === 0 || degree[node]! < 3) return false
-    const cycle = (elapsed + node * 3.7) % 24, green = congestion === 2 ? 10 : 11
+    const cycle = (elapsed + node * 3.7) % 24, green = hotNodes.has(node) ? (congestion === 2 ? 3 : 7) : congestion === 2 ? 10 : 11
     return phaseOf[lane] === 0 ? !(cycle < green) : !(cycle >= 12 && cycle < 12 + green)
   }
 
@@ -368,7 +396,7 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
             const first = !cars.some(o => o !== car && o.active && o.connector < 0 && o.lane === car.lane && o.s > car.s)
             // Équité : celle qui attend au stop depuis le plus longtemps passe avant les mouvements qui la coupent.
             const priority = !cars.some(o => o !== car && o.active && o.connector < 0 && o.next >= 0 && connectors[o.next]!.node === node && o.atLine > 4 && o.atLine > car.atLine + 1 && conflicts[car.next]![o.next]!)
-            if (mine || (first && compatible && exitClear && priority && !red(car.lane, node))) {
+            if (mine || (first && compatible && exitClear && priority && (options.ignoresLights?.(index) || !red(car.lane, node)))) {
               if (!mine) { release(car); holders.add(index); reserved.set(node, holders); car.holding = node; car.holdingTurn = car.next; car.atLine = 0 }
             }
             else { target = Math.min(target, Math.max(0, (gap - .5) / 1.2)); if (gap < 1.5) car.atLine += dt }
@@ -377,7 +405,7 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
         if (car.connector < 0 && car.next < 0 && lanes[car.lane]!.length - car.s < .3) { release(car); car.active = false; borderExits++; continue }
         // Une voiture immobilisée trop longtemps quitte la circulation ; une autre entrera par un bord.
         car.waited = car.speed < .05 && target < .1 ? car.waited + dt : 0
-        if (car.waited > 60 && car.connector < 0) { release(car); car.active = false; stuckRemovals++; continue }
+        if (car.waited > (hotLanes.includes(car.lane) && congestion > 0 ? 240 : 60) && car.connector < 0) { release(car); car.active = false; stuckRemovals++; continue }
         const previous = car.speed
         car.speed += Math.max(-4 * dt, Math.min(1.6 * dt, target - car.speed))
         const moved = (previous + car.speed) * .5 * dt

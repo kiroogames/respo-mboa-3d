@@ -80,7 +80,7 @@ import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
 import { mountMapFilter } from './map-filter'
-import { applyToon, inkEdges, isBuildingMaterial } from './toon-buildings'
+import { applyToon, inkEdges, isCartoonMaterial, wantsInk } from './toon-city'
 import { mountPlaceFx } from './place-fx'
 import { roadHeight } from './road-network'
 import { mountCurrencyFly } from './currency-fly'
@@ -773,7 +773,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-19`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-20`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
 
   container.addAllToScene()
 
@@ -794,7 +794,7 @@ async function loadCity(){
 
    if(source.emissiveTexture){m.emissiveTexture=source.emissiveTexture;surfaces.addNightGlow(m)}
    surfaces.styleMaterial(source.name,m)
-   if(isBuildingMaterial(source.name))applyToon(m)
+   if(isCartoonMaterial(source.name))applyToon(m)
 
    mapped.set(source.uniqueId,m)
 
@@ -808,7 +808,7 @@ async function loadCity(){
 
   const statueMaterial=new StandardMaterial('Bronze de la statue de Mougabiang',scene)
 
-  statueMaterial.diffuseColor=new Color3(.34,.25,.15);statueMaterial.specularColor=new Color3(.22,.18,.12);statueMaterial.specularPower=42
+  applyToon(statueMaterial);statueMaterial.diffuseColor=new Color3(.34,.25,.15);statueMaterial.specularColor=new Color3(.22,.18,.12);statueMaterial.specularPower=42
 
   for(const mesh of [...container.meshes]){
 
@@ -844,7 +844,7 @@ async function loadCity(){
    if(!merged)continue
 
    merged.name=merged.material?.name??'Mboa';merged.receiveShadows=true;merged.freezeWorldMatrix();merged.isPickable=false
-   if(isBuildingMaterial(merged.name))inkEdges(merged)
+   if(wantsInk(merged.name))inkEdges(merged)
 
    if(!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg\.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))shadows.addShadowCaster(merged)
 

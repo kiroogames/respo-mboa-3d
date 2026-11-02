@@ -17,6 +17,7 @@ import { cityScale } from './city-layout'
 import { createRoadTraffic } from './road-traffic'
 import { roadPaths, roadHeight, walkPaths } from './road-network'
 import { createWalkers } from './street-walkers'
+import { applyToon, inkEdges } from './toon-city'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { getTrafficConditions } from './traffic-conditions'
@@ -35,6 +36,8 @@ const fleet:{model:string;scale:number;half:number;paint:string[]}[]=[
 ]
 // Rayon de sécurité commun : celui du plus long véhicule, le minibus.
 const trafficRadius=2.1
+// Là où ça bouchonne : le rond-point de la statue, le carrefour du Ministère et l'abord du marché.
+const trafficHotspots:[number,number][]=[[-25.4,1.1],[4,-34],[-70,28]]
 
 export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh|undefined,shadows:ShadowGenerator){
   let time=0,paused=false,evening=false
@@ -49,22 +52,24 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
   const tailMaster=MeshBuilder.CreateBox('Feu arrière',{width:1.5,height:.14,depth:.05},scene);tailMaster.material=tailMaterial;tailMaster.isPickable=false;tailMaster.isVisible=false
   if(prototypes.length){
     // Prépare un pool fixe ; la congestion change le nombre de voitures actives sans recréer leurs maillages.
-    for(let i=0;i<48;i++){
+    for(let i=0;i<72;i++){
       const kind=fleet[i%fleet.length]!,prototype=prototypes.find(p=>p.name===kind.model)??prototypes[0]!
       const car=prototype.clone('Vehicule de Mboa '+i,null,true)
       car.setEnabled(true);car.rotationQuaternion=null;car.scaling.setAll(kind.scale);car.isPickable=false;car.receiveShadows=true
       if(car.material instanceof StandardMaterial){
         car.material=car.material.clone('Carrosserie '+i)
         ;(car.material as StandardMaterial).diffuseColor=Color3.FromHexString(kind.paint[i%kind.paint.length]!)
+        applyToon(car.material)
       }
+      inkEdges(car)
       shadows.addShadowCaster(car);cars.push(car)
       // Phares au sol et feux arrière, allumés le soir. Le modèle regarde vers -Z.
       const beam=beamMaster.createInstance('Phares '+i);beam.parent=car;beam.position.set(0,.14,-kind.half-5.2);beam.setEnabled(false);carLights.push(beam)
       const tail=tailMaster.createInstance('Feux arrière '+i);tail.parent=car;tail.position.set(0,.78,kind.half+.04);tail.setEnabled(false);carLights.push(tail)
     }
   }
-  const planes=planePrototype?planeOffsets.map((_,i)=>{const plane=planePrototype.clone('Avion de Nsimaport '+i,null,true);plane.setEnabled(true);plane.rotationQuaternion=null;plane.isPickable=false;plane.receiveShadows=true;shadows.addShadowCaster(plane);return plane}):[]
-  function mat(name:string,color:string){const m=new StandardMaterial(name,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=Color3.Black();return m}
+  const planes=planePrototype?planeOffsets.map((_,i)=>{const plane=planePrototype.clone('Avion de Nsimaport '+i,null,true);plane.setEnabled(true);plane.rotationQuaternion=null;plane.isPickable=false;plane.receiveShadows=true;shadows.addShadowCaster(plane);inkEdges(plane);return plane}):[]
+  function mat(name:string,color:string){const m=new StandardMaterial(name,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=Color3.Black();applyToon(m);return m}
   const boatPaint=mat('Coques des pirogues','#486B63'),boatWood=mat('Bois des pirogues','#D9C19A'),boatCabin=mat('Cabines des bateaux','#EFE8CE')
   const boats:TransformNode[]=[]
   for(let i=0;i<2;i++){
@@ -87,7 +92,7 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
     }
     birds.push({root,wings})
   }
-  const driving=createRoadTraffic(roadPaths,cars.length,{radius:trafficRadius,height:roadHeight})
+  const driving=createRoadTraffic(roadPaths,cars.length,{radius:trafficRadius,height:roadHeight,ignoresLights:i=>fleet[i%fleet.length]!.model.endsWith('Moto'),hotspots:trafficHotspots})
   // Feux tricolores : un poteau par arrivée de carrefour, le feu rouge ou vert s'allume selon la phase réelle de la circulation.
   const poleMaterial=mat('Poteaux des feux','#3C4247')
   const glow=(name:string,color:Color3)=>{const m=new StandardMaterial(name,scene);m.disableLighting=true;m.emissiveColor=color;m.specularColor=Color3.Black();return m}
@@ -125,7 +130,7 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
     const level=getTrafficConditions().id
     if(level===trafficLevel)return
     trafficLevel=level
-    driving.configure(level==='jammed'?44:level==='busy'?24:10,level==='jammed'?.26:level==='busy'?.62:1,level==='jammed'?2:level==='busy'?1:0)
+    driving.configure(level==='jammed'?66:level==='busy'?30:10,level==='jammed'?.26:level==='busy'?.62:1,level==='jammed'?2:level==='busy'?1:0)
   }
   updateTraffic()
   // Limite un rattrapage à 100 ms afin qu’un retour d’onglet ne fasse pas bondir toute la simulation.

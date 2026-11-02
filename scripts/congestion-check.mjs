@@ -32,4 +32,9 @@ for(const settings of [[10,1,0],[44,.26,2],[24,.62,1],[10,1,0],[44,.26,2]]){
  sim.configure(...settings)
  for(let i=0;i<600;i++){sim.step(1/30);assert.ok(!collide(sim.states.filter(s=>s.active)),'Collision during population change')}
 }
+// Bouchons visibles : des files de voitures arrêtées aux points chauds, sans collision ni voiture bloquée pour de bon.
+const hot=createRoadTraffic(streetPaths,72,{radius:2.1,seed:9,hotspots:[[-25.4,1.1],[4,-34],[-70,28]]});hot.step(1/30);hot.configure(66,.26,2)
+let queued=0,queueSamples=0
+for(let frame=0;frame<5400;frame++){hot.step(1/30);const a=hot.states.filter(s=>s.active);assert.ok(!collide(a),'Collision dans un bouchon');if(frame>1800){queued+=a.filter(s=>s.speed<.3).length;queueSamples++}}
+const averageQueued=queued/queueSamples;console.log({averageQueued,stats:hot.stats});assert.ok(averageQueued>=25,`Trop peu de voitures à l'arrêt : ${averageQueued}`)
 mkdirSync('artifacts',{recursive:true});writeFileSync('artifacts/congestion-check.json',JSON.stringify({results,populationChanges:'pass'},null,2));console.log(results)

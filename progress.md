@@ -470,3 +470,7 @@ Correction finale : décorateur de cartes actualise aussi les images déjà pré
 2026-11-02 — Demandes directes réalisme Mboa. Routes abîmées partout (nids-de-poule, portions sans bitume, trottoirs cassés) sauf le tronçon aéroport–statue de Mougabiang–présidence (paint_ground.state_route). Pont refait en simple pont de béton bas, parapets incomplets, rustines et trous, rive boisée (rebuild_bridge.py). Réseau électrique aérien sur poteaux (power_lines.py).
 
 2026-11-02 — Station retournée d'un demi-tour, auvent côté route (fait à la main dans Blender ; réseau routier conservé tel quel pour rester aligné sur le sol peint). Rendu cartoon des bâtiments au rendu seulement (src/toon-buildings.ts).
+
+2026-11-02 — Style cartoon étendu à toute la ville (src/toon-city.ts, sauf l'eau) ; sol repeint en aplats avec traits d'encre. Motos-taxis ignorent les feux (option ignoresLights, scripts/moto-lights-check.mjs), sans ignorer les priorités du carrefour.
+
+2026-11-02 — Énergie des repas +25 % (arrondi supérieur) : tous les restaurants, cantine, repas de l'hôtel ; tests restaurant et cantine mis à jour ; docs/carte-restaurant.md garde les anciens chiffres. Embouteillages visibles : points chauds statue, Ministère, marché (road-traffic hotspots, packQueues), 72 véhicules dont 66 en bouchon.

@@ -18,7 +18,7 @@ ROAD, WALK = 8.6, 12.0
 # Extrémités du tronçon entretenu : sortie de l'aéroport et pied de la route de la présidence.
 # Le tronçon passe par la statue de Mougabiang.
 AIRPORT, STATUE, PRESIDENCY = (113, -90), (-25.4, 1.1), (-170, -62)
-PALETTE = {'grass': (124, 180, 70), 'earth': (235, 152, 88), 'plaza': (222, 216, 204), 'track': (216, 186, 158), 'road': (116, 120, 124), 'walk': (236, 231, 219), 'curb': (178, 170, 156), 'line': (246, 244, 234), 'edge': (192, 184, 168), 'bare': (196, 138, 96), 'hole': (58, 54, 50), 'mud': (128, 92, 66), 'crumble': (146, 146, 142)}
+PALETTE = {'grass': (124, 180, 70), 'earth': (235, 152, 88), 'plaza': (222, 216, 204), 'track': (216, 186, 158), 'road': (116, 120, 124), 'walk': (236, 231, 219), 'curb': (178, 170, 156), 'line': (246, 244, 234), 'edge': (192, 184, 168), 'ink': (72, 58, 50), 'bare': (196, 138, 96), 'hole': (58, 54, 50), 'mud': (128, 92, 66), 'crumble': (146, 146, 142)}
 
 
 def pixel(x, z, scale=1):
@@ -60,7 +60,12 @@ def surfaces(original, rng):
     width = max(3, int(.3 * PX)) | 1
     ring = (np.asarray(Image.fromarray(((kind == 2) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(width))) > 127) & (kind != 2)
     out[ring] = PALETTE['edge']
-    amount = np.where(kind == 2, .3, .55)[..., None].astype(np.float32)
+    # Trait d'encre entre les zones, comme un dessin.
+    ink_width = max(3, int(.26 * PX)) | 1
+    k = Image.fromarray(kind * 60)
+    outline = np.asarray(k.filter(ImageFilter.MaxFilter(ink_width))).astype(np.int16) != np.asarray(k.filter(ImageFilter.MinFilter(ink_width))).astype(np.int16)
+    out[outline] = out[outline] * .62
+    amount = np.where(kind == 2, .12, .22)[..., None].astype(np.float32)
     broad = noise(rng, 90, .96, 1.04)[..., None]; fine = noise(rng, 1800, .97, 1.03)[..., None]
     return np.clip(out * (1 + (broad - 1) * amount) * (1 + (fine - 1) * amount), 0, 255)
 
@@ -206,7 +211,9 @@ def main():
     def over(base, mask, color):
         m = (mask.astype(np.float32) / 255)[..., None]; return base * (1 - m) + np.array(color, np.float32) * m
     image = over(image, stroke(paths, WALK), PALETTE['walk'])
-    image = over(image, stroke(paths, ROAD + .5), PALETTE['curb'])
+    image = over(image, stroke(paths, WALK + .55), PALETTE['ink'])
+    image = over(image, stroke(paths, WALK), PALETTE['walk'])
+    image = over(image, stroke(paths, ROAD + .55), PALETTE['ink'])
     asphalt = stroke(paths, ROAD)
     grain = noise(rng, 2200, .975, 1.025)[..., None]
     a = (asphalt.astype(np.float32) / 255)[..., None]
