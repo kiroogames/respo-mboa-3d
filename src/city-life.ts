@@ -16,17 +16,30 @@ import { createRoadTraffic } from './road-traffic'
 import { roadPaths, roadHeight } from './road-network'
 import { getTrafficConditions } from './traffic-conditions'
 
-export function createCityLife(scene:Scene,prototype:Mesh|undefined,shadows:ShadowGenerator){
+// Le mélange de la circulation : surtout des taxis jaunes, quelques particuliers, 4×4 et minibus de ligne.
+const fleet:{model:string;scale:number;paint:string[]}[]=[
+  {model:'WSP Traffic prototype',scale:.74,paint:['#F2C230']},
+  {model:'WSP Traffic prototype',scale:.74,paint:['#F2C230']},
+  {model:'WSP Traffic prototype',scale:.74,paint:['#F7F4EA','#B9C2C8','#3E6E9E','#B5412F','#2F3A42']},
+  {model:'WSP Traffic prototype SUV',scale:.74,paint:['#F7F4EA','#2F3A42','#7C8A6B','#A9B4BA']},
+  {model:'WSP Traffic prototype',scale:.74,paint:['#F2C230']},
+  {model:'WSP Traffic prototype Minibus',scale:.66,paint:['#F7F4EA','#2F7F8F','#D9722E']},
+]
+// Rayon de sécurité commun : celui du plus long véhicule, le minibus.
+const trafficRadius=2.1
+
+export function createCityLife(scene:Scene,prototypes:Mesh[],shadows:ShadowGenerator){
   let time=0,paused=false
   const cars:Mesh[]=[]
-  if(prototype){
+  if(prototypes.length){
     // Prépare un pool fixe ; la congestion change le nombre de voitures actives sans recréer leurs maillages.
     for(let i=0;i<48;i++){
-      const car=prototype.clone('Taxi de Mboa '+i,null,true)
-      car.setEnabled(true);car.rotationQuaternion=null;car.scaling.setAll(.74);car.isPickable=false;car.receiveShadows=true
+      const kind=fleet[i%fleet.length]!,prototype=prototypes.find(p=>p.name===kind.model)??prototypes[0]!
+      const car=prototype.clone('Vehicule de Mboa '+i,null,true)
+      car.setEnabled(true);car.rotationQuaternion=null;car.scaling.setAll(kind.scale);car.isPickable=false;car.receiveShadows=true
       if(car.material instanceof StandardMaterial){
-        car.material=car.material.clone('Carrosserie taxi '+i)
-        ;(car.material as StandardMaterial).diffuseColor=i%3===0?Color3.FromHexString('#E7BC5D'):i%3===1?new Color3(.94,.94,.88):new Color3(.66,.83,.85)
+        car.material=car.material.clone('Carrosserie '+i)
+        ;(car.material as StandardMaterial).diffuseColor=Color3.FromHexString(kind.paint[i%kind.paint.length]!)
       }
       shadows.addShadowCaster(car);cars.push(car)
     }
@@ -54,9 +67,7 @@ export function createCityLife(scene:Scene,prototype:Mesh|undefined,shadows:Shad
     }
     birds.push({root,wings})
   }
-  const extent=prototype?.getBoundingInfo().boundingBox.extendSize
-  const radius=extent?Math.hypot(extent.x,extent.z)*.74:1.8
-  const driving=createRoadTraffic(roadPaths,cars.length,{radius,height:roadHeight})
+  const driving=createRoadTraffic(roadPaths,cars.length,{radius:trafficRadius,height:roadHeight})
   let trafficLevel=''
   // Utilise la même condition de circulation que les devis pour que le trafic visible corresponde au gameplay.
   function updateTraffic(){

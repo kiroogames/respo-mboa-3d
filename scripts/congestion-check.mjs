@@ -12,7 +12,7 @@ const collide=active=>active.some((a,i)=>active.slice(i+1).some(b=>overlap(a,b))
 
 const results=[]
 for(const [level,count,multiplier,jam] of [['clear',10,1,0],['busy',24,.62,1],['jammed',44,.26,2]]){
- const sim=createRoadTraffic(streetPaths,48,{radius:1.76,seed:3});sim.configure(count,multiplier,jam)
+ const sim=createRoadTraffic(streetPaths,48,{radius:2.1,seed:3});sim.configure(count,multiplier,jam)
  let totalSpeed=0,samples=0,stoppedFrames=0
  for(let frame=0;frame<3600;frame++){
   sim.step(1/30)
@@ -27,7 +27,7 @@ for(const [level,count,multiplier,jam] of [['clear',10,1,0],['busy',24,.62,1],['
 }
 assert.ok(results[2].averageSpeed<results[0].averageSpeed*.5)
 assert.ok(results[2].stoppedFrames>results[0].stoppedFrames)
-const sim=createRoadTraffic(streetPaths,48,{radius:1.76,seed:5})
+const sim=createRoadTraffic(streetPaths,48,{radius:2.1,seed:5})
 for(const settings of [[10,1,0],[44,.26,2],[24,.62,1],[10,1,0],[44,.26,2]]){
  sim.configure(...settings)
  for(let i=0;i<600;i++){sim.step(1/30);assert.ok(!collide(sim.states.filter(s=>s.active)),'Collision during population change')}

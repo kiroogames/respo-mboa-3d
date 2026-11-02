@@ -753,7 +753,8 @@ async function loadCity(){
 
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=palace-20261023-2`,scene,{pluginOptions:{gltf:{createInstances:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
+  // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-7`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
 
   container.addAllToScene()
 
@@ -761,7 +762,7 @@ async function loadCity(){
 
   if(traffic.layout){views.home!.target.x=traffic.layout.home[0]!;views.home!.target.z=traffic.layout.home[1]!}
 
-  let trafficPrototype:Mesh|undefined
+  const trafficPrototypes:Mesh[]=[]
 
   const mapped=new Map<number,StandardMaterial>()
 
@@ -801,7 +802,7 @@ async function loadCity(){
 
    if(mesh.name==='Mougabiang statue')mesh.material=statueMaterial
 
-   if(mesh.name==='WSP Traffic prototype'){trafficPrototype=mesh;mesh.setEnabled(false);continue}
+   if(mesh.name.startsWith('WSP Traffic prototype')){trafficPrototypes.push(mesh);mesh.setEnabled(false);continue}
 
    surfaces.prepareMesh(mesh)
 
@@ -825,7 +826,7 @@ async function loadCity(){
 
   }
 
-  cityLife=createCityLife(scene,trafficPrototype,shadows);updateMotion()
+  cityLife=createCityLife(scene,trafficPrototypes,shadows);updateMotion()
 
   createLandmarks()
 

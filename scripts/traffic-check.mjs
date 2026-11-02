@@ -5,12 +5,12 @@ import assert from 'node:assert/strict'
 import {createRoadTraffic} from '../src/road-traffic.ts'
 import {roadPaths as streetPaths} from '../src/road-network.ts'
 
-// Gabarit réel du taxi (prototype WSP à l'échelle .74) : demi-longueur 1,56, demi-largeur 0,76.
-const HALF_L=1.56,HALF_W=.76
+// Gabarit du plus long véhicule (minibus à l'échelle .66) : demi-longueur 1,97, demi-largeur 0,76.
+const HALF_L=1.97,HALF_W=.76
 function corners(s){const fx=-Math.sin(s.yaw),fz=-Math.cos(s.yaw),rx=-fz,rz=fx,[x,,z]=s.position;return [[1,1],[1,-1],[-1,-1],[-1,1]].map(([a,b])=>[x+fx*HALF_L*a+rx*HALF_W*b,z+fz*HALF_L*a+rz*HALF_W*b])}
 function overlap(a,b){const A=corners(a),B=corners(b);for(const poly of [A,B])for(let i=0;i<4;i++){const p=poly[i],q=poly[(i+1)%4],nx=-(q[1]-p[1]),nz=q[0]-p[0];const pa=A.map(c=>c[0]*nx+c[1]*nz),pb=B.map(c=>c[0]*nx+c[1]*nz);if(Math.max(...pa)<Math.min(...pb)||Math.max(...pb)<Math.min(...pa))return false}return true}
 function run(cars,multiplier,jam,seconds){
- const sim=createRoadTraffic(streetPaths,cars,{radius:1.76,seed:7})
+ const sim=createRoadTraffic(streetPaths,cars,{radius:2.1,seed:7})
  sim.configure(cars,multiplier,jam)
  const visited=new Set(),travel=sim.states.map(()=>0)
  let closest=Infinity,collisions=0,maxJump=0,exits=0,frames=seconds*60

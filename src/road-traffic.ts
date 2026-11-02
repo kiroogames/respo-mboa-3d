@@ -256,7 +256,7 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   }
   const entries = lanes.map((_, i) => i).filter(i => degree[lanes[i]!.from] === 1 && onBorder(lanes[i]!.from))
   const totalLength = lanes.reduce((sum, l) => sum + l.length, 0)
-  const separation = radius * 2 + .8
+  const separation = radius * 2 + .8, wheelbase = 1.8
   // Deux virages d'un même carrefour sont compatibles s'ils ne se croisent pas et ne visent pas la même sortie.
   const conflicts = connectors.map((a, i) => connectors.map((b, j) => {
     if (i === j || a.node !== b.node) return i === j
@@ -270,7 +270,15 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
   const reserved = new Map<number, Set<number>>()
   const pathOf = (car: Car): Path => car.connector >= 0 ? connectors[car.connector]! : lanes[car.lane]!
   const chooseExit = (lane: number) => { const exits = lanes[lane]!.exits; return exits.length ? exits[Math.floor(random() * exits.length)]! : -1 }
-  function place(car: Car) { const { p, dir } = at(pathOf(car), car.s); car.position = p; car.yaw = Math.atan2(-dir[0], -dir[1]) }
+  // Sans distance parcourue, la voiture prend le cap de la voie. Sinon elle y revient en roulant, comme sur ses essieux :
+  // à l'arrêt elle ne pivote pas, et les cassures de la voie ne se voient pas.
+  function place(car: Car, moved?: number) {
+    const { p, dir } = at(pathOf(car), car.s), heading = Math.atan2(-dir[0], -dir[1])
+    car.position = p
+    if (moved === undefined) { car.yaw = heading; return }
+    const turn = Math.atan2(Math.sin(heading - car.yaw), Math.cos(heading - car.yaw))
+    car.yaw += turn * (1 - Math.exp(-moved / wheelbase))
+  }
   const free = (p: readonly number[], except: Car) => cars.every(o => o === except || !o.active || dist(o.position, p) > separation * 2)
   // Fait apparaître une voiture : par une entrée de la ville si possible, sinon n'importe où sur une voie libre.
   function spawn(car: Car, atEntry: boolean) {
@@ -372,7 +380,8 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
         if (car.waited > 60 && car.connector < 0) { release(car); car.active = false; stuckRemovals++; continue }
         const previous = car.speed
         car.speed += Math.max(-4 * dt, Math.min(1.6 * dt, target - car.speed))
-        car.s += (previous + car.speed) * .5 * dt
+        const moved = (previous + car.speed) * .5 * dt
+        car.s += moved
         // Changement de tronçon en fin de parcours.
         while (car.s >= pathOf(car).length) {
           const over = car.s - pathOf(car).length
@@ -383,7 +392,7 @@ export function createRoadTraffic(streets: P2[][], count: number, options: Traff
         }
         // Libère le carrefour une fois engagé sur la voie de sortie.
         if (car.holding >= 0 && car.connector < 0 && car.s > radius + .6 && (car.next < 0 || connectors[car.next]!.node !== car.holding)) release(car)
-        place(car)
+        place(car, moved)
       }
       for (const [node, holders] of reserved) { for (const h of holders) if (!cars[h]!.active || cars[h]!.holding !== node) holders.delete(h); if (!holders.size) reserved.delete(node) }
     }
