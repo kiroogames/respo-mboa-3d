@@ -21,6 +21,9 @@ const notes: Record<Sound, { wave: OscillatorType; volume: number; steps: [numbe
   error: { wave: 'square', volume: .035, steps: [[190, 170, 0, .08], [190, 170, .11, .1]] },
 }
 
+export const soundContext = () => audio
+export const isSoundMuted = () => muted
+
 export function playSound(sound: Sound) {
   if (muted || !audio || audio.state !== 'running') return
   const { wave, volume, steps } = notes[sound], now = audio.currentTime

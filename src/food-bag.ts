@@ -6,9 +6,9 @@ import {projectEnergy,getPlayerResources,getMoodDetails,previewMoodChange,restor
 import {isGuidedOutingActive} from './guided-outing-state.ts'
 
 export const bagFoods=[
- {id:'meal',name:'Repas à emporter',zone:'market',money:250,life:360,minutes:25,energy:12,mood:4},
- {id:'snack',name:'Collation à emporter',zone:'supermarket',money:150,life:720,minutes:10,energy:8,mood:2},
- {id:'restaurant-dish',name:'Plat du restaurant à emporter',zone:'restaurant',money:600,life:360,minutes:20,energy:18,mood:6},
+ {id:'meal',name:'Repas à emporter',zone:'market',money:250,life:360,minutes:25,energy:30,mood:4},
+ {id:'snack',name:'Collation à emporter',zone:'supermarket',money:150,life:720,minutes:10,energy:15,mood:2},
+ {id:'restaurant-dish',name:'Plat du restaurant à emporter',zone:'restaurant',money:600,life:360,minutes:20,energy:40,mood:6},
 ] as const
 type FoodId=typeof bagFoods[number]['id']
 type Item={id:FoodId;bought:number;expires:number}

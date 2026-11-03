@@ -1,6 +1,95 @@
 {
   "cityMetersPerMapUnit": 12,
   "trafficPeriodMinutes": 30,
-  "clearTrafficProbability": 0.5,
-  "busyTrafficProbability": 0.3
+  "trafficHours": {
+    "note": "Chances [fluide, chargée, embouteillages] selon l’heure. Tranches en minutes depuis minuit ; ailleurs : day le jour, night la nuit.",
+    "day": [
+      0.7,
+      0.3,
+      0
+    ],
+    "night": [
+      1,
+      0,
+      0
+    ],
+    "nightFrom": 1320,
+    "nightUntil": 300,
+    "weekday": [
+      {
+        "from": 420,
+        "until": 570,
+        "chances": [
+          0,
+          0.2,
+          0.8
+        ]
+      },
+      {
+        "from": 990,
+        "until": 1170,
+        "chances": [
+          0,
+          0.2,
+          0.8
+        ]
+      },
+      {
+        "from": 390,
+        "until": 420,
+        "chances": [
+          0.2,
+          0.7,
+          0.1
+        ]
+      },
+      {
+        "from": 570,
+        "until": 630,
+        "chances": [
+          0.2,
+          0.7,
+          0.1
+        ]
+      },
+      {
+        "from": 960,
+        "until": 990,
+        "chances": [
+          0.2,
+          0.7,
+          0.1
+        ]
+      },
+      {
+        "from": 1170,
+        "until": 1230,
+        "chances": [
+          0.2,
+          0.7,
+          0.1
+        ]
+      }
+    ],
+    "weekend": [
+      {
+        "from": 600,
+        "until": 780,
+        "chances": [
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      {
+        "from": 1020,
+        "until": 1200,
+        "chances": [
+          0.5,
+          0.5,
+          0
+        ]
+      }
+    ]
+  }
 }

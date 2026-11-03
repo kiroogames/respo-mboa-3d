@@ -28,6 +28,16 @@ function bezier(a: P2, b: P2, c: P2, d: P2, t: number) {
   return { point, tangent }
 }
 
+// Bruit de l'avion, de 0 à 1 : plein gaz au décollage, moteurs retenus à l'atterrissage.
+export function planeRoar(seconds: number, index: number) {
+  const t = ((seconds + planeOffsets[index]!) % planeCycle + planeCycle) % planeCycle
+  if (t >= TAXI_OUT && t < TAKEOFF) return ease((t - TAXI_OUT) / (TAKEOFF - TAXI_OUT))
+  if (t >= TAKEOFF && t < CLIMB) return 1 - ease((t - TAKEOFF) / (CLIMB - TAKEOFF))
+  if (t >= AWAY + 5 && t < APPROACH) return .55 * ease((t - AWAY - 5) / (APPROACH - AWAY - 5))
+  if (t >= APPROACH && t < ROLLOUT) return .55 * (1 - ease((t - APPROACH) / (ROLLOUT - APPROACH)))
+  return 0
+}
+
 export function planeState(seconds: number, index: number): PlaneState {
   const t = ((seconds + planeOffsets[index]!) % planeCycle + planeCycle) % planeCycle
   const stand = stands[index]!, parked = { position: [stand[0], GROUND, stand[1]] as [number, number, number], yaw: heading(nose), pitch: 0, visible: true }

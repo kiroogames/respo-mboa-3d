@@ -15,15 +15,22 @@ export type TrafficConditions = typeof trafficLevels[keyof typeof trafficLevels]
 const storageKey = 'mboa-traffic-v1'
 let cached: { period: number; level: keyof typeof trafficLevels } | null = null
 
+// Heures de pointe en semaine, sorties du week-end, nuit calme : les chances dépendent seulement de l'heure de jeu.
+export function trafficChances(totalMinutes: number): number[] {
+  const hours = rules.trafficHours, day = Math.floor(totalMinutes / 1440), minute = totalMinutes % 1440
+  const slot = (day % 7 < 5 ? hours.weekday : hours.weekend).find(item => minute >= item.from && minute < item.until)
+  if (slot) return slot.chances
+  return minute >= hours.nightFrom || minute < hours.nightUntil ? hours.night : hours.day
+}
+
 // Sépare le tirage de sa persistance pour tester les seuils avec une valeur déterministe.
-export function sampleTraffic(random: number): TrafficConditions {
-  return random < rules.clearTrafficProbability ? trafficLevels.clear
-    : random < rules.clearTrafficProbability + rules.busyTrafficProbability ? trafficLevels.busy : trafficLevels.jammed
+export function sampleTraffic(random: number, chances: number[] = rules.trafficHours.day): TrafficConditions {
+  return random < chances[0]! ? trafficLevels.clear : random < chances[0]! + chances[1]! ? trafficLevels.busy : trafficLevels.jammed
 }
 
 // Ne retire pas de conditions tant que la période n’a pas changé : rouvrir un devis ne relance rien.
 export function getTrafficConditions(): TrafficConditions {
-  const period = Math.floor(getGameTime().totalMinutes / rules.trafficPeriodMinutes)
+  const now = getGameTime().totalMinutes, period = Math.floor(now / rules.trafficPeriodMinutes)
   if (!cached) {
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null')
@@ -31,7 +38,7 @@ export function getTrafficConditions(): TrafficConditions {
     } catch { /* Draw fresh conditions when no saved traffic is available. */ }
   }
   if (!cached || cached.period !== period) {
-    cached = { period, level: sampleTraffic(Math.random()).id }
+    cached = { period, level: sampleTraffic(Math.random(), trafficChances(now)).id }
     try { localStorage.setItem(storageKey, JSON.stringify(cached)) } catch { /* Retain conditions for this session. */ }
   }
   return trafficLevels[cached.level]

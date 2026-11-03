@@ -9,7 +9,7 @@
     "money": 0,
     "energyCost": 0,
     "minutes": 30,
-    "energyGain": 8,
+    "energyGain": 15,
     "moodGain": 3,
     "respoGain": 0
   },
@@ -39,7 +39,7 @@
     "money": 1500,
     "energyCost": 0,
     "minutes": 60,
-    "energyGain": 35,
+    "energyGain": 60,
     "moodGain": 5,
     "respoGain": 0
   },
@@ -54,7 +54,7 @@
     "money": 800,
     "energyCost": 0,
     "minutes": 45,
-    "energyGain": 25,
+    "energyGain": 50,
     "moodGain": 8,
     "respoGain": 0
   },
@@ -84,7 +84,7 @@
     "money": 250,
     "energyCost": 0,
     "minutes": 30,
-    "energyGain": 12,
+    "energyGain": 30,
     "moodGain": 4,
     "respoGain": 0
   },
@@ -98,7 +98,7 @@
     "money": 150,
     "energyCost": 0,
     "minutes": 15,
-    "energyGain": 8,
+    "energyGain": 15,
     "moodGain": 2,
     "respoGain": 0
   },
@@ -168,7 +168,7 @@
     "money": 0,
     "energyCost": 0,
     "minutes": 15,
-    "energyGain": 3,
+    "energyGain": 5,
     "moodGain": 1,
     "respoGain": 0
   }

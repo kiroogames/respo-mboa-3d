@@ -21,7 +21,7 @@ import { applyToon, inkEdges } from './toon-city'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { getTrafficConditions } from './traffic-conditions'
-import { planeOffsets, planeState } from './airport-traffic'
+import { planeOffsets, planeRoar, planeState } from './airport-traffic'
 
 // Le mélange de la circulation : surtout des taxis jaunes, quelques particuliers, 4×4 et minibus de ligne.
 const fleet:{model:string;scale:number;half:number;paint:string[]}[]=[
@@ -43,9 +43,9 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
   let time=0,paused=false,evening=false
   const cars:Mesh[]=[],carLights:InstancedMesh[]=[]
   const beamTexture=new DynamicTexture('Faisceau des phares',{width:128,height:256},scene,true);beamTexture.hasAlpha=true
-  const beamContext=beamTexture.getContext(),beamFade=beamContext.createLinearGradient(0,256,0,0)
+  const beamContext=beamTexture.getContext(),beamFade=beamContext.createLinearGradient(0,0,0,256)
   beamFade.addColorStop(0,'rgba(255,240,190,.75)');beamFade.addColorStop(1,'rgba(255,240,190,0)')
-  beamContext.fillStyle=beamFade;beamContext.beginPath();beamContext.moveTo(44,256);beamContext.lineTo(84,256);beamContext.lineTo(128,0);beamContext.lineTo(0,0);beamContext.closePath();beamContext.fill();beamTexture.update()
+  beamContext.fillStyle=beamFade;beamContext.beginPath();beamContext.moveTo(44,0);beamContext.lineTo(84,0);beamContext.lineTo(128,256);beamContext.lineTo(0,256);beamContext.closePath();beamContext.fill();beamTexture.update()
   const beamMaterial=new StandardMaterial('Phares',scene);beamMaterial.disableLighting=true;beamMaterial.emissiveTexture=beamTexture;beamMaterial.opacityTexture=beamTexture;beamMaterial.specularColor=Color3.Black();beamMaterial.alphaMode=Constants.ALPHA_ADD;beamMaterial.backFaceCulling=false
   const beamMaster=MeshBuilder.CreateGround('Faisceau',{width:3.4,height:9},scene);beamMaster.material=beamMaterial;beamMaster.isPickable=false;beamMaster.isVisible=false
   const tailMaterial=new StandardMaterial('Feux arrière',scene);tailMaterial.disableLighting=true;tailMaterial.emissiveColor=new Color3(1,.1,.06);tailMaterial.specularColor=Color3.Black()
@@ -181,6 +181,7 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
     tick,
     setPaused(value:boolean){paused=value},
     lanePaths:()=>driving.lanePaths(),
+    planeRoar:()=>Math.max(0,...planes.map((_,i)=>planeRoar(time,i))),
     setEvening(value:boolean){evening=value;boatCabin.emissiveColor=value?new Color3(.18,.12,.045):Color3.Black();for(const light of carLights)light.setEnabled(value)},
     metrics(){return {network:driving.network,cars:driving.states.filter(s=>s.active).length,traffic:trafficLevel,averageSpeed:driving.states.filter(s=>s.active).reduce((sum,s)=>sum+s.speed,0)/Math.max(1,driving.states.filter(s=>s.active).length),stoppedCars:driving.states.filter(s=>s.active&&s.speed<.15).length,boats:boats.length,birds:birds.length,paused,carPosition:cars[0]?.position.asArray()??[]}},
   }

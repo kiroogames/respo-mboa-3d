@@ -11,7 +11,7 @@ for(const [day,zone] of ['market','supermarket','njoka'].entries()){
  const id='restaurant-'+zone,p=s.prepareCityOuting(id,'classic');assert.equal(p.activity.zone,zone);assert.equal(s.confirmCityOuting(p.token,ctx('home')).ok,false)
  const money=m.getMoneyBalance();assert.equal(s.confirmCityOuting(s.prepareCityOuting(id,'complete').token,ctx(zone)).ok,true);assert.equal(m.getMoneyBalance(),money-1200);assert.equal(r.getPlayerResources().energy,100)
  c.advanceGameTime(day*1440+930-c.getGameTime().totalMinutes);r.restoreEnergy(100);r.spendEnergy(30);r.setMood(90)
- for(const mode of ['walk','taxi','moto','yonga']){const p=g.previewAccompanied('bae',id,'classic',mode,ctx('home'),locate,t.trafficLevels.clear);assert.equal(p.destination,zone);assert.deepEqual(p.outwardRoute.at(-1),places[zone]);assert.equal(p.energyGain,Math.min(20,100-(70-p.energy)))}
+ for(const mode of ['walk','taxi','moto','yonga']){const p=g.previewAccompanied('bae',id,'classic',mode,ctx('home'),locate,t.trafficLevels.clear);assert.equal(p.destination,zone);assert.deepEqual(p.outwardRoute.at(-1),places[zone]);assert.equal(p.energyGain,Math.min(50,100-(70-p.energy)))}
  const q=g.prepareAccompanied('bae',id,'classic','yonga',ctx('home'),locate);assert.equal(q.reason,'');assert.equal(g.confirmAccompanied(q.token,ctx('home'),locate).ok,true);assert.equal(g.getAccompaniedState().plan.destination,zone);g.finishAccompaniedPhase('outbound');g.finishAccompaniedPhase('activity');g.finishAccompaniedPhase('return');assert.equal(s.getOutingSchedule(id).consumed,false)
 }
 console.log('Market, supermarket and Njoka restaurants: menus, local guards, solo rewards, four route quotes, guided meal/return and repeatability passed')

@@ -80,6 +80,8 @@ import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
 import { mountMapFilter } from './map-filter'
+import { mountCitySound } from './city-sound'
+import { getTrafficConditions } from './traffic-conditions'
 import { applyToon, inkEdges, isCartoonMaterial, wantsInk } from './toon-city'
 import { mountPlaceFx } from './place-fx'
 import { roadHeight } from './road-network'
@@ -265,6 +267,8 @@ let pendingPlaceMenu:{key:string;view:View}|null=null
 
 let cityLife:ReturnType<typeof createCityLife>|undefined
 
+const citySound=mountCitySound({listener:()=>({x:camera.target.x,z:camera.target.z,radius:camera.radius}),traffic:()=>getTrafficConditions().id,evening:()=>lampsEnabled,planeRoar:()=>cityLife?.planeRoar()??0,quiet:()=>!!document.querySelector('dialog[open]')})
+
 let motionPaused=matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function setOrbit(value:boolean){orbit=value;const b=document.querySelector<HTMLButtonElement>('#orbit')!;b.innerHTML=orbit?'Ⅱ <span>Pause</span>':'▷ <span>Visite</span>';b.setAttribute('aria-pressed',String(orbit))}
@@ -295,7 +299,7 @@ function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void
  const first=road[0]!,last=road.at(-1)!
  const timing=journeyTiming(mode,minutes,matchMedia('(prefers-reduced-motion: reduce)').matches)
  activeTrip={key,mode,points,road,exit:[points[0]!,first],entry:[last,points.at(-1)!],elapsed:0,duration:timing.duration,timing,minutes,done}
- pendingPlaceMenu=null;journeyVisual.show(mode)
+ pendingPlaceMenu=null;journeyVisual.show(mode);citySound.setTrip(mode)
  journeyFeedback.hidden=false;document.body.classList.add('journey-playing')
  journeyFeedback.querySelector('[data-journey-symbol]')!.textContent={walk:'🚶',taxi:'🚕',yonga:'🚘',moto:'🏍'}[mode]
  playerPosition.copyFromFloats(...points[0]!)
@@ -365,7 +369,7 @@ function tickJourney(delta:number,force=false){
  journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')
  ;(journeyFeedback.querySelector('.journey-progress i') as HTMLElement).style.width=frame.total*100+'%'
  if(frame.phase==='done'){
-  playerZone=trip.key;activeTrip=null;journeyVisual.hide();journeyFeedback.hidden=true;document.body.classList.remove('journey-playing')
+  playerZone=trip.key;activeTrip=null;citySound.setTrip(null);journeyVisual.hide();journeyFeedback.hidden=true;document.body.classList.remove('journey-playing')
   playerPosition.copyFromFloats(...trip.points.at(-1)!)
   if(trip.done){trip.done();return}
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===playerZone));document.querySelector('#view-name')!.textContent=views[playerZone]!.label
@@ -478,7 +482,7 @@ window.addEventListener('keydown',event=>{if(event.key==='Escape'){showPlaces(fa
 // Boucle visuelle uniquement : caméra, eau, circulation et animation de trajet ne changent pas le calendrier.
 scene.onBeforeRenderObservable.add(()=>{
 
- levelNotice.tick();tickDaylight();surfaces.tick(engine.getDeltaTime());cityLife?.tick(engine.getDeltaTime());tickJourney(engine.getDeltaTime());tickKeyboardPan(engine.getDeltaTime())
+ citySound.tick();levelNotice.tick();tickDaylight();surfaces.tick(engine.getDeltaTime());cityLife?.tick(engine.getDeltaTime());tickJourney(engine.getDeltaTime());tickKeyboardPan(engine.getDeltaTime())
 
  const zoomOut=Math.max(0,camera.radius-350*cityScale)
 
@@ -773,7 +777,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261102-20`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261103-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
 
   container.addAllToScene()
 
@@ -928,6 +932,7 @@ if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:
  advanceGuided(){const state=getAccompaniedState();if(state?.phase==='activity')accompaniedUI.advanceVisual();else for(let i=0;i<1500&&activeTrip;i++)tickJourney(100,true)},
  advanceLife(seconds:number){for(let elapsed=0;elapsed<Math.max(0,Math.min(120,seconds));elapsed+=.1)cityLife?.tick(100)},
  openTravel(key:string){travel.open(key)},
+ soundLevel(){return citySound.level()},
  // Contrôle visuel : projette des points du monde, ou les voies de circulation, à l'écran.
  project(points:number[][]){scene.updateTransformMatrix(true);const viewport=new Viewport(0,0,engine.getRenderWidth(),engine.getRenderHeight());return points.map(p=>{const q=Vector3.Project(new Vector3(p[0],p[1],p[2]),Matrix.Identity(),scene.getTransformMatrix(),viewport);return [q.x/engine.getRenderWidth()*innerWidth,q.y/engine.getRenderHeight()*innerHeight,q.z]})},
  trafficLanes(){return (cityLife?.lanePaths()??[]).map(lane=>(window as unknown as {__MBOA_QA__:{project:(p:number[][])=>number[][]}}).__MBOA_QA__.project(lane))},
@@ -962,3 +967,4 @@ void loadCity()
 import './transport-art.css'
 
 import './game-menus.css'
+import './game-skin.css'

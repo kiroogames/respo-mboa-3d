@@ -52,8 +52,10 @@ advanceGameTime(450,'sleep');assert.equal(getNPCsAtZone('home')[0].id,'bae')
 advanceGameTime(990,'sleep');assert.equal(getNPCsAtZone('home').length,0)
 console.log('Distance-sensitive prices and Bae daily availability boundaries passed')
 
-const {trafficLevels,sampleTraffic,getTrafficConditions}=await import('../src/traffic-conditions.ts')
-assert.equal(sampleTraffic(0).id,'clear');assert.equal(sampleTraffic(.6).id,'busy');assert.equal(sampleTraffic(.99).id,'jammed')
+const {trafficLevels,sampleTraffic,trafficChances,getTrafficConditions}=await import('../src/traffic-conditions.ts')
+assert.equal(sampleTraffic(0).id,'clear');assert.equal(sampleTraffic(.8).id,'busy')
+// Lundi 8 h et 17 h : bouchons probables ; 14 h : jamais ; 2 h : fluide ; samedi 8 h : pas d'heure de pointe.
+assert.equal(sampleTraffic(.99,trafficChances(480)).id,'jammed');assert.equal(sampleTraffic(.1,trafficChances(480)).id,'busy');assert.equal(sampleTraffic(.99,trafficChances(1020)).id,'jammed');assert.equal(sampleTraffic(.99,trafficChances(840)).id,'busy');assert.equal(sampleTraffic(.99,trafficChances(120)).id,'clear');assert.notEqual(sampleTraffic(.99,trafficChances(5*1440+480)).id,'jammed')
 const cityTrip=[[0,8,0],[1000,8,0]]
 const clearTaxi=quoteTravel(cityTrip,'taxi',trafficLevels.clear),jamTaxi=quoteTravel(cityTrip,'taxi',trafficLevels.jammed)
 assert.ok(jamTaxi.minutes>clearTaxi.minutes)
@@ -73,7 +75,7 @@ assert.equal(useVenueService('hotel-rest','market').ok,false)
 money.addMoney(10000);resources.spendEnergy(60);resources.setMood(139)
 const serviceStart=clock.getGameTime().totalMinutes
 const paid=useVenueService('hotel-rest','hotel');assert.equal(paid.ok,true)
-assert.equal(money.getMoneyBalance(),8500);assert.equal(resources.getPlayerResources().energy,75);assert.equal(resources.getPlayerResources().mood,140)
+assert.equal(money.getMoneyBalance(),8500);assert.equal(resources.getPlayerResources().energy,100);assert.equal(resources.getPlayerResources().mood,140)
 assert.equal(clock.getGameTime().totalMinutes-serviceStart,60)
 const night=useVenueService('hotel-night','hotel');assert.equal(night.ok,true);assert.equal(resources.getPlayerResources().energy,100)
 const training=useVenueService('training','education');assert.equal(training.ok,true);assert.equal(resources.getPlayerResources().ptRespo,10)

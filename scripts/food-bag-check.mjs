@@ -19,7 +19,7 @@ assert.equal(bag.getFoodBag().item.expires,before.time+365);assert.match(prepare
 bag=await import('../src/food-bag.ts?reload');assert.equal(bag.getFoodBag().item.id,'meal');assert.equal(money.getMoneyBalance(),before.money-250)
 r.spendEnergy(20);at(bag.getFoodBag().item.expires-25)
 p=prepare('eat');assert.equal(p.reason,'');assert.equal(commit(p,ctx('palms')).ok,false)
-p=prepare('eat','',ctx('palms'));assert.equal(commit(p,ctx('palms')).ok,true);assert.equal(r.getPlayerResources().energy,92);assert.equal(r.getMoodDetails().base,94);assert.equal(bag.getFoodBag().item,null)
+p=prepare('eat','',ctx('palms'));assert.equal(commit(p,ctx('palms')).ok,true);assert.equal(r.getPlayerResources().energy,100);assert.equal(r.getMoodDetails().base,94);assert.equal(bag.getFoodBag().item,null)
 bag=await import('../src/food-bag.ts?eaten');assert.equal(bag.getFoodBag().item,null)
 const supermarket=ctx('supermarket');assert.equal(commit(prepare('buy','snack',supermarket),supermarket).ok,true)
 at(bag.getFoodBag().item.expires-9);assert.match(prepare('eat').reason,/péremption/)
