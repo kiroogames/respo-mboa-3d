@@ -3,12 +3,13 @@
  * un repas sauté rend seulement chaque activité plus coûteuse en énergie (+25 % par repas manqué, max +50 %)
  * et retire 5 d'humeur une fois. Le prochain repas efface le surcoût.
  */
+import { loc } from './i18n'
 import { getGameTime, onGameTimeChange } from './game-clock.ts'
 
 export const mealSlots = [
-  { id: 'morning', label: 'Matin', icon: '☀️', start: 360, end: 600 },
-  { id: 'noon', label: 'Midi', icon: '🍲', start: 660, end: 840 },
-  { id: 'evening', label: 'Soir', icon: '🌙', start: 1080, end: 1320 },
+  { id: 'morning', label: loc('Matin'), icon: '☀️', start: 360, end: 600 },
+  { id: 'noon', label: loc('Midi'), icon: '🍲', start: 660, end: 840 },
+  { id: 'evening', label: loc('Soir'), icon: '🌙', start: 1080, end: 1320 },
 ] as const
 export const hungerRules = { surchargePerMissed: .25, maxMissed: 2, moodPerMissed: 5 }
 const key = 'mboa-hunger-v1'
@@ -41,7 +42,7 @@ export function getHunger(total = getGameTime().totalMinutes) {
   const day = Math.floor(total / 1440)
   return {
     missed, surcharge: counted * hungerRules.surchargePerMissed,
-    label: missed ? `Repas sauté${missed > 1 ? 's' : ''} : activités +${Math.round(counted * hungerRules.surchargePerMissed * 100)} % d’énergie` : 'Bien nourri',
+    label: missed ? loc('Repas sauté{0} : activités +{1} % d’énergie',missed > 1 ? 's' : '',Math.round(counted * hungerRules.surchargePerMissed * 100)) : loc('Bien nourri'),
     today: mealSlots.map(slot => ({ ...slot, eaten: state.eaten.includes(`${day}:${slot.id}`), passed: total % 1440 >= slot.end, current: total % 1440 >= slot.start && total % 1440 < slot.end })),
   }
 }

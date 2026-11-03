@@ -1,4 +1,5 @@
 /* Repas du jour dans le HUD (matin, midi, soir) et bandeau d'alerte dans les fenêtres quand un repas a été sauté. */
+import { loc } from './i18n'
 import { getHunger, onHungerChange } from './hunger'
 import { onGameTimeChange } from './game-clock'
 import './hunger.css'
@@ -6,7 +7,7 @@ import './hunger.css'
 export function mountHungerUI() {
   const energyTile = document.querySelector<HTMLElement>('#energy-counter')
   const tracker = document.createElement('div')
-  tracker.className = 'meal-tracker'; tracker.setAttribute('role', 'group'); tracker.setAttribute('aria-label', 'Repas du jour')
+  tracker.className = 'meal-tracker'; tracker.setAttribute('role', 'group'); tracker.setAttribute('aria-label', loc('Repas du jour'))
   energyTile?.querySelector('.game-wallet-details')?.append(tracker)
   const toast = document.createElement('div')
   toast.className = 'hunger-toast'; toast.setAttribute('role', 'status'); toast.hidden = true
@@ -17,7 +18,7 @@ export function mountHungerUI() {
     const hunger = getHunger()
     tracker.innerHTML = hunger.today.map(slot => {
       const state = slot.eaten ? 'eaten' : slot.current ? 'now' : slot.passed ? 'missed' : 'later'
-      const title = `${slot.label} : ${slot.eaten ? 'repas pris' : slot.current ? 'c’est l’heure de manger' : slot.passed ? 'repas sauté' : 'plus tard'}`
+      const title = `${slot.label} : ${slot.eaten ? loc('repas pris') : slot.current ? loc('c’est l’heure de manger') : slot.passed ? loc('repas sauté') : loc('plus tard')}`
       return `<span class="meal-slot" data-state="${state}" title="${title}" aria-label="${title}">${slot.icon}</span>`
     }).join('') + (hunger.missed ? `<span class="meal-warning">+${Math.round(hunger.surcharge * 100)} % ⚡</span>` : '')
     energyTile?.setAttribute('data-hungry', String(hunger.missed > 0))
@@ -26,14 +27,14 @@ export function mountHungerUI() {
       let banner = dialog.querySelector<HTMLElement>(':scope > .popup-head .hunger-banner')
       if (!hunger.missed) { banner?.remove(); continue }
       if (!banner) { banner = document.createElement('p'); banner.className = 'hunger-banner'; dialog.querySelector(':scope > .popup-head')?.append(banner) }
-      banner.title = `${hunger.label}. Mangez pour retrouver vos forces.`
-      banner.textContent = `🍽 Repas sauté : coût ⚡ +${Math.round(hunger.surcharge * 100)} %`
+      banner.title = loc('{0}. Mangez pour retrouver vos forces.',hunger.label)
+      banner.textContent = loc('🍽 Repas sauté : coût ⚡ +{0} %',Math.round(hunger.surcharge * 100))
     }
   }
   function warn(missedNow: number) {
     render()
     if (!missedNow) return
-    toast.textContent = `🍽️ Repas sauté : −${5 * missedNow} humeur, et chaque activité coûte plus d’énergie jusqu’au prochain repas.`
+    toast.textContent = loc('🍽️ Repas sauté : −{0} humeur, et chaque activité coûte plus d’énergie jusqu’au prochain repas.',5 * missedNow)
     toast.hidden = false; clearTimeout(toastTimer); toastTimer = window.setTimeout(() => { toast.hidden = true }, 6000)
   }
   onHungerChange(warn); onGameTimeChange(() => queueMicrotask(render))

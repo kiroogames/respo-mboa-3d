@@ -1,9 +1,11 @@
+import { loc, locData } from './i18n'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Attente validée : seul le calendrier avance ; ni énergie, ni argent, ni points Respo ne sont accordés.
  * L’ennui porte sur l’attente continue, y compris entre plusieurs confirmations et rechargements.
  */
-import rules from './data/waiting.json' with { type: 'json' }
+import rulesSource from './data/waiting.json' with { type: 'json' }
+const rules=locData(rulesSource)
 import { getGameTime, getGameTimeAt, advanceGameTime } from './game-clock.ts'
 import { projectEnergy,getPlayerResources, changeMood, getMoodDetails, previewMoodChange } from './player-resources.ts'
 
@@ -22,7 +24,7 @@ export function getContinuousWaiting() {
 }
 const boredomPeriods = (minutes: number) => Math.ceil(Math.max(0, minutes - rules.boredomAfterMinutes) / rules.boredomPeriodMinutes)
 export function previewWaiting(duration: number) {
-  if (!Number.isSafeInteger(duration) || duration < rules.minimumMinutes || duration > rules.maximumMinutes || duration % rules.stepMinutes !== 0) throw new RangeError('Choisissez une attente de 10 minutes à 6 heures, par pas de 10 minutes.')
+  if (!Number.isSafeInteger(duration) || duration < rules.minimumMinutes || duration > rules.maximumMinutes || duration % rules.stepMinutes !== 0) throw new RangeError(loc('Choisissez une attente de 10 minutes à 6 heures, par pas de 10 minutes.'))
   const from = getGameTime(), to = getGameTimeAt(from.totalMinutes + duration), continuousBefore = getContinuousWaiting()
   const continuousAfter = continuousBefore + duration, moodBefore = getPlayerResources().mood
   const penalty = (boredomPeriods(continuousAfter) - boredomPeriods(continuousBefore)) * rules.moodLossPerPeriod
@@ -39,12 +41,12 @@ export function prepareWaiting(duration: number) {
 }
 export function cancelWaiting(id: number) { if (pending?.id === id) pending = null }
 export function confirmWaiting(id: number, allowed = false) {
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
-  if (committing || !pending || pending.id !== id) return { ok: false as const, reason: 'Cette attente a déjà été confirmée ou remplacée.' }
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+  if (committing || !pending || pending.id !== id) return { ok: false as const, reason: loc('Cette attente a déjà été confirmée ou remplacée.') }
   const quote = pending
   pending = null
-  if (!allowed) return { ok: false as const, reason: 'L’attente est disponible uniquement en exploration libre.' }
-  if (getGameTime().totalMinutes !== quote.from.totalMinutes || getContinuousWaiting() !== quote.continuousBefore || getMoodDetails().base !== quote.moodBaseBefore || getMoodDetails().bonus !== quote.moodBonus) return { ok: false as const, reason: 'La situation a changé. Vérifiez le nouvel aperçu avant de confirmer.' }
+  if (!allowed) return { ok: false as const, reason: loc('L’attente est disponible uniquement en exploration libre.') }
+  if (getGameTime().totalMinutes !== quote.from.totalMinutes || getContinuousWaiting() !== quote.continuousBefore || getMoodDetails().base !== quote.moodBaseBefore || getMoodDetails().bonus !== quote.moodBonus) return { ok: false as const, reason: loc('La situation a changé. Vérifiez le nouvel aperçu avant de confirmer.') }
   committing = true
   try {
     ledger = { lastEnd: quote.to.totalMinutes, continuousMinutes: quote.continuousAfter }

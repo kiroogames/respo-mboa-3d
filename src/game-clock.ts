@@ -3,9 +3,10 @@
  * Seules les actions explicites avancent cette horloge ; les animations ne la modifient jamais.
  */
 
+import { loc } from './i18n'
 // Events advance the calendar explicitly. Real time never changes it.
 const storageKey = 'mboa-game-minutes-v1'
-const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+const days = [loc('Lundi'), loc('Mardi'), loc('Mercredi'), loc('Jeudi'), loc('Vendredi'), loc('Samedi'), loc('Dimanche')]
 let minutes = 8 * 60
 try {
   const saved = localStorage.getItem(storageKey)
@@ -21,7 +22,7 @@ export function getGameTime() { return getGameTimeAt(minutes) }
 
 // Projection pure pour les aperçus : consulter une heure future ne modifie pas le calendrier.
 export function getGameTimeAt(totalMinutes: number) {
-  if (!Number.isSafeInteger(totalMinutes) || totalMinutes < 0) throw new RangeError('Date de jeu invalide.')
+  if (!Number.isSafeInteger(totalMinutes) || totalMinutes < 0) throw new RangeError(loc('Date de jeu invalide.'))
   const day = Math.floor(totalMinutes / 1440)
   return {
     time: `${String(Math.floor(totalMinutes / 60) % 24).padStart(2, '0')}:${String(totalMinutes % 60).padStart(2, '0')}`,
@@ -35,9 +36,9 @@ export function getGameTimeAt(totalMinutes: number) {
 // Ajoute une durée entière en minutes, sauvegarde puis avertit les menus et les routines.
 export function advanceGameTime(elapsedMinutes: number,kind:TimeKind='awake') {
   if (!Number.isSafeInteger(elapsedMinutes) || elapsedMinutes < 0 || !Number.isSafeInteger(minutes + elapsedMinutes)) {
-    throw new RangeError('La durée doit être un nombre entier positif de minutes.')
+    throw new RangeError(loc('La durée doit être un nombre entier positif de minutes.'))
   }
-  if(kind!=='awake'&&kind!=='sleep')throw new RangeError('Type de temps invalide.')
+  if(kind!=='awake'&&kind!=='sleep')throw new RangeError(loc('Type de temps invalide.'))
   const from=minutes
   minutes += elapsedMinutes
   try { localStorage.setItem(storageKey, String(minutes)) } catch { /* Keep the current session usable. */ }
@@ -55,8 +56,8 @@ export function mountGameClock(element: HTMLElement) {
     const value = getGameTime()
     element.querySelector('#game-time')!.textContent = value.time
     element.querySelector('#game-day')!.textContent = value.day
-    element.querySelector('#game-week')!.textContent = `Semaine ${value.week}`
-    element.setAttribute('aria-label', `${value.time}, ${value.day}, semaine ${value.week}`)
+    element.querySelector('#game-week')!.textContent = loc('Semaine {0}',value.week)
+    element.setAttribute('aria-label', loc('{0}, {1}, semaine {2}',value.time,value.day,value.week))
   }
   listeners.add(update)
   update()

@@ -1,6 +1,8 @@
 /* Les deux accès à la cantine utilisent le même service quotidien et le même verrou par plat. */
+import { loc, locData } from './i18n'
 import { recordMeal } from './hunger.ts'
-import rules from './data/canteen.json' with {type:'json'}
+import rulesSource from './data/canteen.json' with {type:'json'}
+const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
 import {projectEnergy,getPlayerResources,previewMoodChange,restoreEnergy,changeMood} from './player-resources.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
@@ -15,31 +17,31 @@ try{
 const listeners=new Set<()=>void>()
 export function onCanteenChange(fn:()=>void){listeners.add(fn);return ()=>listeners.delete(fn)}
 export function getCanteenService(total=getGameTime().totalMinutes){
- if(!Number.isSafeInteger(total)||total<0)throw new RangeError('Date de cantine invalide.')
+ if(!Number.isSafeInteger(total)||total<0)throw new RangeError(loc('Date de cantine invalide.'))
  const day=Math.floor(total/1440),minute=total%1440,menu=rules.menus[day%7]??[],done=ledger.day===day?[...ledger.done]:[],open=day%7<5&&minute>=rules.opening&&minute<rules.closing
  let next:number|null=null
  for(let d=day;d<=day+7&&next===null;d++){const start=d*1440+rules.opening;if(d%7<5&&start>total&&Number.isSafeInteger(start))next=start}
- return {day,open,menu:[...menu],done,end:day*1440+rules.closing,next:next===null?null:getGameTimeAt(next),reason:!open?'La cantine ouvre du lundi au vendredi, de 11h à 14h.':menu.every(id=>done.includes(id))?'Tous les plats du service ont été consommés.':''}
+ return {day,open,menu:[...menu],done,end:day*1440+rules.closing,next:next===null?null:getGameTimeAt(next),reason:!open?loc('La cantine ouvre du lundi au vendredi, de 11h à 14h.'):menu.every(id=>done.includes(id))?loc('Tous les plats du service ont été consommés.'):''}
 }
 export function previewCanteenMeal(id:string){
  const dish=rules.dishes.find(d=>d.id===id)
- if(!dish)throw new RangeError('Plat inconnu.')
+ if(!dish)throw new RangeError(loc('Plat inconnu.'))
  const service=getCanteenService(),from=getGameTime(),resources=getPlayerResources(),balance=getMoneyBalance(),mood=previewMoodChange(dish.mood),safe=Number.isSafeInteger(from.totalMinutes+dish.minutes),to=safe?getGameTimeAt(from.totalMinutes+dish.minutes):from
  const projection=projectEnergy(dish.energy,to.totalMinutes),energyGain=projection.energyGain
- const reason=service.reason||(!service.menu.includes(id)?'Ce plat n’est pas au menu aujourd’hui.':'')||(service.done.includes(id)?'Ce plat a déjà été consommé pendant ce service.':'')||(!safe?'Limite du calendrier atteinte.':'')||(to.totalMinutes>service.end?'Ce repas se terminerait après 14h.':'')||(balance<dish.money?'Nkap insuffisants.':'')||(energyGain===0&&mood.delta===0?'Énergie et humeur déjà au maximum utile.':'')
+ const reason=service.reason||(!service.menu.includes(id)?loc('Ce plat n’est pas au menu aujourd’hui.'):'')||(service.done.includes(id)?loc('Ce plat a déjà été consommé pendant ce service.'):'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>service.end?loc('Ce repas se terminerait après 14h.'):'')||(balance<dish.money?loc('Nkap insuffisants.'):'')||(energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
  return {dish:{...dish},service,from,to,balance,energyBefore:resources.energy,maxEnergy:resources.maxEnergy,energyGain,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodGain:mood.delta,reason}
 }
 let pending:(ReturnType<typeof previewCanteenMeal>&{token:number})|null=null
 export function prepareCanteenMeal(id:string){pending={...previewCanteenMeal(id),token:++sequence};return structuredClone(pending)}
 export function cancelCanteenMeal(token:number){if(pending?.token===token)pending=null}
 export function confirmCanteenMeal(token:number,context:{zone:string;travelling:boolean;allowed:boolean}){
- if(committing||!pending||pending.token!==token)return {ok:false as const,reason:'Ce repas a déjà été confirmé ou remplacé.'}
+ if(committing||!pending||pending.token!==token)return {ok:false as const,reason:loc('Ce repas a déjà été confirmé ou remplacé.')}
  const q=pending;pending=null
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
- if(context.zone!==rules.zone||context.travelling||!context.allowed)return {ok:false as const,reason:'Vous devez être au ministère, hors trajet et autre activité.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+ if(context.zone!==rules.zone||context.travelling||!context.allowed)return {ok:false as const,reason:loc('Vous devez être au ministère, hors trajet et autre activité.')}
  const p=previewCanteenMeal(q.dish.id)
  if(p.reason)return {ok:false as const,reason:p.reason}
- if(p.from.totalMinutes!==q.from.totalMinutes||p.balance!==q.balance||p.energyBefore!==q.energyBefore||p.maxEnergy!==q.maxEnergy||p.moodBaseBefore!==q.moodBaseBefore||p.moodBonus!==q.moodBonus)return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
+ if(p.from.totalMinutes!==q.from.totalMinutes||p.balance!==q.balance||p.energyBefore!==q.energyBefore||p.maxEnergy!==q.maxEnergy||p.moodBaseBefore!==q.moodBaseBefore||p.moodBonus!==q.moodBonus)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
  committing=true
  try{
   // Réserver le plat avant toute notification protège les deux entrées et les appels réentrants.

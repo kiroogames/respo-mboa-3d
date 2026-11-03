@@ -28,3 +28,12 @@
 @keyframes start-in{from{opacity:0;transform:translateY(14px) scale(.97)}}
 @media(max-width:420px){.start-card{padding:76px 20px 22px}.start-card h1{font-size:58px}.start-confirm>div{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.start-card{animation:none}}
+/* Choix de la langue : au premier lancement, puis sur l'écran titre. */
+.start-language{display:flex;flex-direction:column;gap:12px;text-align:center}
+.start-language[hidden],.start-language-switch[hidden]{display:none}
+.start-language p{margin:0;font-weight:800}
+.start-language div{display:flex;gap:12px}
+.start-language button{flex:1;min-height:62px;padding:12px 18px;border:3px solid #17324d;border-radius:16px;background:linear-gradient(180deg,#ffe58a,#f7c948);color:#17324d;font:900 19px/1.1 inherit;cursor:pointer}
+.start-language-switch{display:flex;justify-content:center;gap:6px;margin-bottom:12px}
+.start-language-switch button{min-width:48px;min-height:32px;border:2px solid #17324d;border-radius:10px;background:#fffdf4;color:#17324d;font-weight:900;cursor:pointer}
+.start-language-switch button[aria-pressed=true]{background:#f7c948}

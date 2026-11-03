@@ -1,3 +1,4 @@
+import { loc } from './i18n'
 import {mountSportEnergy} from './sport-energy-ui'
 import {mountFoodBag} from './food-bag-ui'
 import { mountAccompaniedOutings } from './accompanied-outings-ui'
@@ -76,6 +77,7 @@ import '@babylonjs/loaders/glTF'
 import { mountPopupShell } from './popup-shell'
 import { mountHudEnhance } from './hud-enhance'
 import { mountStartMenu } from './start-menu'
+import { applyDocumentLanguage } from './i18n'
 import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
@@ -110,21 +112,21 @@ const app = document.querySelector<HTMLDivElement>('#app')!
 
 app.innerHTML = `
 
-<canvas id="city" aria-label="Mboa Ville en 3D : clic gauche pour se déplacer, clic molette pour tourner, molette pour zoomer"></canvas>
+<canvas id="city" aria-label="${loc('Mboa Ville en 3D : clic gauche pour se déplacer, clic molette pour tourner, molette pour zoomer')}"></canvas>
 
-<header><a class="brand" href="${base}" aria-label="Mboa Ville, accueil"><span class="brand-icon">M</span><span>MBOA<span class="brand-light">VILLE</span><small>LA VILLE PREND DU RELIEF</small></span></a><div class="player-card" role="group" aria-label="Le Respo, votre personnage"><span class="player-ring"><span class="player-photo"><img class="hero-portrait" src="${base}portraits/respo.png" alt=""/></span><span class="player-level" aria-label="Niveau"><small>NIV</small><b id="player-level">1</b></span></span><span class="player-info"><b class="player-name">Le Respo</b><span class="player-xp"><b id="player-xp-text">0 / 190</b> pts Respo</span><span class="player-xp-bar"><i></i></span></span></div><div class="header-right"><div class="hud-stats"><div class="resource-stats"><div class="game-wallet" role="group" aria-label="Argent disponible"><img src="${base}ui/currency-nkap.png" alt="" width="58" height="48"/><div class="game-wallet-details"><span class="wallet-heading"><span class="game-wallet-label">Argent</span><button id="bills-open" type="button" title="Factures de la maison" aria-label="Ouvrir les factures">Factures</button></span><span id="money-amount" class="game-wallet-amount">0</span></div></div><div id="influence-counter" class="game-wallet influence-wallet" role="group" aria-label="Influence : points d’influence"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Influence</span><span id="influence-amount" class="game-wallet-amount">0</span></div></div><div id="energy-counter" class="game-wallet energy-wallet" role="group" aria-label="Énergie : 100 sur 100"><img src="${base}ui/currency-energy.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Énergie</span><span id="energy-amount" class="game-wallet-amount">100 / 100</span></div></div><div id="respo-counter" class="game-wallet respo-wallet" role="group" aria-label="Points Respo"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="respo-heading"><span class="game-wallet-label">Points Respo</span><span id="respo-level">Niv. 1</span></span><span id="respo-amount" class="game-wallet-amount">0 / 190</span><progress id="respo-progress" max="190" value="0" aria-label="Progression vers le prochain niveau"></progress></div></div><div id="mood-counter" class="game-wallet mood-wallet" role="group" aria-label="Humeur"><span id="mood-icon" class="mood-icon" style="background-image:url('${base}ui/mood-sprites.png')" aria-hidden="true"></span><div class="game-wallet-details"><span class="mood-heading"><span class="game-wallet-label">Humeur</span><button id="mood-effects-open" type="button" aria-label="Consulter les effets sur l’humeur">Effets</button></span><span id="mood-amount" class="game-wallet-amount">90</span><span id="mood-label" class="mood-label">Content</span></div></div></div><div class="game-clock" role="group" aria-label="Calendrier du jeu"><span id="game-time" class="game-clock-time">08:00</span><span id="game-day" class="game-clock-day">Lundi</span><span class="game-clock-week"><span id="game-week">Semaine 1</span><span id="game-period">Jour</span></span><button id="wait-open" class="clock-wait-button" type="button" disabled>◷ Attendre</button></div></div><div class="header-actions"><span class="edition"><i></i> EXPLOREZ LE MBOA</span><button id="bag-open" type="button" disabled>Sac · 0/1</button><button id="compare" aria-pressed="false">▧ <span>Voir la référence</span></button><button id="help" aria-expanded="false" aria-controls="help-panel" aria-label="Aide à la navigation">?</button></div></div></header>
+<header><a class="brand" href="${base}" aria-label="${loc('Mboa Ville, accueil')}"><span class="brand-icon">M</span><span>MBOA<span class="brand-light">VILLE</span><small>${loc('LA VILLE PREND DU RELIEF')}</small></span></a><div class="player-card" role="group" aria-label="${loc('Le Respo, votre personnage')}"><span class="player-ring"><span class="player-photo"><img class="hero-portrait" src="${base}portraits/respo.png" alt=""/></span><span class="player-level" aria-label="${loc('Niveau')}"><small>${loc('NIV')}</small><b id="player-level">1</b></span></span><span class="player-info"><b class="player-name">${loc('Le Respo')}</b><span class="player-xp"><b id="player-xp-text">0 / 190</b> ${loc('pts Respo')}</span><span class="player-xp-bar"><i></i></span></span></div><div class="header-right"><div class="hud-stats"><div class="resource-stats"><div class="game-wallet" role="group" aria-label="${loc('Argent disponible')}"><img src="${base}ui/currency-nkap.png" alt="" width="58" height="48"/><div class="game-wallet-details"><span class="wallet-heading"><span class="game-wallet-label">${loc('Argent')}</span><button id="bills-open" type="button" title="${loc('Factures de la maison')}" aria-label="${loc('Ouvrir les factures')}">${loc('Factures')}</button></span><span id="money-amount" class="game-wallet-amount">0</span></div></div><div id="influence-counter" class="game-wallet influence-wallet" role="group" aria-label="${loc('Influence : points d’influence')}"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">Influence</span><span id="influence-amount" class="game-wallet-amount">0</span></div></div><div id="energy-counter" class="game-wallet energy-wallet" role="group" aria-label="${loc('Énergie : 100 sur 100')}"><img src="${base}ui/currency-energy.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="game-wallet-label">${loc('Énergie')}</span><span id="energy-amount" class="game-wallet-amount">100 / 100</span></div></div><div id="respo-counter" class="game-wallet respo-wallet" role="group" aria-label="${loc('Points Respo')}"><img src="${base}ui/currency-respo.png" alt="" width="48" height="48"/><div class="game-wallet-details"><span class="respo-heading"><span class="game-wallet-label">${loc('Points Respo')}</span><span id="respo-level">${loc('Niv. 1')}</span></span><span id="respo-amount" class="game-wallet-amount">0 / 190</span><progress id="respo-progress" max="190" value="0" aria-label="${loc('Progression vers le prochain niveau')}"></progress></div></div><div id="mood-counter" class="game-wallet mood-wallet" role="group" aria-label="${loc('Humeur')}"><span id="mood-icon" class="mood-icon" style="background-image:url('${base}ui/mood-sprites.png')" aria-hidden="true"></span><div class="game-wallet-details"><span class="mood-heading"><span class="game-wallet-label">${loc('Humeur')}</span><button id="mood-effects-open" type="button" aria-label="${loc('Consulter les effets sur l’humeur')}">${loc('Effets')}</button></span><span id="mood-amount" class="game-wallet-amount">90</span><span id="mood-label" class="mood-label">${loc('Content')}</span></div></div></div><div class="game-clock" role="group" aria-label="${loc('Calendrier du jeu')}"><span id="game-time" class="game-clock-time">08:00</span><span id="game-day" class="game-clock-day">${loc('Lundi')}</span><span class="game-clock-week"><span id="game-week">${loc('Semaine 1')}</span><span id="game-period">${loc('Jour')}</span></span><button id="wait-open" class="clock-wait-button" type="button" disabled>${loc('◷ Attendre')}</button></div></div><div class="header-actions"><span class="edition"><i></i> ${loc('EXPLOREZ LE MBOA')}</span><button id="bag-open" type="button" disabled>${loc('Sac · 0/1')}</button><button id="compare" aria-pressed="false">▧ <span>${loc('Voir la référence')}</span></button><button id="help" aria-expanded="false" aria-controls="help-panel" aria-label="${loc('Aide à la navigation')}">?</button></div></div></header>
 
-<div id="reference" hidden><img src="${base}reference/worldmap-wsp.png" alt="Vue de la ville dans la scène Unity de référence"/><span>LA VILLE D’ORIGINE</span></div>
+<div id="reference" hidden><img src="${base}reference/worldmap-wsp.png" alt="${loc('Vue de la ville dans la scène Unity de référence')}"/><span>${loc('LA VILLE D’ORIGINE')}</span></div>
 
-<aside id="help-panel" hidden><b>Explorez la ville</b><p>Clic gauche + glisser, flèches ou ZQSD pour vous déplacer (Maj pour aller plus vite).<br>Clic molette ou clic droit + glisser pour tourner.<br>Molette ou pincement pour zoomer. Au doigt, glissez pour tourner.</p><p>Choisissez un lieu en bas pour vous en approcher.</p></aside>
+<aside id="help-panel" hidden><b>${loc('Explorez la ville')}</b><p>${loc('Clic gauche + glisser, flèches ou ZQSD pour vous déplacer (Maj pour aller plus vite).')}<br>${loc('Clic molette ou clic droit + glisser pour tourner.')}<br>${loc('Molette ou pincement pour zoomer. Au doigt, glissez pour tourner.')}</p><p>${loc('Choisissez un lieu en bas pour vous en approcher.')}</p></aside>
 
-<div id="landmarks" aria-label="Lieux de la ville"></div>
+<div id="landmarks" aria-label="${loc('Lieux de la ville')}"></div>
 
-<footer><div class="place-picker"><button id="places-toggle" type="button" aria-expanded="false" aria-controls="places-panel"><span class="places-pin" aria-hidden="true">📍</span><span class="places-text"><small>Vous regardez</small><span id="view-name">Au cœur de Mboa Ville</span></span><span class="places-caret" aria-hidden="true">▴</span></button><nav id="places-panel" class="places" aria-label="Points de vue" hidden><span class="places-title">Aller voir un lieu</span><button data-view="city" class="active">Vue d’ensemble</button><button data-view="square">Rond-point</button><button data-view="market">Marché</button><button data-view="ministry">Ministère</button><button data-view="restaurant">Restaurant du Mboa</button><button data-view="pilton">Petit Tripl (Pilton, Farmous, ...)</button><button data-view="hill">Présidence</button><button data-view="stadium">Omnisport</button><button data-view="airport">Nsimaport</button><button data-view="culture">Avenue Culturel</button><button data-view="njoka">Njoka</button><button data-view="home">Maison</button><button data-view="palms">Cité des palmiers</button><button data-view="jcd">Rue JCD</button><button data-view="baos">Rue des BAOs</button><button data-view="education">Education</button><button data-view="supermarket">Supermarché</button><button data-view="tekno">Tekno shop</button><button data-view="ahann">Plateau Ahannn</button><button data-view="club">Club matango 2-0</button><button data-view="village">Mboa village</button></nav></div><div class="tools"><button id="orbit" aria-pressed="false" title="Visite automatique">▷ <span>Visite</span></button><button id="motion" data-label="Pause" aria-pressed="false" aria-label="Mettre la ville en pause" title="Mettre la ville en pause">Ⅱ</button><button id="reset" data-label="Recentrer" aria-label="Retrouver la vue de référence" title="Vue de référence">↺</button><button id="light" data-label="Ambiance" aria-pressed="false" aria-label="Activer l’ambiance du soir" title="Changer l’ambiance">☀</button></div></footer>
+<footer><div class="place-picker"><button id="places-toggle" type="button" aria-expanded="false" aria-controls="places-panel"><span class="places-pin" aria-hidden="true">📍</span><span class="places-text"><small>${loc('Vous regardez')}</small><span id="view-name">${loc('Au cœur de Mboa Ville')}</span></span><span class="places-caret" aria-hidden="true">▴</span></button><nav id="places-panel" class="places" aria-label="${loc('Points de vue')}" hidden><span class="places-title">${loc('Aller voir un lieu')}</span><button data-view="city" class="active">${loc('Vue d’ensemble')}</button><button data-view="square">${loc('Rond-point')}</button><button data-view="market">${loc('Marché')}</button><button data-view="ministry">${loc('Ministère')}</button><button data-view="restaurant">${loc('Restaurant du Mboa')}</button><button data-view="pilton">Petit Tripl (Pilton, Farmous, ...)</button><button data-view="hill">${loc('Présidence')}</button><button data-view="stadium">Omnisport</button><button data-view="airport">Nsimaport</button><button data-view="culture">${loc('Avenue Culturel')}</button><button data-view="njoka">Njoka</button><button data-view="home">${loc('Maison')}</button><button data-view="palms">${loc('Cité des palmiers')}</button><button data-view="jcd">${loc('Rue JCD')}</button><button data-view="baos">${loc('Rue des BAOs')}</button><button data-view="education">Education</button><button data-view="supermarket">${loc('Supermarché')}</button><button data-view="tekno">Tekno shop</button><button data-view="ahann">Plateau Ahannn</button><button data-view="club">Club matango 2-0</button><button data-view="village">Mboa village</button></nav></div><div class="tools"><button id="orbit" aria-pressed="false" title="${loc('Visite automatique')}">▷ <span>${loc('Visite')}</span></button><button id="motion" data-label="Pause" aria-pressed="false" aria-label="${loc('Mettre la ville en pause')}" title="${loc('Mettre la ville en pause')}">Ⅱ</button><button id="reset" data-label="Recentrer" aria-label="${loc('Retrouver la vue de référence')}" title="${loc('Vue de référence')}">↺</button><button id="light" data-label="Ambiance" aria-pressed="false" aria-label="${loc('Activer l’ambiance du soir')}" title="${loc('Changer l’ambiance')}">☀</button></div></footer>
 
-<div class="loading" role="status"><div class="loading-mark">M</div><b>Mboa prend du relief.</b><span id="load-status">Chargement de la ville et de ses textures…</span><div class="loading-track"><i></i></div></div>
+<div class="loading" role="status"><div class="loading-mark">M</div><b>${loc('Mboa prend du relief.')}</b><span id="load-status">${loc('Chargement de la ville et de ses textures…')}</span><div class="loading-track"><i></i></div></div>
 
-<div id="dialogue" class="dialogue" hidden><div class="dialogue-bubble"><img id="dialogue-portrait" class="dialogue-portrait hero-portrait" alt=""/></div><div class="dialogue-box"><b id="dialogue-name"></b><p id="dialogue-text"></p><button id="dialogue-close" aria-label="Fermer le dialogue">×</button></div></div>`
+<div id="dialogue" class="dialogue" hidden><div class="dialogue-bubble"><img id="dialogue-portrait" class="dialogue-portrait hero-portrait" alt=""/></div><div class="dialogue-box"><b id="dialogue-name"></b><p id="dialogue-text"></p><button id="dialogue-close" aria-label="${loc('Fermer le dialogue')}">×</button></div></div>`
 
 mountGameClock(document.querySelector<HTMLElement>('.game-clock')!)
 
@@ -160,7 +162,7 @@ const surfaces=createSurfaceKit(scene)
 
 function overviewRadius(){return 320*cityScale*Math.max(1,Math.min(1.7,1.6/(innerWidth/innerHeight)))} 
 
-const camera = new ArcRotateCamera('Vue de référence', Math.PI/2, .82, overviewRadius(), cityPosition(new Vector3(-25,0,0)), scene)
+const camera = new ArcRotateCamera(loc('Vue de référence'), Math.PI/2, .82, overviewRadius(), cityPosition(new Vector3(-25,0,0)), scene)
 
 camera.fov=.7; camera.minZ=Math.max(.5,camera.radius*.02); camera.maxZ=4200
 
@@ -208,40 +210,40 @@ type View = {target:Vector3;radius:number;alpha:number;beta:number;label:string}
 // Repères des lieux : les X/Z sont ensuite adaptés à l’échelle de la carte ; Y conserve la hauteur du décor.
 const views:Record<string,View>={
 
- city:{target:new Vector3(-25,0,0),radius:overviewRadius(),alpha:Math.PI/2,beta:.82,label:'Au cœur de Mboa Ville'},
+ city:{target:new Vector3(-25,0,0),radius:overviewRadius(),alpha:Math.PI/2,beta:.82,label:loc('Au cœur de Mboa Ville')},
 
- square:{target:new Vector3(-15.86,9,-.7),radius:65,alpha:Math.PI/2+.13,beta:.98,label:'La place de Mougabiang'},
+ square:{target:new Vector3(-15.86,9,-.7),radius:65,alpha:Math.PI/2+.13,beta:.98,label:loc('La place de Mougabiang')},
 
- market:{target:new Vector3(-53,1,27),radius:85,alpha:Math.PI/2+.1,beta:.7,label:'Le marché de Mboa'},
+ market:{target:new Vector3(-53,1,27),radius:85,alpha:Math.PI/2+.1,beta:.7,label:loc('Le marché de Mboa')},
 
- ministry:{target:new Vector3(3.74,10,-34.39),radius:78,alpha:Math.PI/2+.15,beta:.95,label:'Le quartier du ministère'},
+ ministry:{target:new Vector3(3.74,10,-34.39),radius:78,alpha:Math.PI/2+.15,beta:.95,label:loc('Le quartier du ministère')},
 
- hill:{target:new Vector3(-177.98,42,-64.55),radius:155,alpha:Math.PI/2+.12,beta:.85,label:'La présidence'},
+ hill:{target:new Vector3(-177.98,42,-64.55),radius:155,alpha:Math.PI/2+.12,beta:.85,label:loc('La présidence')},
 
  stadium:{target:new Vector3(96,3,12),radius:86,alpha:Math.PI/2+.12,beta:.72,label:'Omnisport'},
 
  airport:{target:new Vector3(86,5,-44),radius:95,alpha:Math.PI/2+.2,beta:.8,label:'Nsimaport'},
 
- culture:{target:new Vector3(110,10,20),radius:60,alpha:Math.PI/2+.12,beta:.78,label:'Avenue Culturel'},
+ culture:{target:new Vector3(110,10,20),radius:60,alpha:Math.PI/2+.12,beta:.78,label:loc('Avenue Culturel')},
 
- njoka:{target:new Vector3(53,3,37),radius:80,alpha:Math.PI/2+.08,beta:.8,label:'La rue du Njoka'},
+ njoka:{target:new Vector3(53,3,37),radius:80,alpha:Math.PI/2+.08,beta:.8,label:loc('La rue du Njoka')},
 
  // Le FAPMOUS dans le modèle Unity : les couverts croisés identifient le restaurant.
- restaurant:{target:new Vector3(5.576,6,-3.849),radius:48,alpha:Math.PI/2+.1,beta:.72,label:'Restaurant du Mboa'},
+ restaurant:{target:new Vector3(5.576,6,-3.849),radius:48,alpha:Math.PI/2+.1,beta:.72,label:loc('Restaurant du Mboa')},
 
  pilton:{target:new Vector3(38,16,-75),radius:90,alpha:Math.PI/2+.1,beta:.84,label:'Petit Tripl (Pilton, Farmous, ...)'},
 
- home:{target:new Vector3(-18,6,71),radius:65,alpha:Math.PI/2+.1,beta:.82,label:'Maison'},
+ home:{target:new Vector3(-18,6,71),radius:65,alpha:Math.PI/2+.1,beta:.82,label:loc('Maison')},
 
- palms:{target:new Vector3(-33,5,65),radius:68,alpha:Math.PI/2+.1,beta:.82,label:'Cité des palmiers'},
+ palms:{target:new Vector3(-33,5,65),radius:68,alpha:Math.PI/2+.1,beta:.82,label:loc('Cité des palmiers')},
 
- jcd:{target:new Vector3(-76,5,41),radius:75,alpha:Math.PI/2+.1,beta:.78,label:'Rue JCD'},
+ jcd:{target:new Vector3(-76,5,41),radius:75,alpha:Math.PI/2+.1,beta:.78,label:loc('Rue JCD')},
 
- baos:{target:new Vector3(-79,6,-16),radius:80,alpha:Math.PI/2+.1,beta:.8,label:'La rue des BAOs'},
+ baos:{target:new Vector3(-79,6,-16),radius:80,alpha:Math.PI/2+.1,beta:.8,label:loc('La rue des BAOs')},
 
- education:{target:new Vector3(-47,6,-65),radius:80,alpha:Math.PI/2+.1,beta:.8,label:'Le complexe scolaire'},
+ education:{target:new Vector3(-47,6,-65),radius:80,alpha:Math.PI/2+.1,beta:.8,label:loc('Le complexe scolaire')},
 
- supermarket:{target:new Vector3(-12,9,-67),radius:55,alpha:Math.PI/2+.1,beta:.8,label:'Le supermarché'},
+ supermarket:{target:new Vector3(-12,9,-67),radius:55,alpha:Math.PI/2+.1,beta:.8,label:loc('Le supermarché')},
 
  tekno:{target:new Vector3(26,9,-27),radius:60,alpha:Math.PI/2+.1,beta:.8,label:'Tekno shop'},
 
@@ -271,11 +273,11 @@ const citySound=mountCitySound({listener:()=>({x:camera.target.x,z:camera.target
 
 let motionPaused=matchMedia('(prefers-reduced-motion: reduce)').matches
 
-function setOrbit(value:boolean){orbit=value;const b=document.querySelector<HTMLButtonElement>('#orbit')!;b.innerHTML=orbit?'Ⅱ <span>Pause</span>':'▷ <span>Visite</span>';b.setAttribute('aria-pressed',String(orbit))}
+function setOrbit(value:boolean){orbit=value;const b=document.querySelector<HTMLButtonElement>('#orbit')!;b.innerHTML=orbit?'Ⅱ <span>Pause</span>':`▷ <span>${loc('Visite')}</span>`;b.setAttribute('aria-pressed',String(orbit))}
 
 function select(key:string){pendingPlaceMenu=null;destination=views[key]!;setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=destination.label
 
- if(key==='home')showDialogue(`${base}portraits/respo.png`,'Le Respo','Me revoilà à la maison… direction la mairie, j’ai un pays à gérer.')
+ if(key==='home')showDialogue(`${base}portraits/respo.png`,loc('Le Respo'),loc('Me revoilà à la maison… direction la mairie, j’ai un pays à gérer.'))
 
  else hideDialogue()}
 
@@ -285,7 +287,7 @@ const playerPosition=new Vector3(0,8,0)
 let guidedVisualPaused=import.meta.env.DEV&&(window as unknown as {__MBOA_GUIDED_QA_PAUSED__?:boolean}).__MBOA_GUIDED_QA_PAUSED__===true
 const journeyVisual=createJourneyVisual(scene,base)
 const journeyFeedback=document.createElement('div');journeyFeedback.className='journey-feedback';journeyFeedback.hidden=true
-journeyFeedback.innerHTML='<span data-journey-symbol aria-hidden="true"></span><span class="journey-caption"><b data-journey-label></b><span class="journey-progress"><i></i></span></span><button type="button" data-journey-skip title="Passer l’animation du trajet" aria-label="Passer l’animation du trajet">››</button>'
+journeyFeedback.innerHTML=`<span data-journey-symbol aria-hidden="true"></span><span class="journey-caption"><b data-journey-label></b><span class="journey-progress"><i></i></span></span><button type="button" data-journey-skip title="${loc('Passer l’animation du trajet')}" aria-label="${loc('Passer l’animation du trajet')}">››</button>`
 document.querySelector('#app')!.append(journeyFeedback)
 let journeyVisualPaused=false
 // Cadrage propre au trajet en cours, distinct des vues des lieux pour pouvoir le déplacer avec le Respo.
@@ -341,7 +343,8 @@ const moodEffects=mountMoodEffects({button:document.querySelector<HTMLButtonElem
  &&![...document.querySelectorAll<HTMLElement>('.wait-transition')].some(mask=>!mask.hidden)})
 mountPopupShell()
 mountHudEnhance()
-mountStartMenu(base)
+applyDocumentLanguage()
+mountStartMenu(base,()=>travel.isTravelling()||isGuidedOutingActive())
 mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
@@ -365,7 +368,7 @@ function tickJourney(delta:number,force=false){
  if(destination&&destination===tripView)tripView.target=follow
  else if(!destination)camera.target=Vector3.Lerp(camera.target,follow,1-Math.exp(-delta*.005))
  if(isGuidedOutingActive())setGuidedProgress(frame.total)
- const labels={exit:'Le Respo sort…',board:trip.mode==='moto'?'En selle !':'On embarque !',travel:trip.mode==='walk'?'À pied':trip.mode==='moto'?'En bendskin':trip.mode==='taxi'?'Taxi commun':'Yonga privé',alight:'On descend…',enter:'Arrivée sur place',done:'Arrivée'}
+ const labels={exit:loc('Le Respo sort…'),board:trip.mode==='moto'?loc('En selle !'):loc('On embarque !'),travel:trip.mode==='walk'?loc('À pied'):trip.mode==='moto'?loc('En bendskin'):trip.mode==='taxi'?loc('Taxi commun'):loc('Yonga privé'),alight:loc('On descend…'),enter:loc('Arrivée sur place'),done:loc('Arrivée')}
  journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')
  ;(journeyFeedback.querySelector('.journey-progress i') as HTMLElement).style.width=frame.total*100+'%'
  if(frame.phase==='done'){
@@ -374,7 +377,7 @@ function tickJourney(delta:number,force=false){
   if(trip.done){trip.done();return}
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===playerZone));document.querySelector('#view-name')!.textContent=views[playerZone]!.label
   travel.arrive(playerZone);hideDialogue();venues.open(playerZone)
-  document.querySelector('.player-pin')?.setAttribute('aria-label',`Le Respo, ${views[playerZone]!.label}`)
+  document.querySelector('.player-pin')?.setAttribute('aria-label',loc('Le Respo, {0}',views[playerZone]!.label))
  }
 }
 // Un clic cadre d’abord le lieu, puis propose ses services ou les moyens de s’y rendre.
@@ -404,7 +407,7 @@ function updateMotion(){
 
  const b=document.querySelector<HTMLButtonElement>('#motion')!
 
- b.textContent=motionPaused?'▷':'Ⅱ';b.setAttribute('aria-pressed',String(motionPaused));b.setAttribute('aria-label',motionPaused?'Animer la ville':'Mettre la ville en pause');b.title=motionPaused?'Animer la ville':'Mettre la ville en pause'
+ b.textContent=motionPaused?'▷':'Ⅱ';b.setAttribute('aria-pressed',String(motionPaused));b.setAttribute('aria-label',motionPaused?loc('Animer la ville'):loc('Mettre la ville en pause'));b.title=motionPaused?loc('Animer la ville'):loc('Mettre la ville en pause')
 
 }
 
@@ -419,7 +422,7 @@ placesToggle.onclick=()=>showPlaces(placesToggle.getAttribute('aria-expanded')!=
 placesPanel.addEventListener('click',event=>{if((event.target as HTMLElement).closest('[data-view]'))showPlaces(false)})
 document.addEventListener('pointerdown',event=>{if(!placesPanel.hidden&&!(event.target as HTMLElement).closest('.place-picker'))showPlaces(false)})
 
-document.querySelector<HTMLButtonElement>('#compare')!.onclick=()=>{const panel=document.querySelector<HTMLDivElement>('#reference')!;panel.hidden=!panel.hidden;document.querySelector('#compare')!.setAttribute('aria-pressed',String(!panel.hidden));document.querySelector('#compare span')!.textContent=panel.hidden?'Voir la référence':'Revenir à la 3D'}
+document.querySelector<HTMLButtonElement>('#compare')!.onclick=()=>{const panel=document.querySelector<HTMLDivElement>('#reference')!;panel.hidden=!panel.hidden;document.querySelector('#compare')!.setAttribute('aria-pressed',String(!panel.hidden));document.querySelector('#compare span')!.textContent=panel.hidden?loc('Voir la référence'):loc('Revenir à la 3D')}
 
 document.querySelector<HTMLButtonElement>('#help')!.onclick=()=>{const panel=document.querySelector<HTMLDivElement>('#help-panel')!;panel.hidden=!panel.hidden;document.querySelector('#help')!.setAttribute('aria-expanded',String(!panel.hidden))}
 
@@ -477,7 +480,7 @@ function tickKeyboardPan(delta:number){
  camera.target.x+=(dx*forward-dz*side)/norm*step;camera.target.z+=(dz*forward+dx*side)/norm*step
 }
 
-window.addEventListener('keydown',event=>{if(event.key==='Escape'){showPlaces(false);document.querySelector<HTMLDivElement>('#reference')!.hidden=true;document.querySelector('#compare')!.setAttribute('aria-pressed','false');document.querySelector('#compare span')!.textContent='Voir la référence';document.querySelector<HTMLDivElement>('#help-panel')!.hidden=true;document.querySelector('#help')!.setAttribute('aria-expanded','false');hideDialogue()}})
+window.addEventListener('keydown',event=>{if(event.key==='Escape'){showPlaces(false);document.querySelector<HTMLDivElement>('#reference')!.hidden=true;document.querySelector('#compare')!.setAttribute('aria-pressed','false');document.querySelector('#compare span')!.textContent=loc('Voir la référence');document.querySelector<HTMLDivElement>('#help-panel')!.hidden=true;document.querySelector('#help')!.setAttribute('aria-expanded','false');hideDialogue()}})
 
 // Boucle visuelle uniquement : caméra, eau, circulation et animation de trajet ne changent pas le calendrier.
 scene.onBeforeRenderObservable.add(()=>{
@@ -530,19 +533,19 @@ function createLandmarks(){
 
  for(const [key,label,position] of [
 
-  ['hill','Présidence',[-178,70,-65]],['ministry','Ministère',[4,33,-34]],
+  ['hill',loc('Présidence'),[-178,70,-65]],['ministry',loc('Ministère'),[4,33,-34]],
 
-  ['stadium','Omnisport',[96,15,12]],['airport','Nsimaport',[86,26,-44]],['culture','Avenue Culturel',[110,20,20]],
+  ['stadium','Omnisport',[96,15,12]],['airport','Nsimaport',[86,26,-44]],['culture',loc('Avenue Culturel'),[110,20,20]],
 
-  ['market','Marché',[-55,8,28]],['njoka','Rue du Njoka',[54,16,37]],
+  ['market',loc('Marché'),[-55,8,28]],['njoka',loc('Rue du Njoka'),[54,16,37]],
 
-  ['restaurant','Restaurant du Mboa',[5.576,19,-3.849]],
+  ['restaurant',loc('Restaurant du Mboa'),[5.576,19,-3.849]],
 
-  ['pilton','Petit Tripl (Pilton, Farmous, ...)',[38,42,-75]],['home','Maison',[-18,14,71]],
+  ['pilton','Petit Tripl (Pilton, Farmous, ...)',[38,42,-75]],['home',loc('Maison'),[-18,14,71]],
 
-  ['palms','Cité des palmiers',[-33,12,65]],['jcd','Rue JCD',[-75,13,42]],
+  ['palms',loc('Cité des palmiers'),[-33,12,65]],['jcd',loc('Rue JCD'),[-75,13,42]],
 
-  ['baos','Rue des BAOs',[-79,14,-16]],['education','Education',[-47,15,-65]],['supermarket','Supermarché',[-12,20,-67]],
+  ['baos',loc('Rue des BAOs'),[-79,14,-16]],['education','Education',[-47,15,-65]],['supermarket',loc('Supermarché'),[-12,20,-67]],
 
   ['tekno','Tekno shop',[26,16,-27]],['ahann','Plateau Ahannn',[26,17,0]],
 
@@ -560,18 +563,18 @@ function createLandmarks(){
 
  }
 
- const playerPin=createCharacterPin('portraits/respo.png',true);playerPin.setAttribute('aria-label','Le Respo, à la maison');playerPin.onclick=()=>requestZone(playerZone);root.append(playerPin)
+ const playerPin=createCharacterPin('portraits/respo.png',true);playerPin.setAttribute('aria-label',loc('Le Respo, à la maison'));playerPin.onclick=()=>requestZone(playerZone);root.append(playerPin)
 
  try{const stored=localStorage.getItem('mboa-player-zone-v1'),saved=stored==='hotel'?'pilton':stored;if(saved&&saved!=='city'&&views[saved])playerZone=saved}catch{/* Default to home. */}
  const guidedResume=getAccompaniedState();if(guidedResume&&guidedResume.phase!=='done')playerZone=guidedResume.phase==='outbound'?guidedResume.plan.origin:guidedResume.plan.destination
  playerPosition.copyFromFloats(views[playerZone]!.target.x,Math.max(10,views[playerZone]!.target.y+12),views[playerZone]!.target.z)
- playerPin.setAttribute('aria-label',`Le Respo, ${views[playerZone]!.label}`)
+ playerPin.setAttribute('aria-label',loc('Le Respo, {0}',views[playerZone]!.label))
  pins.push({button:playerPin,position:playerPosition,alwaysVisible:true})
  for(const npc of npcTemplates){
   const button=createCharacterPin(npc.portrait);button.classList.add('npc-pin');button.dataset.npc=npc.id;button.hidden=true
   button.title=`${npc.name} — ${views[npc.zone]!.label}`
   button.setAttribute('aria-label',`${npc.name}, ${npc.relationship}, ${views[npc.zone]!.label}`)
-  const notification=document.createElement('span');notification.className='npc-request-badge';notification.textContent='!';notification.hidden=true;notification.setAttribute('aria-label','Besoin d’un service');button.append(notification)
+  const notification=document.createElement('span');notification.className='npc-request-badge';notification.textContent='!';notification.hidden=true;notification.setAttribute('aria-label',loc('Besoin d’un service'));button.append(notification)
   button.onclick=()=>{
    if(travel.isTravelling())return
    const state=getNPCState(npc.id),zone=state?.zone??state?.destination
@@ -598,11 +601,11 @@ function updateNPCNotifications(){
   const position=getGuidedPresentation()?.npcId===npc.id?playerPosition.asArray() as TravelPoint:getNPCMapPosition(npc.id,key=>{const view=views[key]!;return [view.target.x,Math.max(10,view.target.y+12),view.target.z]})
   if(position)resident.position.copyFromFloats(...position)
   resident.button.dataset.travelling=String(!!state?.travelling)
-  resident.button.title=`${npc.name} — ${zone?views[zone]!.label:'Indisponible'}${state?` · ${state.activity}`:''}`
+  resident.button.title=`${npc.name} — ${zone?views[zone]!.label:loc('Indisponible')}${state?` · ${state.activity}`:''}`
   const needsService=isNPCAvailable(npc.id)&&npcNeedsService(npc.id)
   const notification=resident.button.querySelector<HTMLElement>('.npc-request-badge')
   if(notification)notification.hidden=!needsService
-  resident.button.setAttribute('aria-label',resident.button.title+(needsService?` — ${npc.name} a besoin d’un service`:''))
+  resident.button.setAttribute('aria-label',resident.button.title+(needsService?loc(' — {0} a besoin d’un service',npc.name):''))
  }
 }
 
@@ -777,7 +780,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261103-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=`Chargement des modèles… ${Math.round(event.loaded/event.total*100)} %`}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261103-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=loc('Chargement des modèles… {0} %',Math.round(event.loaded/event.total*100))}})
 
   container.addAllToScene()
 
@@ -867,7 +870,7 @@ async function loadCity(){
   document.documentElement.dataset.ready='true'
   accompaniedUI.resume()
 
- }catch(error){console.error('Chargement de Mboa impossible',error);const loading=document.querySelector<HTMLDivElement>('.loading')!;loading.innerHTML='<b>La ville n’a pas pu être chargée.</b><span>Vérifiez la connexion puis réessayez.</span><button id="retry">Réessayer</button>';document.querySelector<HTMLButtonElement>('#retry')!.onclick=()=>location.reload()}
+ }catch(error){console.error('Chargement de Mboa impossible',error);const loading=document.querySelector<HTMLDivElement>('.loading')!;loading.innerHTML=`<b>${loc('La ville n’a pas pu être chargée.')}</b><span>${loc('Vérifiez la connexion puis réessayez.')}</span><button id="retry">${loc('Réessayer')}</button>`;document.querySelector<HTMLButtonElement>('#retry')!.onclick=()=>location.reload()}
 
 }
 

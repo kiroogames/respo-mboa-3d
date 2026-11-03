@@ -1,5 +1,7 @@
 /* Piles avancées indépendantes : coût et accès propres à chaque dossier, règlement unique. */
-import rules from './data/advanced-dossiers.json' with {type:'json'}
+import { loc, locData } from './i18n'
+import rulesSource from './data/advanced-dossiers.json' with {type:'json'}
+const rules=locData(rulesSource)
 import {getGameTime,advanceGameTime} from './game-clock.ts'
 import {getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
@@ -18,26 +20,26 @@ export function getAdvancedBatch(){
  const now=getGameTime().totalMinutes,day=Math.floor(now/1440),minute=now%1440,open=day%7<5&&minute>=rules.opening&&minute<rules.closing,start=rules.refills.findLast(t=>minute>=t)??rules.opening,id=`advanced:${day}:${start}`,done=ledger.batch===id?[...ledger.done]:[]
  let next=-1
  for(let d=day;d<=day+7&&next<0;d++)if(d%7<5)for(const t of rules.refills)if(d*1440+t>now){next=d*1440+t;break}
- const level=getRespoProgress(getPlayerResources().ptRespo).level,reason=level<rules.visibleLevel?'Dossiers avancés visibles à partir du niveau 2.':!open?'Le service avancé ouvre du lundi au vendredi, de 7h à 23h.':''
+ const level=getRespoProgress(getPlayerResources().ptRespo).level,reason=level<rules.visibleLevel?loc('Dossiers avancés visibles à partir du niveau 2.'):!open?loc('Le service avancé ouvre du lundi au vendredi, de 7h à 23h.'):''
  return {id,open,canFinish:!reason&&rules.dossiers.some((d,i)=>!done.includes(i)&&level>=d.level&&minute+d.minutes<=rules.closing),nextRefill:next,remaining:open?rules.dossiers.filter((d,i)=>!done.includes(i)&&level>=d.level).length:0,reason,dossiers:rules.dossiers.map((d,index)=>({index,title:d.title,done:done.includes(index)}))}
 }
 export function advancedWorkReason(zone:string,batchId?:string,index?:number){
- if(zone!==rules.zone)return 'Rejoignez le ministère.'
+ if(zone!==rules.zone)return loc('Rejoignez le ministère.')
  const batch=getAdvancedBatch();if(batch.reason)return batch.reason
- if(batchId!==undefined&&batchId!==batch.id)return 'Cette pile a été renouvelée. Choisissez un dossier de la nouvelle pile.'
+ if(batchId!==undefined&&batchId!==batch.id)return loc('Cette pile a été renouvelée. Choisissez un dossier de la nouvelle pile.')
  if(index===undefined)return ''
- const d=rules.dossiers[index];if(!d||!Number.isInteger(index))return 'Dossier introuvable.'
- if(getRespoProgress(getPlayerResources().ptRespo).level<d.level)return `Niveau ${d.level} requis.`
- if(batch.dossiers[index]!.done)return 'Ce dossier a déjà été rémunéré dans cette pile.'
+ const d=rules.dossiers[index];if(!d||!Number.isInteger(index))return loc('Dossier introuvable.')
+ if(getRespoProgress(getPlayerResources().ptRespo).level<d.level)return loc('Niveau {0} requis.',d.level)
+ if(batch.dossiers[index]!.done)return loc('Ce dossier a déjà été rémunéré dans cette pile.')
  const end=getGameTime().totalMinutes+d.minutes
- if(!Number.isSafeInteger(end)||end%1440>rules.closing||Math.floor(end/1440)!==Math.floor(getGameTime().totalMinutes/1440))return 'Ce dossier se terminerait après 23h.'
- if(getPlayerResources().energy<d.energyCost)return `Énergie insuffisante : ${d.energyCost} nécessaires.`
- if(!Number.isSafeInteger(getMoneyBalance()+d.moneyGain)||!Number.isSafeInteger(getPlayerResources().ptRespo+d.respoGain))return 'Les compteurs ne permettent pas de recevoir cette récompense.'
+ if(!Number.isSafeInteger(end)||end%1440>rules.closing||Math.floor(end/1440)!==Math.floor(getGameTime().totalMinutes/1440))return loc('Ce dossier se terminerait après 23h.')
+ if(getPlayerResources().energy<d.energyCost)return loc('Énergie insuffisante : {0} nécessaires.',d.energyCost)
+ if(!Number.isSafeInteger(getMoneyBalance()+d.moneyGain)||!Number.isSafeInteger(getPlayerResources().ptRespo+d.respoGain))return loc('Les compteurs ne permettent pas de recevoir cette récompense.')
  return ''
 }
 export function completeAdvancedDossier(batchId:string,index:number,_path:readonly number[],context:{zone:string;travelling:boolean;allowed:boolean}){
- if(committing)return {ok:false as const,reason:'Le traitement est déjà en cours.'}
- if(isGuidedOutingActive()||context.travelling||!context.allowed)return {ok:false as const,reason:'Terminez votre trajet ou votre autre activité.'}
+ if(committing)return {ok:false as const,reason:loc('Le traitement est déjà en cours.')}
+ if(isGuidedOutingActive()||context.travelling||!context.allowed)return {ok:false as const,reason:loc('Terminez votre trajet ou votre autre activité.')}
  const reason=advancedWorkReason(context.zone,batchId,index);if(reason)return {ok:false as const,reason}
  const d=rules.dossiers[index]!
  const money=d.moneyGain

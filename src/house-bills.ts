@@ -1,6 +1,8 @@
+import { loc, locData } from './i18n'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Factures fixes : l’heure de jeu crée les échéances, seul le joueur débite le portefeuille. */
-import rules from './data/house-bills.json' with {type:'json'}
+import rulesSource from './data/house-bills.json' with {type:'json'}
+const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 export const houseBillItems=rules.items
@@ -40,13 +42,13 @@ export function prepareHouseBillPayment(){
 }
 export function cancelHouseBillPayment(token:number){if(pending?.token===token)pending=null}
 export function confirmHouseBillPayment(token:number,allowed=false){
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
- if(committing||!pending||pending.token!==token)return {ok:false as const,reason:'Ce paiement a déjà été confirmé ou remplacé.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+ if(committing||!pending||pending.token!==token)return {ok:false as const,reason:loc('Ce paiement a déjà été confirmé ou remplacé.')}
  const quote=pending;pending=null
- if(!allowed)return {ok:false as const,reason:'Terminez votre autre activité avant de payer.'}
+ if(!allowed)return {ok:false as const,reason:loc('Terminez votre autre activité avant de payer.')}
  const state=getHouseBilling()
- if(!state.oldest||state.oldest.index!==quote.index||getGameTime().totalMinutes!==quote.time||state.balance!==quote.balance)return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
- if(state.balance<houseBillAmount)return {ok:false as const,reason:'Argent insuffisant pour régler cette facture.'}
+ if(!state.oldest||state.oldest.index!==quote.index||getGameTime().totalMinutes!==quote.time||state.balance!==quote.balance)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
+ if(state.balance<houseBillAmount)return {ok:false as const,reason:loc('Argent insuffisant pour régler cette facture.')}
  committing=true
  try{
   paid++;save() // Verrouiller avant les notifications du portefeuille.

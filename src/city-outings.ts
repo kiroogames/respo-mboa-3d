@@ -1,8 +1,10 @@
+import { loc, locData } from './i18n'
 import { recordMeal } from './hunger.ts'
 import {grantSportEffect} from './sport-energy.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Sorties solo : une occurrence par activité/session, même en changeant d’option ou après minuit. */
-import definitions from './data/city-outings.json' with {type:'json'}
+import definitionsSource from './data/city-outings.json' with {type:'json'}
+const definitions=locData(definitionsSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 import {projectEnergy,getPlayerResources,spendEnergy,restoreEnergy,changeMood,previewMoodChange} from './player-resources.ts'
@@ -14,9 +16,9 @@ try{
  for(const activity of definitions){const session=saved?.[activity.id];if(Number.isSafeInteger(session)&&session>=(activity.closing<activity.opening?-1:0)&&session<=today&&activity.days.includes(weekday(session)))completed[activity.id]=session}
 }catch{/* Les sorties restent jouables si le registre est absent ou corrompu. */}
 export function getOutingSchedule(id:string,total=getGameTime().totalMinutes){
- if(!Number.isSafeInteger(total)||total<0)throw new RangeError('Date de sortie invalide.')
+ if(!Number.isSafeInteger(total)||total<0)throw new RangeError(loc('Date de sortie invalide.'))
  const activity=definitions.find(a=>a.id===id)
- if(!activity)throw new RangeError('Sortie inconnue.')
+ if(!activity)throw new RangeError(loc('Sortie inconnue.'))
  const day=Math.floor(total/1440),minute=total%1440,night=activity.closing<activity.opening
  // Après minuit, le snack reste rattaché au jour d’ouverture ; −1 désigne la toute première nuit.
  const session=night?(minute>=activity.opening?day:minute<activity.closing?day-1:null):minute>=activity.opening&&minute<activity.closing?day:null
@@ -28,15 +30,15 @@ export function getOutingSchedule(id:string,total=getGameTime().totalMinutes){
   const candidate=d*1440+activity.opening
   if(activity.days.includes(weekday(d))&&candidate>total&&Number.isSafeInteger(candidate))next=candidate
  }
- return {open,session:open?session:null,start,end,consumed,next:next===null?null:getGameTimeAt(next),reason:!open?'Cette sortie est fermée à cette heure.':consumed?night?'Sortie déjà effectuée pour cette soirée.':'Sortie déjà effectuée pour cette journée.':''}
+ return {open,session:open?session:null,start,end,consumed,next:next===null?null:getGameTimeAt(next),reason:!open?loc('Cette sortie est fermée à cette heure.'):consumed?night?loc('Sortie déjà effectuée pour cette soirée.'):loc('Sortie déjà effectuée pour cette journée.'):''}
 }
 export function previewCityOuting(id:string,optionId:string){
  const activity=definitions.find(a=>a.id===id),option=activity?.options.find(o=>o.id===optionId)
- if(!activity||!option)throw new RangeError('Sortie ou option inconnue.')
+ if(!activity||!option)throw new RangeError(loc('Sortie ou option inconnue.'))
  const from=getGameTime(),schedule=getOutingSchedule(id),resources=getPlayerResources(),mood=previewMoodChange(option.mood),balance=getMoneyBalance()
  const safe=Number.isSafeInteger(from.totalMinutes+option.minutes),to=safe?getGameTimeAt(from.totalMinutes+option.minutes):from
  const projection=projectEnergy(option.energyGain,to.totalMinutes,from.totalMinutes,resources.energy,option.energy),energyGain=projection.energyGain
- const reason=schedule.reason||(!safe?'Limite du calendrier atteinte.':'')||(to.totalMinutes>schedule.end!?'La sortie se terminerait après la fermeture.':'')||(balance<option.money?'Nkap insuffisants.':'')||(resources.energy<option.energy?'Énergie insuffisante.':'')||(activity.repeatable&&energyGain===0&&mood.delta===0?'Énergie et humeur déjà au maximum utile.':'')
+ const reason=schedule.reason||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>schedule.end!?loc('La sortie se terminerait après la fermeture.'):'')||(balance<option.money?loc('Nkap insuffisants.'):'')||(resources.energy<option.energy?loc('Énergie insuffisante.'):'')||(activity.repeatable&&energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
  return {activity:structuredClone(activity),option:{...option},from,to,schedule,balance,energyBefore:resources.energy,energyGain,maxEnergy:resources.maxEnergy,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodGain:mood.delta,reason}
 }
 const listeners=new Set<()=>void>()
@@ -53,13 +55,13 @@ let sequence=0,committing=false,pending:(ReturnType<typeof previewCityOuting>&{t
 export function prepareCityOuting(id:string,optionId:string){pending={...previewCityOuting(id,optionId),token:++sequence};return structuredClone(pending)}
 export function cancelCityOuting(token:number){if(pending?.token===token)pending=null}
 export function confirmCityOuting(token:number,context:{zone:string;travelling:boolean;allowed:boolean}){
- if(committing||!pending||pending.token!==token)return {ok:false as const,reason:'Cette sortie a déjà été confirmée ou remplacée.'}
+ if(committing||!pending||pending.token!==token)return {ok:false as const,reason:loc('Cette sortie a déjà été confirmée ou remplacée.')}
  const quote=pending;pending=null
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
- if(context.zone!==quote.activity.zone||context.travelling||!context.allowed)return {ok:false as const,reason:'Vous devez être arrivé sur le lieu, hors trajet et autre activité.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+ if(context.zone!==quote.activity.zone||context.travelling||!context.allowed)return {ok:false as const,reason:loc('Vous devez être arrivé sur le lieu, hors trajet et autre activité.')}
  const current=previewCityOuting(quote.activity.id,quote.option.id)
  if(current.reason)return {ok:false as const,reason:current.reason}
- if(current.from.totalMinutes!==quote.from.totalMinutes||current.schedule.session!==quote.schedule.session||current.balance!==quote.balance||current.energyBefore!==quote.energyBefore||current.maxEnergy!==quote.maxEnergy||current.moodBaseBefore!==quote.moodBaseBefore||current.moodBonus!==quote.moodBonus)return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
+ if(current.from.totalMinutes!==quote.from.totalMinutes||current.schedule.session!==quote.schedule.session||current.balance!==quote.balance||current.energyBefore!==quote.energyBefore||current.maxEnergy!==quote.maxEnergy||current.moodBaseBefore!==quote.moodBaseBefore||current.moodBonus!==quote.moodBonus)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
  committing=true
  try{
   if(!current.activity.repeatable)completed[current.activity.id]=current.schedule.session!

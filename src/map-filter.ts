@@ -1,4 +1,5 @@
 /* Filtre de la carte : montre d'un coup d'œil où gagner de l'argent, où manger, et ce qui est ouvert à cette heure. */
+import { loc } from './i18n'
 import { getPlaceOffers } from './place-activities'
 import type { PlaceOffer } from './place-activities'
 import { onGameTimeChange } from './game-clock'
@@ -7,15 +8,15 @@ import './map-filter.css'
 
 const key = 'mboa-map-filter-v1'
 const choices: { id: PlaceOffer | ''; label: string; title: string }[] = [
-  { id: '', label: 'Tout', title: 'Montrer tous les lieux' },
-  { id: 'earn', label: '💵 Gagner', title: 'Lieux où gagner de l’argent maintenant' },
-  { id: 'eat', label: '🍲 Manger', title: 'Lieux où manger maintenant' },
-  { id: 'open', label: '🕒 Ouvert', title: 'Lieux où il y a quelque chose à faire maintenant' },
+  { id: '', label: loc('Tout'), title: loc('Montrer tous les lieux') },
+  { id: 'earn', label: loc('💵 Gagner'), title: loc('Lieux où gagner de l’argent maintenant') },
+  { id: 'eat', label: loc('🍲 Manger'), title: loc('Lieux où manger maintenant') },
+  { id: 'open', label: loc('🕒 Ouvert'), title: loc('Lieux où il y a quelque chose à faire maintenant') },
 ]
 
 export function mountMapFilter() {
   const bar = document.createElement('div')
-  bar.className = 'map-filter'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Filtrer les lieux de la carte')
+  bar.className = 'map-filter'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', loc('Filtrer les lieux de la carte'))
   bar.innerHTML = choices.map(c => `<button type="button" data-filter="${c.id}" title="${c.title}">${c.label}</button>`).join('')
   document.querySelector('#app')!.append(bar)
   let filter: PlaceOffer | '' = ''

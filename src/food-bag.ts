@@ -1,4 +1,5 @@
 /* Un emplacement, une confirmation : les aliments vieillissent uniquement avec le calendrier du jeu. */
+import { loc } from './i18n'
 import { recordMeal } from './hunger.ts'
 import {getGameTime,advanceGameTime} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
@@ -6,9 +7,9 @@ import {projectEnergy,getPlayerResources,getMoodDetails,previewMoodChange,restor
 import {isGuidedOutingActive} from './guided-outing-state.ts'
 
 export const bagFoods=[
- {id:'meal',name:'Repas à emporter',zone:'market',money:250,life:360,minutes:25,energy:30,mood:4},
- {id:'snack',name:'Collation à emporter',zone:'supermarket',money:150,life:720,minutes:10,energy:15,mood:2},
- {id:'restaurant-dish',name:'Plat du restaurant à emporter',zone:'restaurant',money:600,life:360,minutes:20,energy:40,mood:6},
+ {id:'meal',name:loc('Repas à emporter'),zone:'market',money:250,life:360,minutes:25,energy:30,mood:4},
+ {id:'snack',name:loc('Collation à emporter'),zone:'supermarket',money:150,life:720,minutes:10,energy:15,mood:2},
+ {id:'restaurant-dish',name:loc('Plat du restaurant à emporter'),zone:'restaurant',money:600,life:360,minutes:20,energy:40,mood:6},
 ] as const
 type FoodId=typeof bagFoods[number]['id']
 type Item={id:FoodId;bought:number;expires:number}
@@ -29,18 +30,18 @@ export function previewFoodBag(action:BagAction,id:string,context:BagContext){
  const minutes=action==='buy'?5:action==='eat'&&food?food.minutes:0,end=now+minutes,expires=action==='buy'&&food?end+food.life:item?.expires??null
  const projection=projectEnergy(action==='eat'&&food?food.energy:0,end)
  const energyGain=action==='eat'?projection.energyGain:0,moodGain=action==='eat'?mood.delta:0,money=action==='buy'&&food?food.money:0
- const reason=isGuidedOutingActive()?'Terminez votre sortie accompagnée.':context.travelling||!context.allowed?'Terminez votre déplacement ou votre activité.':!food?'Aucun aliment disponible.':!Number.isSafeInteger(end)||expires!==null&&!Number.isSafeInteger(expires)?'Limite du calendrier atteinte.':action==='buy'?(context.zone!==food.zone?'Achetez cet aliment sur place.':item?'Votre sac est plein.':getMoneyBalance()<money?'Nkap insuffisants.':''):!item?'Votre sac est vide.':action==='eat'?(now>=item.expires?'Cet aliment est périmé.':end>item.expires?'Le repas finirait après la péremption.':energyGain===0&&moodGain===0?'Énergie et humeur déjà au maximum utile.':''):''
+ const reason=isGuidedOutingActive()?loc('Terminez votre sortie accompagnée.'):context.travelling||!context.allowed?loc('Terminez votre déplacement ou votre activité.'):!food?loc('Aucun aliment disponible.'):!Number.isSafeInteger(end)||expires!==null&&!Number.isSafeInteger(expires)?loc('Limite du calendrier atteinte.'):action==='buy'?(context.zone!==food.zone?loc('Achetez cet aliment sur place.'):item?loc('Votre sac est plein.'):getMoneyBalance()<money?loc('Nkap insuffisants.'):''):!item?loc('Votre sac est vide.'):action==='eat'?(now>=item.expires?loc('Cet aliment est périmé.'):end>item.expires?loc('Le repas finirait après la péremption.'):energyGain===0&&moodGain===0?loc('Énergie et humeur déjà au maximum utile.'):''):''
  return {action,food:food?{...food}:null,now,end,expires,minutes,money,energyGain,moodGain,energyBefore:r.energy,energyAfter:projection.energyAfter,maxEnergy:r.maxEnergy,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodBase:getMoodDetails().base,moodBonus:mood.bonus,balance:getMoneyBalance(),item:item?{...item}:null,zone:context.zone,reason}
 }
 let pending:(ReturnType<typeof previewFoodBag>&{token:number})|null=null
 export function prepareFoodBag(action:BagAction,id:string,context:BagContext){pending={...previewFoodBag(action,id,context),token:++sequence};return structuredClone(pending)}
 export function cancelFoodBag(token:number){if(pending?.token===token)pending=null}
 export function confirmFoodBag(token:number,context:BagContext){
- if(committing||!pending||pending.token!==token)return {ok:false as const,reason:'Cette action a déjà été confirmée ou remplacée.'}
+ if(committing||!pending||pending.token!==token)return {ok:false as const,reason:loc('Cette action a déjà été confirmée ou remplacée.')}
  const quote=pending;pending=null
  const p=previewFoodBag(quote.action,quote.food?.id??'',context)
  if(p.reason)return {ok:false as const,reason:p.reason}
- if(JSON.stringify(p)!==JSON.stringify({...quote,token:undefined}))return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
+ if(JSON.stringify(p)!==JSON.stringify({...quote,token:undefined}))return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
  committing=true
  try{
   // Libérer/remplir le sac avant les notifications empêche de consommer deux fois le même objet.

@@ -1,12 +1,15 @@
+import { loc, locData } from './i18n'
 import { getGuidedPresentation } from './guided-outing-state.ts'
 /*
  * Résout la présence des PNJ à partir de l’heure absolue sauvegardée.
  * Les identités viennent de npcs.json ; les déplacements viennent de npc-routines.json.
  */
 
-import definitions from './data/npcs.json' with { type: 'json' }
+import definitionsSource from './data/npcs.json' with { type: 'json' }
+const definitions=locData(definitionsSource)
 import { getGameTime } from './game-clock.ts'
-import routines from './data/npc-routines.json' with { type: 'json' }
+import routinesSource from './data/npc-routines.json' with { type: 'json' }
+const routines=locData(routinesSource)
 
 export const npcTemplates = definitions
 
@@ -37,7 +40,7 @@ export function getNPCState(id:string,totalMinutes=getGameTime().totalMinutes){
  const guided=getGuidedPresentation()
  if(guided?.npcId===id&&totalMinutes===getGameTime().totalMinutes){
   const normal=getRoutineNPCState(id,totalMinutes)
-  return {from:0,until:1440,zone:guided.zone,origin:guided.origin,destination:guided.destination,activity:guided.phase==='activity'?'Sortie accompagnée':'Trajet de sortie accompagnée',available:false,travelling:guided.travelling,rank:normal?.rank??'Accompagnante',transport:guided.mode,progress:guided.progress}
+  return {from:0,until:1440,zone:guided.zone,origin:guided.origin,destination:guided.destination,activity:guided.phase==='activity'?loc('Sortie accompagnée'):loc('Trajet de sortie accompagnée'),available:false,travelling:guided.travelling,rank:normal?.rank??loc('Accompagnante'),transport:guided.mode,progress:guided.progress}
  }
  return getRoutineNPCState(id,totalMinutes)
 }

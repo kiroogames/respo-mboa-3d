@@ -3,6 +3,7 @@
  * (dernier clic ou élément actif) jusqu'à sa case dans le bandeau du haut, qui rebondit à l'arrivée.
  * Le calque est un popover : il passe au-dessus des fenêtres ouvertes (couche supérieure du navigateur).
  */
+import { gameLocale } from './i18n'
 import './currency-fly.css'
 import { playSound } from './game-feedback'
 
@@ -58,7 +59,7 @@ export function mountCurrencyFly(base: string) {
     const box = tile.getBoundingClientRect()
     showLayer(); active++
     const label = document.createElement('span'); label.className = `currency-fly-label is-${unit} is-loss`
-    label.textContent = `−${delta.toLocaleString('fr-FR')}`; label.style.left = `${box.left + box.width / 2}px`; label.style.top = `${box.bottom + 6}px`
+    label.textContent = `−${delta.toLocaleString(gameLocale)}`; label.style.left = `${box.left + box.width / 2}px`; label.style.top = `${box.bottom + 6}px`
     label.prepend(icon(unit)); layer.append(label)
     const done = () => { label.remove(); if (--active === 0) try { layer.hidePopover() } catch { /* Sans popover. */ } }
     label.animate([{ opacity: 0, transform: 'translate(-50%,-40%) scale(.85)' }, { opacity: 1, transform: 'translate(-50%,0) scale(1)', offset: .2 }, { opacity: 0, transform: 'translate(-50%,40px) scale(.95)' }], { duration: 1200, easing: 'ease-out' }).finished.then(done, done)
@@ -78,7 +79,7 @@ export function mountCurrencyFly(base: string) {
     const label = document.createElement('span'); label.className = `currency-fly-label is-${unit}`
     // Plusieurs gains au même moment : les montants s'empilent au lieu de se superposer.
     const stack = layer.querySelectorAll('.currency-fly-label').length
-    label.textContent = `+${delta.toLocaleString('fr-FR')}`; label.style.left = `${start.x}px`; label.style.top = `${start.y - stack * 40}px`
+    label.textContent = `+${delta.toLocaleString(gameLocale)}`; label.style.left = `${start.x}px`; label.style.top = `${start.y - stack * 40}px`
     label.prepend(icon(unit)); layer.append(label)
     label.animate([{ opacity: 0, transform: 'translate(-50%,-30%) scale(.8)' }, { opacity: 1, transform: 'translate(-50%,-90%) scale(1)', offset: .25 }, { opacity: 0, transform: 'translate(-50%,-200%) scale(1)' }], { duration: 1300, easing: 'ease-out' }).finished.then(() => label.remove(), () => label.remove())
     let arrived = 0

@@ -1,7 +1,10 @@
+import { loc, locData } from './i18n'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Confort dérivé des objets équipés et des travaux payés : aucun compteur cumulable au clic. */
-import rules from './data/home-comfort.json' with {type:'json'}
-import bae from './data/bae-dialogues.json' with {type:'json'}
+import rulesSource from './data/home-comfort.json' with {type:'json'}
+const rules=locData(rulesSource)
+import baeSource from './data/bae-dialogues.json' with {type:'json'}
+const bae=locData(baeSource)
 import {getCompletedNPCRequests,onNPCRelationshipChange} from './npc-relationships.ts'
 import {getMoneyBalance,spendMoney,addMoney} from './currency.ts'
 import {getGameTime} from './game-clock.ts'
@@ -23,14 +26,14 @@ export function getHomeComfort(){
  const total=rooms.reduce((sum,room)=>sum+room.comfort,0)
  return {total,target:rules.target,complete:total>=rules.target,rooms,equipment,improvements}
 }
-export function comfortContextReason(context:ComfortContext){return context.travelling?'Terminez votre trajet.':!context.allowed?'Terminez votre autre activité.':context.zone!=='home'?'Vous devez être à la maison.':''}
+export function comfortContextReason(context:ComfortContext){return context.travelling?loc('Terminez votre trajet.'):!context.allowed?loc('Terminez votre autre activité.'):context.zone!=='home'?loc('Vous devez être à la maison.'):''}
 export function previewHomeEquipment(id:string,action:ComfortAction,context:ComfortContext){
  const state=getHomeComfort(),item=state.equipment.find(item=>item.id===id)
- if(!item)throw new RangeError('Équipement inconnu.')
- if(action!=='buy'&&action!=='equip'&&action!=='sell')throw new RangeError('Action inconnue.')
+ if(!item)throw new RangeError(loc('Équipement inconnu.'))
+ if(action!=='buy'&&action!=='equip'&&action!=='sell')throw new RangeError(loc('Action inconnue.'))
  const previous=state.equipment.find(other=>other.slot===item.slot&&other.equipped)!,balance=getMoneyBalance()
  const refund=action==='sell'?Math.floor(item.money/2):0,base=state.equipment.find(other=>other.slot===item.slot&&other.money===0)!
- const reason=comfortContextReason(context)||(action==='sell'?(!item.owned?'Vous ne possédez pas cet équipement.':item.money===0?'Les meubles de base gratuits ne sont pas revendables.':!Number.isSafeInteger(balance+refund)?'Le portefeuille ne peut pas recevoir ce montant.':''):action==='buy'?(item.owned?'Cet équipement est déjà possédé.':balance<item.money?'Nkap insuffisants.':''):!item.owned?'Achetez cet équipement avant de l’équiper.':item.equipped?'Cet équipement est déjà équipé.':'')
+ const reason=comfortContextReason(context)||(action==='sell'?(!item.owned?loc('Vous ne possédez pas cet équipement.'):item.money===0?loc('Les meubles de base gratuits ne sont pas revendables.'):!Number.isSafeInteger(balance+refund)?loc('Le portefeuille ne peut pas recevoir ce montant.'):''):action==='buy'?(item.owned?loc('Cet équipement est déjà possédé.'):balance<item.money?loc('Nkap insuffisants.'):''):!item.owned?loc('Achetez cet équipement avant de l’équiper.'):item.equipped?loc('Cet équipement est déjà équipé.'):'')
  return {item,action,price:action==='buy'?item.money:0,refund,replacement:action==='sell'&&item.equipped?base.id:null,balance,total:state.total,afterComfort:action==='equip'?state.total-previous.comfort+item.comfort:action==='sell'&&item.equipped?state.total-item.comfort+base.comfort:state.total,time:getGameTime().totalMinutes,reason,
   signature:JSON.stringify({owned:[...owned].sort(),equipped,completed:state.improvements.filter(item=>item.paid).map(item=>item.id)})}
 }
@@ -41,12 +44,12 @@ let sequence=0,committing=false,pending:(ReturnType<typeof previewHomeEquipment>
 export function prepareHomeEquipment(id:string,action:ComfortAction,context:ComfortContext){pending={...previewHomeEquipment(id,action,context),token:++sequence};return structuredClone(pending)}
 export function cancelHomeEquipment(token:number){if(pending?.token===token)pending=null}
 export function confirmHomeEquipment(token:number,context:ComfortContext){
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
- if(committing||!pending||pending.token!==token)return {ok:false as const,reason:'Cette action a déjà été confirmée ou remplacée.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+ if(committing||!pending||pending.token!==token)return {ok:false as const,reason:loc('Cette action a déjà été confirmée ou remplacée.')}
  const quote=pending;pending=null
  const current=previewHomeEquipment(quote.item.id,quote.action,context)
  if(current.reason)return {ok:false as const,reason:current.reason}
- if(current.signature!==quote.signature||current.time!==quote.time||current.balance!==quote.balance)return {ok:false as const,reason:'La situation a changé. Vérifiez le nouvel aperçu.'}
+ if(current.signature!==quote.signature||current.time!==quote.time||current.balance!==quote.balance)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
  committing=true
  try{
   if(current.action==='buy')owned.add(current.item.id)

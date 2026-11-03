@@ -3,8 +3,9 @@
  * Les débits refusent un solde insuffisant ; les montants sont des entiers sûrs non négatifs.
  */
 
+import { loc, gameLocale } from './i18n'
 const storageKey = 'mboa-money-v1'
-const formatter = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 })
+const formatter = new Intl.NumberFormat(gameLocale, { maximumFractionDigits: 0 })
 let balance = 0
 try {
   const stored = localStorage.getItem(storageKey)
@@ -18,7 +19,7 @@ export function getMoneyBalance() { return balance }
 
 // Refuse aussi les dépassements numériques : les Nkap ne sont pas des valeurs flottantes.
 function validateAmount(amount: number) {
-  if (!Number.isSafeInteger(amount) || amount < 0) throw new RangeError('Le montant doit être un entier positif.')
+  if (!Number.isSafeInteger(amount) || amount < 0) throw new RangeError(loc('Le montant doit être un entier positif.'))
 }
 
 function saveBalance() {
@@ -29,7 +30,7 @@ function saveBalance() {
 // Future events explicitly credit or debit the wallet. Nothing changes automatically.
 export function addMoney(amount: number) {
   validateAmount(amount)
-  if (!Number.isSafeInteger(balance + amount)) throw new RangeError('Le solde dépasse le montant maximal.')
+  if (!Number.isSafeInteger(balance + amount)) throw new RangeError(loc('Le solde dépasse le montant maximal.'))
   balance += amount
   saveBalance()
 }
@@ -49,7 +50,7 @@ export function mountWallet(element: HTMLElement) {
     const amount = element.querySelector<HTMLElement>('#money-amount')!
     amount.textContent = formatted
     amount.title = formatted
-    element.setAttribute('aria-label', `Argent disponible : ${formatted}`)
+    element.setAttribute('aria-label', loc('Argent disponible : {0}',formatted))
   }
   listeners.add(update)
   update()

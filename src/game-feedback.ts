@@ -2,6 +2,7 @@
  * Retours de jeu communs : petits sons synthétisés, appui des boutons, refus visibles et alertes de besoins.
  * Tout est déduit de l'interface existante (clics, fenêtres, messages d'erreur, compteurs) : aucune règle de jeu ne change.
  */
+import { loc } from './i18n'
 import './game-feedback.css'
 
 export type Sound = 'click' | 'open' | 'close' | 'coin' | 'gain' | 'loss' | 'error'
@@ -81,7 +82,7 @@ export function mountGameFeedback() {
   const actions = document.querySelector<HTMLElement>('.header-actions')
   if (actions) {
     const toggle = document.createElement('button'); toggle.type = 'button'; toggle.id = 'sound-toggle'
-    const render = () => { toggle.innerHTML = muted ? '🔇 <span>Son coupé</span>' : '🔊 <span>Son activé</span>'; toggle.setAttribute('aria-pressed', String(!muted)) }
+    const render = () => { toggle.innerHTML = muted ? `🔇 <span>${loc('Son coupé')}</span>` : `🔊 <span>${loc('Son activé')}</span>`; toggle.setAttribute('aria-pressed', String(!muted)) }
     toggle.onclick = () => { muted = !muted; try { localStorage.setItem(soundKey, muted ? 'off' : 'on') } catch { /* Préférence pour cette session. */ } render(); playSound('click') }
     render(); actions.append(toggle)
   }

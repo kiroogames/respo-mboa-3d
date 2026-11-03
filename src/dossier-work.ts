@@ -1,9 +1,11 @@
+import { loc, locData } from './i18n'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Travail au ministère : piles datées, confirmation du traitement et récompense unique.
  * Les coûts validés sont centralisés dans les données ; aucune animation ne débite de ressources.
  */
-import rules from './data/dossier-work.json' with { type: 'json' }
+import rulesSource from './data/dossier-work.json' with { type: 'json' }
+const rules=locData(rulesSource)
 import { getGameTime, advanceGameTime } from './game-clock.ts'
 import { getMoneyBalance, addMoney } from './currency.ts'
 import { getPlayerResources, spendEnergy, changeRespoPoints } from './player-resources.ts'
@@ -34,24 +36,24 @@ export function getDossierBatch(totalMinutes = getGameTime().totalMinutes) {
 }
 
 export function dossierWorkReason(zone: string, batchId?: string, index?: number) {
-  if (zone !== rules.zone) return 'Rejoignez le ministère pour travailler sur un dossier.'
+  if (zone !== rules.zone) return loc('Rejoignez le ministère pour travailler sur un dossier.')
   const batch = getDossierBatch()
   if (!batch.canFinish) return batch.reason
-  if (batchId !== undefined && batchId !== batch.id) return 'Cette pile a été renouvelée. Choisissez un dossier de la nouvelle pile.'
-  if (index !== undefined && (!Number.isInteger(index) || index < 0 || index >= rules.batchSize)) return 'Dossier introuvable.'
-  if (index !== undefined && batch.dossiers[index]!.done) return 'Ce dossier a déjà été rémunéré.'
-  if (getPlayerResources().energy < rules.energyCost) return `Énergie insuffisante : il faut ${rules.energyCost} énergie.`
+  if (batchId !== undefined && batchId !== batch.id) return loc('Cette pile a été renouvelée. Choisissez un dossier de la nouvelle pile.')
+  if (index !== undefined && (!Number.isInteger(index) || index < 0 || index >= rules.batchSize)) return loc('Dossier introuvable.')
+  if (index !== undefined && batch.dossiers[index]!.done) return loc('Ce dossier a déjà été rémunéré.')
+  if (getPlayerResources().energy < rules.energyCost) return loc('Énergie insuffisante : il faut {0} énergie.',rules.energyCost)
   return ''
 }
 
 export function completeDossier(batchId: string, index: number, _path: readonly number[], zone: string) {
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
-  if (committing) return { ok: false as const, reason: 'Le traitement est déjà en cours.' }
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+  if (committing) return { ok: false as const, reason: loc('Le traitement est déjà en cours.') }
   const reason = dossierWorkReason(zone, batchId, index)
   if (reason) return { ok: false as const, reason }
   const money=rules.moneyGain
   const before = getPlayerResources()
-  if (!Number.isSafeInteger(getMoneyBalance() + money) || !Number.isSafeInteger(before.ptRespo + rules.respoGain)) return { ok: false as const, reason: 'Les compteurs ne permettent pas de recevoir cette récompense.' }
+  if (!Number.isSafeInteger(getMoneyBalance() + money) || !Number.isSafeInteger(before.ptRespo + rules.respoGain)) return { ok: false as const, reason: loc('Les compteurs ne permettent pas de recevoir cette récompense.') }
   committing = true
   try {
     // Marquer avant d’émettre les mises à jour empêche un double crédit, même en cas de clic réentrant.

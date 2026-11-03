@@ -3,13 +3,14 @@
  * Un tirage est conservé par tranche de minutes de jeu, y compris après rechargement.
  */
 
+import { loc } from './i18n'
 import rules from '../travel-rules.json' with { type: 'json' }
 import { getGameTime } from './game-clock.ts'
 
 export const trafficLevels = {
-  clear: { id: 'clear', label: 'Circulation fluide', taxiFactor: 1, motoFactor: 1 },
-  busy: { id: 'busy', label: 'Circulation chargée', taxiFactor: 1.6, motoFactor: 1.25 },
-  jammed: { id: 'jammed', label: 'Embouteillages', taxiFactor: 2.8, motoFactor: 1.6 },
+  clear: { id: 'clear', label: loc('Circulation fluide'), taxiFactor: 1, motoFactor: 1 },
+  busy: { id: 'busy', label: loc('Circulation chargée'), taxiFactor: 1.6, motoFactor: 1.25 },
+  jammed: { id: 'jammed', label: loc('Embouteillages'), taxiFactor: 2.8, motoFactor: 1.6 },
 } as const
 export type TrafficConditions = typeof trafficLevels[keyof typeof trafficLevels]
 const storageKey = 'mboa-traffic-v1'

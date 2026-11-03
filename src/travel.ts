@@ -3,6 +3,7 @@
  * Un point de trajet est [X, Y, Z] ; les distances tarifées utilisent le plan horizontal X/Z.
  */
 
+import { loc } from './i18n'
 import streets from '../scripts/wsp-streets.json' with { type: 'json' }
 import settings from '../city-layout.json' with { type: 'json' }
 import rules from '../travel-rules.json' with { type: 'json' }
@@ -63,7 +64,7 @@ export function createTravelRoute(from: TravelPoint, to: TravelPoint) {
   while (visited.size < nodes.length) {
     let current = -1
     for (let i = 0; i < nodes.length; i++) if (!visited.has(i) && Number.isFinite(costs[i]) && (current < 0 || costs[i]! < costs[current]!)) current = i
-    if (current < 0) throw new Error('Cette zone n’est pas encore reliée au réseau de déplacement.')
+    if (current < 0) throw new Error(loc('Cette zone n’est pas encore reliée au réseau de déplacement.'))
     if (current === goal) break
     visited.add(current)
     for (const edge of edges[current]!) if (costs[current]! + edge.cost < costs[edge.to]!) {
@@ -79,13 +80,13 @@ export function createTravelRoute(from: TravelPoint, to: TravelPoint) {
 // Starting tariffs, centralized here for future gameplay balancing.
 export const travelModes = [
   // Marche : gratuite mais lente, fatigante et pénible pour l'humeur.
-  { id: 'walk', label: 'À pied', description: 'Gratuit, mais long et éprouvant', symbol: '🚶', fare: 0, moneyPerKm: 0, energyPerKm: 4, moodPerKm: 3, metersPerMinute: 75, departureMinutes: 0, stopsMinutesPerKm: 0 },
+  { id: 'walk', label: loc('À pied'), description: loc('Gratuit, mais long et éprouvant'), symbol: '🚶', fare: 0, moneyPerKm: 0, energyPerKm: 4, moodPerKm: 3, metersPerMinute: 75, departureMinutes: 0, stopsMinutesPerKm: 0 },
   // Taxi commun : le moins cher des véhicules, lent (attente, arrêts) et inconfortable.
-  { id: 'taxi', label: 'Taxi commun', description: 'Pas cher · lent, serré, arrêts fréquents', symbol: '🚕', fare: 150, moneyPerKm: 60, energyPerKm: 0, moodPerKm: 1.5, metersPerMinute: 300, departureMinutes: 5, stopsMinutesPerKm: 1.5 },
+  { id: 'taxi', label: loc('Taxi commun'), description: loc('Pas cher · lent, serré, arrêts fréquents'), symbol: '🚕', fare: 150, moneyPerKm: 60, energyPerKm: 0, moodPerKm: 1.5, metersPerMinute: 300, departureMinutes: 5, stopsMinutesPerKm: 1.5 },
   // Yonga : cher et rapide, mais coincé dans les embouteillages comme les autres voitures.
-  { id: 'yonga', label: 'Yonga — taxi privé', description: 'Cher et confortable · ralenti par les bouchons', symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, moodPerKm: 0, metersPerMinute: 600, departureMinutes: 5, stopsMinutesPerKm: 0 },
+  { id: 'yonga', label: loc('Yonga — taxi privé'), description: loc('Cher et confortable · ralenti par les bouchons'), symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, moodPerKm: 0, metersPerMinute: 600, departureMinutes: 5, stopsMinutesPerKm: 0 },
   // Moto : plus chère que le taxi commun, un peu plus rapide que Yonga, légèrement éprouvante ; se faufile mais subit aussi les bouchons.
-  { id: 'moto', label: 'Moto', description: 'Pratique et rapide · un peu secouant', symbol: '🏍️', fare: 250, moneyPerKm: 110, energyPerKm: .3, moodPerKm: .5, metersPerMinute: 650, departureMinutes: 3, stopsMinutesPerKm: 0 },
+  { id: 'moto', label: 'Moto', description: loc('Pratique et rapide · un peu secouant'), symbol: '🏍️', fare: 250, moneyPerKm: 110, energyPerKm: .3, moodPerKm: .5, metersPerMinute: 650, departureMinutes: 3, stopsMinutesPerKm: 0 },
 ] as const
 
 // Convertit la longueur en mètres de ville, applique le mode et le trafic, puis arrondit la durée au multiple de 5 supérieur.

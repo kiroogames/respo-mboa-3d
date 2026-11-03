@@ -4,12 +4,14 @@
  * Fonctionne sur tout le texte des fenêtres, y compris celui reconstruit à chaque mise à jour.
  */
 
+import { loc } from './i18n'
+
 type Unit = 'nkap' | 'energy' | 'mood' | 'influence'
-const units: Record<string, Unit> = { nkap: 'nkap', énergie: 'energy', humeur: 'mood', influence: 'influence' }
-const labels: Record<Unit, string> = { nkap: 'Nkap', energy: 'énergie', mood: 'humeur', influence: 'influence' }
+const units: Record<string, Unit> = { nkap: 'nkap', énergie: 'energy', energy: 'energy', humeur: 'mood', mood: 'mood', influence: 'influence' }
+const labels: Record<Unit, string> = { nkap: 'Nkap', energy: loc('énergie'), mood: loc('humeur'), influence: 'influence' }
 // Nombre (signe et séparateurs de milliers compris) suivi de l'unité, ou libellé suivi de « : ».
-const amount = /((?:[+−–-]\s?)?\d[\d   ]*(?:[.,]\d+)?(?:\s?\/\s?\d[\d   ]*)?)[   ]?(Nkap|énergie|humeur|influence)(?![\p{L}])/giu
-const label = /(?<![\p{L}])(Nkap|Énergie|Humeur|Influence)(?=\s?:)/gu
+const amount = /((?:[+−–-]\s?)?\d[\d   ]*(?:[.,]\d+)*(?:\s?\/\s?\d[\d   ]*(?:[.,]\d+)*)?)[   ]?(Nkap|énergie|energy|humeur|mood|influence)(?![\p{L}])/giu
+const label = /(?<![\p{L}])(Nkap|Énergie|Energy|Humeur|Mood|Influence)(?=\s?:)/gu
 const skipped = 'script,style,textarea,select,option,input,.currency-chip,.popup-stats'
 
 let base = './'

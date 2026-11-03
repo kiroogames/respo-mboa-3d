@@ -1,3 +1,4 @@
+import { loc, gameLocale } from './i18n'
 import { popupScroller } from './popup-shell'
 import {mountAdvancedDossiers} from './advanced-dossiers-ui'
 import {advancedRules,getAdvancedBatch,onAdvancedChange} from './advanced-dossiers'
@@ -48,7 +49,7 @@ export function mountVenues(options: {
   const dialog = document.createElement('dialog')
   dialog.className = 'travel-dialog venue-dialog'
   dialog.setAttribute('aria-labelledby', 'venue-title')
-  dialog.innerHTML = `<button class="venue-close travel-close" aria-label="Fermer">×</button><span class="travel-eyebrow">SUR PLACE</span><h2 id="venue-title"></h2><p>À vous de jouer.</p><div class="venue-tabs" role="tablist" aria-label="Services disponibles"><button id="venue-place-tab" role="tab" aria-selected="true" aria-controls="venue-place-panel" data-venue-tab="place">Services du lieu</button><button id="venue-people-tab" role="tab" aria-selected="false" aria-controls="venue-people-panel" tabindex="-1" data-venue-tab="people">Personnes présentes <span id="venue-people-count">0</span></button></div><div id="venue-place-panel" role="tabpanel" aria-labelledby="venue-place-tab"><div id="venue-result" role="status" hidden></div><div id="venue-services"></div></div><div id="venue-people-panel" role="tabpanel" aria-labelledby="venue-people-tab" hidden><div id="venue-people"></div></div><button class="venue-cancel travel-cancel">Retour à la ville</button>`
+  dialog.innerHTML = `<button class="venue-close travel-close" aria-label="${loc('Fermer')}">×</button><span class="travel-eyebrow">${loc('SUR PLACE')}</span><h2 id="venue-title"></h2><p>${loc('À vous de jouer.')}</p><div class="venue-tabs" role="tablist" aria-label="${loc('Services disponibles')}"><button id="venue-place-tab" role="tab" aria-selected="true" aria-controls="venue-place-panel" data-venue-tab="place">${loc('Services du lieu')}</button><button id="venue-people-tab" role="tab" aria-selected="false" aria-controls="venue-people-panel" tabindex="-1" data-venue-tab="people">${loc('Personnes présentes')} <span id="venue-people-count">0</span></button></div><div id="venue-place-panel" role="tabpanel" aria-labelledby="venue-place-tab"><div id="venue-result" role="status" hidden></div><div id="venue-services"></div></div><div id="venue-people-panel" role="tabpanel" aria-labelledby="venue-people-tab" hidden><div id="venue-people"></div></div><button class="venue-cancel travel-cancel">${loc('Retour à la ville')}</button>`
   document.body.append(dialog)
   let zone = '', selecting = false, readyAt = 0
   const takeaway=document.createElement('button');takeaway.className='venue-service';takeaway.dataset.foodTakeaway='';takeaway.hidden=true
@@ -143,35 +144,35 @@ export function mountVenues(options: {
   dialog.querySelector('#venue-place-panel')!.append(workEntry)
   function renderWorkEntry() {
     advancedEntry.hidden=zone!=='ministry'||getRespoProgress(getPlayerResources().ptRespo).level<advancedRules.visibleLevel
-    if(!advancedEntry.hidden){const batch=getAdvancedBatch();advancedEntry.innerHTML=`<b>Dossiers avancés</b><span class="venue-description">Niveaux 3, 4 et 5 · travaux de votre service</span><span class="venue-gains">900 à 1500 Nkap · 10 à 16 Respo</span><small>${batch.reason||`${batch.remaining} dossier(s) débloqué(s) restant(s)`}</small>`}
+    if(!advancedEntry.hidden){const batch=getAdvancedBatch();advancedEntry.innerHTML=`<b>${loc('Dossiers avancés')}</b><span class="venue-description">${loc('Niveaux 3, 4 et 5 · travaux de votre service')}</span><span class="venue-gains">${loc('900 à 1500 Nkap · 10 à 16 Respo')}</span><small>${batch.reason||loc('{0} dossier(s) débloqué(s) restant(s)',batch.remaining)}</small>`}
 
     canteenEntry.hidden=zone!=='ministry'
-    if(!canteenEntry.hidden){const s=getCanteenService();canteenEntry.innerHTML=`<b>Cantine du ministère</b><span class="venue-description">Lundi–vendredi · 11h–14h · menu du jour</span><span class="venue-gains">Repas dès 200 Nkap · énergie et humeur selon le plat</span><small>${s.reason||`${s.menu.length-s.done.length} plat(s) encore disponible(s)`}</small>`}
+    if(!canteenEntry.hidden){const s=getCanteenService();canteenEntry.innerHTML=`<b>${loc('Cantine du ministère')}</b><span class="venue-description">${loc('Lundi–vendredi · 11h–14h · menu du jour')}</span><span class="venue-gains">${loc('Repas dès 200 Nkap · énergie et humeur selon le plat')}</span><small>${s.reason||loc('{0} plat(s) encore disponible(s)',s.menu.length-s.done.length)}</small>`}
 
     extraEntry.hidden=zone!=='ministry'
-    if(!extraEntry.hidden){const s=getExtraState();extraEntry.innerHTML=`<b>Taf extra d’Anneke</b><span class="venue-description">Lundi–vendredi · 18h–23h · commande récupérée en journée</span><span class="venue-gains">+900 Nkap · +8 Respo · 25 énergie · 60 min</span><small>${s.expired?'Commande expirée à 23h':s.order?.day===s.day?(s.order.done?'Commande rémunérée':s.title):'Récupérez une commande auprès d’Anneke'}</small>`}
+    if(!extraEntry.hidden){const s=getExtraState();extraEntry.innerHTML=`<b>${loc('Taf extra d’Anneke')}</b><span class="venue-description">${loc('Lundi–vendredi · 18h–23h · commande récupérée en journée')}</span><span class="venue-gains">${loc('+900 Nkap · +8 Respo · 25 énergie · 60 min')}</span><small>${s.expired?loc('Commande expirée à 23h'):s.order?.day===s.day?(s.order.done?loc('Commande rémunérée'):s.title):loc('Récupérez une commande auprès d’Anneke')}</small>`}
 
     meetingEntry.hidden=zone!=='ministry'
-    if(!meetingEntry.hidden){const schedule=getMeetingSchedule();meetingEntry.innerHTML=`<b>Réunion MINFI</b><span class="venue-description">Lundi–vendredi · 08h–16h · une réunion par jour</span><span class="venue-gains">${schedule.topic??'Pas de réunion le week-end'} · +5 ou +12 Respo</span><small>${schedule.reason||'Disponible'}</small>`}
+    if(!meetingEntry.hidden){const schedule=getMeetingSchedule();meetingEntry.innerHTML=`<b>${loc('Réunion MINFI')}</b><span class="venue-description">${loc('Lundi–vendredi · 08h–16h · une réunion par jour')}</span><span class="venue-gains">${loc('{0} · +5 ou +12 Respo',schedule.topic??loc('Pas de réunion le week-end'))}</span><small>${schedule.reason||loc('Disponible')}</small>`}
 
     const outing=cityOutings.find(a=>a.zone===zone)
     outingEntry.hidden=!outing
-    if(outing){const schedule=getOutingSchedule(outing.id),meal=outing.id.startsWith('restaurant');outingEntry.innerHTML=`<b>${meal?'À la carte':`Sorties · ${outing.name}`}</b><span class="venue-description">${outing.hours}</span><span class="venue-gains">${meal?'Choisir un plat':'Choisir une sortie'}</span><small>${schedule.reason||'Disponible sur place'}</small>`}
+    if(outing){const schedule=getOutingSchedule(outing.id),meal=outing.id.startsWith('restaurant');outingEntry.innerHTML=`<b>${meal?loc('À la carte'):loc('Sorties · {0}',outing.name)}</b><span class="venue-description">${outing.hours}</span><span class="venue-gains">${meal?loc('Choisir un plat'):loc('Choisir une sortie')}</span><small>${schedule.reason||loc('Disponible sur place')}</small>`}
 
     comfortEntry.hidden=zone!=='home'
-    if(!comfortEntry.hidden){const state=getHomeComfort();comfortEntry.innerHTML=`<b>Confort et équipements</b><span class="venue-description">Chambre, salon, cuisine et salle de bain.</span><span class="venue-gains">Confort : ${state.total} / ${state.target}${state.complete?' · objectif atteint':''}</span><small>Acheter · équiper · revendre</small>`}
+    if(!comfortEntry.hidden){const state=getHomeComfort();comfortEntry.innerHTML=`<b>${loc('Confort et équipements')}</b><span class="venue-description">${loc('Chambre, salon, cuisine et salle de bain.')}</span><span class="venue-gains">${loc('Confort : {0} / {1}{2}',state.total,state.target,state.complete?loc(' · objectif atteint'):'')}</span><small>${loc('Acheter · équiper · revendre')}</small>`}
 
     const localMissions=missionRules.missions.filter(m=>m.zone===zone&&getMissionState(m.id)?.stage==='active')
     missionEntry.hidden=!localMissions.length
-    if(localMissions.length)missionEntry.innerHTML=`<b>Mission : ${localMissions[0]!.title}</b><span class="venue-description">${localMissions.length} activité(s) de mission à réaliser sur place.</span><span class="travel-costs">−${missionRules.energyCost} énergie · ${missionRules.minutes} min par activité</span><span class="venue-gains">Gain au compte rendu</span>`
+    if(localMissions.length)missionEntry.innerHTML=`<b>${loc('Mission : {0}',localMissions[0]!.title)}</b><span class="venue-description">${loc('{0} activité(s) de mission à réaliser sur place.',localMissions.length)}</span><span class="travel-costs">${loc('−{0} énergie · {1} min par activité',missionRules.energyCost,missionRules.minutes)}</span><span class="venue-gains">${loc('Gain au compte rendu')}</span>`
 
     queueEntry.hidden=zone!=='ministry'
-    if(!queueEntry.hidden){const q=getUserQueue();queueEntry.innerHTML=`<b>Accueillir les usagers</b><span class="venue-description">Tracez le parcours de chaque dossier · lundi–vendredi · 10h–13h et 16h–18h.</span><span class="travel-costs">Dès −${userQueueRules.energyCost} énergie · ${userQueueRules.minutes} min</span><span class="venue-gains">Environ ${userQueueRules.moneyGain} Nkap pour un bon parcours · +${userQueueRules.respoGain} points Respo</span><small>${q.reason||`${q.remaining} demandes disponibles dans la file`}</small>`}
+    if(!queueEntry.hidden){const q=getUserQueue();queueEntry.innerHTML=`<b>${loc('Accueillir les usagers')}</b><span class="venue-description">${loc('Tracez le parcours de chaque dossier · lundi–vendredi · 10h–13h et 16h–18h.')}</span><span class="travel-costs">${loc('Dès −{0} énergie · {1} min',userQueueRules.energyCost,userQueueRules.minutes)}</span><span class="venue-gains">${loc('Environ {0} Nkap pour un bon parcours · +{1} points Respo',userQueueRules.moneyGain,userQueueRules.respoGain)}</span><small>${q.reason||loc('{0} demandes disponibles dans la file',q.remaining)}</small>`}
 
     workEntry.hidden = zone !== dossierRules.zone
     if (workEntry.hidden) return
     const batch = getDossierBatch()
-    workEntry.innerHTML = `<b>Traiter les dossiers</b><span class="venue-description">Dossiers du jour</span><span class="travel-costs"><span>−${dossierRules.energyCost} énergie</span><span>◷ ${dossierRules.minutes} min</span></span><span class="venue-gains">+${dossierRules.moneyGain} Nkap · +${dossierRules.respoGain} points Respo</span><small>${batch.reason || `${batch.remaining} dossiers disponibles dans la pile`}</small>`
+    workEntry.innerHTML = `<b>${loc('Traiter les dossiers')}</b><span class="venue-description">${loc('Dossiers du jour')}</span><span class="travel-costs"><span>${loc('−{0} énergie',dossierRules.energyCost)}</span><span>${loc('◷ {0} min',dossierRules.minutes)}</span></span><span class="venue-gains">${loc('+{0} Nkap · +{1} points Respo',dossierRules.moneyGain,dossierRules.respoGain)}</span><small>${batch.reason || loc('{0} dossiers disponibles dans la pile',batch.remaining)}</small>`
   }
   workEntry.addEventListener('click', () => {
     if (options.travelling() || options.currentZone() !== dossierRules.zone || zone !== dossierRules.zone) return
@@ -204,7 +205,7 @@ export function mountVenues(options: {
     people.replaceChildren()
     if (!residents.length) {
       const empty = document.createElement('p')
-      empty.className = 'venue-people-empty'; empty.textContent = 'Personne n’est disponible ici pour le moment.'
+      empty.className = 'venue-people-empty'; empty.textContent = loc('Personne n’est disponible ici pour le moment.')
       people.append(empty)
     }
     for (const npc of residents) {
@@ -217,12 +218,12 @@ export function mountVenues(options: {
       const state = getNPCState(npc.id)
       if (state) {
         const activity = document.createElement('p'); activity.className = 'npc-activity'
-        const until = state.until === 1440 ? 'minuit' : `${String(Math.floor(state.until / 60)).padStart(2, '0')} h ${String(state.until % 60).padStart(2, '0')}`
-        activity.textContent = `${state.rank} · ${state.activity} jusqu’à ${until}`
+        const until = state.until === 1440 ? loc('minuit') : `${String(Math.floor(state.until / 60)).padStart(2, '0')} h ${String(state.until % 60).padStart(2, '0')}`
+        activity.textContent = loc('{0} · {1} jusqu’à {2}',state.rank,state.activity,until)
         card.append(activity)
         const agenda = document.createElement('details'); agenda.className = 'npc-agenda'
-        const summary = document.createElement('summary'); summary.textContent = 'Programme du jour'
-        const transport = document.createElement('p'); transport.textContent = `Transport habituel : ${{ taxi: 'taxi commun', yonga: 'Yonga · taxi privé', moto: 'moto', walk: 'à pied' }[state.transport] ?? state.transport}`
+        const summary = document.createElement('summary'); summary.textContent = loc('Programme du jour')
+        const transport = document.createElement('p'); transport.textContent = loc('Transport habituel : {0}',{ taxi: loc('taxi commun'), yonga: loc('Yonga · taxi privé'), moto: 'moto', walk: loc('à pied') }[state.transport] ?? state.transport)
         const periods = document.createElement('ol')
         const clock = (minute: number) => `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`
         for (const period of getNPCSchedule(npc.id)) {
@@ -233,47 +234,47 @@ export function mountVenues(options: {
         agenda.append(summary, transport, periods); card.append(agenda)
       }
       const consideration = document.createElement('p'); consideration.className = 'npc-consideration'
-      consideration.innerHTML = `<span aria-hidden="true">♥</span> Considération <strong>${getConsideration(npc.id)} %</strong>`
+      consideration.innerHTML = `<span aria-hidden="true">♥</span> ${loc('Considération')} <strong>${getConsideration(npc.id)} %</strong>`
       card.append(consideration)
       for (const request of getNPCRequests(npc.id)) {
         const action = document.createElement('button'); action.className = 'venue-person-service npc-request'
         action.dataset.npcService = `request:${request.id}`; action.dataset.person = npc.id
         const title = document.createElement('b'), description = document.createElement('span'), cost = document.createElement('small')
-        title.textContent = `! ${request.title}`; description.textContent = isRequestAccepted(request.id) ? 'Demande en cours · Voir les détails' : 'Bae a besoin de votre aide · Écouter sa demande'
-        cost.textContent = `${request.money.toLocaleString('fr-FR')} Nkap · ${getMoneyBalance() < request.money ? 'Solde insuffisant pour payer' : 'Paiement après confirmation'}`
+        title.textContent = `! ${request.title}`; description.textContent = isRequestAccepted(request.id) ? loc('Demande en cours · Voir les détails') : loc('Bae a besoin de votre aide · Écouter sa demande')
+        cost.textContent = loc('{0} Nkap · {1}',request.money.toLocaleString(gameLocale),getMoneyBalance() < request.money ? loc('Solde insuffisant pour payer') : loc('Paiement après confirmation'))
         action.append(title, description, cost); card.append(action)
       }
       for (const request of getCompletedNPCRequests(npc.id)) {
-        const done = document.createElement('p'); done.className = 'npc-improvement-done'; done.textContent = `✓ ${request.title} — payé`; card.append(done)
+        const done = document.createElement('p'); done.className = 'npc-improvement-done'; done.textContent = loc('✓ {0} — payé',request.title); card.append(done)
       }
       if(npc.id==='makala'&&zone==='ministry'){
         const action=document.createElement('button');action.className='venue-person-service';action.dataset.makalaCanteen=''
-        action.innerHTML='<b>Menu de la cantine</b><span>Consulter les plats du jour · service de 11h à 14h.</span>'
+        action.innerHTML=`<b>${loc('Menu de la cantine')}</b><span>${loc('Consulter les plats du jour · service de 11h à 14h.')}</span>`
         action.onclick=()=>{if(options.travelling()||options.currentZone()!=='ministry'||!getNPCsAtZone('ministry').some(n=>n.id==='makala'))return;dialog.close();canteen.open('people')}
         card.append(action)
       }
       if(npc.id==='anneke'&&zone==='ministry'){
         const action=document.createElement('button');action.className='venue-person-service';action.dataset.annekeExtra=''
-        action.innerHTML='<b>Commande de taf extra</b><span>Choisir votre commande du soir · échéance aujourd’hui à 23h.</span>'
+        action.innerHTML=`<b>${loc('Commande de taf extra')}</b><span>${loc('Choisir votre commande du soir · échéance aujourd’hui à 23h.')}</span>`
         action.onclick=()=>{if(options.travelling()||options.currentZone()!=='ministry'||!getNPCsAtZone('ministry').some(n=>n.id==='anneke'))return;dialog.close();extra.open('accept')}
         card.append(action)
       }
       if(npc.id==='bae'&&zone==='home'){
         const state=getToqueState(),action=document.createElement('button');action.className='venue-person-service';action.dataset.toqueOpen=''
-        action.innerHTML=`<b>Cotiser au Toqué</b><span>${state.contributed.toLocaleString('fr-FR')} / ${state.target.toLocaleString('fr-FR')} Nkap · ${state.complete?'Objectif atteint':'Voir la cotisation'}</span>`
+        action.innerHTML=`<b>${loc('Cotiser au Toqué')}</b><span>${loc('{0} / {1} Nkap · {2}',state.contributed.toLocaleString(gameLocale),state.target.toLocaleString(gameLocale),state.complete?loc('Objectif atteint'):loc('Voir la cotisation'))}</span>`
         action.onclick=()=>{if(options.travelling()||options.currentZone()!=='home'||!isNPCAvailable('bae'))return;dialog.close();toque.open()}
         card.append(action)
       }
-      if((npc.id==='bae'&&zone==='home')||(npc.id==='crystal'&&zone==='palms'&&state?.activity.toLowerCase().includes('temps libre'))){
+      if((npc.id==='bae'&&zone==='home')||(npc.id==='crystal'&&zone==='palms'&&state?.activity.toLowerCase().includes(loc('Temps libre').toLowerCase()))){
         const invite=document.createElement('button');invite.className='venue-person-service';invite.dataset.inviteNpc=npc.id
-        invite.innerHTML='<b>Proposer une sortie</b><span>Cinéma ou snack · devis pour deux avec retour.</span>'
+        invite.innerHTML=`<b>${loc('Proposer une sortie')}</b><span>${loc('Cinéma ou snack · devis pour deux avec retour.')}</span>`
         invite.onclick=()=>{if(options.travelling()||options.currentZone()!==zone)return;dialog.close();options.invite(npc.id)}
         card.append(invite)
       }
       const offers=missionRules.missions.filter(m=>m.giver===npc.id)
       if(offers.length&&zone==='ministry'){
         const action=document.createElement('button');action.className='venue-person-service';action.dataset.missionGiver=npc.id
-        action.innerHTML='<b>Missions professionnelles</b><span>Consulter les offres, vos objectifs et rendre compte.</span>'
+        action.innerHTML=`<b>${loc('Missions professionnelles')}</b><span>${loc('Consulter les offres, vos objectifs et rendre compte.')}</span>`
         action.onclick=()=>{
           if(options.travelling()||options.currentZone()!=='ministry'||!getNPCsAtZone('ministry').some(n=>n.id===npc.id))return
           const selected=offers.find(m=>getMissionState(m.id)?.stage==='ready')??offers.find(m=>getMissionState(m.id)?.stage==='active')??offers[0]!
@@ -315,18 +316,18 @@ export function mountVenues(options: {
   })
   function render() {
     const food=bagFoods.find(f=>f.zone===zone);takeaway.hidden=!food
-    if(food)takeaway.innerHTML=`<b>${food.name}</b><span class="venue-description">Pour plus tard · 1 emplacement dans le sac</span><span class="travel-costs">${food.money} Nkap · achat 5 min · conservation ${food.life/60} h</span><span class="venue-gains">À consommer ensuite : +${food.energy} énergie · +${food.mood} humeur de base</span>`
+    if(food)takeaway.innerHTML=`<b>${food.name}</b><span class="venue-description">${loc('Pour plus tard · 1 emplacement dans le sac')}</span><span class="travel-costs">${loc('{0} Nkap · achat 5 min · conservation {1} h',food.money,food.life/60)}</span><span class="venue-gains">${loc('À consommer ensuite : +{0} énergie · +{1} humeur de base',food.energy,food.mood)}</span>`
 
     const money = getMoneyBalance(), resources = getPlayerResources()
-    list.innerHTML = (zone==='home'?`<button class="venue-service" data-service="home-meals"><b>Manger à la maison</b><span class="venue-description">Bouillie et beignets, riz sauce arachide ou ndolé et plantain.</span><span class="travel-costs">Dès 150 Nkap</span><span class="venue-gains">Énergie + humeur</span></button>`:'') + getVenueServices(zone).map(service => {
-      if(service.id==='home-sleep')return `<button class="venue-service" data-service="home-sleep"><b>Dormir</b><span class="venue-description">30 min–16 h</span><span class="travel-costs">Gratuit · durée au choix</span><span class="venue-gains">Récupération selon la durée</span></button>`
-      const reason = money < service.money ? 'Argent insuffisant' : resources.energy < service.energyCost ? 'Énergie insuffisante' : ''
+    list.innerHTML = (zone==='home'?`<button class="venue-service" data-service="home-meals"><b>${loc('Manger à la maison')}</b><span class="venue-description">${loc('Bouillie et beignets, riz sauce arachide ou ndolé et plantain.')}</span><span class="travel-costs">${loc('Dès 150 Nkap')}</span><span class="venue-gains">${loc('Énergie + humeur')}</span></button>`:'') + getVenueServices(zone).map(service => {
+      if(service.id==='home-sleep')return `<button class="venue-service" data-service="home-sleep"><b>${loc('Dormir')}</b><span class="venue-description">${loc('30 min–16 h')}</span><span class="travel-costs">${loc('Gratuit · durée au choix')}</span><span class="venue-gains">${loc('Récupération selon la durée')}</span></button>`
+      const reason = money < service.money ? loc('Argent insuffisant') : resources.energy < service.energyCost ? loc('Énergie insuffisante') : ''
       const projection=projectVenueEnergy(service),energyGain=projection.energyGain
-      const energyReward = service.fullEnergy || service.energyGain ? `<span class="venue-energy-gain"><img src="${options.base}ui/currency-energy.png" alt=""/><strong>${service.fullEnergy ? 'Recharge complète' : `+${energyGain} énergie`}</strong></span><span class="venue-energy-preview">${energyGain > 0 ? `${resources.energy} → ${projection.energyAfter} / ${projection.maxEnergyAfter} (+${energyGain} à la fin)` : `Fin : ${projection.energyAfter} / ${projection.maxEnergyAfter}${projection.energyLoss?" · baisse de capacité":" · énergie pleine"}`}</span>` : ''
+      const energyReward = service.fullEnergy || service.energyGain ? `<span class="venue-energy-gain"><img src="${options.base}ui/currency-energy.png" alt=""/><strong>${service.fullEnergy ? loc('Recharge complète') : loc('+{0} énergie',energyGain)}</strong></span><span class="venue-energy-preview">${energyGain > 0 ? loc('{0} → {1} / {2} (+{3} à la fin)',resources.energy,projection.energyAfter,projection.maxEnergyAfter,energyGain) : loc('Fin : {0} / {1}{2}',projection.energyAfter,projection.maxEnergyAfter,projection.energyLoss?loc(' · baisse de capacité'):loc(' · énergie pleine'))}</span>` : ''
       const visibleMood=previewMoodChange(service.moodGain).delta
-      const otherGains = [visibleMood < 0 ? `<span class="venue-penalty">${visibleMood} humeur</span>` : visibleMood ? `+${visibleMood} humeur` : service.moodGain ? 'Humeur affichée inchangée' : '', service.respoGain ? `+${service.respoGain} points Respo` : ''].filter(Boolean).join(' · ')
-      const energyCost = service.energyCost ? `<span><img src="${options.base}ui/currency-energy.png" alt=""/>−${service.energyCost} énergie</span>` : ''
-      return `<button class="venue-service" data-service="${service.id}" ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?'Pause maison':service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">Coûts</span><span class="travel-costs"><span><img src="${options.base}ui/currency-nkap.png" alt="Argent"/>${service.money ? service.money.toLocaleString('fr-FR') : '0'}</span>${energyCost}<span>◷ ${service.minutes} min</span></span><span class="venue-gains"><span class="venue-section-label">Gains et effets</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
+      const otherGains = [visibleMood < 0 ? `<span class="venue-penalty">${loc('{0} humeur',visibleMood)}</span>` : visibleMood ? loc('+{0} humeur',visibleMood) : service.moodGain ? loc('Humeur affichée inchangée') : '', service.respoGain ? loc('+{0} points Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
+      const energyCost = service.energyCost ? `<span><img src="${options.base}ui/currency-energy.png" alt=""/>${loc('−{0} énergie',service.energyCost)}</span>` : ''
+      return `<button class="venue-service" data-service="${service.id}" ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?loc('Pause maison'):service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">${loc('Coûts')}</span><span class="travel-costs"><span><img src="${options.base}ui/currency-nkap.png" alt="${loc('Argent')}"/>${service.money ? service.money.toLocaleString(gameLocale) : '0'}</span>${energyCost}<span>${loc('◷ {0} min',service.minutes)}</span></span><span class="venue-gains"><span class="venue-section-label">${loc('Gains et effets')}</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
     }).join('')
     renderPeople()
     renderWorkEntry()
@@ -345,9 +346,9 @@ export function mountVenues(options: {
     if (!outcome.ok) result.textContent = outcome.reason
     else {
       const after = getPlayerResources()
-      const details = [outcome.mood ? `${outcome.mood > 0 ? '+' : ''}${outcome.mood} humeur` : '', outcome.respo ? `+${outcome.respo} points Respo` : ''].filter(Boolean).join(' · ')
-      const energyMessage = outcome.energy > 0 ? `+${outcome.energy} énergie` : outcome.energy < 0 ? `${outcome.energy} énergie` : after.energy === after.maxEnergy ? 'Énergie déjà au maximum' : 'Énergie inchangée'
-      result.innerHTML = `<b>${outcome.service.name} terminé</b><span class="venue-energy-result"><img src="${options.base}ui/currency-energy.png" alt="Énergie"/><strong>${energyMessage}</strong></span><span>${before.energy} → ${after.energy} / ${after.maxEnergy}</span><small>${outcome.service.minutes} min écoulées${details ? ` · ${details}` : ''}</small>`
+      const details = [outcome.mood ? loc('{0}{1} humeur',outcome.mood > 0 ? '+' : '',outcome.mood) : '', outcome.respo ? loc('+{0} points Respo',outcome.respo) : ''].filter(Boolean).join(' · ')
+      const energyMessage = outcome.energy > 0 ? loc('+{0} énergie',outcome.energy) : outcome.energy < 0 ? loc('{0} énergie',outcome.energy) : after.energy === after.maxEnergy ? loc('Énergie déjà au maximum') : loc('Énergie inchangée')
+      result.innerHTML = `<b>${loc('{0} terminé',outcome.service.name)}</b><span class="venue-energy-result"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/><strong>${energyMessage}</strong></span><span>${before.energy} → ${after.energy} / ${after.maxEnergy}</span><small>${loc('{0} min écoulées{1}',outcome.service.minutes,details ? ` · ${details}` : '')}</small>`
     }
     render()
     selecting = false

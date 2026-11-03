@@ -1,6 +1,7 @@
 /* HUD vivant : recopie les compteurs existants vers la carte du Respo, les jauges et l'horloge.
    Les modules de ressources restent la seule source ; ici on ne fait que lire leur affichage. */
 
+import { loc, sourceOf } from './i18n'
 const watch = (node: Node | null, update: () => void) => {
   if (!node) return
   new MutationObserver(update).observe(node, { childList: true, characterData: true, subtree: true, attributes: true })
@@ -15,7 +16,7 @@ export function mountHudEnhance() {
   // Composition de jeu de vie : personnage et besoins dans une console, argent séparé du calendrier.
   const header=document.querySelector('#app header')!,stats=document.querySelector('.resource-stats')!,player=document.querySelector('.player-card')!,energyTile=document.querySelector('#energy-counter')!,moodTile=document.querySelector('#mood-counter')!
   stats.classList.add('hud-command-center')
-  const consolePanel=document.createElement('section');consolePanel.className='respo-console';consolePanel.setAttribute('aria-label','Votre personnage et ses besoins')
+  const consolePanel=document.createElement('section');consolePanel.className='respo-console';consolePanel.setAttribute('aria-label',loc('Votre personnage et ses besoins'))
   const caption=document.createElement('span');caption.className='console-caption';caption.textContent='LE RESPONSABLE MBOA'
   consolePanel.append(caption,player)
   // Toutes les ressources alignées en haut : argent, influence, énergie, humeur.
@@ -55,7 +56,7 @@ export function mountHudEnhance() {
   })
 
   const period = document.querySelector<HTMLElement>('#game-period'), clock = document.querySelector<HTMLElement>('.game-clock')
-  watch(period, () => { if (clock) clock.dataset.period = period!.textContent?.trim() || 'Jour' })
+  watch(period, () => { if (clock) clock.dataset.period = sourceOf(period!.textContent?.trim() || 'Jour') })
 
   // Une valeur qui change fait « rebondir » sa carte, pour que le joueur voie l'effet de son action.
   for (const id of ['#money-amount', '#influence-amount', '#energy-amount', '#mood-amount', '#respo-amount']) {

@@ -2,6 +2,7 @@
  * File d'attente façon Pragmata : tracer un seul chemin du dossier à la signature, sans repasser sur ses pas.
  * Chaque case traversée ajoute (+) ou retire (−) des monnaies ; le bilan s'affiche en direct et s'applique à la validation.
  */
+import { loc, gameLocale } from './i18n'
 import {createQueueRoute,scoreQueueRoute,routePayout,routeNeighbours} from './queue-route'
 import type {QueueRoute,RouteTotals,RouteUnit} from './queue-route'
 import {dossierRules as standardRules,getDossierBatch as standardBatch,dossierWorkReason as standardReason} from './dossier-work'
@@ -11,28 +12,28 @@ import './citizen-puzzle.css'
 
 type CompleteResult={ok:true;money:number;respo:number;energy:number;minutes:number;title:string;mood?:number;influence?:number}|{ok:false;reason:string}
 const stories=[
- {name:'Mme Amina',face:'👩🏾',text:'Mon dossier d’aide familiale est bloqué depuis des semaines. Mes enfants attendent.'},
- {name:'M. Fopa',face:'👨🏿',text:'Je viens régulariser ma situation. On m’a renvoyé de bureau en bureau.'},
- {name:'Mme Ngo',face:'👵🏾',text:'Trois déplacements et toujours pas de réponse. Aujourd’hui, je ne repars pas sans signature.'},
- {name:'M. Njoya',face:'👨🏾‍🦱',text:'Ma boutique ne peut pas ouvrir sans cette déclaration. Chaque jour perdu me coûte cher.'},
- {name:'Mlle Ekané',face:'👩🏿‍🎓',text:'Je dois envoyer ce dossier avant vendredi pour ma bourse. Le temps presse !'}
+ {name:loc('Mme Amina'),face:'👩🏾',text:loc('Mon dossier d’aide familiale est bloqué depuis des semaines. Mes enfants attendent.')},
+ {name:loc('M. Fopa'),face:'👨🏿',text:loc('Je viens régulariser ma situation. On m’a renvoyé de bureau en bureau.')},
+ {name:loc('Mme Ngo'),face:'👵🏾',text:loc('Trois déplacements et toujours pas de réponse. Aujourd’hui, je ne repars pas sans signature.')},
+ {name:loc('M. Njoya'),face:'👨🏾‍🦱',text:loc('Ma boutique ne peut pas ouvrir sans cette déclaration. Chaque jour perdu me coûte cher.')},
+ {name:loc('Mlle Ekané'),face:'👩🏿‍🎓',text:loc('Je dois envoyer ce dossier avant vendredi pour ma bourse. Le temps presse !')}
 ]
-const levelNames=['Simple','Simple','Délicate','Compliquée','Très compliquée']
-const unitLabels:Record<RouteUnit,string>={nkap:'Nkap',energy:'énergie',mood:'humeur',influence:'influence'}
+const levelNames=[loc('Simple'),loc('Simple'),loc('Délicate'),loc('Compliquée'),loc('Très compliquée')]
+const unitLabels:Record<RouteUnit,string>={nkap:'Nkap',energy:loc('énergie'),mood:'humeur',influence:'influence'}
 
 export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>string;travelling:()=>boolean;back:()=>void;work:{rules:typeof standardRules;getBatch:typeof standardBatch;reason:typeof standardReason;complete:(batch:string,index:number,path:number[],zone:string)=>CompleteResult;draftKey:string;presentation?:{id:string;eyebrow:string;intro:string;listTitle:string}}}){
  const {rules,getBatch:batchOf,reason,complete}=options.work
  const headingId=options.work.presentation?.id??'citizen-heading'
  const draftKey=options.work.draftKey+'-route-v1'
  const dialog=document.createElement('dialog');dialog.className='travel-dialog citizen-puzzle-dialog queue-puzzle-dialog';dialog.setAttribute('aria-labelledby',headingId)
- dialog.innerHTML=`<button class="travel-close" data-work-close aria-label="Fermer">×</button><span class="travel-eyebrow">${options.work.presentation?.eyebrow??'MINISTÈRE · AU SERVICE DES MBOANAIS'}</span><h2 id="${headingId}">Une demande, une solution</h2>
- <section data-work-list><p>Tracez le parcours de chaque dossier jusqu’à la signature. Les cases traversées rapportent <b>(+)</b> ou coûtent <b>(−)</b> : le grand détour paie mieux, le raccourci use.</p><p class="route-fixed" data-work-fixed></p><p data-work-notice role="status"></p><div data-work-cards class="citizen-cards"></div></section>
+ dialog.innerHTML=`<button class="travel-close" data-work-close aria-label="${loc('Fermer')}">×</button><span class="travel-eyebrow">${options.work.presentation?.eyebrow??loc('MINISTÈRE · AU SERVICE DES MBOANAIS')}</span><h2 id="${headingId}">${loc('Une demande, une solution')}</h2>
+ <section data-work-list><p>${loc('Tracez le parcours de chaque dossier jusqu’à la signature. Les cases traversées rapportent')} <b>(+)</b> ${loc('ou coûtent')} <b>(−)</b> ${loc(': le grand détour paie mieux, le raccourci use.')}</p><p class="route-fixed" data-work-fixed></p><p data-work-notice role="status"></p><div data-work-cards class="citizen-cards"></div></section>
  <section data-work-puzzle hidden><div class="citizen-request"><span class="citizen-avatar" aria-hidden="true"></span><div><b data-citizen-name></b><p data-citizen-problem></p></div></div>
  <div class="route-tally" data-route-tally role="status" aria-live="polite"></div>
- <div class="citizen-board route-board" data-work-grid tabindex="0" role="group" aria-label="Grille : tracez un chemin du dossier jusqu’à la signature"></div>
+ <div class="citizen-board route-board" data-work-grid tabindex="0" role="group" aria-label="${loc('Grille : tracez un chemin du dossier jusqu’à la signature')}"></div>
  <p data-work-feedback class="citizen-feedback" role="status"></p>
- <div class="citizen-controls"><button data-work-undo aria-label="Annuler un pas">↶</button><button data-work-reset>Effacer</button><button data-work-confirm disabled>Valider</button></div><button data-work-pile class="citizen-pile">← Revenir aux demandes</button></section>
- <section data-work-receipt hidden role="status"></section><button class="travel-cancel" data-work-leave>Retour au ministère</button>`
+ <div class="citizen-controls"><button data-work-undo aria-label="${loc('Annuler un pas')}">↶</button><button data-work-reset>${loc('Effacer')}</button><button data-work-confirm disabled>${loc('Valider')}</button></div><button data-work-pile class="citizen-pile">${loc('← Revenir aux demandes')}</button></section>
+ <section data-work-receipt hidden role="status"></section><button class="travel-cancel" data-work-leave>${loc('Retour au ministère')}</button>`
  document.body.append(dialog)
  const query=(s:string)=>dialog.querySelector<HTMLElement>(s)!,boardEl=query('[data-work-grid]'),cards=query('[data-work-cards]'),confirm=query('[data-work-confirm]') as HTMLButtonElement,feedback=query('[data-work-feedback]')
  let active:{batch:string;index:number;board:QueueRoute;path:number[]}|null=null,mode='list',paying=false,pointer:number|null=null,pointerPosition:{x:number;y:number}|null=null
@@ -43,7 +44,7 @@ export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>str
   if(unit==='mood')return `<span class="currency-icon currency-icon-mood" role="img" aria-label="humeur" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>`
   return `<img class="currency-icon" src="${options.base}ui/${unit==='nkap'?'currency-nkap':unit==='energy'?'currency-energy':'currency-respo'}.png" alt="${unitLabels[unit]}"/>`
  }
- const signed=(n:number)=>`${n>0?'+':n<0?'−':''}${Math.abs(n).toLocaleString('fr-FR')}`
+ const signed=(n:number)=>`${n>0?'+':n<0?'−':''}${Math.abs(n).toLocaleString(gameLocale)}`
  function amounts(totals:RouteTotals,withZero=false){
   return (['nkap','energy','mood','influence'] as RouteUnit[]).filter(u=>withZero&&u==='nkap'||totals[u]).map(u=>`<span class="route-amount ${totals[u]<0?'is-loss':'is-gain'}">${signed(totals[u])}${logo(u)}</span>`).join('')
  }
@@ -52,13 +53,13 @@ export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>str
 
  function renderList(message=''){
   active=null;show('list');const batch=batchOf()
-  query('[data-work-fixed]').innerHTML=`Chaque demande : ${rules.minutes} min · −${rules.energyCost}${logo('energy')} · +${rules.respoGain} Respo, puis le bilan du parcours (jusqu’à ${rules.moneyGain.toLocaleString('fr-FR')}${logo('nkap')} environ).`
-  query('[data-work-notice]').textContent=message||batch.reason||`${batch.remaining} usager(s) dans la file`;cards.replaceChildren()
+  query('[data-work-fixed]').innerHTML=loc('Chaque demande : {0} min · −{1}{2} · +{3} Respo, puis le bilan du parcours (jusqu’à {4}{5} environ).',rules.minutes,rules.energyCost,logo('energy'),rules.respoGain,rules.moneyGain.toLocaleString(gameLocale),logo('nkap'))
+  query('[data-work-notice]').textContent=message||batch.reason||loc('{0} usager(s) dans la file',batch.remaining);cards.replaceChildren()
   for(const item of batch.dossiers){
    const story=stories[item.index%stories.length]!,b=document.createElement('button');b.dataset.dossierIndex=String(item.index);b.className='citizen-card';const why=reason(options.currentZone(),batch.id,item.index);b.disabled=item.done||!!why
    b.innerHTML=`<span class="citizen-face" aria-hidden="true">${story.face}</span><span><b></b><small></small></span>`
    b.querySelector('b')!.textContent=`${story.name} · ${item.title}`
-   b.querySelector('small')!.textContent=item.done?'✓ Demande traitée':`Difficulté : ${levelNames[Math.min(4,item.index)]}${why?' · '+why:''}`
+   b.querySelector('small')!.textContent=item.done?loc('✓ Demande traitée'):loc('Difficulté : {0}{1}',levelNames[Math.min(4,item.index)],why?' · '+why:'')
    cards.append(b)
   }
  }
@@ -66,7 +67,7 @@ export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>str
  function render(){
   if(!active)return
   const a=active,totals=scoreQueueRoute(a.board,a.path,false)??{nkap:0,energy:0,mood:0,influence:0},done=a.path.at(-1)===a.board.goal,payout=routePayout(totals)
-  query('[data-route-tally]').innerHTML=`<span class="route-tally-label">Bilan du parcours</span>${amounts(totals,true)}${totals.nkap<0?'<small>(l’argent ne descend pas sous 0)</small>':''}`
+  query('[data-route-tally]').innerHTML=`<span class="route-tally-label">${loc('Bilan du parcours')}</span>${amounts(totals,true)}${totals.nkap<0?`<small>${loc('(l’argent ne descend pas sous 0)')}</small>`:''}`
   boardEl.replaceChildren()
   const head=a.path.at(-1)
   for(let cell=0;cell<25;cell++){
@@ -76,22 +77,22 @@ export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>str
    b.classList.toggle('is-start',cell===a.board.start);b.classList.toggle('is-goal',cell===a.board.goal)
    b.classList.toggle('is-next',!done&&head!==undefined&&!visited&&!blocked&&routeNeighbours(head).includes(cell))
    if(tile)b.classList.add(tile.amount<0?'is-loss':'is-gain')
-   let label='passage libre'
-   if(cell===a.board.start){b.innerHTML='<span class="route-mark">📁</span><small>Dossier</small>';label='départ, dossier'}
-   else if(cell===a.board.goal){b.innerHTML='<span class="route-mark">✍️</span><small>Signature</small>';label='arrivée, signature'}
-   else if(blocked){b.innerHTML='<small>Fermé</small>';label='guichet fermé'}
+   let label=loc('passage libre')
+   if(cell===a.board.start){b.innerHTML=`<span class="route-mark">📁</span><small>${loc('Dossier')}</small>`;label=loc('départ, dossier')}
+   else if(cell===a.board.goal){b.innerHTML=`<span class="route-mark">✍️</span><small>${loc('Signature')}</small>`;label=loc('arrivée, signature')}
+   else if(blocked){b.innerHTML=`<small>${loc('Fermé')}</small>`;label=loc('guichet fermé')}
    else if(tile){b.innerHTML=`<span class="route-amount ${tile.amount<0?'is-loss':'is-gain'}">${signed(tile.amount)}${logo(tile.unit)}</span>`;label=`${signed(tile.amount)} ${unitLabels[tile.unit]}`}
-   b.setAttribute('aria-label',`Ligne ${Math.floor(cell/5)+1}, colonne ${cell%5+1}, ${label}${visited?', sur le chemin':''}`)
+   b.setAttribute('aria-label',loc('Ligne {0}, colonne {1}, {2}{3}',Math.floor(cell/5)+1,cell%5+1,label,visited?loc(', sur le chemin'):''))
    boardEl.append(b)
   }
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 500 500');svg.setAttribute('aria-hidden','true')
   const line=document.createElementNS(svg.namespaceURI,'polyline');line.setAttribute('points',a.path.map(c=>`${c%5*100+50},${Math.floor(c/5)*100+50}`).join(' '));svg.append(line);boardEl.append(svg)
-  const why=onsite()?reason(options.currentZone(),a.batch,a.index):'Rejoignez le ministère.'
+  const why=onsite()?reason(options.currentZone(),a.batch,a.index):loc('Rejoignez le ministère.')
   const energyNeeded=rules.energyCost+payout.energyLoss
   confirm.disabled=!done||!!why||paying
-  confirm.innerHTML=done?`Valider · ${signed(payout.money)}${logo('nkap')}`:'Rejoignez la signature'
+  confirm.innerHTML=done?loc('Valider · {0}{1}',signed(payout.money),logo('nkap')):loc('Rejoignez la signature')
   ;(query('[data-work-undo]') as HTMLButtonElement).disabled=a.path.length<=1
-  feedback.textContent=why||(done?`Parcours complet. Énergie totale : ${energyNeeded} · ${rules.minutes} min · +${rules.respoGain} Respo.`:'Partez du dossier et rejoignez la signature sans repasser sur vos pas. Cliquez sur une case du chemin pour revenir en arrière.')
+  feedback.textContent=why||(done?loc('Parcours complet. Énergie totale : {0} · {1} min · +{2} Respo.',energyNeeded,rules.minutes,rules.respoGain):loc('Partez du dossier et rejoignez la signature sans repasser sur vos pas. Cliquez sur une case du chemin pour revenir en arrière.'))
  }
 
  function openPuzzle(index:number){
@@ -134,12 +135,12 @@ export function mountCitizenQueuePuzzle(options:{base:string;currentZone:()=>str
   if(!result.ok){feedback.textContent=result.reason;return}
   try{localStorage.removeItem(draftKey)}catch{/* Déjà payé dans le registre de la file. */}
   const spent:RouteTotals={nkap:result.money,energy:-result.energy,mood:result.mood??0,influence:result.influence??0}
-  const mood=result.money>=600?'Merci infiniment, vous avez tout réglé !':result.money>=250?'Merci, c’est déjà mieux que la dernière fois.':'Bon… au moins c’est signé.'
-  show('receipt');query('[data-work-receipt]').innerHTML=`<div class="route-receipt-head"><span class="citizen-face" aria-hidden="true">${story.face}</span><div><h3>${story.name}</h3><p>« ${mood} »</p></div></div><div class="route-receipt-amounts">${amounts(spent,true)}</div><p>+${result.respo} Respo · ${result.minutes} min${totals.nkap<0?' · l’argent du parcours était négatif, rien n’a été retiré':''}</p><button data-next>Demande suivante</button>`
+  const mood=result.money>=600?loc('Merci infiniment, vous avez tout réglé !'):result.money>=250?loc('Merci, c’est déjà mieux que la dernière fois.'):loc('Bon… au moins c’est signé.')
+  show('receipt');query('[data-work-receipt]').innerHTML=`<div class="route-receipt-head"><span class="citizen-face" aria-hidden="true">${story.face}</span><div><h3>${story.name}</h3><p>« ${mood} »</p></div></div><div class="route-receipt-amounts">${amounts(spent,true)}</div><p>${loc('+{0} Respo · {1} min{2}',result.respo,result.minutes,totals.nkap<0?loc(' · l’argent du parcours était négatif, rien n’a été retiré'):'')}</p><button data-next>${loc('Demande suivante')}</button>`
   query('[data-next]').onclick=()=>renderList();active=null
  }
  query('[data-work-close]').onclick=()=>dialog.close();query('[data-work-leave]').onclick=()=>{dialog.close();if(onsite())options.back()}
- const refresh=()=>{if(!dialog.open||paying)return;if(!onsite()){dialog.close();return}if(active&&(batchOf().id!==active.batch||reason(options.currentZone(),active.batch,active.index)))renderList('La disponibilité a changé.');else if(active)render();else if(mode==='list')renderList()}
+ const refresh=()=>{if(!dialog.open||paying)return;if(!onsite()){dialog.close();return}if(active&&(batchOf().id!==active.batch||reason(options.currentZone(),active.batch,active.index)))renderList(loc('La disponibilité a changé.'));else if(active)render();else if(mode==='list')renderList()}
  onGameTimeChange(refresh);onPlayerResourcesChange(refresh)
  return {open(){if(!onsite())return;renderList();if(!dialog.open)dialog.showModal()},snapshot(){return dialog.open?{mode,batch:active?.batch??batchOf().id,dossier:active?.index,board:active?.board,path:active?.path,totals:active?scoreQueueRoute(active.board,active.path,false):undefined,remaining:batchOf().remaining}:{mode:'closed'}}}
 }

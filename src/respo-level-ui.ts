@@ -1,4 +1,5 @@
 /* Annonce différée jusqu’à l’exploration ; aucun paiement ni modification du temps. */
+import { loc } from './i18n'
 import {getEnergyDetails,getPlayerResources,onPlayerResourcesChange} from './player-resources'
 import {getRespoProgress,levelEnergyBonus} from './respo-level'
 import './respo-level.css'
@@ -15,7 +16,7 @@ export function mountRespoLevelNotice(canShow:()=>boolean){
     if(pending!==null){
       const level=pending;pending=null
       const capacityGain=Math.max(0,Math.min(levelEnergyBonus(level),Number.MAX_SAFE_INTEGER-getEnergyDetails().reference)-Math.min(levelEnergyBonus(announced),Number.MAX_SAFE_INTEGER-getEnergyDetails().reference))
-      toast.innerHTML=`<span>RESPONSABILITÉ</span><strong>Niveau ${level} atteint !</strong><small>${level>announced+1?`Niveaux ${announced+1} à ${level} franchis`:'Votre expérience porte ses fruits.'}</small>${capacityGain?`<small>+${capacityGain} capacité d’énergie · aucune recharge offerte</small>`:''}`
+      toast.innerHTML=`<span>${loc('RESPONSABILITÉ')}</span><strong>${loc('Niveau {0} atteint !',level)}</strong><small>${level>announced+1?loc('Niveaux {0} à {1} franchis',announced+1,level):loc('Votre expérience porte ses fruits.')}</small>${capacityGain?`<small>${loc('+{0} capacité d’énergie · aucune recharge offerte',capacityGain)}</small>`:''}`
       announced=level;expires=performance.now()+6500;toast.hidden=false
     }else if(performance.now()>=expires)toast.hidden=true
   }

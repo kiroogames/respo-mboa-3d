@@ -1,3 +1,4 @@
+import { loc } from './i18n'
 import {presentGameMenu} from './menu-presentation'
 import { onGameTimeChange } from './game-clock'
 /* Charpente commune des fenêtres : en-tête fixe, contenu défilant, actions toujours visibles en bas. */
@@ -39,13 +40,13 @@ function shapePopup(dialog: HTMLDialogElement) {
   dialog.append(head, body)
   if (foot.childElementCount) dialog.append(foot)
   const context=document.createElement('aside');context.className='menu-context';context.setAttribute('aria-hidden','true')
-  const theme=dialog.classList.contains('sleep-dialog')?'Une pause pour mieux repartir.':dialog.classList.contains('bills-dialog')?'Gardez le cap sur votre budget.':dialog.classList.contains('venue-dialog')?'La ville a toujours quelque chose à offrir.':'Votre quotidien au cœur de Mboa.'
+  const theme=dialog.classList.contains('sleep-dialog')?loc('Une pause pour mieux repartir.'):dialog.classList.contains('bills-dialog')?loc('Gardez le cap sur votre budget.'):dialog.classList.contains('venue-dialog')?loc('La ville a toujours quelque chose à offrir.'):loc('Votre quotidien au cœur de Mboa.')
   context.innerHTML=`<span class="menu-brand">LE RESPONSABLE<br><b>MBOA</b></span><div class="menu-city-art"><i></i><i></i><i></i><i></i><i></i><span>✦</span></div><p>${theme}</p><small class="menu-context-clock"></small>`
   dialog.append(context)
-  const stats=document.createElement('div');stats.className='popup-stats';stats.setAttribute('role','group');stats.setAttribute('aria-label','Vos ressources actuelles')
+  const stats=document.createElement('div');stats.className='popup-stats';stats.setAttribute('role','group');stats.setAttribute('aria-label',loc('Vos ressources actuelles'))
   // Logos à la place des noms des monnaies (texte conservé pour les lecteurs d'écran).
   const base=import.meta.env.BASE_URL
-  stats.innerHTML=`<span><img class="currency-icon" src="${base}ui/currency-nkap.png" alt="Nkap"/><b data-popup-stat="money"></b></span><span><img class="currency-icon" src="${base}ui/currency-energy.png" alt="Énergie"/><b data-popup-stat="energy"></b></span><span><span class="currency-icon currency-icon-mood" role="img" aria-label="Humeur" style="background-image:url('${base}ui/mood-sprites.png')"></span><b data-popup-stat="mood"></b></span><span><img class="currency-icon" src="${base}ui/currency-respo.png" alt="Influence"/><b data-popup-stat="influence"></b></span>`
+  stats.innerHTML=`<span><img class="currency-icon" src="${base}ui/currency-nkap.png" alt="Nkap"/><b data-popup-stat="money"></b></span><span><img class="currency-icon" src="${base}ui/currency-energy.png" alt="${loc('Énergie')}"/><b data-popup-stat="energy"></b></span><span><span class="currency-icon currency-icon-mood" role="img" aria-label="${loc('Humeur')}" style="background-image:url('${base}ui/mood-sprites.png')"></span><b data-popup-stat="mood"></b></span><span><img class="currency-icon" src="${base}ui/currency-respo.png" alt="Influence"/><b data-popup-stat="influence"></b></span>`
   head.append(stats)
   presentGameMenu(dialog)
 

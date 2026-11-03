@@ -3,6 +3,7 @@
  * Lecture seule : reprend les mêmes services et horaires que le menu du lieu, sans rien réserver.
  */
 
+import { loc, gameLocale } from './i18n'
 import { getVenueServices } from './venue-services'
 import { getNPCsAtZone, getNPCState } from './npcs'
 import { npcNeedsService } from './npc-relationships'
@@ -22,37 +23,37 @@ import { getHomeMealService } from './home-meals'
 export type PlaceActivity = { icon: string; title: string; detail: string; status?: string; closed?: boolean }
 export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean; stay: string }
 
-const nkap = (value: number) => value ? `${value.toLocaleString('fr-FR')} Nkap` : 'Gratuit'
+const nkap = (value: number) => value ? loc('{0} Nkap',value.toLocaleString(gameLocale)) : loc('Gratuit')
 
 export function getPlaceActivities(zone: string): PlaceActivity[] {
   const items: PlaceActivity[] = []
   if (zone === dossierRules.zone) {
     const batch = getDossierBatch()
-    items.push({ icon: '📂', title: 'Traiter les dossiers', detail: `Jusqu’à ${dossierRules.moneyGain} Nkap · +${dossierRules.respoGain} Respo · ${dossierRules.minutes} min`, closed: !!batch.reason, status: batch.reason || `${batch.remaining} dossiers dans la pile` })
+    items.push({ icon: '📂', title: loc('Traiter les dossiers'), detail: loc('Jusqu’à {0} Nkap · +{1} Respo · {2} min',dossierRules.moneyGain,dossierRules.respoGain,dossierRules.minutes), closed: !!batch.reason, status: batch.reason || loc('{0} dossiers dans la pile',batch.remaining) })
   }
   if (zone === 'ministry') {
     const queue = getUserQueue(), meeting = getMeetingSchedule(), canteen = getCanteenService()
-    items.push({ icon: '🙋', title: 'Accueillir les usagers', detail: `Lun–ven · 10h–13h et 16h–18h · jusqu’à ~${userQueueRules.moneyGain} Nkap selon votre parcours`, closed: !!queue.reason, status: queue.reason || `${queue.remaining} demandes dans la file` })
-    items.push({ icon: '🗂️', title: 'Réunion MINFI', detail: `Lun–ven · 08h–16h · ${meeting.topic ?? 'pas de réunion le week-end'}`, closed: !!meeting.reason, status: meeting.reason || 'Disponible' })
-    items.push({ icon: '🍛', title: 'Cantine du ministère', detail: 'Lun–ven · 11h–14h · repas dès 200 Nkap', closed: !!canteen.reason, status: canteen.reason || `${canteen.menu.length - canteen.done.length} plat(s) disponible(s)` })
-    items.push({ icon: '🌙', title: 'Taf extra d’Anneke', detail: 'Lun–ven · 18h–23h · commande à récupérer en journée · +900 Nkap' })
-    if (getRespoProgress(getPlayerResources().ptRespo).level >= advancedRules.visibleLevel) items.push({ icon: '📁', title: 'Dossiers avancés', detail: '900 à 1500 Nkap · 10 à 16 Respo' })
-    if (missionRules.missions.length) items.push({ icon: '🎯', title: 'Missions professionnelles', detail: 'Accepter une mission ou rendre compte auprès de son donneur' })
+    items.push({ icon: '🙋', title: loc('Accueillir les usagers'), detail: loc('Lun–ven · 10h–13h et 16h–18h · jusqu’à ~{0} Nkap selon votre parcours',userQueueRules.moneyGain), closed: !!queue.reason, status: queue.reason || loc('{0} demandes dans la file',queue.remaining) })
+    items.push({ icon: '🗂️', title: loc('Réunion MINFI'), detail: loc('Lun–ven · 08h–16h · {0}',meeting.topic ?? loc('pas de réunion le week-end')), closed: !!meeting.reason, status: meeting.reason || loc('Disponible') })
+    items.push({ icon: '🍛', title: loc('Cantine du ministère'), detail: loc('Lun–ven · 11h–14h · repas dès 200 Nkap'), closed: !!canteen.reason, status: canteen.reason || loc('{0} plat(s) disponible(s)',canteen.menu.length - canteen.done.length) })
+    items.push({ icon: '🌙', title: loc('Taf extra d’Anneke'), detail: loc('Lun–ven · 18h–23h · commande à récupérer en journée · +900 Nkap') })
+    if (getRespoProgress(getPlayerResources().ptRespo).level >= advancedRules.visibleLevel) items.push({ icon: '📁', title: loc('Dossiers avancés'), detail: loc('900 à 1500 Nkap · 10 à 16 Respo') })
+    if (missionRules.missions.length) items.push({ icon: '🎯', title: loc('Missions professionnelles'), detail: loc('Accepter une mission ou rendre compte auprès de son donneur') })
   }
   if (zone === 'home') {
-    items.push({ icon: '🍲', title: 'Manger à la maison', detail: 'Dès 150 Nkap · un repas par service' })
-    items.push({ icon: '🛋️', title: 'Confort et équipements', detail: 'Acheter et installer des équipements' })
+    items.push({ icon: '🍲', title: loc('Manger à la maison'), detail: loc('Dès 150 Nkap · un repas par service') })
+    items.push({ icon: '🛋️', title: loc('Confort et équipements'), detail: loc('Acheter et installer des équipements') })
   }
   for (const service of getVenueServices(zone)) {
-    const gains = [service.fullEnergy ? 'recharge complète' : service.energyGain ? `+${service.energyGain} énergie` : '', service.moodGain > 0 ? `+${service.moodGain} humeur` : '', service.respoGain ? `+${service.respoGain} Respo` : ''].filter(Boolean).join(' · ')
-    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', title: service.name, detail: service.id === 'home-sleep' ? 'Gratuit · durée au choix' : `${nkap(service.money)} · ${service.minutes} min${gains ? ` · ${gains}` : ''}` })
+    const gains = [service.fullEnergy ? loc('recharge complète') : service.energyGain ? loc('+{0} énergie',service.energyGain) : '', service.moodGain > 0 ? loc('+{0} humeur',service.moodGain) : '', service.respoGain ? loc('+{0} Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
+    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', title: service.name, detail: service.id === 'home-sleep' ? loc('Gratuit · durée au choix') : loc('{0} · {1} min{2}',nkap(service.money),service.minutes,gains ? ` · ${gains}` : '') })
   }
   for (const outing of cityOutings.filter(item => item.zone === zone)) {
     const schedule = getOutingSchedule(outing.id)
-    items.push({ icon: '🎉', title: `Sorties · ${outing.name}`, detail: outing.hours, closed: !!schedule.reason, status: schedule.reason || 'Ouvert' })
+    items.push({ icon: '🎉', title: loc('Sorties · {0}',outing.name), detail: outing.hours, closed: !!schedule.reason, status: schedule.reason || loc('Ouvert') })
   }
-  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: /emporter/i.test(food.name) ? food.name : `${food.name} à emporter`, detail: `${nkap(food.money)} · +${food.energy} énergie plus tard` })
-  for (const mission of missionRules.missions.filter(item => item.zone === zone && getMissionState(item.id)?.stage === 'active')) items.push({ icon: '🎯', title: `Mission : ${mission.title}`, detail: 'Vérification à effectuer ici', status: 'À faire' })
+  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: /emporter|takeaway/i.test(food.name) ? food.name : loc('{0} à emporter',food.name), detail: loc('{0} · +{1} énergie plus tard',nkap(food.money),food.energy) })
+  for (const mission of missionRules.missions.filter(item => item.zone === zone && getMissionState(item.id)?.stage === 'active')) items.push({ icon: '🎯', title: loc('Mission : {0}',mission.title), detail: loc('Vérification à effectuer ici'), status: loc('À faire') })
   return items
 }
 
@@ -74,12 +75,12 @@ function presenceEnd(id: string, zone: string, now: number) {
   return null
 }
 const clock = (total: number) => { const minute = ((total % 1440) + 1440) % 1440; return `${Math.floor(minute / 60)} h ${String(minute % 60).padStart(2, '0')}` }
-const span = (minutes: number) => minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${String(minutes % 60).padStart(2, '0')}` : ''}`
+const span = (minutes: number) => minutes < 60 ? loc('{0} min',minutes) : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${String(minutes % 60).padStart(2, '0')}` : ''}`
 function describeStay(id: string, zone: string, now: number) {
   const end = presenceEnd(id, zone, now)
-  if (end === null) return 'Ici toute la journée'
+  if (end === null) return loc('Ici toute la journée')
   const nextDay = Math.floor(end / 1440) > Math.floor(now / 1440) && end % 1440 !== 0 ? ' (demain)' : ''
-  return `Ici jusqu’à ${end % 1440 === 0 ? 'minuit' : clock(end)}${nextDay} · encore ${span(end - now)}`
+  return loc('Ici jusqu’à {0}{1} · encore {2}',end % 1440 === 0 ? loc('minuit') : clock(end),nextDay,span(end - now))
 }
 
 export type PlaceOffer = 'earn' | 'eat' | 'open'

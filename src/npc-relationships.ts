@@ -1,10 +1,12 @@
+import { loc, gameLocale, locData } from './i18n'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Considération persistante et suivi des demandes de Bae.
  * Accepter une demande ne paie rien : le financement exige une confirmation séparée.
  */
 
-import dialogues from './data/bae-dialogues.json' with { type: 'json' }
+import dialoguesSource from './data/bae-dialogues.json' with { type: 'json' }
+const dialogues=locData(dialoguesSource)
 import { getMoneyBalance, spendMoney } from './currency.ts'
 import { npcTemplates } from './npcs.ts'
 
@@ -37,12 +39,12 @@ export function npcNeedsService(id: string) { return getNPCRequests(id).length >
 export function getCompletedNPCRequests(id: string) { return id === 'bae' ? dialogues.requests.filter(request => bae.completed.includes(request.id)) : [] }
 // Revérifie acceptation, prix et solde au paiement ; une demande déjà terminée ne peut pas être débitée deux fois.
 export function purchaseNPCImprovement(id: string) {
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
   const request = getNPCRequests('bae').find(request => request.id === id)
-  if (!request || !isRequestAccepted(id)) return { ok: false, reason: 'Cette demande doit être acceptée avant le paiement.' }
-  if (getMoneyBalance() < request.money || !spendMoney(request.money)) return { ok: false, reason: 'Nkap insuffisants.' }
+  if (!request || !isRequestAccepted(id)) return { ok: false, reason: loc('Cette demande doit être acceptée avant le paiement.') }
+  if (getMoneyBalance() < request.money || !spendMoney(request.money)) return { ok: false, reason: loc('Nkap insuffisants.') }
   completeNPCRequest(id)
-  return { ok: true, reason: `${request.title} : amélioration payée (${request.money.toLocaleString('fr-FR')} Nkap).` }
+  return { ok: true, reason: loc('{0} : amélioration payée ({1} Nkap).',request.title,request.money.toLocaleString(gameLocale)) }
 }
 export function isRequestAccepted(id: string) { return bae.accepted.includes(id) }
 function save() {

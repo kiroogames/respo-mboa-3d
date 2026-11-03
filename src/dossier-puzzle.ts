@@ -2,15 +2,16 @@
  * Puzzle de visas : relier le dépôt à la signature avec une seule ligne orthogonale.
  * Une graine stable conserve la même grille après fermeture ou rechargement du dossier.
  */
+import { loc } from './i18n'
 export type DossierDirection = 'up' | 'right' | 'down' | 'left'
 export type DossierPuzzle = { pairs?: number[][]; size: number; start: number; goal: number; visas: number[]; blocked: number[]; arrows?: { cell: number; direction: DossierDirection }[]; level?: number }
-export const visaNames = ['Accueil', 'Technique', 'Finances']
+export const visaNames = [loc('Accueil'), loc('Technique'), loc('Finances')]
 export const directionSymbols: Record<DossierDirection, string> = { up: '↑', right: '→', down: '↓', left: '←' }
-const directionNames: Record<DossierDirection, string> = { up: 'le haut', right: 'la droite', down: 'le bas', left: 'la gauche' }
+const directionNames: Record<DossierDirection, string> = { up: loc('le haut'), right: loc('la droite'), down: loc('le bas'), left: loc('la gauche') }
 
 export function getDossierDifficulty(difficulty: number) {
   const level = Number.isFinite(difficulty) ? Math.max(0, Math.min(4, Math.floor(difficulty))) : 0
-  return { level, label: level === 0 ? 'Courant' : level < 3 ? 'Contrôle renforcé' : 'Dossier sensible', arrows: level === 0 ? 0 : level < 3 ? 1 : level - 1 }
+  return { level, label: level === 0 ? loc('Courant') : level < 3 ? loc('Contrôle renforcé') : loc('Dossier sensible'), arrows: level === 0 ? 0 : level < 3 ? 1 : level - 1 }
 }
 
 function generator(seed: string) {
@@ -101,16 +102,16 @@ export function moveDossierPath(board: DossierPuzzle, path: readonly number[], c
 /** Une correction du tracé reste toujours autorisée, y compris sur une case fléchée. */
 export function attemptDossierMove(board: DossierPuzzle, path: readonly number[], cell: number) {
   const refuse = (message: string) => ({ path: [...path], rejected: true, message })
-  if (!Number.isInteger(cell) || cell < 0 || cell >= board.size * board.size) return refuse('Restez à l’intérieur du formulaire.')
+  if (!Number.isInteger(cell) || cell < 0 || cell >= board.size * board.size) return refuse(loc('Restez à l’intérieur du formulaire.'))
   const existing = path.indexOf(cell)
   if (existing >= 0) return { path: path.slice(0, existing + 1), rejected: false, message: '' }
   const last = path.at(-1)
-  if (last === undefined || !neighbours(last, board.size).includes(cell)) return refuse('Choisissez une case voisine, sans diagonale.')
-  if (last === board.goal) return refuse('Revenez sur le tracé pour récupérer les visas manquants.')
-  if (board.blocked.includes(cell)) return refuse('Passage bloqué : cherchez une autre voie pour le dossier.')
+  if (last === undefined || !neighbours(last, board.size).includes(cell)) return refuse(loc('Choisissez une case voisine, sans diagonale.'))
+  if (last === board.goal) return refuse(loc('Revenez sur le tracé pour récupérer les visas manquants.'))
+  if (board.blocked.includes(cell)) return refuse(loc('Passage bloqué : cherchez une autre voie pour le dossier.'))
   if (!exitAllowed(board, last, cell)) {
     const direction = board.arrows!.find(arrow => arrow.cell === last)!.direction
-    return refuse(`Ce bureau impose une sortie vers ${directionNames[direction]}.`)
+    return refuse(loc('Ce bureau impose une sortie vers {0}.',directionNames[direction]))
   }
   return { path: [...path, cell], rejected: false, message: '' }
 }

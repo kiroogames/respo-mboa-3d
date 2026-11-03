@@ -1,6 +1,7 @@
 /* Déroulement visuel uniquement : aucune dépense et aucune avance du calendrier.
  * Les minutes du devis modulent légèrement une animation plafonnée, jamais une attente réelle.
  */
+import { loc } from './i18n'
 import type {TravelMode,TravelPoint} from './travel.ts'
 
 export type JourneyPhase='exit'|'board'|'travel'|'alight'|'enter'|'done'
@@ -28,7 +29,7 @@ export function journeyFrame(timing:ReturnType<typeof journeyTiming>,elapsed:num
 
 // Échantillonnage en distance : la vitesse ne dépend pas de la densité des nœuds routiers.
 export function sampleJourneyPath(points:readonly TravelPoint[],progress:number){
- if(!points.length)throw new Error('Trajet visuel vide.')
+ if(!points.length)throw new Error(loc('Trajet visuel vide.'))
  const lengths=points.map((p,i)=>i?Math.hypot(p[0]-points[i-1]![0],p[2]-points[i-1]![2]):0)
  let remaining=lengths.reduce((sum,n)=>sum+n,0)*Math.max(0,Math.min(1,progress))
  for(let i=1;i<points.length;i++){

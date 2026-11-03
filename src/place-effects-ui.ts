@@ -1,4 +1,5 @@
 /* Badges des lieux sur la carte : « + logos » pour ce qu'on peut y gagner, « − logos » pour ce qu'on peut y perdre, à l'heure actuelle. */
+import { loc } from './i18n'
 import { getPlaceEffects } from './place-activities'
 import type { EffectUnit } from './place-activities'
 import { onGameTimeChange } from './game-clock'
@@ -6,7 +7,7 @@ import { onPlayerResourcesChange } from './player-resources'
 import { onMissionChange } from './pro-missions'
 import './place-effects.css'
 
-const names: Record<EffectUnit, string> = { nkap: 'Nkap', energy: 'énergie', mood: 'humeur', influence: 'influence' }
+const names: Record<EffectUnit, string> = { nkap: 'Nkap', energy: loc('énergie'), mood: 'humeur', influence: 'influence' }
 
 export function mountPlaceEffects(base: string) {
   const logo = (unit: EffectUnit) => unit === 'mood'
@@ -24,7 +25,7 @@ export function mountPlaceEffects(base: string) {
       if (!badges) { badges = document.createElement('span'); badges.className = 'landmark-effects'; label.prepend(badges) }
       label.classList.add('has-effects')
       badges.innerHTML = (gains.length ? `<span class="effect-group is-gain">+${gains.map(logo).join('')}</span>` : '') + (losses.length ? `<span class="effect-group is-loss">−${losses.map(logo).join('')}</span>` : '')
-      badges.title = [gains.length ? `À gagner ici : ${gains.map(u => names[u]).join(', ')}` : '', losses.length ? `À dépenser ici : ${losses.map(u => names[u]).join(', ')}` : ''].filter(Boolean).join(' · ')
+      badges.title = [gains.length ? loc('À gagner ici : {0}',gains.map(u => names[u]).join(', ')) : '', losses.length ? loc('À dépenser ici : {0}',losses.map(u => names[u]).join(', ')) : ''].filter(Boolean).join(' · ')
       const place = label.querySelector('span:not(.landmark-effects):not(.effect-group)')?.textContent ?? ''
       label.setAttribute('aria-label', `${place}. ${badges.title}`)
     }

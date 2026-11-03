@@ -1,6 +1,8 @@
 /* Ambiance horaire : seul le rendu est différé, jamais le calendrier ou les routines. */
 import { getGameTime, onGameTimeChange } from './game-clock'
 
+import { loc } from './i18n'
+
 export type DayPeriod = 'Aube' | 'Jour' | 'Crépuscule' | 'Nuit'
 export function getDayPeriod(minute: number): DayPeriod {
   const time = ((minute % 1440) + 1440) % 1440
@@ -17,11 +19,11 @@ export function mountDaylight(options: {
   let applied: DayPeriod | null = null
   function updateLabel() {
     const period = getDayPeriod(getGameTime().minuteOfDay)
-    options.label.textContent = period
-    options.label.title = enabled ? 'Ambiance liée à l’heure' : 'Lumière de jour pour la lisibilité'
+    options.label.textContent = loc(period)
+    options.label.title = enabled ? loc('Ambiance liée à l’heure') : loc('Lumière de jour pour la lisibilité')
     options.button.setAttribute('aria-pressed', String(enabled))
-    options.button.setAttribute('aria-label', enabled ? 'Désactiver l’ambiance horaire' : 'Activer l’ambiance horaire')
-    options.button.title = enabled ? 'Ambiance horaire activée' : 'Lumière de jour · activer l’ambiance horaire'
+    options.button.setAttribute('aria-label', enabled ? loc('Désactiver l’ambiance horaire') : loc('Activer l’ambiance horaire'))
+    options.button.title = enabled ? loc('Ambiance horaire activée') : loc('Lumière de jour · activer l’ambiance horaire')
     options.button.textContent = enabled ? '◐' : '☀'
   }
   // Appelé par le rendu : regroupe les changements pendant les activités en une seule application.

@@ -3,8 +3,11 @@
  * La présence sur place est revérifiée à chaque action et lors des changements d’heure.
  */
 
-import dialogues from './data/bae-dialogues.json' with { type: 'json' }
-import otherDialogues from './data/npc-dialogues.json' with { type: 'json' }
+import { loc, gameLocale, locData } from './i18n'
+import dialoguesSource from './data/bae-dialogues.json' with { type: 'json' }
+const dialogues=locData(dialoguesSource)
+import otherDialoguesSource from './data/npc-dialogues.json' with { type: 'json' }
+const otherDialogues=locData(otherDialoguesSource)
 import { isNPCAvailable, npcTemplates } from './npcs'
 import { acceptNPCRequest, getConsideration, getNPCRequests, isRequestAccepted, purchaseNPCImprovement } from './npc-relationships'
 import { getMoneyBalance } from './currency'
@@ -18,7 +21,7 @@ export function mountNPCDialogue(options: { base: string; canInteract: (npcId: s
   const dialog = document.createElement('dialog')
   dialog.className = 'travel-dialog npc-dialogue-dialog'
   dialog.setAttribute('aria-labelledby', 'npc-conversation-title')
-  dialog.innerHTML = `<button class="travel-close" aria-label="Fermer">×</button><header class="npc-conversation-header"><img src="${options.base}portraits/bae.png" alt="Bae" width="72" height="72"><div><h2 id="npc-conversation-title">Bae</h2><p class="npc-consideration"><span aria-hidden="true">♥</span> Considération <strong></strong></p></div></header><h3 id="npc-conversation-topic"></h3><p id="npc-conversation-text" aria-live="polite"></p><div id="npc-conversation-actions"></div><button class="travel-cancel">Retour au menu de Bae</button>`
+  dialog.innerHTML = `<button class="travel-close" aria-label="${loc('Fermer')}">×</button><header class="npc-conversation-header"><img src="${options.base}portraits/bae.png" alt="Bae" width="72" height="72"><div><h2 id="npc-conversation-title">Bae</h2><p class="npc-consideration"><span aria-hidden="true">♥</span> ${loc('Considération')} <strong></strong></p></div></header><h3 id="npc-conversation-topic"></h3><p id="npc-conversation-text" aria-live="polite"></p><div id="npc-conversation-actions"></div><button class="travel-cancel">${loc('Retour au menu de Bae')}</button>`
   document.body.append(dialog)
   const content = dialog.querySelector<HTMLElement>('#npc-conversation-text')!
   const actions = dialog.querySelector<HTMLElement>('#npc-conversation-actions')!
@@ -32,14 +35,14 @@ export function mountNPCDialogue(options: { base: string; canInteract: (npcId: s
     return button
   }
   // Les clés sources sont conservées dans le DOM pour vérifier les textes importés de Unity.
-  function lines(sequence: Line[], finish: () => void, index = 0, finalLabel = 'Retour aux sujets') {
+  function lines(sequence: Line[], finish: () => void, index = 0, finalLabel = loc('Retour aux sujets')) {
     if (!sequence[index]) { finish(); return }
     const line = sequence[index]!
     content.textContent = line.text; content.dataset.source = line.key
-    actions.replaceChildren(); button(index < sequence.length - 1 ? 'Continuer' : finalLabel, () => lines(sequence, finish, index + 1, finalLabel))
+    actions.replaceChildren(); button(index < sequence.length - 1 ? loc('Continuer') : finalLabel, () => lines(sequence, finish, index + 1, finalLabel))
   }
   function topics() {
-    title.textContent = `Parler avec ${npcTemplates.find(npc => npc.id === activeNPC)!.name}`; content.textContent = 'De quoi souhaitez-vous parler ?'; delete content.dataset.source
+    title.textContent = loc('Parler avec {0}',npcTemplates.find(npc => npc.id === activeNPC)!.name); content.textContent = loc('De quoi souhaitez-vous parler ?'); delete content.dataset.source
     actions.replaceChildren()
     for (const topic of topicsByNPC[activeNPC] ?? []) button(topic.label, () => {
       title.textContent = topic.label
@@ -47,7 +50,7 @@ export function mountNPCDialogue(options: { base: string; canInteract: (npcId: s
         if (!('responses' in topic) || !topic.responses) { topics(); return }
         actions.replaceChildren()
         for (const response of topic.responses) button(response.label, () => lines(response.lines, topics))
-      }, 0, topic.responses?.length ? 'Répondre' : 'Retour aux sujets')
+      }, 0, topic.responses?.length ? loc('Répondre') : loc('Retour aux sujets'))
     })
   }
   // Change l’identité et les sujets du même dialogue, au lieu de créer une fenêtre par personnage.
@@ -60,7 +63,7 @@ export function mountNPCDialogue(options: { base: string; canInteract: (npcId: s
     dialog.querySelector('#npc-conversation-title')!.textContent = npc.name
     const portrait = dialog.querySelector<HTMLImageElement>('.npc-conversation-header img')!
     portrait.src = options.base + npc.portrait; portrait.alt = npc.name
-    dialog.querySelector('.travel-cancel')!.textContent = `Retour au menu de ${npc.name}`
+    dialog.querySelector('.travel-cancel')!.textContent = loc('Retour au menu de {0}',npc.name)
     dialog.querySelector('.npc-consideration strong')!.textContent = `${getConsideration(npcId)} %`
     if (serviceId === 'talk') topics()
     else {
@@ -70,25 +73,25 @@ export function mountNPCDialogue(options: { base: string; canInteract: (npcId: s
       lines(request.lines, () => {
         // L’acceptation et le bouton de paiement sont deux étapes distinctes ; le solde est contrôlé à nouveau.
         function summary() {
-          content.textContent = `${request!.objective}\nCoût : ${request!.money.toLocaleString('fr-FR')} Nkap.\nVotre solde : ${getMoneyBalance().toLocaleString('fr-FR')} Nkap.`
+          content.textContent = loc('{0}\nCoût : {1} Nkap.\nVotre solde : {2} Nkap.',request!.objective,request!.money.toLocaleString(gameLocale),getMoneyBalance().toLocaleString(gameLocale))
           actions.replaceChildren()
-          if (!isRequestAccepted(request!.id)) button('Accepter la demande (sans paiement)', () => { acceptNPCRequest(request!.id); summary() })
+          if (!isRequestAccepted(request!.id)) button(loc('Accepter la demande (sans paiement)'), () => { acceptNPCRequest(request!.id); summary() })
           else {
-            const pay = button(`Confirmer et payer ${request!.money.toLocaleString('fr-FR')} Nkap`, () => {
+            const pay = button(loc('Confirmer et payer {0} Nkap',request!.money.toLocaleString(gameLocale)), () => {
               const outcome = purchaseNPCImprovement(request!.id)
               content.textContent = outcome.reason
               actions.replaceChildren()
-              if (!outcome.ok) button('Revoir le coût', summary)
+              if (!outcome.ok) button(loc('Revoir le coût'), summary)
             })
             pay.dataset.payImprovement = request!.id
             pay.disabled = getMoneyBalance() < request!.money
             if (pay.disabled) {
-              const reason = document.createElement('p'); reason.className = 'npc-insufficient'; reason.textContent = `Nkap insuffisants : il manque ${(request!.money - getMoneyBalance()).toLocaleString('fr-FR')} Nkap.`; actions.append(reason)
+              const reason = document.createElement('p'); reason.className = 'npc-insufficient'; reason.textContent = loc('Nkap insuffisants : il manque {0} Nkap.',(request!.money - getMoneyBalance()).toLocaleString(gameLocale)); actions.append(reason)
             }
           }
         }
         summary()
-      }, 0, 'Voir le coût')
+      }, 0, loc('Voir le coût'))
     }
     if (!dialog.open) dialog.showModal()
   }

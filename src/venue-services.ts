@@ -1,3 +1,4 @@
+import { loc, locData } from './i18n'
 import { recordMeal } from './hunger.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
@@ -5,7 +6,8 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
  * Ce module renvoie les gains réels après plafonnement, pas seulement les gains annoncés.
  */
 
-import definitions from './data/venue-services.json' with { type: 'json' }
+import definitionsSource from './data/venue-services.json' with { type: 'json' }
+const definitions=locData(definitionsSource)
 import { getMoneyBalance, spendMoney } from './currency.ts'
 import { getEnergyMaximumAt,projectEnergy,getPlayerResources, spendEnergy, restoreEnergy, changeMood, changeRespoPoints } from './player-resources.ts'
 import { getGameTime,advanceGameTime } from './game-clock.ts'
@@ -23,13 +25,13 @@ export function projectVenueEnergy(service:ReturnType<typeof getVenueServices>[n
  return projectEnergy(service.fullEnergy?getEnergyMaximumAt(end,kind):service.energyGain,end,undefined,before.energy,service.energyCost,kind,before.ptRespo+service.respoGain)
 }
 export function useVenueService(id: string, zone: string) {
- if(isGuidedOutingActive())return {ok:false as const,reason:'Terminez votre sortie accompagnée.'}
-  if(id==='home-sleep')return {ok:false as const,reason:'Choisissez la durée dans le menu de sommeil.'}
+ if(isGuidedOutingActive())return {ok:false as const,reason:loc('Terminez votre sortie accompagnée.')}
+  if(id==='home-sleep')return {ok:false as const,reason:loc('Choisissez la durée dans le menu de sommeil.')}
   const service = getVenueServices(zone).find(item => item.id === id)
-  if (!service) return { ok: false as const, reason: 'Ce service n’est pas proposé ici.' }
+  if (!service) return { ok: false as const, reason: loc('Ce service n’est pas proposé ici.') }
   const before = getPlayerResources()
-  if (getMoneyBalance() < service.money) return { ok: false as const, reason: 'Argent insuffisant.' }
-  if (before.energy < service.energyCost) return { ok: false as const, reason: 'Énergie insuffisante.' }
+  if (getMoneyBalance() < service.money) return { ok: false as const, reason: loc('Argent insuffisant.') }
+  if (before.energy < service.energyCost) return { ok: false as const, reason: loc('Énergie insuffisante.') }
   // Toutes les validations précèdent les mutations pour éviter une facturation partielle en cas de refus.
   spendMoney(service.money)
   // Repas au marché ou à l'hôtel : compte comme un des trois repas du jour.

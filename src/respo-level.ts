@@ -1,7 +1,8 @@
 /* Courbe validée : coût du niveau n vers n+1 = 95 × (n+1), points toujours cumulés. */
+import { loc } from './i18n'
 const threshold=(level:number)=>95n*BigInt(level-1)*BigInt(level+2)/2n
 export function getRespoProgress(points:number){
-  if(!Number.isSafeInteger(points)||points<0)throw new RangeError('Total Respo invalide.')
+  if(!Number.isSafeInteger(points)||points<0)throw new RangeError(loc('Total Respo invalide.'))
   const total=BigInt(points)
   // Recherche logarithmique et arithmétique exacte, même pour un ancien total très élevé.
   let low=1,high=2
@@ -14,6 +15,6 @@ export function getRespoProgress(points:number){
 
 // Premier palier de capacité validé : +5 aux niveaux2–5, puis bonus permanent plafonné à20.
 export function levelEnergyBonus(level:number){
- if(!Number.isSafeInteger(level)||level<1)throw new RangeError('Niveau invalide.')
+ if(!Number.isSafeInteger(level)||level<1)throw new RangeError(loc('Niveau invalide.'))
  return 5*Math.min(4,level-1)
 }

@@ -1,3 +1,4 @@
+import { loc, gameLocale } from './i18n'
 import { hungerEnergyCost, setHungerMoodHandler } from './hunger.ts'
 import {getMealEnergyEffect,onMealEnergyEffectChange} from './meal-energy.ts'
 import {getRestedEffect,onRestedEffectChange} from './rested-energy.ts'
@@ -35,7 +36,7 @@ state.respoNext=getRespoProgress(state.ptRespo).nextThreshold??Number.MAX_SAFE_I
 state.energy=Math.min(state.energy,getEnergyMaximumAt())
 const listeners = new Set<() => void>()
 export function onPlayerResourcesChange(listener:()=>void){listeners.add(listener);return ()=>listeners.delete(listener)}
-const format = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 })
+const format = new Intl.NumberFormat(gameLocale, { maximumFractionDigits: 0 })
 // Renvoie une copie : les appelants ne doivent pas contourner les validations en modifiant l’état.
 export function getPlayerResources() { return { ...state, maxEnergy:getEnergyMaximumAt(), mood:getMoodDetails().displayed } }
 // La sauvegarde garde la capacité de base ; le bonus est dérivé une seule fois.
@@ -49,11 +50,11 @@ export function getEnergyDetails(total=getGameTime().totalMinutes,kind:TimeKind=
 // Les produits entiers évitent les arrondis aux frontières de 10 et 30 %.
 export function getEnergyStatus(){
  const details=getEnergyDetails(),energy=BigInt(state.energy),maximum=BigInt(details.total)
- if(energy*10n<maximum)return {id:'starving',label:'Affamé'}
- if(energy*10n<maximum*3n)return {id:'hungry',label:'À faim'}
+ if(energy*10n<maximum)return {id:'starving',label:loc('Affamé')}
+ if(energy*10n<maximum*3n)return {id:'hungry',label:loc('À faim')}
  if(details.fatigue.penalty)return {id:'fatigued',label:details.fatigue.label}
- if(state.energy>details.permanent)return {id:'fit',label:'En forme'}
- return {id:'normal',label:'Normal'}
+ if(state.energy>details.permanent)return {id:'fit',label:loc('En forme')}
+ return {id:'normal',label:loc('Normal')}
 }
 export function getEnergyMaximumAt(total=getGameTime().totalMinutes,kind:TimeKind='awake',points=state.ptRespo){return getEnergyDetails(total,kind,points).total}
 export function projectEnergy(amount:number,end:number,start=getGameTime().totalMinutes,energy=state.energy,cost=0,kind:TimeKind='awake',points=state.ptRespo){
@@ -71,7 +72,7 @@ export function getMoodDetails(){
   return {base:state.mood,bonus:effect.bonus,displayed,effect}
 }
 export function previewMoodChange(delta:number){
-  if(!Number.isFinite(delta))throw new RangeError('Variation d’humeur invalide.')
+  if(!Number.isFinite(delta))throw new RangeError(loc('Variation d’humeur invalide.'))
   const before=getMoodDetails(),baseAfter=Math.max(0,Math.min(140,before.base+delta)),moodAfter=Math.min(140,baseAfter+before.bonus)
   return {baseBefore:before.base,baseAfter,bonus:before.bonus,moodBefore:before.displayed,moodAfter,delta:moodAfter-before.displayed}
 }
@@ -82,16 +83,16 @@ function save() {
   listeners.forEach(listener => listener())
 }
 function nonnegativeInteger(value: number) {
-  if (!Number.isSafeInteger(value) || value < 0) throw new RangeError('La valeur doit être un entier positif.')
+  if (!Number.isSafeInteger(value) || value < 0) throw new RangeError(loc('La valeur doit être un entier positif.'))
 }
 export function changeKarma(delta: number) {
-  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.karma + delta)) throw new RangeError('Variation de karma invalide.')
+  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.karma + delta)) throw new RangeError(loc('Variation de karma invalide.'))
   state.karma += delta
   save()
 }
 // L’influence ne descend jamais sous zéro.
 export function changeInfluence(delta: number) {
-  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.influence + delta)) throw new RangeError('Variation d’influence invalide.')
+  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.influence + delta)) throw new RangeError(loc('Variation d’influence invalide.'))
   state.influence = Math.max(0, state.influence + delta)
   save()
 }
@@ -111,7 +112,7 @@ export function restoreEnergy(amount: number) {
 }
 export function setMaxEnergy(maximum: number) {
   nonnegativeInteger(maximum)
-  if (maximum === 0) throw new RangeError('L’énergie maximale doit être supérieure à zéro.')
+  if (maximum === 0) throw new RangeError(loc('L’énergie maximale doit être supérieure à zéro.'))
   state.maxEnergy = maximum
   state.energy = Math.min(state.energy, getEnergyMaximumAt())
   save()
@@ -119,7 +120,7 @@ export function setMaxEnergy(maximum: number) {
 
 // Les points cumulés déterminent le niveau et son prochain seuil.
 export function changeRespoPoints(delta: number) {
-  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.ptRespo + delta)) throw new RangeError('Variation de points Respo invalide.')
+  if (!Number.isSafeInteger(delta) || !Number.isSafeInteger(state.ptRespo + delta)) throw new RangeError(loc('Variation de points Respo invalide.'))
   state.ptRespo = Math.max(0, state.ptRespo + delta)
   state.respoNext=getRespoProgress(state.ptRespo).nextThreshold??Number.MAX_SAFE_INTEGER
   state.energy=Math.min(state.energy,getEnergyMaximumAt())
@@ -127,19 +128,19 @@ export function changeRespoPoints(delta: number) {
 }
 // Valeur de fond bornée : les variations nominales des activités agissent ici, sans cumuler le confort.
 export function setMood(value: number) {
-  if (!Number.isFinite(value)) throw new RangeError('Humeur invalide.')
+  if (!Number.isFinite(value)) throw new RangeError(loc('Humeur invalide.'))
   state.mood = Math.max(0, Math.min(140, value))
   save()
 }
 // Un créneau de repas qui se termine sans manger retire de l'humeur.
 setHungerMoodHandler(delta => changeMood(delta))
 export function changeMood(delta: number) {
-  if (!Number.isFinite(delta)) throw new RangeError('Variation d’humeur invalide.')
+  if (!Number.isFinite(delta)) throw new RangeError(loc('Variation d’humeur invalide.'))
   setMood(state.mood + delta)
 }
 // Seven bands from Unity UI_HudStat; the requested range is strictly [0, 140].
 export function getMoodStatus(value = getMoodDetails().displayed) {
-  const labels = ['Déprimé', 'Malheureux', 'Stressé', 'Routine', 'Content', 'Heureux', 'Très heureux']
+  const labels = [loc('Déprimé'), loc('Malheureux'), loc('Stressé'), loc('Routine'), loc('Content'), loc('Heureux'), loc('Très heureux')]
   const band = [20, 40, 60, 80, 100, 120, 140].findIndex(limit => value <= limit)
   const index = Math.max(0, band)
   return { label: labels[index]!, spriteIndex: 6 - index }
@@ -157,10 +158,10 @@ export function mountPlayerResources(element: HTMLElement) {
     const influence = element.querySelector<HTMLElement>('#influence-amount')!
     const energy = element.querySelector<HTMLElement>('#energy-amount')!
     influence.textContent = format.format(state.influence)
-    influence.title = `Influence : ${format.format(state.influence)} points · accès aux opportunités multijoueurs`
+    influence.title = loc('Influence : {0} points · accès aux opportunités multijoueurs',format.format(state.influence))
     energy.textContent = `${format.format(state.energy)} / ${format.format(getEnergyMaximumAt())}`
     element.querySelector('#influence-counter')!.setAttribute('aria-label', influence.title)
-    element.querySelector('#energy-counter')!.setAttribute('aria-label', `Énergie : ${state.energy} sur ${getEnergyMaximumAt()}, ${getEnergyStatus().label}`)
+    element.querySelector('#energy-counter')!.setAttribute('aria-label', loc('Énergie : {0} sur {1}, {2}',state.energy,getEnergyMaximumAt(),getEnergyStatus().label))
     const difference = state.energy - previousEnergy
     if (difference !== 0) {
       clearTimeout(feedbackTimer)
@@ -173,22 +174,22 @@ export function mountPlayerResources(element: HTMLElement) {
     previousEnergy = state.energy
     const respo = element.querySelector<HTMLElement>('#respo-amount')!
     respo.textContent = `${format.format(state.ptRespo)} / ${format.format(state.respoNext)}`
-    respo.title = `${state.ptRespo} points Respo, objectif du prochain niveau : ${state.respoNext}`
+    respo.title = loc('{0} points Respo, objectif du prochain niveau : {1}',state.ptRespo,state.respoNext)
     const progression=getRespoProgress(state.ptRespo)
-    element.querySelector('#respo-level')!.textContent=`Niv. ${progression.level}`
-    respo.title=`Niveau ${progression.level} · ${progression.points} points cumulés${progression.nextThreshold===null?' · palier maximal représentable':` · encore ${progression.remaining} points avant le niveau ${progression.level+1}`}`
-    if(progression.nextThreshold===null)respo.textContent=`${format.format(state.ptRespo)} · Max`
+    element.querySelector('#respo-level')!.textContent=loc('Niv. {0}',progression.level)
+    respo.title=loc('Niveau {0} · {1} points cumulés{2}',progression.level,progression.points,progression.nextThreshold===null?loc(' · palier maximal représentable'):loc(' · encore {0} points avant le niveau {1}',progression.remaining,progression.level+1))
+    if(progression.nextThreshold===null)respo.textContent=loc('{0} · Max',format.format(state.ptRespo))
     element.querySelector('#respo-counter')!.setAttribute('aria-label',respo.title)
     const progress=element.querySelector<HTMLProgressElement>('#respo-progress')!
     progress.max=progression.needed||1;progress.value=progression.nextThreshold===null?1:progression.earned
-    progress.setAttribute('aria-label',`Progression du niveau ${progression.level}`)
-    progress.setAttribute('aria-valuetext',progression.nextThreshold===null?'Palier maximal':`${progression.earned} sur ${progression.needed} points pour le niveau suivant`)
+    progress.setAttribute('aria-label',loc('Progression du niveau {0}',progression.level))
+    progress.setAttribute('aria-valuetext',progression.nextThreshold===null?loc('Palier maximal'):loc('{0} sur {1} points pour le niveau suivant',progression.earned,progression.needed))
     const details=getMoodDetails(),mood = getMoodStatus(details.displayed)
     element.querySelector('#mood-amount')!.textContent = format.format(details.displayed)
     element.querySelector('#mood-label')!.textContent = mood.label
     const face = element.querySelector<HTMLElement>('#mood-icon')!
     face.style.backgroundPosition = `${(mood.spriteIndex % 4) / 3 * 100}% ${Math.floor(mood.spriteIndex / 4) * 100}%`
-    element.querySelector('#mood-counter')!.setAttribute('aria-label', `Humeur : ${details.displayed} sur 140, ${mood.label}. Fond ${details.base}, confort +${details.bonus}.`)
+    element.querySelector('#mood-counter')!.setAttribute('aria-label', loc('Humeur : {0} sur 140, {1}. Fond {2}, confort +{3}.',details.displayed,mood.label,details.base,details.bonus))
   }
   listeners.add(update)
   update()

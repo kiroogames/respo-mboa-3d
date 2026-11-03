@@ -1,6 +1,7 @@
 /* Présentation commune des fenêtres : illustrations et pages de jeu.
  * Les contrôles restent les mêmes nœuds DOM : aucune règle, sauvegarde ou transaction ne change.
  */
+import { loc, sourceOf } from './i18n'
 type Theme='food'|'sleep'|'work'|'fun'|'home'|'budget'|'wait'|'relations'|'jogging'|'football'|'cinema'|'drink'|'porridge'|'rice'|'ndole'|'ricebeans'|'chicken'
 const themes:[string,Theme][]=[['meal-dialog','food'],['canteen-dialog','food'],['food-bag-dialog','food'],['sleep-dialog','sleep'],['work-classic-dialog','work'],['citizen-puzzle-dialog','work'],['extra-dialog','work'],['meeting-dialog','work'],['missions-dialog','work'],['outings-dialog','fun'],['accompanied-dialog','relations'],['comfort-dialog','home'],['bills-dialog','budget'],['toque-dialog','budget'],['wait-dialog','wait'],['sport-energy-dialog','sleep'],['mood-effects-dialog','relations'],['npc-dialogue-dialog','relations']]
 const cardSelector='.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.energy-effect-cards>article'
@@ -10,31 +11,31 @@ function themeOf(dialog:HTMLDialogElement):Theme{
  if(dialog.matches('.venue-dialog,.transport-dialog')){
   const place=dialog.querySelector('h2')?.textContent??''
   if(/omnisport|stade|stadium/i.test(place))return 'football'
-  if(/minist|présiden/i.test(place))return 'work'
-  if(/marché|restaurant/i.test(place))return 'food'
-  if(/culture/i.test(place))return 'cinema'
+  if(/minist|présiden|presiden/i.test(place))return 'work'
+  if(/marché|market|restaurant/i.test(place))return 'food'
+  if(/cultur/i.test(place))return 'cinema'
   if(/njoka|club/i.test(place))return 'fun'
  }
  return themes.find(([name])=>dialog.classList.contains(name))?.[1]??'home'
 }
 function artOf(text:string,fallback:Theme):Theme{
- if(/entraîn|jogg|sportive/i.test(text))return 'jogging'
+ if(/entraîn|jogg|sportive|athletic|train/i.test(text))return 'jogging'
  if(/2-0|football/i.test(text))return 'football'
- if(/cinéma|séance/i.test(text))return 'cinema'
- if(/boire|boisson|verre/i.test(text))return 'drink'
- if(/bouillie|beignet/i.test(text))return 'porridge'
- if(/riz.*haricot/i.test(text))return 'ricebeans'
- if(/riz.*arachide/i.test(text))return 'rice'
- if(/poulet/i.test(text))return 'chicken'
+ if(/cinéma|cinema|séance|screening/i.test(text))return 'cinema'
+ if(/boire|boisson|verre|drink/i.test(text))return 'drink'
+ if(/bouillie|porridge|beignet/i.test(text))return 'porridge'
+ if(/riz.*haricot|rice.*bean/i.test(text))return 'ricebeans'
+ if(/riz.*arachide|rice.*peanut/i.test(text))return 'rice'
+ if(/poulet|chicken/i.test(text))return 'chicken'
  if(/ndolé/i.test(text))return 'ndole'
- if(/repas|manger|déjeuner|poisson|poulet|restaurant|nourriture/i.test(text))return 'food'
- if(/dorm|sommeil|repos|nuit/i.test(text))return 'sleep'
- if(/facture|toqué|cotis|budget|épargne|argent/i.test(text))return 'budget'
- if(/confort|équip|meuble|canapé|cuisine|douche|lit /i.test(text))return 'home'
- if(/dossier|usager|réunion|mission|travail|rapport|taf|commande/i.test(text))return 'work'
- if(/sortie|cinéma|danse|danser|match|sport|2-0/i.test(text))return 'fun'
- if(/parler|discut|bae|considération|demande/i.test(text))return 'relations'
- if(/attend|pause/i.test(text))return 'wait'
+ if(/repas|manger|déjeuner|poisson|poulet|restaurant|nourriture|meal|eat|lunch|fish|chicken|food|snack/i.test(text))return 'food'
+ if(/dorm|sommeil|repos|nuit|sleep|rest\b|rested|night|nap/i.test(text))return 'sleep'
+ if(/facture|bill|toqué|cotis|contribution|budget|épargne|saving|argent|money/i.test(text))return 'budget'
+ if(/confort|comfort|équip|equip|furnish|meuble|furniture|canapé|sofa|cuisine|kitchen|douche|shower|lit |bed\b/i.test(text))return 'home'
+ if(/dossier|\bfiles?\b|usager|citizen|réunion|meeting|mission|travail|\bwork|rapport|report|taf|side job|commande|order/i.test(text))return 'work'
+ if(/sortie|outing|cinéma|cinema|danse|danser|dance|match|sport|2-0/i.test(text))return 'fun'
+ if(/parler|talk|chat|discut|bae|considération|esteem|demande|request/i.test(text))return 'relations'
+ if(/attend|wait|pause|break/i.test(text))return 'wait'
  return fallback
 }
 export function presentGameMenu(dialog:HTMLDialogElement){
@@ -50,7 +51,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  const badge=dialog.querySelector('.popup-icon')
  if(badge){badge.replaceChildren();const image=document.createElement('img');image.src=illustration(theme);image.alt='';badge.append(image)}
  // Regroupe uniquement les textes d’aide. Les avertissements, horaires et coûts restent dans leur vue.
- const infos=document.createElement('details');infos.className='game-menu-infos';infos.innerHTML='<summary>Infos</summary>'
+ const infos=document.createElement('details');infos.className='game-menu-infos';infos.innerHTML=`<summary>${loc('Infos')}</summary>`
  function decorate(){
   theme=themeOf(dialog);dialog.dataset.menuTheme=theme
   for(const hero of dialog.querySelectorAll<HTMLImageElement>('.game-menu-hero,.popup-icon>img')){
@@ -58,18 +59,18 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    const source=portrait??(dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:dialog.classList.contains('sport-energy-dialog')?`${base}ui/unity/sommeil.png`:illustration(theme))
    if(hero.getAttribute('src')!==source)hero.src=source
   }
-  for(const tab of dialog.querySelectorAll('[data-venue-tab]')){const text=tab.firstChild;if(text?.nodeType===Node.TEXT_NODE){const value=tab.getAttribute('data-venue-tab')==='place'?'Activités':'Habitants ';if(text.textContent!==value)text.textContent=value}}
+  for(const tab of dialog.querySelectorAll('[data-venue-tab]')){const text=tab.firstChild;if(text?.nodeType===Node.TEXT_NODE){const value=tab.getAttribute('data-venue-tab')==='place'?loc('Activités'):loc('Habitants ');if(text.textContent!==value)text.textContent=value}}
   const queueIntro=dialog.querySelector<HTMLElement>('[data-work-list]>p:first-child')
-  if(queueIntro&&!queueIntro.dataset.compact){queueIntro.title=queueIntro.textContent??'';queueIntro.textContent='Dossier → signature. À vous de tracer !';queueIntro.dataset.compact='true'}
+  if(queueIntro&&!queueIntro.dataset.compact){queueIntro.title=queueIntro.textContent??'';queueIntro.textContent=loc('Dossier → signature. À vous de tracer !');queueIntro.dataset.compact='true'}
   const puzzleHint=dialog.querySelector<HTMLElement>('.citizen-feedback')
-  if(puzzleHint?.textContent?.startsWith('Partez du dossier')){puzzleHint.title=puzzleHint.textContent;puzzleHint.textContent='Dossier → signature · sans repasser.'}
+  if(puzzleHint?.textContent?.startsWith(loc('Partez du dossier et rejoignez la signature sans repasser sur vos pas. Cliquez sur une case du chemin pour revenir en arrière.'))){puzzleHint.title=puzzleHint.textContent;puzzleHint.textContent=loc('Dossier → signature · sans repasser.')}
   for(const description of dialog.querySelectorAll<HTMLElement>('.venue-description'))description.classList.toggle('game-important-description',/\d/.test(description.textContent??''))
   for(const preview of dialog.querySelectorAll<HTMLElement>('.venue-energy-preview')){
-   const text=preview.textContent??'',short=text.replace(/^Fin : (\d+\s*\/\s*\d+) · énergie pleine$/,'$1').replace(/\((\+\d+) à la fin\)/,'($1)')
+   const text=preview.textContent??'',short=text.replace(/^(?:Fin : |End: )(\d+\s*\/\s*\d+) · (?:énergie pleine|full energy)$/,'$1').replace(/\((\+\d+) (?:à la fin|at the end)\)/,'($1)')
    if(short!==text){preview.title=text;preview.setAttribute('aria-label',text);preview.textContent=short}
   }
-  const shortNames:Record<string,string>={'Retour au lieu':'Retour','Retour au ministère':'Retour','Confirmer le traitement':'Traiter','Confirmer le repas':'Manger','Confirmer la réunion':'Participer','Confirmer la sortie':'Y aller','Confirmer le versement':'Verser','Confirmer l’attente':'Attendre','Confirmer la commande':'Accepter'}
-  for(const button of dialog.querySelectorAll('button')){const short=shortNames[button.textContent?.trim()??''];if(short){button.setAttribute('aria-label',button.textContent!.trim());button.textContent=short}}
+  const shortNames:Record<string,string>={'Retour au lieu':loc('Retour'),'Retour au ministère':loc('Retour'),'Confirmer le traitement':loc('Traiter'),'Confirmer le repas':loc('Manger'),'Confirmer la réunion':loc('Participer'),'Confirmer la sortie':loc('Y aller'),'Confirmer le versement':loc('Verser'),'Confirmer l’attente':loc('Attendre'),'Confirmer la commande':loc('Accepter')}
+  for(const button of dialog.querySelectorAll('button')){const short=shortNames[sourceOf(button.textContent?.trim()??'')];if(short){button.setAttribute('aria-label',button.textContent!.trim());button.textContent=short}}
   for(const node of dialog.querySelectorAll<HTMLElement>(cardSelector)){
    const existing=node.querySelector<HTMLElement>(':scope>.game-card-art')
    const art=existing??document.createElement('span');art.className='game-card-art';art.setAttribute('aria-hidden','true')
@@ -80,7 +81,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
     :node.matches('[data-venue-work],[data-venue-advanced]')||node.hasAttribute('data-dossier-index')?`${base}ui/unity/dossiers.png`
     :node.closest('.missions-list')?`${base}ui/unity/mission.png`
     :node.dataset.comfortItem?.startsWith('bed-')?`${base}ui/unity/lit.png`
-    :dialog.classList.contains('outings-dialog')&&dialog.querySelector('h2')?.textContent==='Restaurant du Mboa'&&dishArt[node.dataset.outingOption??'']?illustration(dishArt[node.dataset.outingOption!]!)
+    :dialog.classList.contains('outings-dialog')&&dialog.querySelector('h2')?.textContent===loc('Restaurant du Mboa')&&dishArt[node.dataset.outingOption??'']?illustration(dishArt[node.dataset.outingOption!]!)
     :illustration(artOf(title,theme))
    if(image.getAttribute('src')!==source)image.setAttribute('src',source)
    if(!existing){image.alt='';art.append(image);node.prepend(art)}
@@ -92,8 +93,8 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  const track=document.createElement('div');track.className='game-menu-pages';track.append(...body.childNodes);body.append(track)
  const foot=dialog.querySelector<HTMLElement>(':scope>.popup-foot')??document.createElement('div')
  if(!foot.isConnected){foot.className='popup-foot';dialog.append(foot)}
- const pager=document.createElement('nav');pager.className='game-menu-pager';pager.setAttribute('aria-label','Pages du menu')
- pager.innerHTML='<button type="button" data-menu-prev aria-label="Page précédente">‹</button><span aria-live="polite"></span><button type="button" data-menu-next aria-label="Page suivante">›</button>'
+ const pager=document.createElement('nav');pager.className='game-menu-pager';pager.setAttribute('aria-label',loc('Pages du menu'))
+ pager.innerHTML=`<button type="button" data-menu-prev aria-label="${loc('Page précédente')}">‹</button><span aria-live="polite"></span><button type="button" data-menu-next aria-label="${loc('Page suivante')}">›</button>`
  foot.prepend(pager)
  const previous=pager.querySelector<HTMLButtonElement>('[data-menu-prev]')!,next=pager.querySelector<HTMLButtonElement>('[data-menu-next]')!,label=pager.querySelector('span')!
  let page=0,total=1,scheduled=false,reset=false,previewRequested=false,reveal:HTMLElement|null=null
