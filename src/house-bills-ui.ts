@@ -22,7 +22,7 @@ export function mountHouseBills(options:{button:HTMLButtonElement;canOpen:()=>bo
  function updateBudget(){const b=getHouseBudget();badge.dataset.budget=b.status;badge.textContent=b.label;badge.title=loc('{0} · {1} à prévoir · {2}',b.label,format(b.reference),b.missing?format(b.missing)+loc(' manquants'):format(b.available)+loc(' disponibles après provision théorique'));options.button.dataset.budget=b.status;options.button.setAttribute('aria-label',loc('Ouvrir les factures · {0}',b.label))}
  function availability(){updateBudget();const state=getHouseBilling();options.button.disabled=dialog.open||!allowed();options.button.dataset.due=String(state.unpaid>0);options.button.title=state.unpaid?loc('Factures : {0} à régler',format(state.totalDue)):loc('Factures de la maison')
   // Le lien rappelle directement la somme : dette en cours, sinon la prochaine facture et son jour.
-  options.button.textContent=state.unpaid?loc('À payer : {0}',format(state.totalDue)):state.nextIssue?loc('{0} à payer {1}',format(state.amount),state.nextIssue.day.toLowerCase()):loc('{0} par semaine',format(state.amount))}
+  options.button.textContent=state.unpaid?loc('À payer : {0}',format(state.totalDue)):state.nextIssue?loc('{0} à payer {1}',format(state.amount),gameLocale==='fr-FR'?state.nextIssue.day.toLowerCase():state.nextIssue.day):loc('{0} par semaine',format(state.amount))}
  function render(){
   if(pending)cancelHouseBillPayment(pending.token)
   pending=prepareHouseBillPayment()

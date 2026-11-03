@@ -3,6 +3,8 @@
 "Explorez Mboa Ville : une maquette 3D interactive inspirée de la ville illustrée, du marché à Mougabiang.":"Explore Mboa Ville: an interactive 3D model inspired by the illustrated city, from the market to Mougabiang.",
 
 "Fermer":"Close",
+"Recentrer":"Recenter",
+"Ambiance":"Lighting",
 "UN MOMENT À DEUX":"A MOMENT FOR TWO",
 "Préparer une sortie":"Plan an outing",
 "Sortie":"Outing",
@@ -453,7 +455,7 @@
 "Ouvrir les factures · {0}":"Open bills · {0}",
 "Factures : {0} à régler":"Bills: {0} to pay",
 "À payer : {0}":"To pay: {0}",
-"{0} à payer {1}":"{0} to pay {1}",
+"{0} à payer {1}":"{0} due {1}",
 "{0} par semaine":"{0} per week",
 "{0} facture(s) impayée(s)":"{0} unpaid bill(s)",
 "Prochaine facture à préparer":"Next bill to prepare",
