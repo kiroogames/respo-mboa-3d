@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {getHouseBudget} from './house-budget'
 /* Paiement manuel de la plus ancienne facture ; aucune déduction à l’ouverture du menu. */
 import {houseBillItems,getHouseBilling,getHouseBill,prepareHouseBillPayment,cancelHouseBillPayment,confirmHouseBillPayment,onHouseBillChange} from './house-bills'

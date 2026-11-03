@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Travail au ministère : piles datées, confirmation du traitement et récompense unique.

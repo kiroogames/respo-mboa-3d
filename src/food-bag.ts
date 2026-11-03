@@ -1,5 +1,5 @@
 /* Un emplacement, une confirmation : les aliments vieillissent uniquement avec le calendrier du jeu. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import { recordMeal } from './hunger.ts'
 import {getGameTime,advanceGameTime} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'

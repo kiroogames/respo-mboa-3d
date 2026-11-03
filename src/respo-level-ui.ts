@@ -1,5 +1,5 @@
 /* Annonce différée jusqu’à l’exploration ; aucun paiement ni modification du temps. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getEnergyDetails,getPlayerResources,onPlayerResourcesChange} from './player-resources'
 import {getRespoProgress,levelEnergyBonus} from './respo-level'
 import './respo-level.css'

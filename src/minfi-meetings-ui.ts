@@ -1,5 +1,5 @@
 /* Menu de réunion sur la carte actuelle : aperçu libre, engagement confirmé une seule fois. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {meetingRules as rules,getMeetingSchedule,prepareMeeting,cancelMeeting,confirmMeeting,onMeetingChange} from './minfi-meetings'
 import {onGameTimeChange} from './game-clock'
 import {onPlayerResourcesChange} from './player-resources'

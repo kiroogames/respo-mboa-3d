@@ -1,7 +1,7 @@
 /* Ambiance horaire : seul le rendu est différé, jamais le calendrier ou les routines. */
 import { getGameTime, onGameTimeChange } from './game-clock'
 
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 
 export type DayPeriod = 'Aube' | 'Jour' | 'Crépuscule' | 'Nuit'
 export function getDayPeriod(minute: number): DayPeriod {

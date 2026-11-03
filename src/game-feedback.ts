@@ -2,7 +2,7 @@
  * Retours de jeu communs : petits sons synthétisés, appui des boutons, refus visibles et alertes de besoins.
  * Tout est déduit de l'interface existante (clics, fenêtres, messages d'erreur, compteurs) : aucune règle de jeu ne change.
  */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import './game-feedback.css'
 
 export type Sound = 'click' | 'open' | 'close' | 'coin' | 'gain' | 'loss' | 'error'

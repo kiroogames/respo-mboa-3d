@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Cotisation définitive au Toqué, indépendante des travaux et de la considération de Bae. */
 import rulesSource from './data/bae-toque.json' with {type:'json'}

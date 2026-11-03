@@ -1,5 +1,5 @@
 /* La fiche du contrat confirme l’engagement, puis ouvre le traitement classique de la commande. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {extraRules as rules,extraDraftKey,getExtraState,getExtraBatch,extraWorkReason,prepareExtra,cancelExtra,confirmExtra,completeExtra,onExtraChange} from './anneke-extra'
 import {mountDossierWork} from './dossier-work-ui'
 import {dossierRules} from './dossier-work'

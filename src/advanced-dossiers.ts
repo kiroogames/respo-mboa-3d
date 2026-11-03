@@ -1,5 +1,5 @@
 /* Piles avancées indépendantes : coût et accès propres à chaque dossier, règlement unique. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import rulesSource from './data/advanced-dossiers.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,advanceGameTime} from './game-clock.ts'

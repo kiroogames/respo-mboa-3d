@@ -1,5 +1,5 @@
 /* Bilan dérivé : rien n’est prélevé, réservé ni sauvegardé par cet indicateur. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getHouseBilling} from './house-bills.ts'
 export function classifyHouseBudget(balance:number,reference:number){
  if(!Number.isInteger(balance)||balance<0||!Number.isInteger(reference)||reference<0)throw new RangeError(loc('Montants de budget invalides.'))

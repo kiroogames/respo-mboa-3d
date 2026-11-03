@@ -3,7 +3,7 @@
  * Un point de trajet est [X, Y, Z] ; les distances tarifées utilisent le plan horizontal X/Z.
  */
 
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import streets from '../scripts/wsp-streets.json' with { type: 'json' }
 import settings from '../city-layout.json' with { type: 'json' }
 import rules from '../travel-rules.json' with { type: 'json' }

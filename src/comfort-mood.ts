@@ -1,5 +1,5 @@
 /* Un seul effet dérivé, jamais ajouté à l’humeur sauvegardée ou répété avec le temps. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import tiersSource from './data/comfort-mood.json' with {type:'json'}
 const tiers=locData(tiersSource)
 import {getHomeComfort} from './home-comfort.ts'

@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getMealEnergyEffect,onMealEnergyEffectChange} from './meal-energy'
 import {getRestedEffect,onRestedEffectChange} from './rested-energy'
 import {getFatigueAt,onFatigueChange} from './fatigue'

@@ -1,5 +1,5 @@
 /* Le sac et les vendeurs partagent le même aperçu, sans débit avant confirmation. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {bagFoods,getFoodBag,prepareFoodBag,confirmFoodBag,cancelFoodBag,onFoodBagChange} from './food-bag'
 import type {BagAction} from './food-bag'
 import {getGameTimeAt,onGameTimeChange} from './game-clock'

@@ -2,7 +2,7 @@
  * File d'attente façon Pragmata : tracer un seul chemin du dossier à la signature, sans repasser sur ses pas.
  * Chaque case traversée ajoute (+) ou retire (−) des monnaies ; le bilan s'affiche en direct et s'applique à la validation.
  */
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {createQueueRoute,scoreQueueRoute,routePayout,routeNeighbours} from './queue-route'
 import type {QueueRoute,RouteTotals,RouteUnit} from './queue-route'
 import {dossierRules as standardRules,getDossierBatch as standardBatch,dossierWorkReason as standardReason} from './dossier-work'

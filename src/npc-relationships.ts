@@ -1,4 +1,4 @@
-import { loc, gameLocale, locData } from './i18n'
+import { loc, gameLocale, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Considération persistante et suivi des demandes de Bae.

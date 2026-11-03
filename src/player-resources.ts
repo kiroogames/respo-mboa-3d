@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import { hungerEnergyCost, setHungerMoodHandler } from './hunger.ts'
 import {getMealEnergyEffect,onMealEnergyEffectChange} from './meal-energy.ts'
 import {getRestedEffect,onRestedEffectChange} from './rested-energy.ts'

@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { recordMeal } from './hunger.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*

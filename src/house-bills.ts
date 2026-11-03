@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Factures fixes : l’heure de jeu crée les échéances, seul le joueur débite le portefeuille. */
 import rulesSource from './data/house-bills.json' with {type:'json'}

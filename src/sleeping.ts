@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getBedSleepQuality} from './home-comfort.ts'
 import {restedRules,getRestedEffect,grantRestedEffect} from './rested-energy.ts'
 import {getFatigueAt} from './fatigue.ts'

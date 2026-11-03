@@ -1,5 +1,5 @@
 /* Traitement classique des dossiers : choix, aperçu et confirmation ; aucun puzzle de file d’attente. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {completeDossier as standardComplete,dossierRules as standardRules,dossierWorkReason as standardReason,getDossierBatch as standardBatch} from './dossier-work'
 import {getPlayerResources,projectEnergy,onPlayerResourcesChange} from './player-resources'
 import {getGameTime,onGameTimeChange} from './game-clock'

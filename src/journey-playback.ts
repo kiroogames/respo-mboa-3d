@@ -1,7 +1,7 @@
 /* Déroulement visuel uniquement : aucune dépense et aucune avance du calendrier.
  * Les minutes du devis modulent légèrement une animation plafonnée, jamais une attente réelle.
  */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import type {TravelMode,TravelPoint} from './travel.ts'
 
 export type JourneyPhase='exit'|'board'|'travel'|'alight'|'enter'|'done'

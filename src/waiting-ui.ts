@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import { onPlayerResourcesChange } from './player-resources'
 /* Attente en exploration : aperçu sans effet, confirmation unique et transition visuelle courte. */
 import './waiting.css'

@@ -3,7 +3,7 @@
  * (dernier clic ou élément actif) jusqu'à sa case dans le bandeau du haut, qui rebondit à l'arrivée.
  * Le calque est un popover : il passe au-dessus des fenêtres ouvertes (couche supérieure du navigateur).
  */
-import { gameLocale } from './i18n'
+import { gameLocale } from './i18n.ts'
 import './currency-fly.css'
 import { playSound } from './game-feedback'
 

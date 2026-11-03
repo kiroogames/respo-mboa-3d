@@ -1,5 +1,5 @@
 /* Parcours réservé pour deux : payer une fois, avancer trois étapes, reprendre sans rejouer leurs effets. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import rulesSource from './data/accompanied-outings.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'

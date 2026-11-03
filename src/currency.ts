@@ -3,7 +3,7 @@
  * Les débits refusent un solde insuffisant ; les montants sont des entiers sûrs non négatifs.
  */
 
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 const storageKey = 'mboa-money-v1'
 const formatter = new Intl.NumberFormat(gameLocale, { maximumFractionDigits: 0 })
 let balance = 0

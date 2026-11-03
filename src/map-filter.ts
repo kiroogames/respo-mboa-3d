@@ -1,5 +1,5 @@
 /* Filtre de la carte : montre d'un coup d'œil où gagner de l'argent, où manger, et ce qui est ouvert à cette heure. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import { getPlaceOffers } from './place-activities'
 import type { PlaceOffer } from './place-activities'
 import { onGameTimeChange } from './game-clock'

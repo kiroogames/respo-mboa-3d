@@ -1,5 +1,5 @@
 /* Une commande reçue en présence d’Anneke, un traitement classique et un seul règlement le soir. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import rulesSource from './data/anneke-extra.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,advanceGameTime} from './game-clock.ts'

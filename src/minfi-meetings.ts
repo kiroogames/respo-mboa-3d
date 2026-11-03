@@ -1,5 +1,5 @@
 /* Réunion quotidienne : un seul engagement pour les deux options et aucun versement rétroactif. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import rulesSource from './data/minfi-meetings.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'

@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import { popupScroller } from './popup-shell'
 import {mountAdvancedDossiers} from './advanced-dossiers-ui'
 import {advancedRules,getAdvancedBatch,onAdvancedChange} from './advanced-dossiers'

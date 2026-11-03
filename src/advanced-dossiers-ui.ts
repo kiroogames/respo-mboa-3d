@@ -1,5 +1,5 @@
 /* Traitement classique ; chaque profil avancé fournit ses propres coûts et conditions. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {mountDossierWork} from './dossier-work-ui'
 import {dossierRules} from './dossier-work'
 import {advancedRules as rules,advancedDraftKey,getAdvancedBatch,advancedWorkReason,completeAdvancedDossier} from './advanced-dossiers'

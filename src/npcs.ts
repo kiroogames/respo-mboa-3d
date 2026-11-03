@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { getGuidedPresentation } from './guided-outing-state.ts'
 /*
  * Résout la présence des PNJ à partir de l’heure absolue sauvegardée.

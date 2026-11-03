@@ -1,5 +1,5 @@
 /* Les demandes de la file sont les seules activités utilisant le puzzle de liaison. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {mountCitizenQueuePuzzle} from './citizen-queue-puzzle-ui'
 import {dossierRules} from './dossier-work'
 import {userQueueRules as rules,getUserQueue,getQueuePuzzleBatch,queuePuzzleReason,prepareUserRequest,confirmUserRequest} from './user-queue'

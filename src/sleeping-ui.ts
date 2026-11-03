@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {onComfortChange} from './home-comfort'
 import { onPlayerResourcesChange } from './player-resources'
 /* Le lit reste un menu de la carte ; zéro minute ne peut jamais être confirmé. */

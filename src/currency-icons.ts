@@ -4,7 +4,7 @@
  * Fonctionne sur tout le texte des fenêtres, y compris celui reconstruit à chaque mise à jour.
  */
 
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 
 type Unit = 'nkap' | 'energy' | 'mood' | 'influence'
 const units: Record<string, Unit> = { nkap: 'nkap', énergie: 'energy', energy: 'energy', humeur: 'mood', mood: 'mood', influence: 'influence' }

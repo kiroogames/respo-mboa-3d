@@ -1,5 +1,5 @@
 /* Courbe validée : coût du niveau n vers n+1 = 95 × (n+1), points toujours cumulés. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 const threshold=(level:number)=>95n*BigInt(level-1)*BigInt(level+2)/2n
 export function getRespoProgress(points:number){
   if(!Number.isSafeInteger(points)||points<0)throw new RangeError(loc('Total Respo invalide.'))

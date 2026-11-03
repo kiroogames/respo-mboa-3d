@@ -1,7 +1,7 @@
 /* Présentation commune des fenêtres : illustrations et pages de jeu.
  * Les contrôles restent les mêmes nœuds DOM : aucune règle, sauvegarde ou transaction ne change.
  */
-import { loc, sourceOf } from './i18n'
+import { loc, sourceOf } from './i18n.ts'
 type Theme='food'|'sleep'|'work'|'fun'|'home'|'budget'|'wait'|'relations'|'jogging'|'football'|'cinema'|'drink'|'porridge'|'rice'|'ndole'|'ricebeans'|'chicken'
 const themes:[string,Theme][]=[['meal-dialog','food'],['canteen-dialog','food'],['food-bag-dialog','food'],['sleep-dialog','sleep'],['work-classic-dialog','work'],['citizen-puzzle-dialog','work'],['extra-dialog','work'],['meeting-dialog','work'],['missions-dialog','work'],['outings-dialog','fun'],['accompanied-dialog','relations'],['comfort-dialog','home'],['bills-dialog','budget'],['toque-dialog','budget'],['wait-dialog','wait'],['sport-energy-dialog','sleep'],['mood-effects-dialog','relations'],['npc-dialogue-dialog','relations']]
 const cardSelector='.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.energy-effect-cards>article'

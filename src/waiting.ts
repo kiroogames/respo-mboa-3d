@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Attente validée : seul le calendrier avance ; ni énergie, ni argent, ni points Respo ne sont accordés.

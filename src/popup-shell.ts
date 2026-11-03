@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {presentGameMenu} from './menu-presentation'
 import { onGameTimeChange } from './game-clock'
 /* Charpente commune des fenêtres : en-tête fixe, contenu défilant, actions toujours visibles en bas. */

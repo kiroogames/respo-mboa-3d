@@ -2,7 +2,7 @@
  * Puzzle de visas : relier le dépôt à la signature avec une seule ligne orthogonale.
  * Une graine stable conserve la même grille après fermeture ou rechargement du dossier.
  */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 export type DossierDirection = 'up' | 'right' | 'down' | 'left'
 export type DossierPuzzle = { pairs?: number[][]; size: number; start: number; goal: number; visas: number[]; blocked: number[]; arrows?: { cell: number; direction: DossierDirection }[]; level?: number }
 export const visaNames = [loc('Accueil'), loc('Technique'), loc('Finances')]

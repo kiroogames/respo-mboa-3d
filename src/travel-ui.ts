@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {prepareEmergencyReturn,confirmEmergencyReturn,previewEmergencyReturn} from './emergency-return'
 import { isGuidedOutingActive } from './guided-outing-state'
 /*

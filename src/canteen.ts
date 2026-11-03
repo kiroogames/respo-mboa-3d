@@ -1,5 +1,5 @@
 /* Les deux accès à la cantine utilisent le même service quotidien et le même verrou par plat. */
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { recordMeal } from './hunger.ts'
 import rulesSource from './data/canteen.json' with {type:'json'}
 const rules=locData(rulesSource)

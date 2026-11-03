@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Missions simultanées : chaque parcours possède son état et sa limite hebdomadaire. */
 import rulesSource from './data/pro-missions.json' with {type:'json'}

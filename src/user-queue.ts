@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import {createQueueRoute,scoreQueueRoute,routePayout} from './queue-route.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Accueil au ministère : file indépendante des piles de dossiers, une seule récompense par demande. */

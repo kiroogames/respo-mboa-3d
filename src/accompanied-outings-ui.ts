@@ -1,5 +1,5 @@
 /* Préparation libre, puis séquence guidée réservée. La caméra reste libre pendant les trois étapes. */
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {accompaniedRules as rules,prepareAccompanied,cancelAccompanied,confirmAccompanied,getAccompaniedState,finishAccompaniedPhase,onAccompaniedChange} from './accompanied-outings'
 import type {GuidedPhase,LocatePlace} from './accompanied-outings'
 import {cityOutings} from './city-outings'

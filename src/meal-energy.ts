@@ -1,5 +1,5 @@
 /* Effet daté indépendant des ressources : aucun temps réel et aucun cumul de capacité. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getGameTime,onGameTimeChange} from './game-clock.ts'
 const key='mboa-meal-energy-v1'
 export const mealEnergyRules={bonus:5,minutes:180}

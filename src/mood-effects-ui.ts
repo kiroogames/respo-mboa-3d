@@ -1,5 +1,5 @@
 /* Consultation du seul effet de confort validé ; pas d’avance de temps ou d’action payante. */
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {getMoodDetails,getMoodStatus,onPlayerResourcesChange} from './player-resources'
 import {comfortMoodTiers} from './comfort-mood'
 import './mood-effects.css'

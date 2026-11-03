@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {getSportEffect,sportRules} from './sport-energy'
 /* Options de sorties : choisir ne produit aucun effet ; une seule confirmation engage les coûts. */
 import {cityOutings,getOutingSchedule,prepareCityOuting,cancelCityOuting,confirmCityOuting,onCityOutingChange} from './city-outings'

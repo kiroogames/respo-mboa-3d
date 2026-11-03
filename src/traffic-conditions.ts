@@ -3,7 +3,7 @@
  * Un tirage est conservé par tranche de minutes de jeu, y compris après rechargement.
  */
 
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import rules from '../travel-rules.json' with { type: 'json' }
 import { getGameTime } from './game-clock.ts'
 

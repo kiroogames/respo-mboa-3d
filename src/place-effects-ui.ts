@@ -1,5 +1,5 @@
 /* Badges des lieux sur la carte : « + logos » pour ce qu'on peut y gagner, « − logos » pour ce qu'on peut y perdre, à l'heure actuelle. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import { getPlaceEffects } from './place-activities'
 import type { EffectUnit } from './place-activities'
 import { onGameTimeChange } from './game-clock'

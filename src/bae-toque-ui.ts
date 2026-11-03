@@ -1,5 +1,5 @@
 /* Offre sur place de Bae : aperçu sans paiement, confirmation unique et reçu. */
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {toqueRules as rules,getToqueState,toquePresenceReason,prepareToque,cancelToque,confirmToque,onToqueChange} from './bae-toque'
 import {onGameTimeChange} from './game-clock'
 import {onMoneyBalanceChange} from './currency'

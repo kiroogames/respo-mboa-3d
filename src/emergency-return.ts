@@ -1,5 +1,5 @@
 /* Retour de dernier recours : aucune recharge ni avance d’argent ; la dette est sauvegardée par fatigue. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {createTravelRoute,quoteTravel,travelModes} from './travel.ts'
 import type {TravelPoint} from './travel.ts'
 import {getTrafficConditions} from './traffic-conditions.ts'

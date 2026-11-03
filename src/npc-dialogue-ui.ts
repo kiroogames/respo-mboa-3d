@@ -3,7 +3,7 @@
  * La présence sur place est revérifiée à chaque action et lors des changements d’heure.
  */
 
-import { loc, gameLocale, locData } from './i18n'
+import { loc, gameLocale, locData } from './i18n.ts'
 import dialoguesSource from './data/bae-dialogues.json' with { type: 'json' }
 const dialogues=locData(dialoguesSource)
 import otherDialoguesSource from './data/npc-dialogues.json' with { type: 'json' }

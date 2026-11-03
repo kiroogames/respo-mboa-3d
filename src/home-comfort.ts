@@ -1,4 +1,4 @@
-import { loc, locData } from './i18n'
+import { loc, locData } from './i18n.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Confort dérivé des objets équipés et des travaux payés : aucun compteur cumulable au clic. */
 import rulesSource from './data/home-comfort.json' with {type:'json'}

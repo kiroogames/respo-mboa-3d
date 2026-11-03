@@ -1,5 +1,5 @@
 /* Repas du jour dans le HUD (matin, midi, soir) et bandeau d'alerte dans les fenêtres quand un repas a été sauté. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import { getHunger, onHungerChange } from './hunger'
 import { onGameTimeChange } from './game-clock'
 import './hunger.css'

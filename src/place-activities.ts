@@ -3,7 +3,7 @@
  * Lecture seule : reprend les mêmes services et horaires que le menu du lieu, sans rien réserver.
  */
 
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import { getVenueServices } from './venue-services'
 import { getNPCsAtZone, getNPCState } from './npcs'
 import { npcNeedsService } from './npc-relationships'

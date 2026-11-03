@@ -3,7 +3,7 @@
  * un repas sauté rend seulement chaque activité plus coûteuse en énergie (+25 % par repas manqué, max +50 %)
  * et retire 5 d'humeur une fois. Le prochain repas efface le surcoût.
  */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import { getGameTime, onGameTimeChange } from './game-clock.ts'
 
 export const mealSlots = [

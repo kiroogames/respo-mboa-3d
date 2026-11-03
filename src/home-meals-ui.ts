@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {onNPCRelationshipChange} from './npc-relationships'
 import { onPlayerResourcesChange } from './player-resources'
 /* Le choix d’un plat ne débite rien ; seule la confirmation consomme le service. */

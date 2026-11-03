@@ -1,5 +1,5 @@
 /* Dette d’éveil : les minutes de jeu comptent, seules les minutes de sommeil la réduisent. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {getGameTime,onGameTimeChange} from './game-clock.ts'
 import type {TimeKind} from './game-clock.ts'
 const key='mboa-fatigue-v1'

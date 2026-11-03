@@ -1,7 +1,7 @@
 /* HUD vivant : recopie les compteurs existants vers la carte du Respo, les jauges et l'horloge.
    Les modules de ressources restent la seule source ; ici on ne fait que lire leur affichage. */
 
-import { loc, sourceOf } from './i18n'
+import { loc, sourceOf } from './i18n.ts'
 const watch = (node: Node | null, update: () => void) => {
   if (!node) return
   new MutationObserver(update).observe(node, { childList: true, characterData: true, subtree: true, attributes: true })

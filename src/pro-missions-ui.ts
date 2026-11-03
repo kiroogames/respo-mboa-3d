@@ -1,4 +1,4 @@
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {projectEnergy} from './player-resources'
 /* Journal commun : plusieurs missions restent actives, chaque action exige son vrai lieu. */
 import {missionRules as rules,getMissionState,getMissionView,prepareMission,cancelMission,confirmMission,onMissionChange} from './pro-missions'

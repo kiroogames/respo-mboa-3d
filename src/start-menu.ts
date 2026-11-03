@@ -3,7 +3,7 @@
  * Les modules lisent leur sauvegarde au chargement : une nouvelle partie efface les clés « mboa- » puis recharge la page.
  */
 
-import { getLanguage, hasChosenLanguage, loc, saveLanguage, type Language } from './i18n'
+import { getLanguage, hasChosenLanguage, loc, saveLanguage, type Language } from './i18n.ts'
 import { getGameTime } from './game-clock'
 
 const progressKeys = ['mboa-game-minutes-v1', 'mboa-money-v1']

@@ -1,4 +1,4 @@
-import { loc, gameLocale } from './i18n'
+import { loc, gameLocale } from './i18n.ts'
 import {getMoodDetails,onPlayerResourcesChange} from './player-resources'
 import { getComfortMoodEffect } from './comfort-mood'
 /* Catalogue de données sur la carte actuelle : acheter et équiper sont deux confirmations distinctes. */

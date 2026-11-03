@@ -1,5 +1,5 @@
 /* Menu du jour partagé par le lieu et Mami Makala ; les effets attendent la confirmation. */
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 import {canteenRules as rules,getCanteenService,prepareCanteenMeal,cancelCanteenMeal,confirmCanteenMeal,onCanteenChange} from './canteen'
 import {onGameTimeChange} from './game-clock'
 import {onPlayerResourcesChange} from './player-resources'

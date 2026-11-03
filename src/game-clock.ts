@@ -3,7 +3,7 @@
  * Seules les actions explicites avancent cette horloge ; les animations ne la modifient jamais.
  */
 
-import { loc } from './i18n'
+import { loc } from './i18n.ts'
 // Events advance the calendar explicitly. Real time never changes it.
 const storageKey = 'mboa-game-minutes-v1'
 const days = [loc('Lundi'), loc('Mardi'), loc('Mercredi'), loc('Jeudi'), loc('Vendredi'), loc('Samedi'), loc('Dimanche')]
