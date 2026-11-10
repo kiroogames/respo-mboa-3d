@@ -4,7 +4,7 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
 import rulesSource from './data/pro-missions.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
-import {getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
+import {getPlayerResources,spendEnergy,changeRespoPoints,changeMood,workMoodCosts} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
 import {getNPCZone,isNPCAvailable} from './npcs.ts'
 export const missionRules=rules
@@ -55,7 +55,7 @@ export function confirmMission(token:number,context:MissionContext){
   else ledger[id]={week:current.record!.week,stage:'paid'}
   // Verrouillage sauvegardé avant toute notification de ressources ou du calendrier.
   save()
-  if(action==='work'){spendEnergy(rules.energyCost);advanceGameTime(rules.minutes)}
+  if(action==='work'){spendEnergy(rules.energyCost);changeMood(-workMoodCosts.mission);advanceGameTime(rules.minutes)}
   if(action==='report'){addMoney(rules.moneyGain);changeRespoPoints(rules.respoGain)}
   listeners.forEach(listener=>listener())
   return {ok:true as const,...current}

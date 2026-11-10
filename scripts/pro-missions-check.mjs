@@ -29,6 +29,6 @@ at(1440+540);for(const id of ['kako-airport','kako-shop','kako-market'])assert.e
 assert.equal(act('anneke-tekno').ok,true);assert.equal(money.getMoneyBalance(),2000)
 assert.equal(m.getMissionState('anneke-school').stage,'active')
 at(7*1440+480);assert.equal(act('anneke-market').ok,true);assert.equal(m.getMissionState('anneke-market').week,2);assert.equal(act('anneke-school','education').ok,true);assert.equal(act('anneke-school').ok,true)
-assert.equal(r.getPlayerResources().mood,90);assert.equal(r.getPlayerResources().karma,0);assert.equal(r.getPlayerResources().maxEnergy,100);assert.equal(money.getMoneyBalance(),3000);assert.equal(r.getPlayerResources().ptRespo,45)
+assert.equal(r.getPlayerResources().mood,84/* trois missions : −2 d’humeur chacune */);assert.equal(r.getPlayerResources().karma,0);assert.equal(r.getPlayerResources().maxEnergy,100);assert.equal(money.getMoneyBalance(),3000);assert.equal(r.getPlayerResources().ptRespo,45)
 store.set('mboa-pro-missions-v1',JSON.stringify({'anneke-market':{week:999,stage:'ready'},'kako-shop':{week:1,stage:'made-up'}}));const corrupt=await import('../src/pro-missions.ts?corrupt');assert.equal(corrupt.getMissionState('anneke-market'),null);assert.equal(corrupt.getMissionState('kako-shop'),null)
 console.log('Six simultaneous missions, giver/days/location guards, cancellation, stale/forged/duplicate quotes, no early gains, exact activity/report costs, reload, midnight/week persistence, weekly repeat, waiting reset and corrupt saves passed')

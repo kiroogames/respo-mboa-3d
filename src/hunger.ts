@@ -14,10 +14,10 @@ export const mealSlots = [
 export const hungerRules = { surchargePerMissed: .25, maxMissed: 2, moodPerMissed: 5 }
 const key = 'mboa-hunger-v1'
 // lastMeal : heure du dernier repas (ou du début du suivi) ; checked : dernière heure où les repas manqués ont été comptés.
-let state = { lastMeal: getGameTime().totalMinutes, checked: getGameTime().totalMinutes, eaten: [] as string[] }
+let state = { lastMeal: getGameTime().totalMinutes, checked: getGameTime().totalMinutes, eaten: [] as string[], meals: [] as string[] }
 try {
   const saved = JSON.parse(localStorage.getItem(key) ?? 'null')
-  if (saved && Number.isSafeInteger(saved.lastMeal) && Number.isSafeInteger(saved.checked) && Array.isArray(saved.eaten)) state = { lastMeal: saved.lastMeal, checked: saved.checked, eaten: saved.eaten.filter((id: unknown) => typeof id === 'string').slice(-9) }
+  if (saved && Number.isSafeInteger(saved.lastMeal) && Number.isSafeInteger(saved.checked) && Array.isArray(saved.eaten)) state = { lastMeal: saved.lastMeal, checked: saved.checked, eaten: saved.eaten.filter((id: unknown) => typeof id === 'string').slice(-9), meals: Array.isArray(saved.meals) ? saved.meals.filter((id: unknown) => typeof id === 'string').slice(-9) : [] }
 } catch { /* Sans sauvegarde, le suivi commence maintenant, sans faim rétroactive. */ }
 function save() { try { localStorage.setItem(key, JSON.stringify(state)) } catch { /* Suivi conservé pendant la session. */ } }
 save()
@@ -53,10 +53,17 @@ export function hungerEnergyCost(base: number, total = getGameTime().totalMinute
   return Math.ceil(base * (1 + getHunger(total).surcharge))
 }
 
+// Période de repas : du début d'un créneau jusqu'au début du suivant (la nuit appartient au soir de la veille).
+const periodKey = (total: number) => { const day = Math.floor(total / 1440), minute = total % 1440; return minute < mealSlots[0].start ? `${day - 1}:evening` : minute < mealSlots[1].start ? `${day}:morning` : minute < mealSlots[2].start ? `${day}:noon` : `${day}:evening` }
+/** Motif de refus d'un deuxième vrai repas dans la même période ; les collations ne sont pas concernées. */
+export function mealLimitReason(total = getGameTime().totalMinutes) {
+  return !disabled() && state.meals.includes(periodKey(total)) ? loc('Vous avez déjà pris un vrai repas : le prochain sera au créneau suivant.') : ''
+}
 /** À appeler au début d'un vrai repas, avant d'avancer l'heure. */
 export function recordMeal(total = getGameTime().totalMinutes) {
   state.lastMeal = total; state.checked = Math.max(state.checked, total)
-  const slot = slotKey(total)
+  const slot = slotKey(total), period = periodKey(total)
+  if (!state.meals.includes(period)) state.meals = [...state.meals, period].slice(-9)
   if (slot && !state.eaten.includes(slot)) state.eaten = [...state.eaten, slot].slice(-9)
   save(); listeners.forEach(listener => listener(0))
 }

@@ -28,7 +28,7 @@ import { mountSleeping } from './sleeping-ui'
  * Les cartes sont recalculées quand l’heure ou l’état des demandes change.
  */
 
-import { projectVenueEnergy,getVenueServices, useVenueService } from './venue-services'
+import { projectVenueEnergy,getVenueServices, useVenueService, venueServiceReason } from './venue-services'
 import { getMoneyBalance } from './currency'
 import { getPlayerResources, previewMoodChange } from './player-resources'
 import { getNPCsAtZone, isNPCAvailable, getNPCState, getNPCSchedule } from './npcs'
@@ -321,13 +321,13 @@ export function mountVenues(options: {
     const money = getMoneyBalance(), resources = getPlayerResources()
     list.innerHTML = (zone==='home'?`<button class="venue-service" data-service="home-meals"><b>${loc('Manger à la maison')}</b><span class="venue-description">${loc('Bouillie et beignets, riz sauce arachide ou ndolé et plantain.')}</span><span class="travel-costs">${loc('Dès 150 Nkap')}</span><span class="venue-gains">${loc('Énergie + humeur')}</span></button>`:'') + getVenueServices(zone).map(service => {
       if(service.id==='home-sleep')return `<button class="venue-service" data-service="home-sleep"><b>${loc('Dormir')}</b><span class="venue-description">${loc('30 min–16 h')}</span><span class="travel-costs">${loc('Gratuit · durée au choix')}</span><span class="venue-gains">${loc('Récupération selon la durée')}</span></button>`
-      const reason = money < service.money ? loc('Argent insuffisant') : resources.energy < service.energyCost ? loc('Énergie insuffisante') : ''
+      const reason = venueServiceReason(service) || (money < service.money ? loc('Argent insuffisant') : resources.energy < service.energyCost ? loc('Énergie insuffisante') : '')
       const projection=projectVenueEnergy(service),energyGain=projection.energyGain
       const energyReward = service.fullEnergy || service.energyGain ? `<span class="venue-energy-gain"><img src="${options.base}ui/currency-energy.png" alt=""/><strong>${service.fullEnergy ? loc('Recharge complète') : loc('+{0} énergie',energyGain)}</strong></span><span class="venue-energy-preview">${energyGain > 0 ? loc('{0} → {1} / {2} (+{3} à la fin)',resources.energy,projection.energyAfter,projection.maxEnergyAfter,energyGain) : loc('Fin : {0} / {1}{2}',projection.energyAfter,projection.maxEnergyAfter,projection.energyLoss?loc(' · baisse de capacité'):loc(' · énergie pleine'))}</span>` : ''
       const visibleMood=previewMoodChange(service.moodGain).delta
-      const otherGains = [visibleMood < 0 ? `<span class="venue-penalty">${loc('{0} humeur',visibleMood)}</span>` : visibleMood ? loc('+{0} humeur',visibleMood) : service.moodGain ? loc('Humeur affichée inchangée') : '', service.respoGain ? loc('+{0} points Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
+      const otherGains = [service.moneyGain ? loc('+{0} Nkap',service.moneyGain.toLocaleString(gameLocale)) : '', visibleMood < 0 ? `<span class="venue-penalty">${loc('{0} humeur',visibleMood)}</span>` : visibleMood ? loc('+{0} humeur',visibleMood) : service.moodGain ? loc('Humeur affichée inchangée') : '', service.respoGain ? loc('+{0} points Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
       const energyCost = service.energyCost ? `<span><img src="${options.base}ui/currency-energy.png" alt=""/>${loc('−{0} énergie',service.energyCost)}</span>` : ''
-      return `<button class="venue-service" data-service="${service.id}" ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?loc('Pause maison'):service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">${loc('Coûts')}</span><span class="travel-costs"><span><img src="${options.base}ui/currency-nkap.png" alt="${loc('Argent')}"/>${service.money ? service.money.toLocaleString(gameLocale) : '0'}</span>${energyCost}<span>${loc('◷ {0} min',service.minutes)}</span></span><span class="venue-gains"><span class="venue-section-label">${loc('Gains et effets')}</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
+      return `<button class="venue-service" data-service="${service.id}"${service.art ? ` data-menu-art="${service.art}"` : ''} ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?loc('Pause maison'):service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">${loc('Coûts')}</span><span class="travel-costs"><span><img src="${options.base}ui/currency-nkap.png" alt="${loc('Argent')}"/>${service.money ? service.money.toLocaleString(gameLocale) : '0'}</span>${energyCost}<span>${loc('◷ {0} min',service.minutes)}</span></span><span class="venue-gains"><span class="venue-section-label">${loc('Gains et effets')}</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
     }).join('')
     renderPeople()
     renderWorkEntry()
@@ -346,7 +346,7 @@ export function mountVenues(options: {
     if (!outcome.ok) result.textContent = outcome.reason
     else {
       const after = getPlayerResources()
-      const details = [outcome.mood ? loc('{0}{1} humeur',outcome.mood > 0 ? '+' : '',outcome.mood) : '', outcome.respo ? loc('+{0} points Respo',outcome.respo) : ''].filter(Boolean).join(' · ')
+      const details = [outcome.money ? loc('+{0} Nkap',outcome.money.toLocaleString(gameLocale)) : '', outcome.mood ? loc('{0}{1} humeur',outcome.mood > 0 ? '+' : '',outcome.mood) : '', outcome.respo ? loc('+{0} points Respo',outcome.respo) : ''].filter(Boolean).join(' · ')
       const energyMessage = outcome.energy > 0 ? loc('+{0} énergie',outcome.energy) : outcome.energy < 0 ? loc('{0} énergie',outcome.energy) : after.energy === after.maxEnergy ? loc('Énergie déjà au maximum') : loc('Énergie inchangée')
       result.innerHTML = `<b>${loc('{0} terminé',outcome.service.name)}</b><span class="venue-energy-result"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/><strong>${energyMessage}</strong></span><span>${before.energy} → ${after.energy} / ${after.maxEnergy}</span><small>${loc('{0} min écoulées{1}',outcome.service.minutes,details ? ` · ${details}` : '')}</small>`
     }

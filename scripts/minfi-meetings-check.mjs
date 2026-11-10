@@ -26,7 +26,7 @@ at(4*1440+480);q=m.prepareMeeting('participate');busy.setGuidedPresentation({npc
 assert.equal(act('participate').ok,true)
 at(5*1440+480);assert.equal(act('participate').ok,false);assert.equal(m.getMeetingSchedule().next.totalMinutes,7*1440+480)
 at(7*1440+480);r.restoreEnergy(100);q=m.prepareMeeting('report');c.advanceGameTime(5);assert.equal(m.confirmMeeting(q.token,ctx()).ok,false);assert.equal(act('report').ok,true)
-assert.equal(money.getMoneyBalance(),original.money);assert.equal(r.getPlayerResources().mood,original.mood);assert.equal(r.getPlayerResources().karma,original.karma)
+assert.equal(money.getMoneyBalance(),original.money);assert.equal(r.getPlayerResources().mood,original.mood-12)/* six réunions : −2 d’humeur chacune */;assert.equal(r.getPlayerResources().karma,original.karma)
 store.set('mboa-minfi-meetings-v1',JSON.stringify({version:1,day:70}));m=await import('../src/minfi-meetings.ts?future');assert.equal(m.getMeetingSchedule().consumed,false)
 store.set('mboa-minfi-meetings-v1','broken');m=await import('../src/minfi-meetings.ts?bad');assert.equal(m.getMeetingSchedule().consumed,false)
 r.changeRespoPoints(Number.MAX_SAFE_INTEGER-r.getPlayerResources().ptRespo);assert.match(m.previewMeeting('report').reason,/limite/);assert.equal(act('report').ok,false)

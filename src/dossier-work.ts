@@ -8,7 +8,7 @@ import rulesSource from './data/dossier-work.json' with { type: 'json' }
 const rules=locData(rulesSource)
 import { getGameTime, advanceGameTime } from './game-clock.ts'
 import { getMoneyBalance, addMoney } from './currency.ts'
-import { getPlayerResources, spendEnergy, changeRespoPoints } from './player-resources.ts'
+import { getPlayerResources, spendEnergy, changeRespoPoints, changeMood, workGain, workMoodCosts } from './player-resources.ts'
 
 export const dossierRules = rules
 const key = 'mboa-dossier-work-v1'
@@ -51,15 +51,15 @@ export function completeDossier(batchId: string, index: number, _path: readonly 
   if (committing) return { ok: false as const, reason: loc('Le traitement est déjà en cours.') }
   const reason = dossierWorkReason(zone, batchId, index)
   if (reason) return { ok: false as const, reason }
-  const money=rules.moneyGain
+  const money=workGain(rules.moneyGain),respo=workGain(rules.respoGain)
   const before = getPlayerResources()
   if (!Number.isSafeInteger(getMoneyBalance() + money) || !Number.isSafeInteger(before.ptRespo + rules.respoGain)) return { ok: false as const, reason: loc('Les compteurs ne permettent pas de recevoir cette récompense.') }
   committing = true
   try {
     // Marquer avant d’émettre les mises à jour empêche un double crédit, même en cas de clic réentrant.
     ledger.done.push(index); save()
-    spendEnergy(rules.energyCost); addMoney(money); changeRespoPoints(rules.respoGain)
+    spendEnergy(rules.energyCost); addMoney(money); changeRespoPoints(respo); changeMood(-workMoodCosts.dossier)
     advanceGameTime(rules.minutes)
-    return { ok: true as const, money, respo: rules.respoGain, energy: rules.energyCost, minutes: rules.minutes, title: rules.titles[index]! }
+    return { ok: true as const, money, respo, energy: rules.energyCost, minutes: rules.minutes, title: rules.titles[index]! }
   } finally { committing = false }
 }

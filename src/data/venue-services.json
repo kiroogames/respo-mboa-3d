@@ -171,5 +171,396 @@
     "energyGain": 5,
     "moodGain": 1,
     "respoGain": 0
+  },
+  {
+    "id": "job-benskin",
+    "zones": [
+      "jcd",
+      "baos"
+    ],
+    "name": "Faire le benskin",
+    "description": "Tous les jours · 06h–22h · 1 500 de versement au propriétaire de la moto, le reste est pour vous",
+    "money": 1500,
+    "energyCost": 30,
+    "minutes": 120,
+    "energyGain": 0,
+    "moodGain": -4,
+    "respoGain": 0,
+    "moneyGain": 3400,
+    "job": true,
+    "opening": 360,
+    "closing": 1320,
+    "limit": {
+      "per": "day",
+      "count": 2
+    },
+    "art": "benskin"
+  },
+  {
+    "id": "job-bayam-early",
+    "zones": [
+      "market"
+    ],
+    "name": "Bayam-sellam : arrivage du matin",
+    "description": "Tous les jours · 05h–09h · acheter au camion, revendre au détail : meilleur prix tôt",
+    "money": 2000,
+    "energyCost": 20,
+    "minutes": 90,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 0,
+    "moneyGain": 3800,
+    "job": true,
+    "opening": 300,
+    "closing": 540,
+    "limit": {
+      "per": "day",
+      "count": 1,
+      "group": "bayam"
+    },
+    "art": "bayam"
+  },
+  {
+    "id": "job-bayam-late",
+    "zones": [
+      "market"
+    ],
+    "name": "Bayam-sellam : fin de marché",
+    "description": "Tous les jours · 09h–13h · il reste moins de choix, la marge est plus petite",
+    "money": 2000,
+    "energyCost": 20,
+    "minutes": 90,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 0,
+    "moneyGain": 3000,
+    "job": true,
+    "opening": 540,
+    "closing": 780,
+    "limit": {
+      "per": "day",
+      "count": 1,
+      "group": "bayam"
+    },
+    "art": "bayam"
+  },
+  {
+    "id": "job-callbox",
+    "zones": [
+      "jcd"
+    ],
+    "name": "Tenir le call-box",
+    "description": "Tous les jours · 07h–21h · petit gain tranquille, 4 fois par jour au plus",
+    "money": 0,
+    "energyCost": 5,
+    "minutes": 60,
+    "energyGain": 0,
+    "moodGain": -1,
+    "respoGain": 0,
+    "moneyGain": 450,
+    "job": true,
+    "opening": 420,
+    "closing": 1260,
+    "limit": {
+      "per": "day",
+      "count": 4
+    },
+    "art": "callbox"
+  },
+  {
+    "id": "job-repetiteur",
+    "zones": [
+      "education"
+    ],
+    "name": "Donner des cours de répétition",
+    "description": "Lun–ven · 17h–20h · un cours par jour",
+    "money": 0,
+    "energyCost": 20,
+    "minutes": 90,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 6,
+    "moneyGain": 900,
+    "job": true,
+    "opening": 1020,
+    "closing": 1200,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "limit": {
+      "per": "day",
+      "count": 1
+    },
+    "art": "repetiteur"
+  },
+  {
+    "id": "job-snack",
+    "zones": [
+      "club",
+      "njoka"
+    ],
+    "name": "Gérer le snack ce soir",
+    "description": "Tous les jours · 20h–02h · bien payé, mais 3 heures debout",
+    "money": 0,
+    "energyCost": 40,
+    "minutes": 180,
+    "energyGain": 0,
+    "moodGain": -5,
+    "respoGain": 0,
+    "moneyGain": 2400,
+    "job": true,
+    "opening": 1200,
+    "closing": 120,
+    "limit": {
+      "per": "day",
+      "count": 1,
+      "group": "snack-job"
+    },
+    "art": "snackjob"
+  },
+  {
+    "id": "job-pousseur",
+    "zones": [
+      "airport",
+      "supermarket"
+    ],
+    "name": "Pousser et charger les colis",
+    "description": "Tous les jours · 06h–18h · payé tout de suite, 3 fois par jour au plus",
+    "money": 0,
+    "energyCost": 30,
+    "minutes": 45,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 0,
+    "moneyGain": 700,
+    "job": true,
+    "opening": 360,
+    "closing": 1080,
+    "limit": {
+      "per": "day",
+      "count": 3,
+      "group": "pousseur"
+    },
+    "art": "pousseur"
+  },
+  {
+    "id": "food-bhb",
+    "zones": [
+      "market"
+    ],
+    "name": "Beignets-haricots-bouillie",
+    "description": "Tous les jours · 06h–10h · le petit-déjeuner du quartier",
+    "money": 300,
+    "energyCost": 0,
+    "minutes": 20,
+    "energyGain": 35,
+    "moodGain": 4,
+    "respoGain": 0,
+    "meal": true,
+    "opening": 360,
+    "closing": 600,
+    "art": "bhb"
+  },
+  {
+    "id": "food-tournedos",
+    "zones": [
+      "market"
+    ],
+    "name": "Manger au tourne-dos",
+    "description": "Tous les jours · 11h–15h · assiette copieuse sur le banc, dos à la route",
+    "money": 450,
+    "energyCost": 0,
+    "minutes": 30,
+    "energyGain": 50,
+    "moodGain": 5,
+    "respoGain": 0,
+    "meal": true,
+    "opening": 660,
+    "closing": 900,
+    "art": "tournedos"
+  },
+  {
+    "id": "food-soya",
+    "zones": [
+      "njoka",
+      "club"
+    ],
+    "name": "Soya bien pimenté",
+    "description": "Tous les jours · 17h–01h · une collation, pas un repas",
+    "money": 500,
+    "energyCost": 0,
+    "minutes": 15,
+    "energyGain": 20,
+    "moodGain": 6,
+    "respoGain": 0,
+    "opening": 1020,
+    "closing": 60,
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "soya"
+    },
+    "art": "soya"
+  },
+  {
+    "id": "food-braise",
+    "zones": [
+      "njoka"
+    ],
+    "name": "Poisson braisé et bobolo",
+    "description": "Tous les jours · 18h–minuit · le vrai repas du soir",
+    "money": 1600,
+    "energyCost": 0,
+    "minutes": 45,
+    "energyGain": 65,
+    "moodGain": 10,
+    "respoGain": 0,
+    "meal": true,
+    "opening": 1080,
+    "closing": 0,
+    "art": "braise"
+  },
+  {
+    "id": "fun-ludo",
+    "zones": [
+      "palms",
+      "village"
+    ],
+    "name": "Partie de ludo",
+    "description": "Tous les jours · 08h–22h · gratuit, 2 parties par jour au plus",
+    "money": 0,
+    "energyCost": 0,
+    "minutes": 30,
+    "energyGain": 0,
+    "moodGain": 5,
+    "respoGain": 0,
+    "opening": 480,
+    "closing": 1320,
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "ludo"
+    },
+    "art": "ludo"
+  },
+  {
+    "id": "fun-songo",
+    "zones": [
+      "village"
+    ],
+    "name": "Partie de songo",
+    "description": "Tous les jours · 08h–20h · gratuit, une partie par jour",
+    "money": 0,
+    "energyCost": 0,
+    "minutes": 45,
+    "energyGain": 0,
+    "moodGain": 7,
+    "respoGain": 0,
+    "opening": 480,
+    "closing": 1200,
+    "limit": {
+      "per": "day",
+      "count": 1
+    },
+    "art": "songo"
+  },
+  {
+    "id": "fun-lions",
+    "zones": [
+      "club",
+      "njoka"
+    ],
+    "name": "Match des Lions au bar",
+    "description": "Mer, sam, dim · 19h–23h · une boisson et tout le quartier qui crie",
+    "money": 600,
+    "energyCost": 0,
+    "minutes": 120,
+    "energyGain": 0,
+    "moodGain": 22,
+    "respoGain": 0,
+    "opening": 1140,
+    "closing": 1380,
+    "days": [
+      2,
+      5,
+      6
+    ],
+    "limit": {
+      "per": "day",
+      "count": 1,
+      "group": "lions"
+    },
+    "art": "lions"
+  },
+  {
+    "id": "fun-cabaret",
+    "zones": [
+      "njoka"
+    ],
+    "name": "Soirée cabaret",
+    "description": "Tous les jours · 21h–02h · makossa et bikutsi en live",
+    "money": 1500,
+    "energyCost": 10,
+    "minutes": 120,
+    "energyGain": 0,
+    "moodGain": 30,
+    "respoGain": 0,
+    "opening": 1260,
+    "closing": 120,
+    "limit": {
+      "per": "day",
+      "count": 1
+    },
+    "art": "cabaret"
+  },
+  {
+    "id": "tontine",
+    "zones": [
+      "palms"
+    ],
+    "name": "Réunion de la tontine",
+    "description": "Dimanche · 14h–18h",
+    "money": 2000,
+    "energyCost": 0,
+    "minutes": 120,
+    "energyGain": 0,
+    "moodGain": 10,
+    "respoGain": 0,
+    "opening": 840,
+    "closing": 1080,
+    "days": [
+      6
+    ],
+    "art": "tontine",
+    "special": "tontine"
+  },
+  {
+    "id": "ceremony",
+    "zones": [
+      "village"
+    ],
+    "name": "Cérémonie au village",
+    "description": "Samedi · 12h–20h",
+    "money": 2000,
+    "energyCost": 0,
+    "minutes": 150,
+    "energyGain": 0,
+    "moodGain": 2,
+    "respoGain": 4,
+    "opening": 720,
+    "closing": 1200,
+    "days": [
+      5
+    ],
+    "limit": {
+      "per": "week",
+      "count": 1
+    },
+    "art": "mariage",
+    "special": "ceremony"
   }
 ]

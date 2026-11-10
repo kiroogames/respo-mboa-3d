@@ -170,6 +170,82 @@
         "energy": 0,
         "energyGain": 55,
         "mood": 9
+      },
+      {
+        "id": "eru",
+        "name": "Eru · water fufu",
+        "money": 800,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 55,
+        "mood": 9,
+        "days": [
+          0,
+          3
+        ]
+      },
+      {
+        "id": "koki",
+        "name": "Koki · plantain mûr",
+        "money": 500,
+        "minutes": 30,
+        "energy": 0,
+        "energyGain": 40,
+        "mood": 6,
+        "days": [
+          1,
+          4
+        ]
+      },
+      {
+        "id": "okok",
+        "name": "Okok · bâton de manioc",
+        "money": 700,
+        "minutes": 45,
+        "energy": 0,
+        "energyGain": 50,
+        "mood": 8,
+        "days": [
+          2
+        ]
+      },
+      {
+        "id": "achu",
+        "name": "Achu · sauce jaune",
+        "money": 1100,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 70,
+        "mood": 12,
+        "days": [
+          5
+        ]
+      },
+      {
+        "id": "mbongo",
+        "name": "Mbongo tchobi · poisson",
+        "money": 1300,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 70,
+        "mood": 13,
+        "days": [
+          2,
+          6
+        ]
+      },
+      {
+        "id": "kondre",
+        "name": "Kondrè de chèvre",
+        "money": 1200,
+        "minutes": 60,
+        "energy": 0,
+        "energyGain": 75,
+        "mood": 12,
+        "days": [
+          5,
+          6
+        ]
       }
     ]
   },

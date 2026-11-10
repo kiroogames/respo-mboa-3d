@@ -1,5 +1,5 @@
 import { loc, locData } from './i18n.ts'
-import { recordMeal } from './hunger.ts'
+import { recordMeal, mealLimitReason } from './hunger.ts'
 import {grantSportEffect} from './sport-energy.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Sorties solo : une occurrence par activité/session, même en changeant d’option ou après minuit. */
@@ -38,7 +38,8 @@ export function previewCityOuting(id:string,optionId:string){
  const from=getGameTime(),schedule=getOutingSchedule(id),resources=getPlayerResources(),mood=previewMoodChange(option.mood),balance=getMoneyBalance()
  const safe=Number.isSafeInteger(from.totalMinutes+option.minutes),to=safe?getGameTimeAt(from.totalMinutes+option.minutes):from
  const projection=projectEnergy(option.energyGain,to.totalMinutes,from.totalMinutes,resources.energy,option.energy),energyGain=projection.energyGain
- const reason=schedule.reason||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>schedule.end!?loc('La sortie se terminerait après la fermeture.'):'')||(balance<option.money?loc('Nkap insuffisants.'):'')||(resources.energy<option.energy?loc('Énergie insuffisante.'):'')||(activity.repeatable&&energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
+ const dishDays=(option as {days?:number[]}).days
+ const reason=schedule.reason||(dishDays&&!dishDays.includes(Math.floor(from.totalMinutes/1440)%7)?loc('Ce plat du jour n’est pas servi aujourd’hui.'):'')||(activity.id.startsWith('restaurant')||option.id==='meal'?mealLimitReason():'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>schedule.end!?loc('La sortie se terminerait après la fermeture.'):'')||(balance<option.money?loc('Nkap insuffisants.'):'')||(resources.energy<option.energy?loc('Énergie insuffisante.'):'')||(activity.repeatable&&energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
  return {activity:structuredClone(activity),option:{...option},from,to,schedule,balance,energyBefore:resources.energy,energyGain,maxEnergy:resources.maxEnergy,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodGain:mood.delta,reason}
 }
 const listeners=new Set<()=>void>()

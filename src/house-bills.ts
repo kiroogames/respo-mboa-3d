@@ -3,21 +3,23 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Factures fixes : l’heure de jeu crée les échéances, seul le joueur débite le portefeuille. */
 import rulesSource from './data/house-bills.json' with {type:'json'}
 const rules=locData(rulesSource)
-import {getGameTime,getGameTimeAt} from './game-clock.ts'
+import {getGameTime,getGameTimeAt,onGameTimeChange} from './game-clock.ts'
+import {changeMood} from './player-resources.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 export const houseBillItems=rules.items
 export const houseBillAmount=rules.items.reduce((sum,item)=>sum+item.money,0)
 const key='mboa-house-bills-v1',weekMinutes=10080,issueOffset=rules.issueDay*1440+rules.issueMinute
 function nextFridayAfter(total:number){const current=Math.floor(total/weekMinutes)*weekMinutes+issueOffset,candidate=current>total?current:current+weekMinutes;return Number.isSafeInteger(candidate)?candidate:null}
 const now=getGameTime().totalMinutes
-let firstIssue:number|null=nextFridayAfter(now),paid=0
+let firstIssue:number|null=nextFridayAfter(now),paid=0,penaltyDay=Math.floor(now/1440)
+export const lateBillMoodPerDay=10
 function issuedAt(total:number){return firstIssue===null||total<firstIssue?0:Math.floor((total-firstIssue)/weekMinutes)+1}
-function save(){try{localStorage.setItem(key,JSON.stringify({firstIssue,paid}))}catch{/* La session reste utilisable en mode privé. */}}
+function save(){try{localStorage.setItem(key,JSON.stringify({firstIssue,paid,penaltyDay}))}catch{/* La session reste utilisable en mode privé. */}}
 try{
  const saved=JSON.parse(localStorage.getItem(key)??'null')
  if(saved&&Number.isSafeInteger(saved.firstIssue)&&saved.firstIssue>=0&&saved.firstIssue%weekMinutes===issueOffset&&Number.isSafeInteger(saved.paid)&&saved.paid>=0){
   const issued=now<saved.firstIssue?0:Math.floor((now-saved.firstIssue)/weekMinutes)+1
-  if(saved.paid<=issued){firstIssue=saved.firstIssue;paid=saved.paid}
+  if(saved.paid<=issued){firstIssue=saved.firstIssue;paid=saved.paid;if(Number.isSafeInteger(saved.penaltyDay)&&saved.penaltyDay>=0&&saved.penaltyDay<=penaltyDay)penaltyDay=saved.penaltyDay}
  }
 }catch{/* Pas de dette rétroactive en cas de sauvegarde absente ou invalide. */}
 // Enregistrer dès l’activation, même si le joueur n’ouvre pas le menu avant vendredi.
@@ -33,6 +35,19 @@ export function getHouseBilling(){
  return {amount:houseBillAmount,issued,paid,unpaid,totalDue:unpaid*houseBillAmount,balance:getMoneyBalance(),oldest:unpaid?getHouseBill(paid):null,nextIssue:next!==null&&Number.isSafeInteger(next)?getGameTimeAt(next):null}
 }
 const listeners=new Set<()=>void>()
+// Facture en retard : l'humeur baisse à chaque minuit tant que la plus ancienne n'est pas réglée (7 jours comptés au plus par avance du temps).
+function overdueAt(total:number){
+ if(firstIssue===null||issuedAt(total)<=paid)return false
+ return total>=firstIssue+paid*weekMinutes+rules.recommendedDeadlineMinute-rules.issueMinute
+}
+onGameTimeChange(()=>{
+ const today=Math.floor(getGameTime().totalMinutes/1440)
+ if(today<=penaltyDay)return
+ let days=0
+ for(let day=Math.max(penaltyDay+1,today-6);day<=today;day++)if(overdueAt(day*1440))days++
+ penaltyDay=today;save()
+ if(days){changeMood(-lateBillMoodPerDay*days);listeners.forEach(listener=>listener())}
+})
 export function onHouseBillChange(listener:()=>void){listeners.add(listener);return ()=>listeners.delete(listener)}
 let sequence=0,committing=false,pending:{token:number;index:number;time:number;balance:number}|null=null
 export function prepareHouseBillPayment(){

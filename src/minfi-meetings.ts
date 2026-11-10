@@ -3,7 +3,7 @@ import { loc, locData } from './i18n.ts'
 import rulesSource from './data/minfi-meetings.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
-import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
+import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints,changeMood,workMoodCosts} from './player-resources.ts'
 import {getRespoProgress} from './respo-level.ts'
 import {isGuidedOutingActive} from './guided-outing-state.ts'
 export const meetingRules=rules
@@ -46,7 +46,7 @@ export function confirmMeeting(token:number,context:{zone:string;travelling:bool
   // Réserver la journée avant les notifications des ressources empêche toute seconde récompense.
   completedDay=p.schedule.day
   try{localStorage.setItem(key,JSON.stringify({version:1,day:completedDay}))}catch{/* Journée conservée en mémoire. */}
-  spendEnergy(p.option.energy);changeRespoPoints(p.option.respo);advanceGameTime(p.option.minutes)
+  spendEnergy(p.option.energy);changeRespoPoints(p.option.respo);changeMood(-workMoodCosts.meeting);advanceGameTime(p.option.minutes)
   listeners.forEach(fn=>fn())
   return {ok:true as const,...p}
  }finally{committing=false}

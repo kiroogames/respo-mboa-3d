@@ -3,7 +3,7 @@ import { loc, locData } from './i18n.ts'
 import rulesSource from './data/advanced-dossiers.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,advanceGameTime} from './game-clock.ts'
-import {getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
+import {getPlayerResources,spendEnergy,changeRespoPoints,changeMood,getWorkMood,workGain,workMoodCosts} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
 import {getRespoProgress} from './respo-level.ts'
 import {isGuidedOutingActive} from './guided-outing-state.ts'
@@ -33,6 +33,7 @@ export function advancedWorkReason(zone:string,batchId?:string,index?:number){
  if(batch.dossiers[index]!.done)return loc('Ce dossier a déjà été rémunéré dans cette pile.')
  const end=getGameTime().totalMinutes+d.minutes
  if(!Number.isSafeInteger(end)||end%1440>rules.closing||Math.floor(end/1440)!==Math.floor(getGameTime().totalMinutes/1440))return loc('Ce dossier se terminerait après 23h.')
+ if(!getWorkMood().hard)return getWorkMood().hardReason
  if(getPlayerResources().energy<d.energyCost)return loc('Énergie insuffisante : {0} nécessaires.',d.energyCost)
  if(!Number.isSafeInteger(getMoneyBalance()+d.moneyGain)||!Number.isSafeInteger(getPlayerResources().ptRespo+d.respoGain))return loc('Les compteurs ne permettent pas de recevoir cette récompense.')
  return ''
@@ -42,12 +43,12 @@ export function completeAdvancedDossier(batchId:string,index:number,_path:readon
  if(isGuidedOutingActive()||context.travelling||!context.allowed)return {ok:false as const,reason:loc('Terminez votre trajet ou votre autre activité.')}
  const reason=advancedWorkReason(context.zone,batchId,index);if(reason)return {ok:false as const,reason}
  const d=rules.dossiers[index]!
- const money=d.moneyGain
+ const money=workGain(d.moneyGain),respo=workGain(d.respoGain)
  committing=true
  try{
   ledger={batch:batchId,done:[...getAdvancedBatch().dossiers.filter(d=>d.done).map(d=>d.index),index]}
   try{localStorage.setItem(key,JSON.stringify({version:1,...ledger}))}catch{/* Verrou conservé dans la session. */}
-  spendEnergy(d.energyCost);addMoney(money);changeRespoPoints(d.respoGain);advanceGameTime(d.minutes)
-  listeners.forEach(fn=>fn());return {ok:true as const,title:d.title,money,respo:d.respoGain,energy:d.energyCost,minutes:d.minutes}
+  spendEnergy(d.energyCost);addMoney(money);changeRespoPoints(respo);changeMood(-workMoodCosts.advanced);advanceGameTime(d.minutes)
+  listeners.forEach(fn=>fn());return {ok:true as const,title:d.title,money,respo,energy:d.energyCost,minutes:d.minutes}
  }finally{committing=false}
 }

@@ -3,7 +3,7 @@ import { loc, locData } from './i18n.ts'
 import rulesSource from './data/anneke-extra.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,advanceGameTime} from './game-clock.ts'
-import {getPlayerResources,spendEnergy,changeRespoPoints} from './player-resources.ts'
+import {getPlayerResources,spendEnergy,changeRespoPoints,changeMood,workGain,workMoodCosts} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
 import {getNPCState} from './npcs.ts'
 import {isGuidedOutingActive} from './guided-outing-state.ts'
@@ -65,12 +65,12 @@ export function completeExtra(batch:string,index:number,_path:readonly number[],
  const reason=contextReason(context)||extraWorkReason(context.zone,batch,index)
  if(reason)return {ok:false as const,reason}
  if(!order?.started)return {ok:false as const,reason:loc('Confirmez le démarrage de votre commande.')}
- const money=rules.moneyGain
+ const money=workGain(rules.moneyGain),respo=workGain(rules.respoGain)
  committing=true
  try{
   order.done=true;save() // Verrouiller avant les notifications empêche un paiement réentrant.
-  spendEnergy(rules.energyCost);addMoney(money);changeRespoPoints(rules.respoGain);advanceGameTime(rules.minutes)
+  spendEnergy(rules.energyCost);addMoney(money);changeRespoPoints(respo);changeMood(-workMoodCosts.extra);advanceGameTime(rules.minutes)
   listeners.forEach(fn=>fn())
-  return {ok:true as const,money,respo:rules.respoGain,energy:rules.energyCost,minutes:rules.minutes,title:rules.titles[index]!}
+  return {ok:true as const,money,respo,energy:rules.energyCost,minutes:rules.minutes,title:rules.titles[index]!}
  }finally{committing=false}
 }

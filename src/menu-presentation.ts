@@ -2,10 +2,13 @@
  * Les contrôles restent les mêmes nœuds DOM : aucune règle, sauvegarde ou transaction ne change.
  */
 import { loc, sourceOf } from './i18n.ts'
+import { getWorkMood, workMoodCosts } from './player-resources.ts'
 type Theme='food'|'sleep'|'work'|'fun'|'home'|'budget'|'wait'|'relations'|'jogging'|'football'|'cinema'|'drink'|'porridge'|'rice'|'ndole'|'ricebeans'|'chicken'
 const themes:[string,Theme][]=[['meal-dialog','food'],['canteen-dialog','food'],['food-bag-dialog','food'],['sleep-dialog','sleep'],['work-classic-dialog','work'],['citizen-puzzle-dialog','work'],['extra-dialog','work'],['meeting-dialog','work'],['missions-dialog','work'],['outings-dialog','fun'],['accompanied-dialog','relations'],['comfort-dialog','home'],['bills-dialog','budget'],['toque-dialog','budget'],['wait-dialog','wait'],['sport-energy-dialog','sleep'],['mood-effects-dialog','relations'],['npc-dialogue-dialog','relations']]
 const cardSelector='.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.energy-effect-cards>article'
 const policies='.comfort-policy,.outing-policy,.bills-policy,.wait-rules,.meal-intro,.place-activity-note,.wait-intro,.classic-work-preview>small,.canteen-preview>small,.extra-preview>small,.meeting-preview>small,.comfort-preview>small'
+// Illustrations demandées mais pas encore livrées (voir art/) et plats du jour illustrés par leur identifiant.
+const missingArt=new Set<string>(),dayDishes=new Set(['eru','koki','okok','achu','mbongo','kondre'])
 function themeOf(dialog:HTMLDialogElement):Theme{
  if(dialog.classList.contains('outings-dialog'))return artOf(dialog.querySelector('h2')?.textContent??'','fun')
  if(dialog.matches('.venue-dialog,.transport-dialog')){
@@ -46,7 +49,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  if(tabs)dialog.querySelector('.popup-head')!.append(tabs)
  let theme=themeOf(dialog)
  dialog.classList.add('game-menu');dialog.dataset.menuTheme=theme
- const illustration=(kind:Theme)=>`${base}ui/menu-${kind}.jpg`
+ const illustration=(kind:string)=>`${base}ui/menu-${kind}.jpg`
  const city=dialog.querySelector('.menu-city-art')
  if(city){city.replaceChildren();const image=document.createElement('img');image.src=illustration(theme);image.alt='';image.className='game-menu-hero';city.append(image)}
  const badge=dialog.querySelector('.popup-icon')
@@ -61,6 +64,16 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    if(hero.getAttribute('src')!==source)hero.src=source
   }
   for(const tab of dialog.querySelectorAll('[data-venue-tab]')){const text=tab.firstChild;if(text?.nodeType===Node.TEXT_NODE){const value=tab.getAttribute('data-venue-tab')==='place'?loc('Activités'):loc('Habitants ');if(text.textContent!==value)text.textContent=value}}
+  // Bandeau d'humeur des fenêtres de travail : le joueur voit ce que son humeur lui rapporte ou lui coûte.
+  const has=(name:string)=>dialog.classList.contains(name)
+  const work=has('citizen-puzzle-dialog')?'queue':has('advanced-puzzle-dialog')?'advanced':has('extra-puzzle-dialog')||has('extra-dialog')?'extra':has('work-classic-dialog')?'dossier':has('meeting-dialog')?'meeting':has('missions-dialog')?'mission':null
+  if(work){
+   const mood=getWorkMood(),scaled=work!=='meeting'&&work!=='mission',cost=loc('−{0} humeur par tâche',workMoodCosts[work])
+   const text=!mood.hard&&(work==='queue'||work==='advanced')?mood.hardReason:!scaled?cost:(mood.percent>0?loc('Bonne humeur : +15 % de Nkap et de Respo'):mood.percent<0?loc('Humeur basse : −15 % de Nkap et de Respo'):loc('Humeur normale : gains normaux'))+' · '+cost
+   let banner=dialog.querySelector<HTMLElement>('.work-mood-banner')
+   if(!banner){banner=document.createElement('p');banner.className='work-mood-banner';banner.setAttribute('role','status');(body.querySelector('.game-menu-pages')??body).prepend(banner)}
+   if(banner.dataset.text!==text){banner.dataset.text=text;banner.dataset.state=!scaled?'cost':mood.percent>0?'high':mood.percent<0||!mood.hard?'low':'normal';banner.textContent=text}
+  }
   const queueIntro=dialog.querySelector<HTMLElement>('[data-work-list]>p:first-child')
   if(queueIntro&&!queueIntro.dataset.compact){queueIntro.title=queueIntro.textContent??'';queueIntro.textContent=loc('Dossier → signature. À vous de tracer !');queueIntro.dataset.compact='true'}
   const puzzleHint=dialog.querySelector<HTMLElement>('.citizen-feedback')
@@ -78,13 +91,15 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    const image=existing?.querySelector('img')??document.createElement('img'),title=node.querySelector('b')?.textContent??node.textContent??''
    const dishArt:Record<string,Theme>={classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'}
    // Les illustrations originales Unity priment lorsqu’elles représentent précisément l’activité.
-   const source=node.dataset.menuArt?illustration(node.dataset.menuArt as Theme):node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
+   const wanted=node.dataset.menuArt??(dayDishes.has(node.dataset.outingOption??'')?node.dataset.outingOption!:'')
+   const source=wanted&&!missingArt.has(wanted)?illustration(wanted):wanted?illustration(artOf(title,theme)):node.matches('[data-venue-queue]')||dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`
     :node.matches('[data-venue-work],[data-venue-advanced]')||node.hasAttribute('data-dossier-index')?`${base}ui/unity/dossiers.png`
     :node.closest('.missions-list')?`${base}ui/unity/mission.png`
     :node.dataset.comfortItem?.startsWith('bed-')?`${base}ui/unity/lit.png`
     :dialog.classList.contains('outings-dialog')&&dialog.querySelector('h2')?.textContent===loc('Restaurant du Mboa')&&dishArt[node.dataset.outingOption??'']?illustration(dishArt[node.dataset.outingOption!]!)
     :illustration(artOf(title,theme))
    if(image.getAttribute('src')!==source)image.setAttribute('src',source)
+   if(wanted&&!missingArt.has(wanted))image.onerror=()=>{image.onerror=null;missingArt.add(wanted);image.setAttribute('src',illustration(artOf(title,theme)))}
    if(!existing){image.alt='';art.append(image);node.prepend(art)}
   }
   // Un panneau réaffiché ne doit pas empiler deux fois la même note.

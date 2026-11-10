@@ -20,7 +20,7 @@ import './style.css'
 
 import { mountGameClock, onGameTimeChange } from './game-clock'
 
-import { mountWallet } from './currency'
+import { mountWallet, addMoney } from './currency'
 
 import { mountPlayerResources, getPlayerResources } from './player-resources'
 import { mountTravel } from './travel-ui'
@@ -110,6 +110,8 @@ const base = import.meta.env.BASE_URL
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
+// Nouvelle partie : 2 000 Nkap pour payer le premier petit-déjeuner et le taxi (portefeuille jamais créé).
+try{if(localStorage.getItem('mboa-money-v1')===null)addMoney(2000)}catch{/* Sans stockage, la partie commence sans cette avance. */}
 app.innerHTML = `
 
 <canvas id="city" aria-label="${loc('Mboa Ville en 3D : clic gauche pour se déplacer, clic molette pour tourner, molette pour zoomer')}"></canvas>

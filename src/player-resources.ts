@@ -138,6 +138,17 @@ export function changeMood(delta: number) {
   if (!Number.isFinite(delta)) throw new RangeError(loc('Variation d’humeur invalide.'))
   setMood(state.mood + delta)
 }
+// Humeur au travail : au-dessus de 110 les gains montent de 15 %, sous 60 ils baissent de 15 %,
+// sous 30 les tâches difficiles (usagers, dossiers avancés) sont refusées. Chaque tâche use un peu l'humeur.
+export const workMoodCosts = { dossier: 2, queue: 3, extra: 3, advanced: 4, mission: 2, meeting: 2 } as const
+export function getWorkMood() {
+  const mood = getMoodDetails().displayed, percent = mood >= 110 ? 15 : mood < 60 ? -15 : 0
+  return { mood, percent, hard: mood >= 30, hardReason: mood >= 30 ? '' : loc('Humeur trop basse pour cette tâche : détendez-vous d’abord.') }
+}
+export function workGain(amount: number) {
+  if (!Number.isSafeInteger(amount) || amount <= 0) return amount
+  return Math.round(amount * (100 + getWorkMood().percent) / 100)
+}
 // Seven bands from Unity UI_HudStat; the requested range is strictly [0, 140].
 export function getMoodStatus(value = getMoodDetails().displayed) {
   const labels = [loc('Déprimé'), loc('Malheureux'), loc('Stressé'), loc('Routine'), loc('Content'), loc('Heureux'), loc('Très heureux')]

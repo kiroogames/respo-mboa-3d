@@ -4,7 +4,7 @@
  */
 
 import { loc, gameLocale } from './i18n.ts'
-import { getVenueServices } from './venue-services'
+import { getVenueServices, venueServiceReason } from './venue-services'
 import { getNPCsAtZone, getNPCState } from './npcs'
 import { npcNeedsService } from './npc-relationships'
 import { bagFoods } from './food-bag'
@@ -45,8 +45,9 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
     items.push({ icon: '🛋️', title: loc('Confort et équipements'), detail: loc('Acheter et installer des équipements') })
   }
   for (const service of getVenueServices(zone)) {
-    const gains = [service.fullEnergy ? loc('recharge complète') : service.energyGain ? loc('+{0} énergie',service.energyGain) : '', service.moodGain > 0 ? loc('+{0} humeur',service.moodGain) : '', service.respoGain ? loc('+{0} Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
-    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', title: service.name, detail: service.id === 'home-sleep' ? loc('Gratuit · durée au choix') : loc('{0} · {1} min{2}',nkap(service.money),service.minutes,gains ? ` · ${gains}` : '') })
+    const closed = venueServiceReason(service)
+    const gains = [service.moneyGain ? loc('+{0} Nkap',service.moneyGain.toLocaleString(gameLocale)) : '', service.fullEnergy ? loc('recharge complète') : service.energyGain ? loc('+{0} énergie',service.energyGain) : '', service.moodGain > 0 ? loc('+{0} humeur',service.moodGain) : '', service.respoGain ? loc('+{0} Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
+    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', title: service.name, detail: service.id === 'home-sleep' ? loc('Gratuit · durée au choix') : loc('{0} · {1} min{2}',nkap(service.money),service.minutes,gains ? ` · ${gains}` : ''), ...(closed ? { closed: true, status: closed } : {}) })
   }
   for (const outing of cityOutings.filter(item => item.zone === zone)) {
     const schedule = getOutingSchedule(outing.id)
@@ -89,7 +90,7 @@ export function getPlaceOffers(zone: string): PlaceOffer[] {
   const { gains, losses } = getPlaceEffects(zone), offers: PlaceOffer[] = []
   if (gains.includes('nkap')) offers.push('earn')
   const outing = cityOutings.some(item => item.zone === zone && (item.id.startsWith('restaurant') || item.id === 'snack') && !getOutingSchedule(item.id).reason)
-  if (outing || bagFoods.some(food => food.zone === zone) || (zone === 'ministry' && !getCanteenService().reason) || (zone === 'home' && getHomeMealService().open)) offers.push('eat')
+  if (outing || getVenueServices(zone).some(service => service.meal && !venueServiceReason(service)) || bagFoods.some(food => food.zone === zone) || (zone === 'ministry' && !getCanteenService().reason) || (zone === 'home' && getHomeMealService().open)) offers.push('eat')
   if (gains.length || losses.length) offers.push('open')
   return offers
 }
@@ -119,8 +120,8 @@ export function getPlaceEffects(zone: string) {
     add(['mood'], ['nkap'])
   }
   for (const service of getVenueServices(zone)) {
-    if (service.id === 'public-rest') continue
-    add([...(service.energyGain || service.fullEnergy ? ['energy' as const] : []), ...(service.moodGain > 0 ? ['mood' as const] : [])],
+    if (service.id === 'public-rest' || venueServiceReason(service)) continue
+    add([...(service.moneyGain ? ['nkap' as const] : []), ...(service.energyGain || service.fullEnergy ? ['energy' as const] : []), ...(service.moodGain > 0 ? ['mood' as const] : [])],
       [...(service.money > 0 ? ['nkap' as const] : []), ...(service.energyCost > 0 ? ['energy' as const] : []), ...(service.moodGain < 0 ? ['mood' as const] : [])])
   }
   for (const outing of cityOutings.filter(item => item.zone === zone && !getOutingSchedule(item.id).reason))

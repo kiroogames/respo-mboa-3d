@@ -5,7 +5,7 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
 import rulesSource from './data/user-queue.json' with {type:'json'}
 const rules=locData(rulesSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
-import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints,changeMood,changeInfluence} from './player-resources.ts'
+import {projectEnergy,getPlayerResources,spendEnergy,changeRespoPoints,changeMood,changeInfluence,getWorkMood,workGain,workMoodCosts} from './player-resources.ts'
 import {getMoneyBalance,addMoney} from './currency.ts'
 export const userQueueRules=rules
 const key='mboa-user-queue-v1'
@@ -26,7 +26,7 @@ export function getUserQueue(total=getGameTime().totalMinutes){
 export function previewUserRequest(index:number){
   if(!Number.isInteger(index)||index<0||index>=rules.titles.length)throw new RangeError(loc('Demande inconnue.'))
   const queue=getUserQueue(),from=getGameTime(),to=getGameTimeAt(from.totalMinutes+rules.minutes),energyBefore=getPlayerResources().energy
-  const reason=queue.reason||(queue.done.includes(index)?loc('Cette demande est déjà traitée.'):'')||(to.totalMinutes>queue.end?loc('Le traitement se terminerait après la fermeture.'):'')||(energyBefore<rules.energyCost?loc('Énergie insuffisante.'):'')||(getMoneyBalance()>Number.MAX_SAFE_INTEGER-rules.moneyGain||getPlayerResources().ptRespo>Number.MAX_SAFE_INTEGER-rules.respoGain?loc('Le total des gains dépasse la limite autorisée.'):'')
+  const reason=queue.reason||getWorkMood().hardReason||(queue.done.includes(index)?loc('Cette demande est déjà traitée.'):'')||(to.totalMinutes>queue.end?loc('Le traitement se terminerait après la fermeture.'):'')||(energyBefore<rules.energyCost?loc('Énergie insuffisante.'):'')||(getMoneyBalance()>Number.MAX_SAFE_INTEGER-rules.moneyGain||getPlayerResources().ptRespo>Number.MAX_SAFE_INTEGER-rules.respoGain?loc('Le total des gains dépasse la limite autorisée.'):'')
   return {index,title:rules.titles[index]!,queue,from,to,energyBefore,energyAfter:projectEnergy(0,to.totalMinutes,from.totalMinutes,energyBefore,rules.energyCost,'awake',getPlayerResources().ptRespo+rules.respoGain).energyAfter,reason}
 }
 export type UserRequestPreview=ReturnType<typeof previewUserRequest>
@@ -44,18 +44,18 @@ export function confirmUserRequest(id:number,context:{zone:string;travelling:boo
   const board=createQueueRoute(`queue:${current.queue.start}/${current.index}`,current.index),totals=scoreQueueRoute(board,path)
   if(!totals)return {ok:false as const,reason:loc('Tracez un chemin du dossier jusqu’à la signature.')}
   // Bilan du parcours : l'argent ne descend pas sous zéro, l'énergie et l'humeur peuvent être négatives.
-  const payout=routePayout(totals),money=payout.money,energy=rules.energyCost+payout.energyLoss
+  const payout=routePayout(totals),money=workGain(payout.money),respo=workGain(rules.respoGain),energy=rules.energyCost+payout.energyLoss
   if(getPlayerResources().energy<energy)return {ok:false as const,reason:loc('Énergie insuffisante pour ce parcours : il faut {0} énergie.',energy)}
   committing=true
   try{
     ledger={start:current.queue.start,done:[...current.queue.done,current.index]}
     // Verrouiller avant les notifications d’énergie/argent empêche les appels réentrants.
     try{localStorage.setItem(key,JSON.stringify(ledger))}catch{/* File conservée pendant la session. */}
-    spendEnergy(energy);addMoney(money);changeRespoPoints(rules.respoGain)
-    if(payout.mood)changeMood(payout.mood)
+    spendEnergy(energy);addMoney(money);changeRespoPoints(respo)
+    changeMood(payout.mood-workMoodCosts.queue)
     if(payout.influence)changeInfluence(payout.influence)
     advanceGameTime(rules.minutes)
-    return {ok:true as const,...current,money,respo:rules.respoGain,energy,minutes:rules.minutes,mood:payout.mood,influence:payout.influence,totals}
+    return {ok:true as const,...current,money,respo,energy,minutes:rules.minutes,mood:payout.mood,influence:payout.influence,totals}
   }finally{committing=false}
 }
 
