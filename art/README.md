@@ -1,4 +1,4 @@
-# Illustrations à générer
+# Illustrations du jeu
 
 Ce dossier liste les images dont le jeu a besoin pour la vie de quartier (jobs, plats, loisirs, vie sociale).
 Tant qu'une image manque, le jeu affiche une illustration de secours : rien n'est cassé.
@@ -19,7 +19,7 @@ Le jeu la prend en compte au prochain chargement, sans modifier le code.
 Références à fournir à l'IA : `public/ui/menu-food.jpg`, `public/ui/menu-work.jpg`, `public/ui/menu-sleep.jpg`, `public/ui/menu-wait.jpg`.
 
 - Dessin cartoon satirique, contours noirs épais, couleurs vives, ombres simples.
-- Personnage principal « Le Respo » : fonctionnaire camerounais, peau foncée, crâne rasé, petite barbe,
+- Personnage principal « Le Respo » : fonctionnaire camerounais, peau foncée, cheveux noirs courts, moustache et bouc pointu,
   chemise blanche, cravate verte, pantalon vert foncé, chaussures noires. Expressions exagérées et drôles.
 - Décor réduit à quelques accessoires ; pas de paysage complet.
 - Ambiance : Cameroun urbain (Yaoundé / Douala), humour bon enfant.
@@ -27,7 +27,7 @@ Références à fournir à l'IA : `public/ui/menu-food.jpg`, `public/ui/menu-wor
 Phrase de style à coller au début de chaque demande :
 
 > Illustration cartoon satirique, contours noirs épais, couleurs vives, fond blanc uni, format carré, sans texte.
-> Personnage : fonctionnaire camerounais au crâne rasé, petite barbe, chemise blanche, cravate verte, pantalon vert foncé.
+> Personnage : fonctionnaire camerounais aux cheveux noirs courts, moustache et bouc pointu, chemise blanche, cravate verte, pantalon vert foncé.
 
 ## Liste des images
 
@@ -85,3 +85,8 @@ Pour ces six plats, le Respo peut apparaître en petit derrière l'assiette (ser
 
 Ouvrir le lieu concerné dans le jeu : la carte de l'activité doit afficher la nouvelle image à gauche.
 Si l'image de secours apparaît encore, vérifier le nom du fichier (minuscules, tiret, extension `.jpg`).
+
+
+## Livraison du 10 novembre 2026
+
+Les 23 illustrations ci-dessus sont livrées dans `public/ui/`. Elles ont été créées avec les originaux copiés dans `art/LE RESPONSABLE/` comme références de dessin et d’identité. Voir `charte-respo.md` et `production/` pour la traçabilité. Les références originales restent intactes.

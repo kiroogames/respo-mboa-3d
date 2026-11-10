@@ -5,6 +5,8 @@
 const icons = ['meal', 'transport', 'dossier', 'sleep', 'bills', 'energy', 'mood', 'tontine', 'ceremony', 'savings', 'level']
 const pieces = ['panel', 'plaque', 'button-primary', 'button-secondary', 'card', 'hud', 'close', ...icons.map(name => `icon-${name}`)]
 const ready = new Set<string>()
+// Les images restent référencées : le navigateur les garde décodées, sans clignotement à la première fenêtre.
+const loaded: HTMLImageElement[] = []
 export const kitUrl = (name: string) => `${import.meta.env.BASE_URL}ui/kit/${name}.png`
 export const kitHas = (name: string) => ready.has(name)
 export const kitCount = () => ready.size
@@ -15,6 +17,6 @@ export function mountUiKit() {
     const image = new Image()
     // La classe active les règles de menus-arcade.css ; la variable porte l'adresse, valable aussi sous un sous-dossier.
     image.onload = () => { ready.add(name); root.style.setProperty(`--kit-${name}`, `url("${kitUrl(name)}")`); root.classList.add(`kit-${name}`) }
-    image.src = kitUrl(name)
+    image.src = kitUrl(name); loaded.push(image)
   }
 }

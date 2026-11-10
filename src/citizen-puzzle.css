@@ -1,11 +1,11 @@
 
-.citizen-puzzle-dialog{width:min(620px,calc(100vw - 20px));color:#244c3a;background:#fffaf0;border-radius:22px;padding:20px;box-sizing:border-box}
-.citizen-cards{display:grid;gap:10px}.citizen-card{display:flex;align-items:center;gap:12px;padding:12px;text-align:left;background:#fff;border:1px solid #d4dfcc;border-radius:12px;color:#244c3a}.citizen-card b,.citizen-card small{display:block}.citizen-card small{margin-top:6px;line-height:1.5}.citizen-card:disabled{opacity:.6}
+.citizen-puzzle-dialog{width:min(620px,calc(100vw - 20px));color:#1c3454;background:#fffaf0;border-radius:22px;padding:20px;box-sizing:border-box}
+.citizen-cards{display:grid;gap:10px}.citizen-card{display:flex;align-items:center;gap:12px;padding:12px;text-align:left;background:#fff;border:1px solid #c8dae3;border-radius:12px;color:#1c3454}.citizen-card b,.citizen-card small{display:block}.citizen-card small{margin-top:6px;line-height:1.5}.citizen-card:disabled{opacity:.6}
 .citizen-icon{display:inline-block;width:42px;height:42px;flex:none;border-radius:10px;background-image:url('/ui/citizen-puzzle-icons.png');background-size:200% 200%;vertical-align:middle;pointer-events:none}.icon-0{background-position:0 0}.icon-1{background-position:100% 0}.icon-2{background-position:0 100%}.icon-3{background-position:100% 100%}
-.citizen-request{display:flex;gap:10px;align-items:center;background:#edf4e7;padding:10px;border-radius:12px}.citizen-avatar{font-size:28px}.citizen-request p{margin:4px 0 0;font-size:12px;line-height:1.4}.citizen-objective{display:flex;justify-content:space-between;gap:6px;font-size:13px;margin:10px 0}.citizen-pair-tabs{display:flex;justify-content:center;gap:10px;margin:6px 0}.citizen-pair-tabs button{display:flex;align-items:center;border:2px solid transparent;background:#fff9ed;border-radius:10px;padding:2px;color:#234b39}.citizen-pair-tabs [aria-pressed=true]{border-color:var(--pair-color)}.citizen-pair-tabs .citizen-icon{width:26px;height:26px}.citizen-pair-tabs small{font-weight:bold}
-.citizen-board{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);position:relative;aspect-ratio:1;width:min(100%,380px);margin:0 auto;background:#e2ead7;border:4px solid #42664e;border-radius:14px;overflow:hidden;touch-action:none;user-select:none;box-sizing:border-box;gap:3px;padding:3px}
-.citizen-cell{border:0;border-radius:6px;background:var(--cell-color,#fffbee);padding:0;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;color:#9d9e8d}.citizen-cell .citizen-icon{width:85%;height:85%;border-radius:7px;position:relative;z-index:2}.citizen-cell.is-blocked{background:#8b9681;color:#d6ddcb;font-size:24px}.citizen-cell.is-current{box-shadow:inset 0 0 0 3px #e4b347}.citizen-board svg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);pointer-events:none;z-index:1}.citizen-board polyline{fill:none;stroke-width:19;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
-.citizen-feedback{font-size:12px;line-height:1.4;min-height:30px;margin:8px 0}.citizen-controls{display:flex;gap:7px}.citizen-controls button,.citizen-pile{border:1px solid #a4b49b;background:#fffbed;color:#244c3a;border-radius:9px;padding:10px;cursor:pointer}.citizen-controls [data-work-confirm]{flex:1;background:#286047;color:#fff;font-weight:bold}.citizen-controls button:disabled{opacity:.55;cursor:default}.citizen-pile{font-size:11px;margin-top:5px;padding:5px;background:transparent;border:0}.citizen-puzzle-dialog [data-work-receipt] strong{font-size:28px;color:#286047}.citizen-puzzle-dialog button:focus-visible{outline:3px solid #e6a627;outline-offset:1px}
+.citizen-request{display:flex;gap:10px;align-items:center;background:#f8f2e3;padding:10px;border-radius:12px}.citizen-avatar{font-size:28px}.citizen-request p{margin:4px 0 0;font-size:12px;line-height:1.4}.citizen-objective{display:flex;justify-content:space-between;gap:6px;font-size:13px;margin:10px 0}.citizen-pair-tabs{display:flex;justify-content:center;gap:10px;margin:6px 0}.citizen-pair-tabs button{display:flex;align-items:center;border:2px solid transparent;background:#fff9ed;border-radius:10px;padding:2px;color:#1c3353}.citizen-pair-tabs [aria-pressed=true]{border-color:var(--pair-color)}.citizen-pair-tabs .citizen-icon{width:26px;height:26px}.citizen-pair-tabs small{font-weight:bold}
+.citizen-board{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);position:relative;aspect-ratio:1;width:min(100%,380px);margin:0 auto;background:#f2e7cf;border:4px solid #2a4e7e;border-radius:14px;overflow:hidden;touch-action:none;user-select:none;box-sizing:border-box;gap:3px;padding:3px}
+.citizen-cell{border:0;border-radius:6px;background:var(--cell-color,#fffbee);padding:0;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0;color:#9d9e8d}.citizen-cell .citizen-icon{width:85%;height:85%;border-radius:7px;position:relative;z-index:2}.citizen-cell.is-blocked{background:#818c96;color:#c7d8e1;font-size:24px}.citizen-cell.is-current{box-shadow:inset 0 0 0 3px #e4b347}.citizen-board svg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);pointer-events:none;z-index:1}.citizen-board polyline{fill:none;stroke-width:19;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.citizen-feedback{font-size:12px;line-height:1.4;min-height:30px;margin:8px 0}.citizen-controls{display:flex;gap:7px}.citizen-controls button,.citizen-pile{border:1px solid #92afbd;background:#fffbed;color:#1c3454;border-radius:9px;padding:10px;cursor:pointer}.citizen-controls [data-work-confirm]{flex:1;background:#167c7e;color:#fff;font-weight:bold}.citizen-controls button:disabled{opacity:.55;cursor:default}.citizen-pile{font-size:11px;margin-top:5px;padding:5px;background:transparent;border:0}.citizen-puzzle-dialog [data-work-receipt] strong{font-size:28px;color:#167c7e}.citizen-puzzle-dialog button:focus-visible{outline:3px solid #e6a627;outline-offset:1px}
 /* Le jeu de lignes occupe une seule vue : aucun défilement dans la fenêtre en mode puzzle. */
 dialog.citizen-puzzle-dialog[data-mode=puzzle]{height:min(800px,calc(100dvh - 16px));max-height:calc(100dvh - 16px);overflow:hidden!important}
 dialog.citizen-puzzle-dialog[data-mode=puzzle]>.popup-body{overflow:hidden!important;padding:8px 12px!important;min-height:0}
@@ -29,31 +29,31 @@ dialog.citizen-puzzle-dialog[data-mode=puzzle] .citizen-feedback{margin:5px 0!im
 }
 
 /* Reçu de la file d'attente : bouton principal pour enchaîner la demande suivante. */
-.citizen-puzzle-dialog [data-work-receipt] [data-next]{display:block;width:100%;min-height:48px;margin-top:14px;border:0;border-radius:14px;background:#286047;color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
-.citizen-puzzle-dialog [data-work-receipt] [data-next]:hover{background:#1f4f3a}
+.citizen-puzzle-dialog [data-work-receipt] [data-next]{display:block;width:100%;min-height:48px;margin-top:14px;border:0;border-radius:14px;background:#167c7e;color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.citizen-puzzle-dialog [data-work-receipt] [data-next]:hover{background:#183356}
 
 /* Parcours de la file d'attente : départ, signature, cases à gains (+) ou pertes (−). */
-.route-fixed{font-size:14px;line-height:1.5;color:#405744}
-.citizen-face{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:50%;background:#edf4e7;font-size:28px}
+.route-fixed{font-size:14px;line-height:1.5;color:#264671}
+.citizen-face{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:50%;background:#f8f2e3;font-size:28px}
 .citizen-puzzle-dialog .citizen-avatar{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#fff;font-size:28px}
-.route-tally{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0;padding:8px 12px;border-radius:12px;background:#fff;border:1px solid #d4dfcc;font-weight:800}
-.route-tally-label{font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#6a7b67;margin-right:4px}
+.route-tally{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0;padding:8px 12px;border-radius:12px;background:#fff;border:1px solid #c8dae3;font-weight:800}
+.route-tally-label{font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#67717b;margin-right:4px}
 .route-tally small{font-weight:600;color:#7b6a55}
 .route-amount{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-weight:900;font-variant-numeric:tabular-nums}
 .route-amount .currency-icon{width:1.2em;height:1.2em;margin:0}
-.route-amount.is-gain{color:#1f6b3a}.route-amount.is-loss{color:#b3402a}
-.route-board .route-cell{position:relative;flex-direction:column;gap:2px;font-size:clamp(11px,2.6vw,15px);color:#33503d;cursor:pointer;transition:background .12s,transform .12s}
+.route-amount.is-gain{color:#167c7e}.route-amount.is-loss{color:#b3402a}
+.route-board .route-cell{position:relative;flex-direction:column;gap:2px;font-size:clamp(11px,2.6vw,15px);color:#213d62;cursor:pointer;transition:background .12s,transform .12s}
 .route-board .route-cell small{font-size:10px;font-weight:800;letter-spacing:.2px}
-.route-board .route-cell.is-gain{background:#e6f4dd}
+.route-board .route-cell.is-gain{background:#f9efd8}
 .route-board .route-cell.is-loss{background:#fbe3dc}
-.route-board .route-cell.is-blocked{background:#8b9681;color:#eef2e6;cursor:not-allowed}
+.route-board .route-cell.is-blocked{background:#818c96;color:#f7f0e1;cursor:not-allowed}
 .route-board .route-cell.is-start{background:#fff3c8}
-.route-board .route-cell.is-goal{background:#cdeccf;box-shadow:inset 0 0 0 3px #2f8a4c}
+.route-board .route-cell.is-goal{background:#f5e6c4;box-shadow:inset 0 0 0 3px #239496}
 .route-board .route-cell.is-visited{background:#bfe0f0}
 .route-board .route-cell.is-visited.is-loss{background:#f2c0b2}
-.route-board .route-cell.is-visited.is-gain{background:#bfe6b0}
+.route-board .route-cell.is-visited.is-gain{background:#abd6eb}
 .route-board .route-cell.is-current{box-shadow:inset 0 0 0 3px #e4b347}
-.route-board .route-cell.is-next{outline:2px dashed #86a98f;outline-offset:-5px}
+.route-board .route-cell.is-next{outline:2px dashed #8698a9;outline-offset:-5px}
 .route-board .route-cell.is-next:hover{transform:scale(1.04)}
 .route-board .route-mark{font-size:clamp(18px,4.5vw,26px);line-height:1}
 .route-board .route-cell>*{position:relative;z-index:2;pointer-events:none}

@@ -1,12 +1,12 @@
 /* Menus illustrés : choix lisibles, informations secondaires repliées, pages fixes. */
 dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)[open]{height:min(780px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);width:min(1000px,calc(100vw - 32px));grid-template-columns:210px minmax(0,1fr)}
 dialog.game-menu .menu-context{background:#f3e8cb;border-color:#dfd4b5;padding:22px 14px;min-height:0}
-dialog.game-menu .menu-brand{color:#4e6449;font-size:10px}
-dialog.game-menu .menu-brand b{font-size:38px;color:#244e3a}
+dialog.game-menu .menu-brand{color:#2b5182;font-size:10px}
+dialog.game-menu .menu-brand b{font-size:38px;color:#1d3556}
 dialog.game-menu .menu-context>p{display:none}
 dialog.game-menu .menu-context .menu-city-art{display:flex;align-items:center;background:none;margin:0;min-height:0;width:100%;height:100%;flex:1}
 dialog.game-menu .game-menu-hero{width:100%;max-height:100%;object-fit:contain;display:block;border-radius:16px}
-dialog.game-menu .menu-context-clock{color:#4c6248;font-size:12px;letter-spacing:0}
+dialog.game-menu .menu-context-clock{color:#2b4f80;font-size:12px;letter-spacing:0}
 dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-head{padding:18px 56px 10px 22px}
 dialog.game-menu:not([data-mode=puzzle])>.popup-head h2{font-size:27px;line-height:1.15}
 dialog.game-menu .popup-head .popup-icon{width:70px;height:70px;background:transparent;box-shadow:none;border:0;padding:0;flex:none;overflow:hidden}
@@ -28,12 +28,12 @@ dialog.game-menu .popup-body .venue-service .venue-gains{border:0;margin-top:0;p
 dialog.game-menu .popup-body .venue-service::after{display:none}
 dialog.game-menu .popup-body .venue-service>b{padding-right:0}
 dialog.game-menu .popup-body .travel-costs{gap:5px 8px;margin-top:5px}
-dialog.game-menu .game-menu-infos{padding:10px 12px;border:1px solid #d7ddca;background:#f0f0e0;border-radius:10px;margin:12px 0;break-inside:avoid}
-dialog.game-menu .game-menu-infos summary{cursor:pointer;color:#3d5e43;font-weight:800}
+dialog.game-menu .game-menu-infos{padding:10px 12px;border:1px solid #c6d8e1;background:#f0f0e0;border-radius:10px;margin:12px 0;break-inside:avoid}
+dialog.game-menu .game-menu-infos summary{cursor:pointer;color:#274874;font-weight:800}
 dialog.game-menu .game-menu-infos[open]{break-inside:auto}
-dialog.game-menu .game-menu-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 8px;color:#35553d;font-weight:800;font-size:14px}
+dialog.game-menu .game-menu-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 8px;color:#234068;font-weight:800;font-size:14px}
 dialog.game-menu .game-menu-pager[hidden]{display:none}
-dialog.game-menu .game-menu-pager button{width:42px;min-height:36px;height:36px;padding:0;border:1px solid #c4d0b7;border-radius:10px;font-size:25px;background:#fffaf0;color:#31583d}
+dialog.game-menu .game-menu-pager button{width:42px;min-height:36px;height:36px;padding:0;border:1px solid #b1cad6;border-radius:10px;font-size:25px;background:#fffaf0;color:#224067}
 dialog.game-menu .game-menu-pager button:disabled{opacity:.4}
 dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-foot{padding:10px 18px}
 dialog.game-menu .popup-foot :is(button){font-size:16px!important;min-height:43px}
@@ -59,7 +59,7 @@ dialog.game-menu .popup-body :is([role=alert],[class$="-error"]){color:#923b23;f
 }
 @media(max-height:480px){dialog.game-menu .game-card-art{height:58px}dialog.game-menu .popup-head .popup-icon{width:44px;height:44px}dialog.game-menu:not([data-mode=puzzle]):not(.transport-dialog)>.popup-head{padding-top:8px;padding-bottom:6px}}
 
-dialog.game-menu .popup-body .venue-description.game-important-description{display:block;font-size:13px!important;line-height:1.35;color:#496044}
+dialog.game-menu .popup-body .venue-description.game-important-description{display:block;font-size:13px!important;line-height:1.35;color:#294d7b}
 dialog.game-menu .popup-body .venue-service[hidden]{display:none!important}
 /* Les conteneurs peuvent se répartir sur plusieurs pages ; chaque carte reste entière. */
 dialog.game-menu .game-menu-pages>:is(div,section,form),dialog.game-menu .game-menu-pages :is(#venue-place-panel,.meal-choices,.canteen-choices,.classic-work-cards,.missions-list,.comfort-catalogue,.outing-options,.meeting-options,.extra-choices){break-inside:auto}
@@ -88,9 +88,9 @@ dialog.game-menu .popup-body #venue-place-panel .venue-service .venue-gains{flex
 dialog.game-menu .popup-body #venue-place-panel .venue-service :is(.venue-energy-gain,.venue-other-gains,.venue-energy-preview){margin:0!important;padding:0!important}
 dialog.game-menu .popup-body #venue-place-panel .venue-service .venue-energy-gain img{width:18px;height:20px}
 dialog.game-menu .popup-body #venue-place-panel .venue-service .venue-energy-preview{flex-basis:100%}
-dialog.game-menu .popup-head .venue-tabs{flex-basis:100%;width:100%;margin:5px 0 0;padding:3px;gap:4px;border:0;background:#e9eedf}
+dialog.game-menu .popup-head .venue-tabs{flex-basis:100%;width:100%;margin:5px 0 0;padding:3px;gap:4px;border:0;background:#f4ecd9}
 dialog.game-menu .popup-head .venue-tabs button{font-size:15px!important;min-height:40px;padding:6px 8px;border-radius:9px}
-dialog.game-menu .popup-head .venue-tabs button[aria-selected=true]{background:#fff;color:#234d38;box-shadow:0 2px 6px #244b3520}
+dialog.game-menu .popup-head .venue-tabs button[aria-selected=true]{background:#fff;color:#1c3454;box-shadow:0 2px 6px #1c345320}
 @media(max-width:760px) and (max-height:650px){dialog.game-menu .game-card-art{height:48px}}
 dialog.game-menu.citizen-puzzle-dialog:not([data-mode=puzzle]) .game-menu-pages{width:100%;column-count:auto;column-gap:24px;column-fill:auto;overflow:visible}
 dialog.game-menu .game-menu-pages .citizen-cards:not([hidden]){display:contents!important}
@@ -128,7 +128,7 @@ dialog.game-menu.transport-dialog[data-travel-step=go] .game-menu-infos{display:
 dialog.game-menu.outings-dialog .game-menu-pages{orphans:1;widows:1}
 /* Paiement dans la ligne de facture, avec le montant immédiatement à côté. */
 dialog.game-menu.bills-dialog .bill-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:10px;break-inside:avoid}
-dialog.game-menu.bills-dialog .bill-row button{min-height:44px;padding:8px 14px;border:1px solid #c29542;border-radius:10px;background:#e9bc65;color:#173d31;font-size:16px;font-weight:800;white-space:nowrap}
-dialog.game-menu.bills-dialog .bill-row button:disabled{background:#e8e8df;border-color:#c6cbbf;color:#687261;cursor:default}
+dialog.game-menu.bills-dialog .bill-row button{min-height:44px;padding:8px 14px;border:1px solid #c29542;border-radius:10px;background:#e9bc65;color:#122742;font-size:16px;font-weight:800;white-space:nowrap}
+dialog.game-menu.bills-dialog .bill-row button:disabled{background:#e8e8df;border-color:#b9c9d1;color:#616a72;cursor:default}
 dialog.game-menu.bills-dialog .bill-row small{font-size:12px}
 @media(max-width:400px){dialog.game-menu.bills-dialog .bill-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}dialog.game-menu.bills-dialog .bill-row>[data-bill-pay-slot],dialog.game-menu.bills-dialog .bill-row>.bill-pay-waiting{grid-column:2;justify-self:end}dialog.game-menu.bills-dialog .bill-row>div:first-child{grid-row:1 / span 2}}

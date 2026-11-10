@@ -1,0 +1,117 @@
+[
+  {
+    "name": "menu-benskin",
+    "usage": "Faire le benskin (Rue JCD, Rue des BAOs)",
+    "scene": "Le Respo conduit une moto-taxi rouge à toute vitesse, cravate au vent, un passager cramponné derrière lui avec un sac ; nuage de poussière."
+  },
+  {
+    "name": "menu-bayam",
+    "usage": "Bayam-sellam (Marché)",
+    "scene": "Le Respo derrière un étal débordant de plantains, tomates et piments, il compte des billets d'un air malin ; une bassine sur la tête."
+  },
+  {
+    "name": "menu-callbox",
+    "usage": "Tenir le call-box (Rue JCD)",
+    "scene": "Le Respo assis sous un parasol jaune à une petite table en bois, plusieurs téléphones posés devant lui, il en tend un à un client hors champ."
+  },
+  {
+    "name": "menu-repetiteur",
+    "usage": "Cours de répétition (Education)",
+    "scene": "Le Respo debout devant un tableau noir, craie à la main, deux élèves en uniforme à un pupitre, l'un dort, l'autre lève le doigt."
+  },
+  {
+    "name": "menu-snackjob",
+    "usage": "Gérer le snack (Club matango, Rue du Njoka)",
+    "scene": "Le Respo derrière un comptoir de bar, tablier par-dessus la cravate, il porte un plateau chargé de bouteilles sans étiquette, l'air débordé ; guirlande lumineuse."
+  },
+  {
+    "name": "menu-pousseur",
+    "usage": "Pousser et charger les colis (Nsimaport, Supermarché)",
+    "scene": "Le Respo pousse un pousse-pousse (charrette à bras) surchargé de cartons et de sacs, en sueur, langue tirée."
+  },
+  {
+    "name": "menu-bhb",
+    "usage": "Beignets-haricots-bouillie (Marché)",
+    "scene": "Gros plan gourmand : assiette de beignets dorés, bol de haricots en sauce rouge, gobelet de bouillie blanche fumante ; le Respo ravi derrière, cuillère en main."
+  },
+  {
+    "name": "menu-tournedos",
+    "usage": "Manger au tourne-dos (Marché)",
+    "scene": "Le Respo assis sur un banc en bois, vu de dos tourné vers une table de cantine de rue, il se retourne en souriant avec une assiette de riz et de sauce bien remplie."
+  },
+  {
+    "name": "menu-soya",
+    "usage": "Soya bien pimenté (Rue du Njoka, Club)",
+    "scene": "Brochettes de viande grillée sur du papier kraft, oignons et piment rouge ; le Respo croque une brochette, larme à l'œil à cause du piment."
+  },
+  {
+    "name": "menu-braise",
+    "usage": "Poisson braisé et bobolo (Rue du Njoka)",
+    "scene": "Grand poisson braisé sur une assiette avec bâtons de manioc (bobolo), sauce verte et piment ; petit gril fumant à côté, le Respo se frotte les mains."
+  },
+  {
+    "name": "menu-eru",
+    "usage": "Eru · water fufu",
+    "scene": "Assiette d'eru (feuilles vertes finement coupées, huile de palme, morceaux de viande et de peau de bœuf) avec une boule de water fufu blanc."
+  },
+  {
+    "name": "menu-koki",
+    "usage": "Koki · plantain mûr",
+    "scene": "Gâteau de haricots jaune-orangé (koki) démoulé de sa feuille de bananier, avec des tranches de plantain mûr."
+  },
+  {
+    "name": "menu-okok",
+    "usage": "Okok · bâton de manioc",
+    "scene": "Assiette d'okok (feuilles vert foncé à la pâte d'arachide) avec deux bâtons de manioc."
+  },
+  {
+    "name": "menu-achu",
+    "usage": "Achu · sauce jaune",
+    "scene": "Taro pilé disposé en couronne avec la sauce jaune au centre, morceaux de viande ; plat de fête."
+  },
+  {
+    "name": "menu-mbongo",
+    "usage": "Mbongo tchobi · poisson",
+    "scene": "Poisson dans une sauce noire épaisse (mbongo tchobi), servi avec du plantain vapeur."
+  },
+  {
+    "name": "menu-kondre",
+    "usage": "Kondrè de chèvre",
+    "scene": "Marmite de kondrè : plantains verts mijotés avec de la viande de chèvre, sauce orangée."
+  },
+  {
+    "name": "menu-ludo",
+    "usage": "Partie de ludo (Cité des palmiers, Mboa village)",
+    "scene": "Le Respo et un voisin penchés sur un plateau de ludo coloré posé sur un tabouret ; le Respo jette le dé en criant de joie."
+  },
+  {
+    "name": "menu-songo",
+    "usage": "Partie de songo (Mboa village)",
+    "scene": "Le Respo assis par terre face à un vieil homme, entre eux un plateau de songo en bois à cases creusées avec des graines ; concentration exagérée."
+  },
+  {
+    "name": "menu-lions",
+    "usage": "Match des Lions au bar (Club, Rue du Njoka)",
+    "scene": "Le Respo debout devant un vieux téléviseur dans un bar, maillot vert-rouge-jaune par-dessus la chemise, bras levés, autres supporters qui crient."
+  },
+  {
+    "name": "menu-cabaret",
+    "usage": "Soirée cabaret (Rue du Njoka)",
+    "scene": "Scène de cabaret : un chanteur au micro et un guitariste, le Respo danse devant, cravate nouée autour de la tête ; projecteurs colorés."
+  },
+  {
+    "name": "menu-tontine",
+    "usage": "Réunion de la tontine (Cité des palmiers)",
+    "scene": "Cercle de chaises en plastique, une calebasse ou une cuvette pleine de billets au centre ; le Respo y dépose sa cotisation, une trésorière note dans un cahier."
+  },
+  {
+    "name": "menu-mariage",
+    "usage": "Mariage au village (Mboa village)",
+    "scene": "Mariés en tenue de pagne assorti, le Respo leur tend une enveloppe en dansant ; confettis."
+  },
+  {
+    "name": "menu-deuil",
+    "usage": "Deuil au quartier (Mboa village)",
+    "scene": "Scène sobre et respectueuse : tente de deuil, chaises en plastique, le Respo en vêtements sombres présente ses condoléances à une famille. Pas de caricature moqueuse ici."
+  }
+]

@@ -84,7 +84,7 @@
     "money": 250,
     "energyCost": 0,
     "minutes": 30,
-    "energyGain": 30,
+    "energyGain": 45,
     "moodGain": 4,
     "respoGain": 0
   },
@@ -357,7 +357,7 @@
     "money": 300,
     "energyCost": 0,
     "minutes": 20,
-    "energyGain": 35,
+    "energyGain": 45,
     "moodGain": 4,
     "respoGain": 0,
     "meal": true,
@@ -562,5 +562,133 @@
     },
     "art": "mariage",
     "special": "ceremony"
+  },
+  {
+    "id": "minfi-field-balances",
+    "zones": [
+      "market"
+    ],
+    "name": "Mission MINFI · La balance a maigri",
+    "description": "Lundi–vendredi · 08h–16h · Comparer les poids du marché : le kilo du vendeur a encore perdu 200 grammes.",
+    "money": 0,
+    "energyCost": 15,
+    "minutes": 45,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 3,
+    "moneyGain": 650,
+    "job": true,
+    "opening": 480,
+    "closing": 960,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "minfi-field"
+    },
+    "art": "work",
+    "completion": "Rapport validé : le kilo a retrouvé ses grammes. Le vendeur demande un congé maladie."
+  },
+  {
+    "id": "minfi-field-etiquettes",
+    "zones": [
+      "supermarket"
+    ],
+    "name": "Mission MINFI · Prix acrobatiques",
+    "description": "Lundi–vendredi · 08h–16h · Contrôler les étiquettes : le prix en rayon fait du saut en hauteur à la caisse.",
+    "money": 0,
+    "energyCost": 18,
+    "minutes": 60,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 4,
+    "moneyGain": 700,
+    "job": true,
+    "opening": 480,
+    "closing": 960,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "minfi-field"
+    },
+    "art": "work",
+    "completion": "Les prix sont enfin alignés. La caisse prétend que c’était une promotion à l’envers."
+  },
+  {
+    "id": "minfi-field-chevres",
+    "zones": [
+      "village"
+    ],
+    "name": "Mission MINFI · Recenser les chèvres",
+    "description": "Lundi–vendredi · 08h–16h · Compter les chèvres du village : une candidate insiste pour être chef de service.",
+    "money": 0,
+    "energyCost": 20,
+    "minutes": 75,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 5,
+    "moneyGain": 800,
+    "job": true,
+    "opening": 480,
+    "closing": 960,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "minfi-field"
+    },
+    "art": "work",
+    "completion": "Recensement terminé. La chèvre a mangé le brouillon, mais votre copie était en triple exemplaire."
+  },
+  {
+    "id": "minfi-field-tampons",
+    "zones": [
+      "airport"
+    ],
+    "name": "Mission MINFI · Tampon en transit",
+    "description": "Lundi–vendredi · 08h–16h · Acheminer les autorisations de bagages : votre tampon est retenu pour absence de tampon.",
+    "money": 0,
+    "energyCost": 25,
+    "minutes": 90,
+    "energyGain": 0,
+    "moodGain": -2,
+    "respoGain": 6,
+    "moneyGain": 1000,
+    "job": true,
+    "opening": 480,
+    "closing": 960,
+    "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "limit": {
+      "per": "day",
+      "count": 2,
+      "group": "minfi-field"
+    },
+    "art": "work",
+    "completion": "Dossiers livrés. Le tampon a enfin obtenu son autorisation de tamponner."
   }
 ]

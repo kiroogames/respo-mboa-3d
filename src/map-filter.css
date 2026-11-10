@@ -1,8 +1,8 @@
 /* Filtre de la carte, en bas au centre, entre le choix du lieu et les outils. */
 #app .map-filter{position:absolute;left:50%;bottom:20px;z-index:6;translate:-50% 0;display:flex;gap:4px;padding:5px;border-radius:16px;background:#fff8e8f2;box-shadow:0 8px 22px #0b2e2e33;pointer-events:auto}
-#app .map-filter button{min-height:40px;padding:6px 12px;border:0;border-radius:11px;background:transparent;color:#1f4537;font:700 14px/1.1 var(--display,Arial);white-space:nowrap;cursor:pointer}
+#app .map-filter button{min-height:40px;padding:6px 12px;border:0;border-radius:11px;background:transparent;color:#192f4b;font:700 14px/1.1 var(--display,Arial);white-space:nowrap;cursor:pointer}
 #app .map-filter button:hover{background:#efe6cf}
-#app .map-filter button[aria-pressed=true]{background:#1f5a44;color:#fffdf5}
+#app .map-filter button[aria-pressed=true]{background:#183861;color:#fffdf5}
 #app .map-filter button:focus-visible{outline:3px solid #e9bc65;outline-offset:1px}
 /* Filtre actif : les lieux concernés ressortent, les autres s'effacent sans cesser d'être cliquables. */
 #landmarks[data-filter] .landmark{opacity:.32;transition:opacity .2s}
@@ -11,3 +11,10 @@
 .journey-playing #app .map-filter{display:none}
 @media(max-width:1100px){#app .map-filter{bottom:96px}}
 @media(max-width:760px){#app .map-filter{bottom:auto;top:calc(100% - 196px);max-width:calc(100vw - 20px)}#app .map-filter button{padding:6px 9px;font-size:13px}}
+/* Un filtre retire réellement les lieux non concernés, et Tout rétablit la carte. */
+#app #landmarks[data-filter] .landmark:not([data-match]){display:none!important;pointer-events:none!important}
+#app #landmarks[data-filter] .landmark[data-match]{opacity:1!important}
+/* Le footer traverse toute la largeur : garder les boutons de filtre au-dessus de sa zone de clic. */
+#app .map-filter{z-index:40!important}
+/* L'ancienne règle mobile ne gardait que les trois premiers repères, même après filtrage. */
+#app #landmarks .landmark:not([hidden]){display:flex!important}

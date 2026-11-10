@@ -1,0 +1,266 @@
+[
+  {
+    "name": "menu-benskin",
+    "bytes": 102641,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-bayam",
+    "bytes": 72499,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-callbox",
+    "bytes": 77553,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-repetiteur",
+    "bytes": 80293,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-snackjob",
+    "bytes": 84804,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-pousseur",
+    "bytes": 83679,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-bhb",
+    "bytes": 83413,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-tournedos",
+    "bytes": 79949,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-soya",
+    "bytes": 86887,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-braise",
+    "bytes": 96803,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-eru",
+    "bytes": 94268,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-koki",
+    "bytes": 79760,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-okok",
+    "bytes": 78901,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-achu",
+    "bytes": 68011,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-mbongo",
+    "bytes": 88741,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-kondre",
+    "bytes": 81167,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-ludo",
+    "bytes": 98156,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-songo",
+    "bytes": 110486,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-lions",
+    "bytes": 109111,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-cabaret",
+    "bytes": 94693,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-tontine",
+    "bytes": 114231,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-mariage",
+    "bytes": 110270,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "name": "menu-deuil",
+    "bytes": 75522,
+    "width": 640,
+    "height": 640
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "button-primary",
+    "bytes": 54339,
+    "width": 320,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "button-secondary",
+    "bytes": 45369,
+    "width": 320,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "card",
+    "bytes": 117549,
+    "width": 384,
+    "height": 384
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "close",
+    "bytes": 17510,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "hud",
+    "bytes": 52195,
+    "width": 320,
+    "height": 160
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-bills",
+    "bytes": 19222,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-ceremony",
+    "bytes": 22764,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-dossier",
+    "bytes": 27081,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-energy",
+    "bytes": 10705,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-level",
+    "bytes": 13554,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-meal",
+    "bytes": 22896,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-mood",
+    "bytes": 20269,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-savings",
+    "bytes": 20031,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-sleep",
+    "bytes": 18558,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-tontine",
+    "bytes": 25643,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "icon-transport",
+    "bytes": 22530,
+    "width": 128,
+    "height": 128
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "panel",
+    "bytes": 476017,
+    "width": 768,
+    "height": 768
+  },
+  {
+    "cornerAlpha": 0,
+    "name": "plaque",
+    "bytes": 119497,
+    "width": 640,
+    "height": 160
+  }
+]

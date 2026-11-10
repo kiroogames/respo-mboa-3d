@@ -1,7 +1,7 @@
 /* Repas du jour sous l'énergie : pris, à prendre maintenant, sautés ou à venir. */
 .meal-tracker{display:flex;align-items:center;gap:4px;margin-top:6px}
 .meal-slot{display:grid;place-items:center;width:24px;height:24px;border-radius:8px;font-size:14px;line-height:1;background:#ffffff1a;filter:grayscale(1);opacity:.55}
-.meal-slot[data-state=eaten]{filter:none;opacity:1;background:#2f8a4c55;box-shadow:inset 0 0 0 1.5px #7fd18f}
+.meal-slot[data-state=eaten]{filter:none;opacity:1;background:#23949655;box-shadow:inset 0 0 0 1.5px #76b9da}
 .meal-slot[data-state=now]{filter:none;opacity:1;background:#e5bb6c55;box-shadow:inset 0 0 0 1.5px #e5bb6c;animation:meal-now 1.6s ease-in-out infinite}
 .meal-slot[data-state=missed]{filter:none;opacity:.9;background:#b3402a55;box-shadow:inset 0 0 0 1.5px #e88a7a}
 .meal-warning{margin-left:4px;padding:2px 7px;border-radius:999px;background:#b3402a;color:#fff;font-size:11px;font-weight:900;white-space:nowrap}

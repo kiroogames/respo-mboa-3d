@@ -20,7 +20,7 @@ import { getPlayerResources } from './player-resources'
 import { getGameTime } from './game-clock'
 import { getHomeMealService } from './home-meals'
 
-export type PlaceActivity = { icon: string; title: string; detail: string; status?: string; closed?: boolean }
+export type PlaceActivity = { icon: string; art?: string; title: string; detail: string; status?: string; closed?: boolean }
 export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean; stay: string }
 
 const nkap = (value: number) => value ? loc('{0} Nkap',value.toLocaleString(gameLocale)) : loc('Gratuit')
@@ -41,13 +41,13 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
     if (missionRules.missions.length) items.push({ icon: '🎯', title: loc('Missions professionnelles'), detail: loc('Accepter une mission ou rendre compte auprès de son donneur') })
   }
   if (zone === 'home') {
-    items.push({ icon: '🍲', title: loc('Manger à la maison'), detail: loc('Dès 150 Nkap · un repas par service') })
-    items.push({ icon: '🛋️', title: loc('Confort et équipements'), detail: loc('Acheter et installer des équipements') })
+    items.push({ icon: '🍲', art: 'bhb', title: loc('Manger'), detail: loc('Dès 150 Nkap') })
+    items.push({ icon: '🛋️', art: 'home', title: loc('Équiper'), detail: loc('Confort et équipements') })
   }
   for (const service of getVenueServices(zone)) {
     const closed = venueServiceReason(service)
     const gains = [service.moneyGain ? loc('+{0} Nkap',service.moneyGain.toLocaleString(gameLocale)) : '', service.fullEnergy ? loc('recharge complète') : service.energyGain ? loc('+{0} énergie',service.energyGain) : '', service.moodGain > 0 ? loc('+{0} humeur',service.moodGain) : '', service.respoGain ? loc('+{0} Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
-    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', title: service.name, detail: service.id === 'home-sleep' ? loc('Gratuit · durée au choix') : loc('{0} · {1} min{2}',nkap(service.money),service.minutes,gains ? ` · ${gains}` : ''), ...(closed ? { closed: true, status: closed } : {}) })
+    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', art: service.art || (service.id === 'home-sleep' ? 'sleep-respo' : service.id === 'home-rest' ? 'wait' : undefined), title: zone === 'home' && service.id === 'home-rest' ? loc('Se reposer') : service.name, detail: service.id === 'home-sleep' ? loc('Durée au choix') : loc('{0} · {1} min{2}',service.money ? nkap(service.money) : '',service.minutes,gains ? ` · ${gains}` : ''), ...(closed ? { closed: true, status: closed } : {}) })
   }
   for (const outing of cityOutings.filter(item => item.zone === zone)) {
     const schedule = getOutingSchedule(outing.id)

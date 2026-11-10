@@ -17,6 +17,7 @@ import { changeConsideration } from './npc-relationships.ts'
 type Limit = { per: 'day' | 'week'; count: number; group?: string }
 export type VenueService = {
   id: string; zones: string[]; name: string; description: string
+  /** Chute comique affichée une fois la mission de terrain terminée. */ completion?: string
   money: number; energyCost: number; minutes: number; energyGain: number; moodGain: number; respoGain: number; fullEnergy?: boolean
   /** Paie d'un job ou cagnotte reçue. */ moneyGain?: number
   /** Job : la paie et le Respo suivent l'humeur au travail. */ job?: boolean

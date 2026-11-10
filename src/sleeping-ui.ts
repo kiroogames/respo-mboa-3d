@@ -10,7 +10,18 @@ import './sleeping.css'
 
 export function mountSleeping(options:{base:string;currentZone:()=>string;travelling:()=>boolean;back:()=>void}){
   const dialog=document.createElement('dialog');dialog.className='travel-dialog sleep-dialog';dialog.setAttribute('aria-labelledby','sleep-heading')
-  dialog.innerHTML=`<button class="travel-close" data-sleep-close aria-label="${loc('Fermer')}">×</button><span class="travel-eyebrow">${loc('LE REPOS À LA MAISON')}</span><h2 id="sleep-heading">${loc('Une bonne nuit')}</h2><p class="wait-intro">${loc('Choisissez votre durée de sommeil.')}</p><div class="wait-dates"><div><span>${loc('Au coucher')}</span><strong data-sleep-from></strong><small data-sleep-from-day></small></div><span class="wait-arrow">→</span><div><span>${loc('Au réveil')}</span><strong data-sleep-to></strong><small data-sleep-to-day></small></div></div><label class="wait-duration" for="sleep-duration">${loc('Durée du sommeil')} <output data-sleep-duration></output></label><input id="sleep-duration" type="range" min="0" max="960" step="30" value="480"/><div class="wait-limits"><span>0 h</span><span>16 h</span></div><div class="wait-presets">${[60,240,480,600].map(n=>`<button data-sleep-minutes="${n}" type="button">${n/60} h</button>`).join('')}</div><div class="sleep-energy"><img src="${options.base}ui/currency-energy.png" alt=""/><div><span>${loc('Énergie récupérée')}</span><strong data-sleep-energy></strong><small data-sleep-energy-preview></small></div></div><p data-sleep-bed></p><p data-sleep-fatigue></p><p data-sleep-rested></p><p class="sleep-mood" data-sleep-mood></p><p class="wait-neutral">${loc('Gratuit · aucun gain de influence ou de points Respo.')}</p><p class="wait-rules">${loc('8 h suffisent pour une récupération complète. À partir de 10 h, sans fatigue restante au réveil : Bien reposé, +10 de capacité pendant 6 h.')}</p><p class="wait-error" data-sleep-error hidden role="alert"></p><div class="wait-actions"><button data-sleep-cancel type="button">${loc('Retour')}</button><button data-sleep-confirm type="button">${loc('Dormir')}</button></div>`
+  dialog.innerHTML=`<button class="travel-close" data-sleep-close aria-label="${loc('Fermer')}">×</button><span class="travel-eyebrow">${loc('LE REPOS À LA MAISON')}</span><h2 id="sleep-heading">${loc('Une bonne nuit')}</h2><p class="wait-intro">${loc('Choisissez votre durée de sommeil.')}</p><div class="wait-dates"><div><span>${loc('Au coucher')}</span><strong data-sleep-from></strong><small data-sleep-from-day></small></div><span class="wait-arrow">→</span><div><span>${loc('Au réveil')}</span><strong data-sleep-to></strong><small data-sleep-to-day></small></div></div><label class="wait-duration" for="sleep-duration">${loc('Durée')} <output data-sleep-duration></output></label><input id="sleep-duration" type="range" min="0" max="960" step="30" value="480"/><div class="wait-limits"><span>0 h</span><span>16 h</span></div><div class="wait-presets">${[60,240,480,600].map(n=>`<button data-sleep-minutes="${n}" type="button">${n/60} h</button>`).join('')}</div><div class="sleep-energy"><img src="${options.base}ui/currency-energy.png" alt=""/><div><span>${loc('Énergie récupérée')}</span><strong data-sleep-energy></strong><small data-sleep-energy-preview></small></div></div><p data-sleep-bed></p><p data-sleep-fatigue></p><p data-sleep-rested></p><p class="sleep-mood" data-sleep-mood></p><p class="wait-neutral">${loc('Gratuit · aucun gain de influence ou de points Respo.')}</p><p class="wait-rules">${loc('8 h suffisent pour une récupération complète. À partir de 10 h, sans fatigue restante au réveil : Bien reposé, +10 de capacité pendant 6 h.')}</p><p class="wait-error" data-sleep-error hidden role="alert"></p><div class="wait-actions"><button data-sleep-cancel type="button">${loc('Retour')}</button><button data-sleep-confirm type="button">${loc('Dormir')}</button></div>`
+  // Une image et les gains guident le choix ; les explications restent consultables dans Infos.
+  const hero=document.createElement('div');hero.className='sleep-scene';hero.innerHTML=`<img src="${options.base}ui/menu-sleep-respo.jpg" alt=""/>`
+  dialog.querySelector('.wait-dates')!.before(hero)
+  const choice=document.createElement('div');choice.className='sleep-choice'
+  const controls=document.createElement('div');controls.className='sleep-controls'
+  hero.before(choice);choice.append(hero,controls)
+  for(const selector of ['.wait-dates','.wait-duration','#sleep-duration','.wait-limits','.wait-presets'])controls.append(dialog.querySelector(selector)!)
+  const infos=document.createElement('details');infos.className='game-menu-infos sleep-infos';infos.innerHTML=`<summary>${loc('Infos')}</summary>`
+  for(const selector of ['.wait-intro','[data-sleep-bed]','[data-sleep-fatigue]','[data-sleep-rested]','.wait-neutral','.wait-rules'])infos.append(dialog.querySelector(selector)!)
+  dialog.querySelector('.wait-actions')!.before(infos)
+  const bonus=document.createElement('p');bonus.className='sleep-bonus';bonus.hidden=true;dialog.querySelector('.sleep-mood')!.after(bonus)
   const mask=document.createElement('div');mask.className='wait-transition sleep-transition';mask.hidden=true;mask.setAttribute('aria-hidden','true')
   const toast=document.createElement('div');toast.className='wait-result sleep-result';toast.hidden=true;toast.setAttribute('role','status')
   document.body.append(dialog,mask,toast)
@@ -29,12 +40,18 @@ export function mountSleeping(options:{base:string;currentZone:()=>string;travel
     text('[data-sleep-from]',preview.from.time);text('[data-sleep-from-day]',loc('{0} · semaine {1}',preview.from.day,preview.from.week))
     const target=duration?preview.to:preview.from
     text('[data-sleep-to]',target.time);text('[data-sleep-to-day]',loc('{0} · semaine {1} · {2}',target.day,target.week,loc(getDayPeriod(target.minuteOfDay))))
-    text('[data-sleep-energy]',loc('+{0} énergie',duration?preview.energyGain:0))
+    for(const [selector,day] of [['[data-sleep-from-day]',preview.from.day],['[data-sleep-to-day]',target.day]]){
+      const label=dialog.querySelector<HTMLElement>(selector!)!;label.title=label.textContent??'';label.textContent=day!
+    }
+    text('[data-sleep-energy]',`+${duration?preview.energyGain:0}`)
     text('[data-sleep-energy-preview]',`${preview.energyBefore} → ${duration?preview.energyAfter:preview.energyBefore} / ${duration?preview.maxEnergyAfter:preview.maxEnergy}${duration&&preview.energyLoss?loc(' · −{0} au changement de capacité',preview.energyLoss):""}`)
     text('[data-sleep-bed]',`${preview.bed.name} : ${preview.bed.bonusPer30?loc('+1 énergie nominale par 30 min sur les 8 premières heures (supplément prévu : +{0}). Le gain total affiché respecte le plafond au réveil.',duration?preview.bedBonus:0):loc('recharge habituelle. Équipez le lit confortable pour améliorer les siestes.')}`)
     text('[data-sleep-fatigue]',loc('Fatigue : {0} → {1} · éveil accumulé {2} → {3} min',preview.fatigueBefore.label,duration?preview.fatigueAfter.label:preview.fatigueBefore.label,preview.fatigueBefore.minutes,duration?preview.fatigueAfter.minutes:preview.fatigueBefore.minutes))
     text('[data-sleep-rested]',duration&&preview.restedEligible?loc('Bien reposé : +10 de capacité, remplie au réveil, pendant 6 h (jusqu’à {0} {1}, semaine {2}).',getGameTimeAt(preview.restedAfter!.end).day,getGameTimeAt(preview.restedAfter!.end).time,getGameTimeAt(preview.restedAfter!.end).week):duration&&preview.restedAfter?loc('Bien reposé restera actif au réveil, sans renouvellement.'):loc('Pas de nouveau bonus Bien reposé : choisissez au moins 10 h et ramenez la fatigue à zéro au réveil.'))
-    text('[data-sleep-mood]',loc('Humeur : +{0} · {1} → {2} / 140',duration?preview.moodGain:0,preview.moodBefore,duration?preview.moodAfter:preview.moodBefore))
+    const mood=dialog.querySelector<HTMLElement>('[data-sleep-mood]')!
+    mood.textContent=`🙂 +${duration?preview.moodGain:0} · ${duration?preview.moodAfter:preview.moodBefore}/140`
+    mood.title=loc('Humeur : +{0} · {1} → {2} / 140',duration?preview.moodGain:0,preview.moodBefore,duration?preview.moodAfter:preview.moodBefore)
+    bonus.hidden=!(duration&&(preview.restedEligible||preview.restedAfter));bonus.textContent=preview.restedEligible?'⚡ +10 max · 6 h':'⚡ +10 max';bonus.title=dialog.querySelector('[data-sleep-rested]')!.textContent!
     for(const preset of dialog.querySelectorAll<HTMLButtonElement>('[data-sleep-minutes]'))preset.setAttribute('aria-pressed',String(Number(preset.dataset.sleepMinutes)===duration))
     confirm.disabled=!duration||!allowed()||transitioning
   }
@@ -66,5 +83,5 @@ export function mountSleeping(options:{base:string;currentZone:()=>string;travel
   onPlayerResourcesChange(()=>{if(dialog.open&&!transitioning)render()})
   onComfortChange(()=>{if(dialog.open&&!transitioning)render()})
   onGameTimeChange(()=>{if(dialog.open&&!transitioning)render()})
-  return {open(){if(!allowed()||transitioning||dialog.open)return;toast.hidden=true;slider.value='480';render();dialog.showModal();slider.focus()},snapshot:()=>({mode:transitioning?'transition':dialog.open?'preview':'closed',preview:dialog.open?pending:null})}
+  return {open(){if(!allowed()||transitioning||dialog.open)return;toast.hidden=true;slider.value='480';render();dialog.showModal();slider.focus({preventScroll:true})},snapshot:()=>({mode:transitioning?'transition':dialog.open?'preview':'closed',preview:dialog.open?pending:null})}
 }

@@ -150,7 +150,7 @@
         "money": 450,
         "minutes": 30,
         "energy": 0,
-        "energyGain": 30,
+        "energyGain": 45,
         "mood": 4
       },
       {
@@ -190,7 +190,7 @@
         "money": 500,
         "minutes": 30,
         "energy": 0,
-        "energyGain": 40,
+        "energyGain": 45,
         "mood": 6,
         "days": [
           1,

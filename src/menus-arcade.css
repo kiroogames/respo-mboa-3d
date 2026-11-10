@@ -44,13 +44,13 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
   & .game-menu-pages .travel-costs img{width:24px;height:24px;object-fit:contain}
   & .game-menu-pages .venue-gains{gap:6px 10px!important;align-items:center}
   & .game-menu-pages .venue-energy-gain img{width:24px!important;height:27px!important}
-  & .game-menu-pages .venue-energy-gain strong,& .game-menu-pages .venue-other-gains{font-size:19px!important;font-weight:900;color:#12613f}
+  & .game-menu-pages .venue-energy-gain strong,& .game-menu-pages .venue-other-gains{font-size:19px!important;font-weight:900;color:#16355d}
   & .game-menu-pages .venue-other-gains .currency-icon{width:24px;height:24px}
-  & .game-menu-pages .venue-energy-preview{flex-basis:auto!important;font-size:14px!important;color:#4b5e52}
+  & .game-menu-pages .venue-energy-preview{flex-basis:auto!important;font-size:14px!important;color:#2a4f7f}
 
   /* La flèche dit « on entre » ; la coche dit « c'est choisi ». */
   & .game-menu-pages :is(.venue-service,.venue-person-service):not(:disabled)::after{content:'›';display:grid!important;place-items:center;position:absolute;right:12px;top:50%;translate:0 -50%;width:32px;height:32px;padding-bottom:4px;box-sizing:border-box;border:3px solid var(--g-ink);border-radius:50%;background:linear-gradient(180deg,#ffe58a,var(--g-gold))!important;color:var(--g-ink)!important;font:900 24px/1 Nunito,sans-serif;box-shadow:0 2px 0 var(--g-ink)}
-  & .game-menu-pages :is(.meal-choices,.canteen-choices,.outing-options,.extra-choices,.meeting-options,.comfort-catalogue,.missions-list,.classic-work-cards,.citizen-cards)>[aria-pressed=true]::after{content:'✓';display:grid;place-items:center;position:absolute;right:12px;top:12px;width:32px;height:32px;box-sizing:border-box;border:3px solid var(--g-ink);border-radius:50%;background:#35b56b;color:#fff;font:900 18px/1 Nunito,sans-serif;box-shadow:0 2px 0 var(--g-ink)}
+  & .game-menu-pages :is(.meal-choices,.canteen-choices,.outing-options,.extra-choices,.meeting-options,.comfort-catalogue,.missions-list,.classic-work-cards,.citizen-cards)>[aria-pressed=true]::after{content:'✓';display:grid;place-items:center;position:absolute;right:12px;top:12px;width:32px;height:32px;box-sizing:border-box;border:3px solid var(--g-ink);border-radius:50%;background:#29abae;color:#fff;font:900 18px/1 Nunito,sans-serif;box-shadow:0 2px 0 var(--g-ink)}
   & .game-menu-pages :is(.venue-service,.venue-person-service,button[aria-pressed]):disabled{filter:saturate(.35);opacity:.8}
 
   /* Pied : « Retour » toujours à gauche, l'action principale en grand à droite. */
@@ -62,16 +62,16 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
   &>.popup-foot>[class$="-actions"]>button:last-child:not(:first-child){font-family:var(--g-title);font-weight:400;font-size:23px!important;letter-spacing:.4px}
 
   /* Aucune ligne minuscule dans une carte : tout se lit à distance d'écran. */
-  & .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button)>:not(b):not(.game-card-art):not(.travel-costs):not(.venue-gains){font-size:16px!important;line-height:1.35!important;color:#2c4a3d}
+  & .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button)>:not(b):not(.game-card-art):not(.travel-costs):not(.venue-gains){font-size:16px!important;line-height:1.35!important;color:#1e3759}
   & .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button) small{font-size:15px!important;line-height:1.35!important}
   & .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button) :is(.currency-icon,img:not(.game-card-art img)){width:22px;height:22px;object-fit:contain;vertical-align:-4px}
-  & .game-menu-pages :is(.citizen-card,.classic-work-cards>*)>:is(strong,h3,b):first-of-type{font:400 23px/1.15 var(--g-title)!important;letter-spacing:.2px;color:#124438}
+  & .game-menu-pages :is(.citizen-card,.classic-work-cards>*)>:is(strong,h3,b):first-of-type{font:400 23px/1.15 var(--g-title)!important;letter-spacing:.2px;color:#102746}
   & .game-menu-pages :is(.venue-service,.venue-person-service)::after{top:50%!important;bottom:auto!important;margin:0!important;transform:none!important}
   & .game-menu-pages :is(.venue-service,.venue-person-service):disabled::after{content:'🔒'!important;display:grid!important;place-items:center;position:absolute;right:12px;translate:0 -50%;width:32px;height:32px;font-size:18px;background:none;border:0}
 
   & .game-menu-pages .citizen-card>span:not(.game-card-art){display:flex;flex-direction:column;gap:6px}
-  & .game-menu-pages .citizen-card b{font:400 22px/1.18 var(--g-title)!important;letter-spacing:.2px;color:#124438}
-  & .game-menu-pages .citizen-card small{font-size:16px!important;font-weight:800;color:#2c4a3d}
+  & .game-menu-pages .citizen-card b{font:400 22px/1.18 var(--g-title)!important;letter-spacing:.2px;color:#102746}
+  & .game-menu-pages .citizen-card small{font-size:16px!important;font-weight:800;color:#1e3759}
   & .game-menu-pages .citizen-card .game-card-art img{object-fit:cover}
   & .game-menu-pages .comfort-rooms :is(span,small,b,strong,div){font-size:16px!important}
   & .game-menu-pages .comfort-score>span{font-size:16px!important;font-weight:800}
@@ -82,7 +82,7 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
   & .game-menu-pages .venue-resident-header h3{font-size:24px!important;margin:0}
   & .game-menu-pages #venue-people .venue-resident .venue-person-service:not([hidden]){grid-template-columns:64px minmax(0,1fr)!important;width:100%!important;box-sizing:border-box;min-height:0;padding:9px 52px 9px 9px!important;margin:8px 0 0!important;border:3px solid var(--g-ink)!important;border-radius:16px!important;background:linear-gradient(180deg,#fffdf4,#f7e6bb)!important;box-shadow:inset 0 2px 0 #fff,0 3px 0 var(--g-ink)!important}
   & .game-menu-pages .venue-person-service .game-card-art{width:64px!important;height:64px!important;border-width:2px;border-radius:12px}
-  & .game-menu-pages .venue-person-service>b{font:400 20px/1.15 var(--g-title)!important;color:#124438}
+  & .game-menu-pages .venue-person-service>b{font:400 20px/1.15 var(--g-title)!important;color:#102746}
 
   /* Destination : ce qu'on peut y faire, en gros. */
   & .game-menu-pages .place-activity-list{gap:12px!important}
@@ -90,7 +90,7 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
   & .game-menu-pages .place-activity-icon{width:64px!important;height:64px!important;border-width:3px!important;border-radius:16px!important;font-size:34px!important}
   & .game-menu-pages .place-activity-body{gap:4px!important}
   & .game-menu-pages .place-activity-body>b{font-size:22px!important}
-  & .game-menu-pages .place-activity-body>span{font-size:16px!important;color:#2c4a3d!important}
+  & .game-menu-pages .place-activity-body>span{font-size:16px!important;color:#1e3759!important}
   & .game-menu-pages .place-activity-body>span img{width:22px;height:22px;vertical-align:-4px}
   & .game-menu-pages .place-activity-body>small{font-size:14px!important;padding:3px 10px!important}
   & .game-menu-pages .transport-route{font-size:17px}
@@ -100,7 +100,7 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
   & .game-menu-pages .bills-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px 16px!important;border-width:3px!important;border-radius:18px!important}
   & .game-menu-pages .bills-summary>div{display:flex;flex-direction:column;gap:2px}
   & .game-menu-pages .bills-summary>div>span{font-size:15px!important;font-weight:800}
-  & .game-menu-pages :is(.bills-summary,.sleep-energy) strong,& .game-menu-pages :is(.bills-summary,.sleep-energy) strong :is(span,b){font:400 30px/1.15 var(--g-title)!important;color:#124438}
+  & .game-menu-pages :is(.bills-summary,.sleep-energy) strong,& .game-menu-pages :is(.bills-summary,.sleep-energy) strong :is(span,b){font:400 30px/1.15 var(--g-title)!important;color:#102746}
   & .game-menu-pages :is(.bills-summary,.sleep-energy) strong :is(img,.currency-icon){width:30px!important;height:30px!important;vertical-align:-5px}
   & .game-menu-pages :is([class$="-preview"],.house-budget-panel) :is(p,li,span,small){font-size:17px!important}
   & .game-menu-pages .wait-presets button{min-height:54px;font-size:19px!important;border-radius:15px!important}
@@ -160,11 +160,11 @@ dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]>.popup
    Le HUD reste net et visible au-dessus de la fenêtre : argent, énergie, humeur et heure n'y sont donc
    jamais répétés. Titre sur une plaque qui dépasse du cadre, croix dans le coin, action principale au centre. */
 @media(min-width:981px) and (min-height:600px){
-  dialog.travel-dialog::backdrop{background:linear-gradient(180deg,transparent 0 108px,#06221d8f 148px)!important}
+  dialog.travel-dialog::backdrop{background:linear-gradient(180deg,transparent 0 108px,#0812208f 148px)!important}
   dialog.travel-dialog .popup-stats{display:none!important}
   dialog.game-menu.transport-dialog[data-travel-step=go][open]{top:112px!important;max-height:calc(100dvh - 130px)!important}
   dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{
-    top:112px!important;margin:auto!important;width:min(1000px,calc(100vw - 80px))!important;max-height:calc(100dvh - 176px)!important;overflow:visible!important;padding:0!important;background:linear-gradient(180deg,#fff6dc,#ffe9bb)!important;box-shadow:inset 0 0 0 3px var(--g-gold),0 9px 0 var(--g-ink),0 26px 60px #04171499!important;
+    top:112px!important;margin:auto!important;width:min(1000px,calc(100vw - 80px))!important;max-height:calc(100dvh - 176px)!important;overflow:visible!important;padding:0!important;background:linear-gradient(180deg,#fff6dc,#ffe9bb)!important;box-shadow:inset 0 0 0 3px var(--g-gold),0 9px 0 var(--g-ink),0 26px 60px #050c1699!important;
 
     /* Plaque de titre */
     &>.popup-head{position:relative;justify-content:center;align-items:center;gap:0;margin:-34px 0 0;padding:0 64px!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible}
@@ -203,7 +203,7 @@ dialog.game-menu.transport-dialog:not([data-travel-step=go]) .transport-route{di
 
 /* Écran moyen : le HUD tient sur deux rangées, la fenêtre commence donc plus bas. */
 @media(min-width:981px) and (max-width:1359px) and (min-height:600px){
-  dialog.travel-dialog::backdrop{background:linear-gradient(180deg,transparent 0 150px,#06221d8f 190px)!important}
+  dialog.travel-dialog::backdrop{background:linear-gradient(180deg,transparent 0 150px,#0812208f 190px)!important}
   dialog.game-menu.transport-dialog[data-travel-step=go][open]{top:156px!important;max-height:calc(100dvh - 172px)!important}
   dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{top:156px!important;max-height:calc(100dvh - 216px)!important}
 }
@@ -211,7 +211,7 @@ dialog.game-menu.transport-dialog:not([data-travel-step=go]) .transport-route{di
 /* Même cadre de jeu pour le choix du transport et le puzzle des usagers ; leur contenu garde sa disposition. */
 @media(min-width:981px) and (min-height:600px){
   dialog.travel-dialog.game-menu:is([data-mode=puzzle],[data-travel-step=go])[open]{
-    overflow:visible!important;padding:0!important;background:linear-gradient(180deg,#fff6dc,#ffe9bb)!important;box-shadow:inset 0 0 0 3px var(--g-gold),0 9px 0 var(--g-ink),0 26px 60px #04171499!important;
+    overflow:visible!important;padding:0!important;background:linear-gradient(180deg,#fff6dc,#ffe9bb)!important;box-shadow:inset 0 0 0 3px var(--g-gold),0 9px 0 var(--g-ink),0 26px 60px #050c1699!important;
     &>.popup-head{display:flex!important;position:relative;flex-wrap:wrap!important;justify-content:center;align-items:center;gap:0!important;min-height:0!important;margin:-34px 0 0;padding:0 64px!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible}
     &>.popup-head .popup-titles{flex:0 1 auto!important;min-width:240px;max-width:calc(100% - 60px);box-sizing:border-box;padding:9px 40px 11px!important;border:4px solid var(--g-ink);border-radius:20px;background:linear-gradient(180deg,#fff0a8,var(--g-gold) 60%,var(--g-gold-2));box-shadow:inset 0 3px 0 #fff9,0 6px 0 var(--g-ink);text-align:center}
     &>.popup-head .popup-titles h2{font:400 28px/1.1 var(--g-title)!important;letter-spacing:.4px;color:var(--g-ink)!important;text-shadow:0 2px 0 #fff8!important;margin:0!important;padding:0!important}
@@ -234,7 +234,7 @@ dialog.game-menu.transport-dialog:not([data-travel-step=go]) .transport-route{di
 
 /* Bandeau d'humeur des fenêtres de travail. */
 dialog.game-menu .work-mood-banner{display:flex;align-items:center;gap:8px;margin:0 0 12px!important;padding:8px 14px;border:3px solid var(--g-ink);border-radius:14px;background:#fff3d6;color:var(--g-ink);font-size:16px!important;font-weight:900;line-height:1.3}
-dialog.game-menu .work-mood-banner[data-state=high]{background:#c9f2c4}
+dialog.game-menu .work-mood-banner[data-state=high]{background:#c2e3f4}
 dialog.game-menu .work-mood-banner[data-state=low]{background:#ffd3c7}
 dialog.game-menu[data-mode=puzzle] .work-mood-banner{display:none}
 
@@ -246,7 +246,7 @@ dialog.game-menu[data-mode=puzzle] .work-mood-banner{display:none}
 #app #guide[data-collapsed=true] .guide-head span{rotate:-90deg}
 #app #guide .guide-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 #app #guide .guide-list[hidden]{display:none}
-#app #guide .guide-goal{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:7px 10px 7px 7px;border:3px solid var(--g-ink);border-radius:16px;background:linear-gradient(180deg,#184f43ee,#0d342cee);color:#fff;text-align:left;box-shadow:inset 0 2px 0 #ffffff26,0 4px 0 var(--g-ink);cursor:pointer;transition:translate .08s,box-shadow .08s}
+#app #guide .guide-goal{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:7px 10px 7px 7px;border:3px solid var(--g-ink);border-radius:16px;background:linear-gradient(180deg,#142f53ee,#0c1e35ee);color:#fff;text-align:left;box-shadow:inset 0 2px 0 #ffffff26,0 4px 0 var(--g-ink);cursor:pointer;transition:translate .08s,box-shadow .08s}
 #app #guide .guide-goal:disabled{cursor:default;opacity:1}
 #app #guide .guide-goal:not(:disabled):hover{translate:0 -1px;box-shadow:inset 0 2px 0 #ffffff26,0 5px 0 var(--g-ink)}
 #app #guide .guide-goal:not(:disabled):active{translate:0 3px;box-shadow:inset 0 2px 0 #ffffff26,0 1px 0 var(--g-ink)}
@@ -274,3 +274,92 @@ html.kit-hud #app :is(.respo-console,.city-wallet-strip>.game-wallet,.game-clock
 html.kit-close dialog.travel-dialog .popup-head .travel-close{background:var(--kit-close) center/contain no-repeat!important;border:0!important;box-shadow:none!important;color:transparent!important;text-shadow:none!important;border-radius:0!important}
 #app #guide .guide-icon[data-painted]{border:0;background:none}
 #app #guide .guide-icon img{width:100%;height:100%;object-fit:contain}
+/* Les plaques peintes ont leurs propres fonds : adapter l’encre à leur contraste. */
+html.kit-hud #app #guide .guide-goal,html.kit-hud #app #guide .guide-goal .guide-text{color:#fff7df!important}
+html.kit-button-primary dialog.travel-dialog:not([data-skin])>.popup-foot :is([class$="-actions"]>button:last-child:not(:first-child),[class$="-actions"]>button:only-child,button.travel-go):not(:disabled){color:#fff9e9!important;text-shadow:0 1px 1px #0f243f}
+html.kit-plaque dialog.travel-dialog.game-menu[open]>.popup-head .popup-titles h2{color:#122641!important;text-shadow:none!important}
+@media(max-width:760px){html.kit-plaque dialog.travel-dialog.game-menu[open]>.popup-head .popup-titles{min-width:0;padding-inline:10px!important;box-sizing:border-box}html.kit-plaque dialog.travel-dialog.game-menu[open]>.popup-head .popup-titles h2{font-size:20px!important;line-height:1.15!important;white-space:normal!important;overflow-wrap:anywhere}}
+/* Aperçu d’un lieu : grandes illustrations, deux cartes par ligne et libellés courts. */
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin:4px 0 12px!important;padding:0!important}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-list>li{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:5px!important;padding:12px!important;min-width:0;text-align:center}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-icon{width:100%!important;height:132px!important;border:0!important;border-radius:10px!important;background:none!important;font-size:72px!important;display:flex;align-items:center;justify-content:center;flex:none}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .place-activity-icon img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-body{width:100%;min-width:0;align-items:center!important}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-body>b{font-size:21px!important;line-height:1.15!important}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-body>span{font-size:15px!important;line-height:1.3!important}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .place-people{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0!important}
+dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .place-people-title{font-size:18px;margin:6px 0!important}
+@media(max-width:760px){dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-icon{height:100px!important}dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-body>b{font-size:19px!important}dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-body>span{font-size:14px!important}}
+@media(max-height:650px){dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-icon{height:82px!important}}
+/* Transport : image dominante et bandeau de coûts compact. */
+dialog.game-menu.transport-dialog[data-travel-step=go] .popup-body #travel-options>.transport-card{padding:0!important;gap:0!important}
+dialog.game-menu.transport-dialog[data-travel-step=go] .transport-art{flex:1 1 0!important;min-height:60px!important;background:#fffaf0!important;aspect-ratio:auto!important}
+dialog.game-menu.transport-dialog[data-travel-step=go] .transport-art img{width:100%!important;height:100%!important;object-fit:contain!important;mix-blend-mode:multiply}
+dialog.game-menu.transport-dialog[data-travel-step=go] .transport-copy{flex:0 0 auto!important;padding:7px 10px!important;gap:3px!important}
+dialog.game-menu.transport-dialog[data-travel-step=go] .popup-body #travel-options .transport-copy b{font-size:19px!important;line-height:1.15!important}
+dialog.game-menu.transport-dialog[data-travel-step=go] .transport-costs{margin-top:2px!important;gap:3px 8px!important;font-size:15px!important;line-height:1.2!important}
+dialog.game-menu.transport-dialog[data-travel-step=go] .transport-quip{display:none!important}
+@media(max-width:400px){dialog.game-menu.transport-dialog[data-travel-step=go] .transport-copy{padding:5px 7px!important}dialog.game-menu.transport-dialog[data-travel-step=go] .popup-body #travel-options .transport-copy b{font-size:17px!important}dialog.game-menu.transport-dialog[data-travel-step=go] .transport-costs{font-size:14px!important;gap:3px 5px!important}}
+/* Sommeil : scène principale, heures et gains ; explications dans Infos. */
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-scene{height:155px;display:flex;align-items:center;justify-content:center;margin:0 0 8px}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-scene img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates{padding:8px!important;margin:0 0 8px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates small{font-size:13px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy{display:inline-flex!important;width:calc(65% - 8px);box-sizing:border-box;padding:10px!important;margin:6px 8px 6px 0!important;vertical-align:middle;gap:10px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy>div>span{display:none}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy strong{font-size:30px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy img{width:30px;height:38px}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-mood{display:inline-block!important;width:30%;box-sizing:border-box;vertical-align:middle;font-size:18px!important;font-weight:800;line-height:1.3!important;margin:6px 0!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-bonus{display:inline-block;padding:5px 10px;border-radius:12px;background:#f6ebd1;font-weight:800;margin:3px 0!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-bonus[hidden]{display:none!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-duration{margin-top:6px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-presets{margin:5px 0!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-infos{margin-top:7px!important;padding:7px 10px!important}
+@media(max-height:700px){dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-scene{height:100px}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates{padding:5px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body #sleep-duration{height:25px;margin-top:3px}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-presets button{min-height:40px!important}}
+/* Les cartes d’activités privilégient le dessin ; titres et chiffres dessous. */
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:6px!important;padding:12px 16px!important;text-align:center!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .game-card-art{width:100%!important;height:180px!important;border:0!important;background:none!important;grid-row:auto!important;grid-column:auto!important;margin:0!important;box-shadow:none!important;align-self:center!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .game-card-art img{width:100%!important;height:100%!important;object-fit:contain!important;mix-blend-mode:multiply}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service>b{font-size:21px!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .travel-costs,dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .venue-gains{justify-content:center!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service::after{top:12px!important;translate:none!important;width:26px!important;height:26px!important;font-size:21px!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .venue-description{font-size:14px!important}
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service small{font-size:14px!important}
+@media(max-width:760px){dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service .game-card-art{height:155px!important}}
+/* Le sommeil se lit en chiffres : heures, durée, gains. */
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates{display:flex!important;align-items:center!important;justify-content:space-around!important;padding:6px!important;gap:8px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates>div>span{display:none!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates strong{font-size:25px!important;line-height:1.1!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates small{font-size:12px!important;line-height:1.15!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-limits{display:none!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-duration{font-size:16px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body #sleep-duration{height:24px!important;margin:3px 0!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-presets button{min-height:40px!important;padding:4px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy{padding:6px!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-infos summary{padding:4px!important}
+@media(max-width:760px){
+ dialog.game-menu.sleep-dialog[open][aria-labelledby]>.popup-head .popup-icon{display:none!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby]>.popup-head{padding:6px 48px 6px 12px!important;gap:4px!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby]>.popup-head .popup-titles{flex:1 1 auto!important;padding:6px 12px!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby]>.popup-head .popup-titles h2{font-size:20px!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby]>.popup-head .popup-stats{gap:4px!important;margin:4px 0!important;padding:0!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-scene{height:110px!important;margin-bottom:3px!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-dates small{display:none!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-energy strong{font-size:26px!important}
+ dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-infos{padding:3px 8px!important;margin-top:4px!important}
+}
+/* Illustration et réglage côte à côte : le gain reste visible sans descendre dans la fenêtre. */
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-choice{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;align-items:center}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-choice .sleep-scene{height:225px!important;width:100%;margin:0!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls{min-width:0}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-dates small{display:block!important}
+dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-presets{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+@media(max-width:760px){dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-choice{gap:8px;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-choice .sleep-scene{height:180px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-dates{padding:4px!important;gap:3px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-dates strong{font-size:20px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-dates small{font-size:11px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .wait-duration{font-size:14px!important}}
+@media(max-height:650px){dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-controls .wait-presets button{min-height:34px!important;height:34px!important;font-size:18px!important;padding:1px 4px!important}dialog.game-menu.sleep-dialog[open][aria-labelledby] .popup-body .sleep-choice .sleep-scene{height:160px!important}}
+/* Les entrées verrouillées par le moteur gardent leur état masqué. */
+dialog.game-menu.venue-dialog[open] .popup-body .game-menu-pages .venue-service[hidden]{display:none!important}
+/* Le sélecteur du panneau évite que les anciennes règles de grille gagnent sur les cartes illustrées. */
+dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]){display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;text-align:center!important}
+dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art{display:block!important;position:static!important;float:none!important;width:100%!important;height:180px!important;grid-area:auto!important;margin:0!important;border:0!important;box-shadow:none!important;background:none!important}
+dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art img{width:100%!important;height:100%!important;object-fit:contain!important}
+dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>*{grid-area:auto!important}

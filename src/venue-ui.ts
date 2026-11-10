@@ -346,11 +346,13 @@ export function mountVenues(options: {
     if (!outcome.ok) result.textContent = outcome.reason
     else {
       const after = getPlayerResources()
+      // La mission garde son reçu chiffré ; une courte chute raconte ce qui s’est passé.
       const details = [outcome.money ? loc('+{0} Nkap',outcome.money.toLocaleString(gameLocale)) : '', outcome.mood ? loc('{0}{1} humeur',outcome.mood > 0 ? '+' : '',outcome.mood) : '', outcome.respo ? loc('+{0} points Respo',outcome.respo) : ''].filter(Boolean).join(' · ')
       const energyMessage = outcome.energy > 0 ? loc('+{0} énergie',outcome.energy) : outcome.energy < 0 ? loc('{0} énergie',outcome.energy) : after.energy === after.maxEnergy ? loc('Énergie déjà au maximum') : loc('Énergie inchangée')
       result.innerHTML = `<b>${loc('{0} terminé',outcome.service.name)}</b><span class="venue-energy-result"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/><strong>${energyMessage}</strong></span><span>${before.energy} → ${after.energy} / ${after.maxEnergy}</span><small>${loc('{0} min écoulées{1}',outcome.service.minutes,details ? ` · ${details}` : '')}</small>`
     }
     render()
+    if(outcome.ok&&outcome.service.completion){const quip=document.createElement('p');quip.className='venue-completion';quip.textContent=outcome.service.completion;result.append(quip)}
     selecting = false
     // Return focus to the same service after the list updates.
     list.querySelector<HTMLButtonElement>(`[data-service="${button.dataset.service}"]`)?.focus({ preventScroll: true })

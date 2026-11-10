@@ -29,3 +29,9 @@ __pycache__/
 
 # Documents de conception : restent en local (dépôt public pour GitHub Pages)
 docs/
+
+# Références graphiques originales (plusieurs Go, restent en local)
+art/LE RESPONSABLE/
+# Sources et anciennes variantes lourdes : archives locales, pas des fichiers servis par le jeu.
+art/generated-sources/
+art/production/previous-transports/

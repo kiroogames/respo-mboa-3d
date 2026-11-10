@@ -3,7 +3,7 @@
 
 import { loc, sourceOf } from './i18n.ts'
 // Réveil cartoon de la carte de l'heure.
-const alarmIcon='<svg class="game-clock-alarm" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#0f2e28" stroke-width="3" stroke-linejoin="round"><path d="M7 23a12 12 0 0 1 18-15z" fill="#e5483d"/><path d="M57 23a12 12 0 0 0-18-15z" fill="#e5483d"/><path d="M15 54l-5 7M49 54l5 7" fill="none" stroke-linecap="round"/><circle cx="32" cy="35" r="25" fill="#8fd14f"/><circle cx="32" cy="35" r="18" fill="#3fd0d4"/></g><circle cx="32" cy="35" r="15" fill="none" stroke="#0f2e28" stroke-width="2.5" pathLength="60" stroke-dasharray="1.2 3.8" stroke-dashoffset=".6"/><path d="M32 35V24M32 35h9" fill="none" stroke="#0f2e28" stroke-width="3.5" stroke-linecap="round"/></svg>'
+const alarmIcon='<svg class="game-clock-alarm" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#10243f" stroke-width="3" stroke-linejoin="round"><path d="M7 23a12 12 0 0 1 18-15z" fill="#e5483d"/><path d="M57 23a12 12 0 0 0-18-15z" fill="#e5483d"/><path d="M15 54l-5 7M49 54l5 7" fill="none" stroke-linecap="round"/><circle cx="32" cy="35" r="25" fill="#3ec9cc"/><circle cx="32" cy="35" r="18" fill="#3fd0d4"/></g><circle cx="32" cy="35" r="15" fill="none" stroke="#10243f" stroke-width="2.5" pathLength="60" stroke-dasharray="1.2 3.8" stroke-dashoffset=".6"/><path d="M32 35V24M32 35h9" fill="none" stroke="#10243f" stroke-width="3.5" stroke-linecap="round"/></svg>'
 const watch = (node: Node | null, update: () => void) => {
   if (!node) return
   new MutationObserver(update).observe(node, { childList: true, characterData: true, subtree: true, attributes: true })

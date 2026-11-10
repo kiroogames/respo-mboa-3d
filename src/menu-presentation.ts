@@ -49,7 +49,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
  if(tabs)dialog.querySelector('.popup-head')!.append(tabs)
  let theme=themeOf(dialog)
  dialog.classList.add('game-menu');dialog.dataset.menuTheme=theme
- const illustration=(kind:string)=>`${base}ui/menu-${kind}.jpg`
+ const illustration=(kind:string)=>kind==='work'?`${base}ui/unity/respo-dossiers-original.png`:`${base}ui/menu-${kind}.jpg`
  const city=dialog.querySelector('.menu-city-art')
  if(city){city.replaceChildren();const image=document.createElement('img');image.src=illustration(theme);image.alt='';image.className='game-menu-hero';city.append(image)}
  const badge=dialog.querySelector('.popup-icon')
@@ -60,7 +60,7 @@ export function presentGameMenu(dialog:HTMLDialogElement){
   theme=themeOf(dialog);dialog.dataset.menuTheme=theme
   for(const hero of dialog.querySelectorAll<HTMLImageElement>('.game-menu-hero,.popup-icon>img')){
    const portrait=dialog.querySelector<HTMLImageElement>('.npc-conversation-header img')?.getAttribute('src')
-   const source=portrait??(dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:dialog.classList.contains('sport-energy-dialog')?`${base}ui/unity/sommeil.png`:illustration(theme))
+   const source=portrait??(dialog.classList.contains('sleep-dialog')?`${base}ui/menu-sleep-respo.jpg`:dialog.classList.contains('citizen-puzzle-dialog')?`${base}ui/unity/usagers.png`:dialog.classList.contains('sport-energy-dialog')?`${base}ui/unity/sommeil.png`:illustration(theme))
    if(hero.getAttribute('src')!==source)hero.src=source
   }
   for(const tab of dialog.querySelectorAll('[data-venue-tab]')){const text=tab.firstChild;if(text?.nodeType===Node.TEXT_NODE){const value=tab.getAttribute('data-venue-tab')==='place'?loc('Activités'):loc('Habitants ');if(text.textContent!==value)text.textContent=value}}
@@ -79,6 +79,21 @@ export function presentGameMenu(dialog:HTMLDialogElement){
   const puzzleHint=dialog.querySelector<HTMLElement>('.citizen-feedback')
   if(puzzleHint?.textContent?.startsWith(loc('Partez du dossier et rejoignez la signature sans repasser sur vos pas. Cliquez sur une case du chemin pour revenir en arrière.'))){puzzleHint.title=puzzleHint.textContent;puzzleHint.textContent=loc('Dossier → signature · sans repasser.')}
   for(const description of dialog.querySelectorAll<HTMLElement>('.venue-description'))description.classList.toggle('game-important-description',/\d/.test(description.textContent??''))
+  // Les cartes d’entrée annoncent l’action et son horaire ; les règles restent dans la fenêtre de l’activité.
+  for(const card of dialog.querySelectorAll<HTMLElement>('.venue-service')){
+   for(const description of card.querySelectorAll<HTMLElement>('.venue-description')){
+    const full=description.textContent??'',hours=full.match(/\d{1,2}h(?:\d{2})?\s*[–−-]\s*\d{1,2}h(?:\d{2})?/)
+    if(hours&&full!==hours[0]){description.title=full;description.textContent=hours[0]}
+    if(!hours&&!/\d/.test(full)&&!description.hidden)description.hidden=true
+   }
+   for(const status of card.querySelectorAll<HTMLElement>(':scope>small')){
+    const full=status.textContent??''
+    if(status.dataset.compactStatus===full)continue
+    const short=/ferm[ée]|closed/i.test(full)?loc('Fermé'):/commande.*Anneke|auprès.*Anneke/i.test(full)?loc('Voir Anneke'):full
+    if(short!==full){status.title=full;status.textContent=short}
+    status.dataset.compactStatus=status.textContent??''
+   }
+  }
   for(const preview of dialog.querySelectorAll<HTMLElement>('.venue-energy-preview')){
    const text=preview.textContent??'',short=text.replace(/^(?:Fin : |End: )(\d+\s*\/\s*\d+) · (?:énergie pleine|full energy)$/,'$1').replace(/\((\+\d+) (?:à la fin|at the end)\)/,'($1)')
    if(short!==text){preview.title=text;preview.setAttribute('aria-label',text);preview.textContent=short}

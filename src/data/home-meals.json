@@ -1,5 +1,26 @@
 [
-  {"id":"porridge","name":"Bouillie et beignets","money":150,"minutes":15,"energy":30,"mood":3},
-  {"id":"rice","name":"Riz sauce arachide","money":350,"minutes":30,"energy":50,"mood":6},
-  {"id":"ndole","name":"Ndolé et plantain","money":500,"minutes":45,"energy":70,"mood":8}
+  {
+    "id": "porridge",
+    "name": "Bouillie et beignets",
+    "money": 150,
+    "minutes": 15,
+    "energy": 45,
+    "mood": 3
+  },
+  {
+    "id": "rice",
+    "name": "Riz sauce arachide",
+    "money": 350,
+    "minutes": 30,
+    "energy": 50,
+    "mood": 6
+  },
+  {
+    "id": "ndole",
+    "name": "Ndolé et plantain",
+    "money": 500,
+    "minutes": 45,
+    "energy": 70,
+    "mood": 8
+  }
 ]

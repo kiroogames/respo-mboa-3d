@@ -59,13 +59,17 @@ export function mountTravel(options: {
   function renderPlace(key: string) {
     const activities = getPlaceActivities(key), people = getPlacePeople(key)
     dialog.querySelector('#travel-place-panel')!.innerHTML = (activities.length
-      ? `<ul class="place-activity-list">${activities.map(item => `<li><span class="place-activity-icon" aria-hidden="true">${item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail)}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
+      ? `<ul class="place-activity-list">${activities.map(item => `<li><span class="place-activity-icon" aria-hidden="true">${item.art ? `<img src="${options.base}ui/menu-${escape(item.art)}.jpg" alt=""/>` : item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail.replace(/^\s*·\s*/,''))}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
       : `<p class="place-activity-empty">${loc('Aucune activité particulière dans ce lieu.')}</p>`)
-      + `<h3 class="place-people-title">${loc('Personnes présentes en ce moment')}</h3>`
+      + `<h3 class="place-people-title">${loc('Sur place')}</h3>`
       + (people.length
-        ? `<ul class="place-people">${people.map(person => `<li><img src="${options.base}${person.portrait}" alt="" width="40" height="40"/><span><b>${escape(person.name)}${person.request ? ' <em>!</em>' : ''}</b><small>${escape(person.activity)}</small><small class="place-person-stay">🕒 ${escape(person.stay)}</small></span></li>`).join('')}</ul>`
+        ? `<ul class="place-people">${people.map(person => `<li title="${escape(person.activity+' · '+person.stay)}"><img src="${options.base}${person.portrait}" alt="" width="40" height="40"/><span><b>${escape(person.name)}${person.request ? ' <em>!</em>' : ''}</b><small class="place-person-stay">🕒 ${escape(person.stay.split(' · ')[0]!)}</small></span></li>`).join('')}</ul>`
         : `<p class="place-activity-empty">${loc('Personne pour le moment.')}</p>`)
       + `<p class="place-activity-note">${loc('Sur place après le trajet.')}</p>`
+    // Une illustration encore absente retrouve son pictogramme sans casser la carte.
+    dialog.querySelectorAll<HTMLImageElement>('.place-activity-icon img').forEach((image,index)=>{
+      image.onerror=()=>{image.parentElement!.textContent=activities[index]!.icon}
+    })
   }
 
   function renderChoices() {
@@ -84,7 +88,7 @@ export function mountTravel(options: {
       const subtitle={walk:loc('Le pied, c’est gratuit !'),taxi:loc('On se serre un peu'),yonga:loc('La place du boss'),moto:loc('On faufile !')}[mode.id]
       const title=mode.id==='yonga'?loc('Yonga privé'):mode.label
       const cost=quote.money===0?'0':quote.money.toLocaleString(gameLocale)
-      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${loc('{0}, {1} Nkap, {2} énergie{3}, {4} minutes{5}',title,quote.money,quote.energy,quote.mood?loc(', −{0} humeur',quote.mood):'',quote.minutes,reason?', '+reason:'')}" ${reason ? 'disabled' : ''}><span class="transport-art" aria-hidden="true"><img src="${options.base}ui/transport-${mode.id}.png" alt=""/></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span title="${loc('Prix en Nkap')}"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span title="${loc('Énergie dépensée')}"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/>${quote.energy}</span>${quote.mood?`<span title="${loc('Humeur perdue')}" class="transport-mood"><span class="currency-icon currency-icon-mood" role="img" aria-label="${loc('Humeur')}" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>−${quote.mood}</span>`:''}<span title="${loc('Durée du trajet')}">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">${loc('Bouchons +{0} min',delay)}</span>`:''}</span></button>`
+      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${loc('{0}, {1} Nkap, {2} énergie{3}, {4} minutes{5}',title,quote.money,quote.energy,quote.mood?loc(', −{0} humeur',quote.mood):'',quote.minutes,reason?', '+reason:'')}" ${reason ? 'disabled' : ''}><span class="transport-art" aria-hidden="true"><img src="${options.base}ui/transport-${mode.id}.png?v=respo-20261110" alt=""/></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span title="${loc('Prix en Nkap')}"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span title="${loc('Énergie dépensée')}"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/>${quote.energy}</span>${quote.mood?`<span title="${loc('Humeur perdue')}" class="transport-mood"><span class="currency-icon currency-icon-mood" role="img" aria-label="${loc('Humeur')}" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>−${quote.mood}</span>`:''}<span title="${loc('Durée du trajet')}">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">${loc('Bouchons +{0} min',delay)}</span>`:''}</span></button>`
 
     }).join('')
     const from=options.origin(),home=options.place('home'),rescue=previewEmergencyReturn(from.key,from.position,home.position,pending.traffic)

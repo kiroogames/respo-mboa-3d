@@ -73,3 +73,28 @@ gardent leur apparence actuelle. Ils seront ajoutés à cette liste une fois le 
 Déposer le fichier, recharger le jeu, ouvrir un lieu. Si la pièce n'apparaît pas : vérifier le dossier
 (`public/ui/kit/`), le nom en minuscules avec tiret, et l'extension `.png`.
 Si un décor est déformé, c'est qu'il dépasse de la marge des coins indiquée dans le tableau.
+
+## Livraison du 10 novembre 2026
+
+Les sept pièces et onze icônes sont livrées dans `public/ui/kit/`. Planche commune, galerie, prompts et exports dans `art/production/`. Les coins du panneau et de la carte sont normalisés au découpage indiqué. Les contrastes de texte du HUD, des plaques et des boutons verts ont été adaptés lors de la vérification dans le jeu.
+
+## Palette de l'interface (10 novembre 2026)
+
+Décision de l'utilisateur : fond sombre en bleu nuit, aucun vert dans l'interface. La palette est choisie contre
+la carte (latérite orange `#F5903D`, herbe `#67B22A`, lagune `#81CFCE`).
+
+| Rôle | Couleur |
+|---|---|
+| Fond sombre (HUD, barres) | Bleu nuit `#10243F`, variante `#1B3A5F` |
+| Fenêtres / cartes | Papier crème `#FBEFD5` / bristol `#FFF9EA` |
+| Contours et texte | Brun encre `#3A2414` |
+| Titres, sélection, argent | Or `#F2C230` |
+| Action principale et gains | Turquoise `#0F8C8E` |
+| Information | Bleu ciel `#8FD3F0` |
+| Vie sociale | Violet `#7B6FE0` |
+| Danger, pertes | Rouge tampon `#D8362B` |
+| Inactif | Gris route `#6E7278` |
+
+L'orange est réservé à la carte. Les pièces `hud.png`, `button-primary.png` et le liseré de `panel.png` ont été
+reteintées par script à partir de la livraison ; un nouvel export depuis `art/generated-sources/` remettrait les verts.
+La cravate verte du Respo (illustrations, `icon-level.png`) fait partie du personnage et n'est pas concernée.
