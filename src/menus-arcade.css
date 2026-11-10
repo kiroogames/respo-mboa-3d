@@ -237,3 +237,40 @@ dialog.game-menu .work-mood-banner{display:flex;align-items:center;gap:8px;margi
 dialog.game-menu .work-mood-banner[data-state=high]{background:#c9f2c4}
 dialog.game-menu .work-mood-banner[data-state=low]{background:#ffd3c7}
 dialog.game-menu[data-mode=puzzle] .work-mood-banner{display:none}
+
+/* Guide « À faire » : toujours visible, une priorité mise en avant. */
+#app #guide{position:absolute;left:24px;top:118px;z-index:6;width:310px;display:flex;flex-direction:column;gap:6px;pointer-events:auto;font-family:Nunito,sans-serif}
+#app #guide .guide-head{align-self:flex-start;display:flex;align-items:center;gap:8px;min-height:34px;padding:2px 14px;border:3px solid var(--g-ink);border-radius:999px;background:linear-gradient(180deg,#ffe58a,var(--g-gold));color:var(--g-ink);box-shadow:inset 0 2px 0 #fff9,0 3px 0 var(--g-ink);cursor:pointer}
+#app #guide .guide-head b{font:400 16px/1.2 var(--g-title);letter-spacing:.5px;text-transform:uppercase}
+#app #guide .guide-head span{font-size:13px;transition:rotate .12s}
+#app #guide[data-collapsed=true] .guide-head span{rotate:-90deg}
+#app #guide .guide-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+#app #guide .guide-list[hidden]{display:none}
+#app #guide .guide-goal{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:7px 10px 7px 7px;border:3px solid var(--g-ink);border-radius:16px;background:linear-gradient(180deg,#184f43ee,#0d342cee);color:#fff;text-align:left;box-shadow:inset 0 2px 0 #ffffff26,0 4px 0 var(--g-ink);cursor:pointer;transition:translate .08s,box-shadow .08s}
+#app #guide .guide-goal:disabled{cursor:default;opacity:1}
+#app #guide .guide-goal:not(:disabled):hover{translate:0 -1px;box-shadow:inset 0 2px 0 #ffffff26,0 5px 0 var(--g-ink)}
+#app #guide .guide-goal:not(:disabled):active{translate:0 3px;box-shadow:inset 0 2px 0 #ffffff26,0 1px 0 var(--g-ink)}
+#app #guide .guide-goal[data-main=true]{background:linear-gradient(180deg,#fffdf4,#ffe9b8);color:var(--g-ink);box-shadow:inset 0 2px 0 #fff,0 0 0 3px var(--g-gold),0 5px 0 3px var(--g-ink)}
+#app #guide .guide-icon{display:grid;place-items:center;width:42px;height:42px;border:2px solid var(--g-ink);border-radius:12px;background:#ffe9b8;font-size:24px;line-height:1}
+#app #guide .guide-text{display:flex;flex-direction:column;gap:1px;min-width:0}
+#app #guide .guide-text b{font:400 17px/1.15 var(--g-title);letter-spacing:.2px}
+#app #guide .guide-text small{font-size:13px;font-weight:800;line-height:1.25;opacity:.88}
+#app #guide .guide-go{display:grid;place-items:center;width:28px;height:28px;padding-bottom:3px;box-sizing:border-box;border:3px solid var(--g-ink);border-radius:50%;background:linear-gradient(180deg,#ffe58a,var(--g-gold));color:var(--g-ink);font:900 20px/1 Nunito,sans-serif}
+#app #guide.guide-done .guide-goal[data-main=true]{animation:guide-next .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes guide-next{0%{scale:.85;opacity:.3}100%{scale:1;opacity:1}}
+@media(max-width:1359px){#app #guide{top:112px}}
+@media(max-width:980px){#app #guide{left:10px;top:auto;bottom:262px;width:min(300px,calc(100vw - 20px))}#app #guide .guide-list li:not(:first-child){display:none}#app #guide .guide-text b{font-size:15px}#app #guide .guide-icon{width:36px;height:36px;font-size:20px}#app #guide .guide-goal{grid-template-columns:36px minmax(0,1fr) auto}}
+@media(prefers-reduced-motion:reduce){#app #guide.guide-done .guide-goal[data-main=true]{animation:none}}
+
+/* ── Kit d'interface peint (art/kit-interface.md) ─────────────────────────────
+   Chaque règle ne s'applique que si la pièce existe (classe posée par ui-kit.ts). L'image remplace le cadre,
+   le fond et l'ombre dessinés par le code ; les dimensions des éléments ne changent pas. */
+html.kit-panel dialog.travel-dialog.game-menu[open]{border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-panel)!important;border-image-slice:96 fill!important;border-image-width:30px!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-plaque dialog.travel-dialog.game-menu[open]>.popup-head :is(.popup-titles,.npc-conversation-header){border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-plaque)!important;border-image-slice:0 96 fill!important;border-image-width:0 48px!important;border-image-outset:6px 0!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-button-secondary dialog.travel-dialog .popup-foot button:not(:disabled){border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-button-secondary)!important;border-image-slice:40 fill!important;border-image-width:20px!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-button-primary dialog.travel-dialog:not([data-skin])>.popup-foot :is([class$="-actions"]>button:last-child:not(:first-child),[class$="-actions"]>button:only-child,button.travel-go):not(:disabled){border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-button-primary)!important;border-image-slice:40 fill!important;border-image-width:20px!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-card dialog.game-menu .game-menu-pages :is(.venue-service,.citizen-card,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.venue-resident,.place-activity-list>li):not([hidden]){border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-card)!important;border-image-slice:48 fill!important;border-image-width:22px!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-hud #app :is(.respo-console,.city-wallet-strip>.game-wallet,.game-clock,#guide .guide-goal){border-style:solid!important;border-color:transparent!important;border-image-source:var(--kit-hud)!important;border-image-slice:40 fill!important;border-image-width:18px!important;border-image-repeat:stretch!important;background:none!important;box-shadow:none!important;border-radius:0!important}
+html.kit-close dialog.travel-dialog .popup-head .travel-close{background:var(--kit-close) center/contain no-repeat!important;border:0!important;box-shadow:none!important;color:transparent!important;text-shadow:none!important;border-radius:0!important}
+#app #guide .guide-icon[data-painted]{border:0;background:none}
+#app #guide .guide-icon img{width:100%;height:100%;object-fit:contain}

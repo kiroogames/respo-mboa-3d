@@ -77,6 +77,8 @@ import '@babylonjs/loaders/glTF'
 import { mountPopupShell } from './popup-shell'
 import { mountHudEnhance } from './hud-enhance'
 import { mountStartMenu } from './start-menu'
+import { mountGuide } from './guide'
+import { mountUiKit } from './ui-kit'
 import { applyDocumentLanguage } from './i18n.ts'
 import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
@@ -347,6 +349,9 @@ mountPopupShell()
 mountHudEnhance()
 applyDocumentLanguage()
 mountStartMenu(base,()=>travel.isTravelling()||isGuidedOutingActive())
+mountUiKit()
+// Guide « À faire » : dit quoi faire maintenant et amène la caméra au bon lieu.
+mountGuide({currentZone:()=>playerZone,goTo:zone=>requestZone(zone),busy:()=>travel.isTravelling()||isGuidedOutingActive()||!!document.querySelector('dialog[open]')})
 mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
@@ -630,7 +635,7 @@ scene.onAfterRenderObservable.add(()=>{
  const viewport=camera.viewport.toGlobal(engine.getRenderWidth(),engine.getRenderHeight())
  const resourceBounds=document.querySelector<HTMLElement>('.resource-stats')!.getBoundingClientRect()
  const upperControls=[...document.querySelectorAll<HTMLElement>('.game-clock,.header-actions,.player-card')].map(node=>node.getBoundingClientRect())
- const hudPanels=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,#wait-open,.respo-console,#ui-menu-toggle')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width&&rect.top<innerHeight/2)
+ const hudPanels=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,#wait-open,.respo-console,#ui-menu-toggle,#guide')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width&&rect.top<innerHeight/2)
  const states=new Map(npcTemplates.map(npc=>[npc.id,getNPCState(npc.id)]))
  const markerGroup=(id:string)=>{if(guided?.npcId===id)return '__guided';const state=states.get(id);return state?.zone??(state?.travelling?`${state.origin}>${state.destination}`:'')}
  const shownNPCs=npcTemplates.filter(npc=>{
