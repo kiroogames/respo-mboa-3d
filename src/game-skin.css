@@ -47,6 +47,7 @@
 #app .city-wallet-strip #bills-open[data-budget=tight]{background:var(--g-gold)}
 #app .resource-stats .energy-change{z-index:3;border:2px solid var(--g-ink);font:400 16px/1.1 var(--g-title)}
 
+#app .game-clock-alarm{display:none}
 #app .game-clock{width:196px;padding:8px 12px 10px;border-radius:18px;column-gap:9px}
 #app .game-clock-time{font:400 34px/1 var(--g-title);letter-spacing:.3px;color:var(--g-gold);text-shadow:0 2px 0 var(--g-ink)}
 #app .game-clock-day{font:400 16px/1.1 var(--g-title);color:#fff;text-shadow:0 1px 0 var(--g-ink)}
@@ -279,4 +280,39 @@ dialog.travel-dialog .popup-foot button:not(:disabled):active{box-shadow:inset 0
  #app #places-toggle{height:44px}#app .places-pin{width:28px;height:28px}#app #view-name{font-size:14px}
  #app .tools{padding:3px;gap:2px}
 }
+/* Cartes de monnaies moins hautes : l'icône remplace le nom, qui reste lu par les lecteurs d'écran. */
+@media(min-width:981px) and (min-height:481px){
+ #app .city-wallet-strip>.game-wallet{padding:3px 8px 4px 6px;gap:6px}
+ #app .city-wallet-strip .game-wallet-details{column-gap:4px}
+ #app .city-wallet-strip .game-wallet-label,#app .city-wallet-strip .game-wallet-amount{flex:none;white-space:nowrap}
+ #app .city-wallet-strip .game-wallet-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ #app .city-wallet-strip>.game-wallet>img,#app .city-wallet-strip .mood-icon{width:52px;height:52px;padding:0}
+ #app .city-wallet-strip .game-wallet-amount{font-size:22px;line-height:1.1}
+ #app .city-wallet-strip #energy-counter .game-wallet-details::after,#app .city-wallet-strip #mood-counter .game-wallet-details::after{height:9px!important;margin:1px 0 3px!important}
+ #app .city-wallet-strip #energy-counter .game-wallet-details{width:126px}#app .city-wallet-strip #mood-counter .game-wallet-details{width:70px;min-width:0}
+ #app .city-wallet-strip .meal-tracker{flex:none;margin:0}
+ #app .city-wallet-strip .meal-slot{width:18px;height:18px;font-size:11px}
+ #app .city-wallet-strip #mood-effects-open,#app .city-wallet-strip #bills-open,#app .resource-stats #energy-counter #energy-effects-open{min-height:20px;margin:0;padding-top:0;padding-bottom:0}
+ #app .resource-stats #energy-counter #energy-effects-open{flex:1 1 0;min-width:0;padding-inline:3px;text-align:center;white-space:nowrap}
+ #app .resource-stats #energy-counter #energy-effects-open[data-state=fatigued]{padding-block:1px;font-size:10px;line-height:1.05;white-space:normal}
+}
+@media(min-width:1340px) and (min-height:481px){#app .city-wallet-strip{max-width:none}#app .city-wallet-strip>.game-wallet{flex:none}#app .city-wallet-strip #bills-open{padding-inline:6px!important;font-size:11px!important}}
+@media(min-width:981px) and (max-width:1300px) and (min-height:481px){#app .city-wallet-strip #energy-counter .game-wallet-details{width:126px}#app .city-wallet-strip .game-wallet-amount{font-size:20px}#app .city-wallet-strip #mood-counter .game-wallet-details{width:70px}#app .city-wallet-strip>.game-wallet>img,#app .city-wallet-strip .mood-icon{width:44px;height:44px}}
+@media(min-width:1061px) and (max-width:1180px) and (min-height:481px){#app .city-wallet-strip>.game-wallet>img,#app .city-wallet-strip .mood-icon{display:block!important;width:28px;height:28px}}
+@media(min-width:981px) and (max-width:1060px) and (min-height:481px){#app .city-wallet-strip>.game-wallet>img,#app .city-wallet-strip .mood-icon{display:block!important;width:22px;height:22px}#app .game-clock>.game-clock-alarm{display:none}#app .city-wallet-strip #bills-open{max-width:100px}#app .city-wallet-strip #energy-counter .game-wallet-details{width:116px}}
+/* Horloge à la hauteur des monnaies : réveil, heure et jour sur la carte ; « Attendre » devient sa propre carte. */
+@media(min-width:981px) and (min-height:481px){
+ #app .city-wallet-strip{left:240px;transform:none}
+ #app .game-clock{width:max-content;min-height:70px;padding:3px 10px 4px 7px;overflow:visible;grid-template-columns:auto auto auto;grid-template-areas:'icon time day' 'icon time week';column-gap:7px;row-gap:0;align-content:center}
+ #app .game-clock-alarm{display:block;grid-area:icon;width:44px;height:44px;filter:drop-shadow(0 2px 0 var(--g-ink))}
+ #app .game-clock-time{font-size:29px}
+ #app .game-clock-day{font-size:15px;white-space:nowrap}
+ #app .clock-wait-button{position:absolute;grid-area:auto;top:calc(100% + 11px);right:100px;width:auto;margin:0;min-height:42px;padding:0 14px;white-space:nowrap}
+ #app #ui-menu-toggle{top:78px}
+ #app .header-actions{top:128px}
+}
+@media(min-width:981px) and (max-width:1300px) and (min-height:481px){#app .city-wallet-strip{left:220px}}
+@media(min-width:981px) and (max-width:1519px) and (min-height:481px){#app .game-clock #game-period{display:none}}
+@media(min-width:1360px) and (min-height:481px){#app .clock-wait-button{top:-3px;bottom:-3px;right:calc(100% + 11px);height:auto}}
+@media(min-width:1700px) and (min-height:481px){#app .city-wallet-strip{left:50%;transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){dialog.travel-dialog[open],.start-card{animation:none}:is(dialog.travel-dialog,#app) button:active:not(:disabled),dialog.travel-dialog .popup-body :is(.venue-service,.travel-option,.citizen-card):hover:not(:disabled){translate:none}}

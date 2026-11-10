@@ -92,7 +92,7 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
     }
     birds.push({root,wings})
   }
-  const driving=createRoadTraffic(roadPaths,cars.length,{radius:trafficRadius,height:roadHeight,ignoresLights:i=>fleet[i%fleet.length]!.model.endsWith('Moto'),hotspots:trafficHotspots})
+  const driving=createRoadTraffic(roadPaths,cars.length,{radius:trafficRadius,height:roadHeight,isMoto:i=>fleet[i%fleet.length]!.model.endsWith('Moto'),hotspots:trafficHotspots})
   // Feux tricolores : un poteau par arrivée de carrefour, le feu rouge ou vert s'allume selon la phase réelle de la circulation.
   const poleMaterial=mat('Poteaux des feux','#3C4247')
   const glow=(name:string,color:Color3)=>{const m=new StandardMaterial(name,scene);m.disableLighting=true;m.emissiveColor=color;m.specularColor=Color3.Black();return m}
@@ -130,7 +130,7 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
     const level=getTrafficConditions().id
     if(level===trafficLevel)return
     trafficLevel=level
-    driving.configure(level==='jammed'?66:level==='busy'?30:10,level==='jammed'?.26:level==='busy'?.62:1,level==='jammed'?2:level==='busy'?1:0)
+    driving.configure(level==='jammed'?66:level==='busy'?42:24,level==='jammed'?.26:level==='busy'?.62:1,level==='jammed'?2:level==='busy'?1:0)
   }
   updateTraffic()
   // Limite un rattrapage à 100 ms afin qu’un retour d’onglet ne fasse pas bondir toute la simulation.

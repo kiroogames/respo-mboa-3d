@@ -2,6 +2,8 @@
    Les modules de ressources restent la seule source ; ici on ne fait que lire leur affichage. */
 
 import { loc, sourceOf } from './i18n.ts'
+// Réveil cartoon de la carte de l'heure.
+const alarmIcon='<svg class="game-clock-alarm" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#0f2e28" stroke-width="3" stroke-linejoin="round"><path d="M7 23a12 12 0 0 1 18-15z" fill="#e5483d"/><path d="M57 23a12 12 0 0 0-18-15z" fill="#e5483d"/><path d="M15 54l-5 7M49 54l5 7" fill="none" stroke-linecap="round"/><circle cx="32" cy="35" r="25" fill="#8fd14f"/><circle cx="32" cy="35" r="18" fill="#3fd0d4"/></g><circle cx="32" cy="35" r="15" fill="none" stroke="#0f2e28" stroke-width="2.5" pathLength="60" stroke-dasharray="1.2 3.8" stroke-dashoffset=".6"/><path d="M32 35V24M32 35h9" fill="none" stroke="#0f2e28" stroke-width="3.5" stroke-linecap="round"/></svg>'
 const watch = (node: Node | null, update: () => void) => {
   if (!node) return
   new MutationObserver(update).observe(node, { childList: true, characterData: true, subtree: true, attributes: true })
@@ -22,7 +24,7 @@ export function mountHudEnhance() {
   // Toutes les ressources alignées en haut : argent, influence, énergie, humeur.
   const wallet=document.createElement('div');wallet.className='city-wallet-strip';const money=document.querySelector('#money-amount')!.closest('.game-wallet')!,karma=document.querySelector('#influence-counter')!;wallet.append(money,karma,energyTile,moodTile)
   stats.append(consolePanel,wallet);header.append(stats)
-  const clockWidget=document.querySelector('.game-clock')!,actions=document.querySelector<HTMLElement>('.header-actions')!;header.append(clockWidget,actions);actions.hidden=true
+  const clockWidget=document.querySelector('.game-clock')!,actions=document.querySelector<HTMLElement>('.header-actions')!;clockWidget.insertAdjacentHTML('afterbegin',alarmIcon);header.append(clockWidget,actions);actions.hidden=true
   const menu=document.createElement('button');menu.id='ui-menu-toggle';menu.type='button';menu.textContent='☰ Menu';menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-controls','hud-menu-actions');actions.id='hud-menu-actions';header.append(menu)
   const closeMenu=()=>{actions.hidden=true;menu.setAttribute('aria-expanded','false')}
   menu.onclick=()=>{actions.hidden=!actions.hidden;menu.setAttribute('aria-expanded',String(!actions.hidden))}

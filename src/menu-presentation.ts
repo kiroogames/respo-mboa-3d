@@ -1,4 +1,4 @@
-/* Présentation commune des fenêtres : illustrations et pages de jeu.
+/* Présentation commune des fenêtres : illustrations et cartes de jeu.
  * Les contrôles restent les mêmes nœuds DOM : aucune règle, sauvegarde ou transaction ne change.
  */
 import { loc, sourceOf } from './i18n.ts'
@@ -19,6 +19,7 @@ function themeOf(dialog:HTMLDialogElement):Theme{
  return themes.find(([name])=>dialog.classList.contains(name))?.[1]??'home'
 }
 function artOf(text:string,fallback:Theme):Theme{
+ if(/cantine|canteen/i.test(text))return 'food'
  if(/entraîn|jogg|sportive|athletic|train/i.test(text))return 'jogging'
  if(/2-0|football/i.test(text))return 'football'
  if(/cinéma|cinema|séance|screening/i.test(text))return 'cinema'
@@ -86,19 +87,14 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    if(image.getAttribute('src')!==source)image.setAttribute('src',source)
    if(!existing){image.alt='';art.append(image);node.prepend(art)}
   }
-  for(const node of body.querySelectorAll<HTMLElement>(policies))if(!node.closest('.game-menu-infos'))infos.append(node)
+  // Un panneau réaffiché ne doit pas empiler deux fois la même note.
+  for(const node of body.querySelectorAll<HTMLElement>(policies))if(!node.closest('.game-menu-infos')){if([...infos.children].some(known=>known.className===node.className&&known.textContent===node.textContent))node.remove();else infos.append(node)}
   if(infos.children.length>1&&!infos.isConnected)body.append(infos)
  }
  decorate()
+ // Une seule vue qui défile : tous les choix sont visibles d’un coup, sans pages cachées.
  const track=document.createElement('div');track.className='game-menu-pages';track.append(...body.childNodes);body.append(track)
- const foot=dialog.querySelector<HTMLElement>(':scope>.popup-foot')??document.createElement('div')
- if(!foot.isConnected){foot.className='popup-foot';dialog.append(foot)}
- const pager=document.createElement('nav');pager.className='game-menu-pager';pager.setAttribute('aria-label',loc('Pages du menu'))
- pager.innerHTML=`<button type="button" data-menu-prev aria-label="${loc('Page précédente')}">‹</button><span aria-live="polite"></span><button type="button" data-menu-next aria-label="${loc('Page suivante')}">›</button>`
- foot.prepend(pager)
- const previous=pager.querySelector<HTMLButtonElement>('[data-menu-prev]')!,next=pager.querySelector<HTMLButtonElement>('[data-menu-next]')!,label=pager.querySelector('span')!
- let page=0,total=1,scheduled=false,reset=false,previewRequested=false,reveal:HTMLElement|null=null
- function go(value:number){page=Math.max(0,Math.min(total-1,value));body.scrollLeft=page*(track.clientWidth+24);if(label.textContent!==`${page+1} / ${total}`)label.textContent=`${page+1} / ${total}`;previous.disabled=page===0;next.disabled=page===total-1}
+ let scheduled=false,reset=false,previewRequested=false,reveal:HTMLElement|null=null
  function refresh(){
   scheduled=false;if(!dialog.open)return
   decorate()
@@ -107,25 +103,18 @@ export function presentGameMenu(dialog:HTMLDialogElement){
    const warning=dialog.querySelector<HTMLElement>('.hunger-banner')
    dialog.style.setProperty('--game-puzzle-alert',`${warning?warning.getBoundingClientRect().height+8:0}px`)
    if(track.isConnected){track.replaceWith(...track.childNodes);body.scrollLeft=0;body.scrollTop=0}
-   if(!pager.hidden)pager.hidden=true
    return
   }
-  if(!track.isConnected){track.append(...body.childNodes);body.append(track);page=0}
+  if(!track.isConnected){track.append(...body.childNodes);body.append(track);body.scrollTop=0}
   // Les mises à jour des modules peuvent ajouter un reçu au corps après sa mise en forme.
   for(const child of [...body.childNodes])if(child!==track)track.append(child)
-  const style=getComputedStyle(body),height=body.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom)
-  track.style.height=Math.max(80,height)+'px';track.style.columnWidth=track.clientWidth+'px'
-  total=Math.max(1,Math.ceil((track.scrollWidth+24)/(track.clientWidth+24)))
-  if(pager.hidden!==(total===1))pager.hidden=total===1
-  if(reset){page=0;reset=false;reveal=null;previewRequested=false}
-  // Un choix mène à son aperçu, sans demander de chercher plus bas dans la fenêtre.
+  if(reset){body.scrollTop=0;reset=false;reveal=null;previewRequested=false}
+  // Un choix mène à son aperçu, un résultat à son reçu : la vue s’y rend toute seule.
   const preview=reveal??(previewRequested?track.querySelector<HTMLElement>('[class$="-preview"]:not([hidden]),.classic-work-preview:not([hidden])'):null)
-  if(preview){const offset=preview.getBoundingClientRect().left-track.getBoundingClientRect().left;page=Math.floor(offset/(track.clientWidth+24))}
-  previewRequested=false;reveal=null;go(page)
+  if(preview&&preview.offsetParent){const box=preview.getBoundingClientRect(),view=body.getBoundingClientRect();if(box.bottom>view.bottom||box.top<view.top)body.scrollTop+=box.bottom>view.bottom?Math.min(box.top-view.top-8,box.bottom-view.bottom+12):box.top-view.top-8}
+  previewRequested=false;reveal=null
  }
  function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(refresh)}}
- previous.onclick=()=>go(page-1);next.onclick=()=>go(page+1)
- body.addEventListener('scroll',()=>{const actual=Math.round(body.scrollLeft/(track.clientWidth+24));if(actual!==page)go(actual)},{passive:true})
  dialog.addEventListener('click',event=>{if((event.target as Element).closest('button[aria-pressed]'))previewRequested=true;schedule()})
  dialog.addEventListener('input',schedule)
  new MutationObserver(records=>{
@@ -138,5 +127,5 @@ export function presentGameMenu(dialog:HTMLDialogElement){
   schedule()
  }).observe(dialog,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','aria-pressed','data-mode','data-travel-step']})
  new ResizeObserver(schedule).observe(body)
- document.fonts.ready.then(schedule)
+ schedule()
 }

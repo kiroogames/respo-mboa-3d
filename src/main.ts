@@ -628,7 +628,7 @@ scene.onAfterRenderObservable.add(()=>{
  const viewport=camera.viewport.toGlobal(engine.getRenderWidth(),engine.getRenderHeight())
  const resourceBounds=document.querySelector<HTMLElement>('.resource-stats')!.getBoundingClientRect()
  const upperControls=[...document.querySelectorAll<HTMLElement>('.game-clock,.header-actions,.player-card')].map(node=>node.getBoundingClientRect())
- const hudPanels=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,.respo-console,#ui-menu-toggle')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width&&rect.top<innerHeight/2)
+ const hudPanels=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,#wait-open,.respo-console,#ui-menu-toggle')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width&&rect.top<innerHeight/2)
  const states=new Map(npcTemplates.map(npc=>[npc.id,getNPCState(npc.id)]))
  const markerGroup=(id:string)=>{if(guided?.npcId===id)return '__guided';const state=states.get(id);return state?.zone??(state?.travelling?`${state.origin}>${state.destination}`:'')}
  const shownNPCs=npcTemplates.filter(npc=>{
@@ -720,7 +720,7 @@ scene.onAfterRenderObservable.add(()=>{
    // Un nom caché sous un panneau du HUD (toit du bâtiment regardé de près) descend juste en dessous.
    for(const panel of hudPanels)if(x+size.w/2>panel.left&&x-size.w/2<panel.right&&y>panel.top&&y-size.h<panel.bottom+6)y=panel.bottom+size.h+8
    // Deux noms de lieux qui se chevauchent : le second prend la place libre la plus proche de son bâtiment.
-   const free=(cx:number,cy:number)=>!placedLabels.some(label=>cx+size.w/2>label.l&&cx-size.w/2<label.r&&cy>label.t&&cy-size.h<label.b)&&!hudPanels.some(panel=>cx+size.w/2>panel.left&&cx-size.w/2<panel.right&&cy>panel.top&&cy-size.h<panel.bottom+6)&&cx-size.w/2>4&&cx+size.w/2<innerWidth-4&&cy<innerHeight-100
+   const free=(cx:number,cy:number)=>!placedLabels.some(label=>cx+size.w/2>label.l&&cx-size.w/2<label.r&&cy>label.t&&cy-size.h<label.b)&&!hudPanels.some(panel=>cx+size.w/2>panel.left&&cx-size.w/2<panel.right&&cy>panel.top&&cy-size.h<panel.bottom+6)&&cx-size.w/2>4&&cx+size.w/2<innerWidth-4&&cy-size.h>4&&cy<innerHeight-100
    if(!free(x,y)){
     let best:[number,number]|null=null,bestCost=Infinity
     for(let dy=-size.h*3;dy<=size.h*3;dy+=size.h/2)for(let dx=-size.w*1.2;dx<=size.w*1.2;dx+=size.w/4){
@@ -971,3 +971,5 @@ import './transport-art.css'
 
 import './game-menus.css'
 import './game-skin.css'
+
+import './menus-arcade.css'
