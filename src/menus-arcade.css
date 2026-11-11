@@ -363,3 +363,5 @@ dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidde
 dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art{display:block!important;position:static!important;float:none!important;width:100%!important;height:180px!important;grid-area:auto!important;margin:0!important;border:0!important;box-shadow:none!important;background:none!important}
 dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art img{width:100%!important;height:100%!important;object-fit:contain!important}
 dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>*{grid-area:auto!important}
+/* Aucun voile ni flou sur le bandeau du haut quand une fenêtre est ouverte (hauteur mesurée dans main.ts). */
+html dialog.travel-dialog::backdrop{background:linear-gradient(180deg,transparent 0 var(--hud-band,108px),#0812208f calc(var(--hud-band,108px) + 40px))!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
