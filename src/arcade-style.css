@@ -118,3 +118,24 @@ html .landmark:not(#_){font-family:var(--sc-font)!important;font-weight:400!impo
   html dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-icon:not(#_){height:74px!important}
   html dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-list>li:not(#_):not(#__){padding:6px 8px 9px!important}
 }
+
+/* ---------- Cliquable ou pas : une seule règle visuelle ----------
+   Cliquable = relief (contour noir épais, ombre en bas, soulèvement au survol, flèche ou coche).
+   Information = plat (contour bleu fin, fond translucide, aucune ombre). Indisponible = plat et gris. */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.place-activity-list>li,.venue-resident,[class$="-preview"]:not(.venue-energy-preview),[class$="-result"]:not(.venue-energy-result),.house-budget-panel,.bills-summary,.game-menu-infos,.wait-dates,.sleep-energy,.work-mood-banner,.hunger-banner,.bill-history):not(#_):not(#__):not(#___){
+  border:2px solid #a8bedb!important;border-image:none!important;border-radius:14px!important;
+  background:#ffffff8c!important;box-shadow:none!important;translate:none!important;cursor:default
+}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .game-menu-infos>summary:not(#_){cursor:pointer;color:var(--sc-blue-lo)!important;text-decoration:underline;text-underline-offset:3px}
+/* Cartes cliquables : main au survol, relief marqué */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,button[aria-pressed]):not(:disabled):not(#_){cursor:pointer}
+/* Flèche « entrer » aussi sur les dossiers, qui n'en avaient pas */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .citizen-card:not(:disabled):not([aria-pressed=true]):not(#_)::after{content:'›';display:grid;place-items:center;position:absolute;right:10px;top:10px;width:28px;height:28px;padding-bottom:3px;box-sizing:border-box;border:3px solid var(--sc-ink);border-radius:50%;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold));font:400 20px/1 var(--sc-font);color:var(--sc-ink)}
+/* Indisponible : plat, gris, pas de survol */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,button[aria-pressed]):disabled:not(#_):not(#__):not(#___){
+  border:2px solid #8d98a6!important;background:#e4e9ef!important;box-shadow:none!important;translate:none!important;filter:grayscale(.6)!important;opacity:.9!important;cursor:not-allowed
+}
+/* HUD : les tuiles d'information restent à plat ; les boutons (Attendre, Menu, objectifs du guide) gardent le relief */
+html #app :is(.respo-console,.city-wallet-strip>.game-wallet,.resource-stats .game-wallet,.game-clock):not(#_):not(#__){box-shadow:inset 0 2px 0 #ffffff30!important;cursor:default}
+html #app #guide .guide-goal:not(:disabled):not(#_):not(#__){cursor:pointer;background:linear-gradient(180deg,#3a6fb5 0%,#24508f 50%,#173a6b 100%)!important;box-shadow:inset 0 3px 0 #ffffff50,inset 0 -5px 0 #00000045,0 4px 0 var(--sc-ink)!important}
+html #app #guide .guide-goal:disabled:not(#_):not(#__){box-shadow:none!important}
