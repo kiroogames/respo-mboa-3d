@@ -15,8 +15,10 @@ import { getVenueServices, venueServiceReason } from './venue-services.ts'
 import { kitHas, kitUrl, kitCount } from './ui-kit.ts'
 
 // Icône peinte du kit pour chaque objectif ; l'émoji reste le repli.
-const kitIcons: Record<string, string> = { eat: 'meal', hungry: 'meal', meal: 'meal', go: 'transport', work: 'dossier', sleep: 'sleep', tired: 'sleep', bills: 'bills', energy: 'energy', mood: 'mood', tontine: 'tontine', ceremony: 'ceremony', save: 'savings', level: 'level' }
+const kitIcons: Record<string, string> = { broke: 'savings', eat: 'meal', hungry: 'meal', meal: 'meal', go: 'transport', work: 'dossier', sleep: 'sleep', tired: 'sleep', bills: 'bills', energy: 'energy', mood: 'mood', tontine: 'tontine', ceremony: 'ceremony', save: 'savings', level: 'level' }
 
+// Besoins qui ne peuvent pas attendre la fin des premiers pas.
+const urgentIds = new Set(['broke', 'bills', 'hungry', 'meal', 'tired', 'energy', 'mood'])
 type Goal = { id: string; icon: string; title: string; hint: string; zone?: string; action?: string }
 const key = 'mboa-guide-v1'
 let step = 0, collapsed = false
@@ -44,6 +46,7 @@ function priorities(): Goal[] {
   const bills = getHouseBilling(), fatigue = getFatigueAt(), progress = getRespoProgress(resources.ptRespo)
   const amount = (value: number) => value.toLocaleString(gameLocale)
   if (bills.unpaid > 0) goals.push({ id: 'bills', icon: '🧾', title: loc('Paie les factures : {0} Nkap',amount(bills.totalDue)), hint: getMoneyBalance() < bills.amount ? loc('Il te manque {0} Nkap : travaille d’abord',amount(bills.amount - getMoneyBalance())) : loc('Touche ici pour payer · en retard : −10 d’humeur par jour'), action: 'bills' })
+  if (getMoneyBalance() < 150) goals.push({ id: 'broke', icon: '💸', title: loc('Plus d’argent'), hint: loc('Traite un dossier au ministère : +500 Nkap'), zone: 'ministry' })
   if (hunger.missed) goals.push({ id: 'hungry', icon: '🍲', title: loc('Mange vite'), hint: loc('Repas sauté : tes tâches coûtent plus d’énergie'), zone: 'home' })
   else if (hunger.today.some(slot => slot.current && !slot.eaten)) goals.push({ id: 'meal', icon: '🍲', title: loc('C’est l’heure de manger'), hint: loc('Maison, cantine, marché ou restaurant') })
   if (fatigue.penalty) goals.push({ id: 'tired', icon: '🛏️', title: loc('Tu es fatigué : va dormir'), hint: loc('Maison › Dormir'), zone: 'home' })
@@ -72,7 +75,8 @@ export function mountGuide(options: { currentZone: () => string; goTo: (zone: st
     while (step < steps.length && steps[step]!.done) { step++; advanced = true }
     if (advanced) { save(); panel.classList.remove('guide-done'); void panel.offsetWidth; panel.classList.add('guide-done') }
     const teaching = step < steps.length
-    const goals: Goal[] = teaching ? [steps[step]!] : priorities()
+    const urgent = teaching ? priorities().filter(goal => urgentIds.has(goal.id)).slice(0, 2) : []
+    const goals: Goal[] = teaching ? [...urgent, steps[step]!] : priorities()
     const next = `${kitCount()}|${collapsed}|${teaching ? `${step + 1}/${steps.length}` : ''}|${goals.map(goal => `${goal.id}:${goal.title}:${goal.hint}`).join('|')}`
     if (next === signature) return
     signature = next
