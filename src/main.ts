@@ -980,3 +980,4 @@ import './game-menus.css'
 import './game-skin.css'
 
 import './menus-arcade.css'
+import './arcade-style.css'

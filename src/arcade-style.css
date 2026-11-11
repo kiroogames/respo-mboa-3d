@@ -1,0 +1,120 @@
+/*
+ * Charte « jeu mobile arcade » (décision utilisateur du 11 novembre 2026) : boutons en relief brillant,
+ * texte blanc cerné de noir, police épaisse partout, fenêtres bleues à bandeau, cartes blanches en relief.
+ * Feuille chargée en dernier ; apparence seule, aucune règle de jeu. Le « :not(#_) » donne aux règles
+ * la priorité sur les anciennes feuilles sans toucher à leur contenu.
+ */
+:root{
+  --sc-ink:#0d1b2e;
+  --sc-font:'Lilita One','Baloo 2',Nunito,system-ui,sans-serif;
+  --sc-stroke:0 2px 0 var(--sc-ink),2px 0 0 var(--sc-ink),-2px 0 0 var(--sc-ink),0 -2px 0 var(--sc-ink),1.5px 1.5px 0 var(--sc-ink),-1.5px 1.5px 0 var(--sc-ink),1.5px -1.5px 0 var(--sc-ink),-1.5px -1.5px 0 var(--sc-ink),0 4px 0 var(--sc-ink);
+  --sc-stroke-s:0 1.5px 0 var(--sc-ink),1.5px 0 0 var(--sc-ink),-1.5px 0 0 var(--sc-ink),0 -1.5px 0 var(--sc-ink),1px 1px 0 var(--sc-ink),-1px 1px 0 var(--sc-ink),1px -1px 0 var(--sc-ink),-1px -1px 0 var(--sc-ink),0 3px 0 var(--sc-ink);
+  /* Bleu des fenêtres et des boutons secondaires */
+  --sc-blue-hi:#5fb0ff;--sc-blue:#2e7be0;--sc-blue-lo:#1b4f9c;
+  /* Action (turquoise), sélection (or), fermeture (rouge), désactivé (gris) */
+  --sc-teal-hi:#5ff0ee;--sc-teal:#17b9bb;--sc-teal-lo:#0b6f71;
+  --sc-gold-hi:#ffe680;--sc-gold:#ffbf1f;--sc-gold-lo:#b06a00;
+  --sc-red-hi:#ff8a78;--sc-red:#e8382b;--sc-red-lo:#8e150d;
+  --sc-grey-hi:#d5dbe2;--sc-grey:#9aa5b1;--sc-grey-lo:#5f6a76;
+  --sc-body-hi:#e8f1fb;--sc-body-lo:#c4d7ee;
+}
+
+/* ---------- Boutons : dessus brillant, lèvre sombre, enfoncement à l'appui ---------- */
+:is(html dialog.travel-dialog .popup-foot button,html dialog.travel-dialog .popup-foot [class$="-actions"] button,html #app .tools button,html #app .header-actions button,html #app #ui-menu-toggle,html #app #wait-open,html .start-menu button):not(#_){
+  --hi:var(--sc-blue-hi);--mid:var(--sc-blue);--lo:var(--sc-blue-lo);
+  font-family:var(--sc-font)!important;font-weight:400!important;letter-spacing:.3px;color:#fff!important;text-shadow:var(--sc-stroke)!important;
+  border:3px solid var(--sc-ink)!important;border-image:none!important;border-radius:14px!important;
+  background:linear-gradient(180deg,var(--hi) 0%,var(--mid) 46%,var(--mid) 54%,var(--lo) 100%)!important;
+  box-shadow:inset 0 3px 0 #ffffff70,inset 0 -6px 0 #00000038,0 4px 0 var(--sc-ink)!important;
+  transition:translate .07s,box-shadow .07s,filter .1s!important;filter:none!important;opacity:1!important
+}
+:is(html dialog.travel-dialog .popup-foot button,html #app .tools button,html #app .header-actions button,html #app #ui-menu-toggle,html #app #wait-open,html .start-menu button):not(#_):hover:not(:disabled){filter:brightness(1.08)!important}
+:is(html dialog.travel-dialog .popup-foot button,html #app .tools button,html #app .header-actions button,html #app #ui-menu-toggle,html #app #wait-open,html .start-menu button):not(#_):active:not(:disabled){translate:0 3px;box-shadow:inset 0 3px 0 #ffffff70,inset 0 -3px 0 #00000038,0 1px 0 var(--sc-ink)!important}
+/* Action principale : turquoise, plus grande */
+html dialog.travel-dialog:not([data-skin])>.popup-foot :is([class$="-actions"]>button:last-child:not(:first-child),[class$="-actions"]>button:only-child,button.travel-go):not(#_):not(#a):not(#b),html dialog.travel-dialog:not([data-skin])>.popup-foot>button:only-child:not(.travel-cancel):not(#_):not(#a):not(#b){--hi:var(--sc-teal-hi);--mid:var(--sc-teal);--lo:var(--sc-teal-lo);font-size:24px!important}
+/* Boutons « retour » quand ils sont seuls : bleus */
+html dialog.travel-dialog>.popup-foot :is(button.travel-cancel,[data-close],[data-back]):only-child:not(#_):not(#a):not(#b){--hi:var(--sc-blue-hi);--mid:var(--sc-blue);--lo:var(--sc-blue-lo)}
+/* Sélection active dans les barres (filtre de carte, outils) : or */
+:is(html #app .tools button[aria-pressed=true],html #app .tools button.is-active,html #app .map-filter button[aria-pressed=true],html .start-menu button:first-of-type):not(#_):not(#a):not(#b){--hi:var(--sc-gold-hi);--mid:var(--sc-gold);--lo:var(--sc-gold-lo)}
+/* Désactivé : gris, sans relief appuyable */
+:is(html dialog.travel-dialog .popup-foot button,html #app .tools button,html #app .header-actions button):not(#_):not(#a):not(#b):disabled{--hi:var(--sc-grey-hi);--mid:var(--sc-grey);--lo:var(--sc-grey-lo);cursor:not-allowed}
+
+/* ---------- Fenêtres : cadre noir épais, bandeau bleu brillant, corps bleu clair ---------- */
+html dialog.travel-dialog.game-menu[open]:not(#_){
+  border:4px solid var(--sc-ink)!important;border-image:none!important;border-radius:24px!important;
+  background:linear-gradient(180deg,var(--sc-body-hi),var(--sc-body-lo))!important;
+  box-shadow:inset 0 0 0 3px #ffffffa0,0 8px 0 var(--sc-ink),0 26px 60px #050c1680!important;
+  font-family:Nunito,system-ui,sans-serif;font-weight:700;color:var(--sc-ink);
+  animation:sc-pop .26s cubic-bezier(.2,.9,.3,1.25)!important
+}
+@keyframes sc-pop{0%{scale:.86;opacity:0}65%{scale:1.03;opacity:1}100%{scale:1}}
+html dialog.travel-dialog.game-menu[open]>.popup-head:not(#_){
+  position:relative;margin:0!important;padding:12px 74px 14px 22px!important;justify-content:flex-start!important;
+  border:0!important;border-bottom:4px solid var(--sc-ink)!important;border-radius:20px 20px 0 0!important;
+  background:linear-gradient(180deg,var(--sc-blue-hi) 0%,var(--sc-blue) 48%,var(--sc-blue) 52%,var(--sc-blue-lo) 100%)!important;
+  box-shadow:inset 0 3px 0 #ffffff60,inset 0 -5px 0 #00000030!important
+}
+/* Titre : texte blanc cerné, plus de plaque */
+html dialog.travel-dialog.game-menu[open]>.popup-head :is(.popup-titles,.npc-conversation-header):not(#_){border:0!important;border-image:none!important;background:none!important;box-shadow:none!important;padding:0!important;min-width:0!important;text-align:left}
+html dialog.travel-dialog.game-menu[open]>.popup-head :is(.popup-titles h2,.npc-conversation-header :is(h2,h3,b)):not(#_){font:400 30px/1.1 var(--sc-font)!important;color:#fff!important;text-shadow:var(--sc-stroke)!important;letter-spacing:.4px}
+html dialog.travel-dialog.game-menu[open]>.popup-head :is(.travel-eyebrow,.npc-conversation-header :is(p,span,small,.npc-consideration,.npc-consideration strong)):not(#_){color:#fff!important;font-family:var(--sc-font)!important;font-weight:400!important;text-shadow:var(--sc-stroke-s)!important}
+/* Médaillon qui déborde du coin */
+html dialog.travel-dialog.game-menu[open]>.popup-head .popup-icon:not(#_){width:76px!important;height:76px!important;margin:-30px 4px -16px -34px!important;border:4px solid var(--sc-ink)!important;border-radius:50%!important;background:#fff!important;box-shadow:0 0 0 3px var(--sc-gold),0 5px 0 3px var(--sc-ink)!important}
+/* Croix : bouton rouge carré arrondi, dans le coin */
+html dialog.travel-dialog.game-menu[open] .popup-head .travel-close:not(#_){
+  position:absolute!important;top:-16px!important;right:-16px!important;width:50px!important;height:50px!important;min-height:50px!important;
+  display:grid;place-items:center;padding:0 0 3px!important;
+  font:400 30px/1 var(--sc-font)!important;color:#fff!important;text-shadow:var(--sc-stroke)!important;
+  border:3px solid var(--sc-ink)!important;border-radius:14px!important;
+  background:linear-gradient(180deg,var(--sc-red-hi),var(--sc-red) 50%,var(--sc-red-lo))!important;
+  box-shadow:inset 0 3px 0 #ffffff70,inset 0 -5px 0 #00000038,0 4px 0 var(--sc-ink)!important
+}
+html dialog.travel-dialog.game-menu[open] .popup-head .travel-close:not(#_):active{translate:0 3px}
+/* Onglets : bleu foncé, l'actif en or */
+html dialog.travel-dialog.game-menu[open] .venue-tabs:not(#_){margin:0 0 0 auto!important;max-width:460px;flex:0 1 420px!important;padding:4px!important;border:3px solid var(--sc-ink)!important;border-radius:14px!important;background:var(--sc-blue-lo)!important;box-shadow:inset 0 3px 0 #00000040!important}
+html dialog.travel-dialog.game-menu[open] .venue-tabs [data-venue-tab]:not(#_){font:400 19px/1 var(--sc-font)!important;color:#fff!important;text-shadow:var(--sc-stroke-s)!important;border:0!important;border-radius:10px!important;background:transparent!important;box-shadow:none!important;min-height:42px}
+html dialog.travel-dialog.game-menu[open] .venue-tabs [data-venue-tab][aria-selected=true]:not(#_){border:3px solid var(--sc-ink)!important;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 50%,var(--sc-gold-lo))!important;box-shadow:inset 0 2px 0 #ffffff80,inset 0 -4px 0 #00000030!important}
+html dialog.travel-dialog.game-menu[open]>.popup-body:not(#_){background:none!important}
+html dialog.travel-dialog.game-menu[open]>.popup-foot:not(#_){background:none!important;border:0!important}
+
+/* ---------- Cartes : blanches, contour épais, relief, soulèvement au survol ---------- */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.classic-work-cards>button,.place-activity-list>li):not(#_):not(#__){
+  border:3px solid var(--sc-ink)!important;border-image:none!important;border-radius:18px!important;
+  background:linear-gradient(180deg,#ffffff,#eaf2fb)!important;
+  box-shadow:inset 0 -5px 0 #c9d9ec,0 5px 0 var(--sc-ink)!important;transition:translate .1s,box-shadow .1s!important
+}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,button[aria-pressed]):not(#_):not(#__):hover:not(:disabled){translate:0 -3px;box-shadow:inset 0 -5px 0 #c9d9ec,0 8px 0 var(--sc-ink)!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages button[aria-pressed=true]:not(#_):not(#__){background:linear-gradient(180deg,#fff8d6,#ffe58a)!important;box-shadow:inset 0 0 0 3px var(--sc-gold),inset 0 -5px 0 #e9b93a,0 5px 0 var(--sc-ink)!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.citizen-card,.venue-person-service,button[aria-pressed],.place-activity-list>li):not(#_)>b,html dialog.travel-dialog.game-menu[open] .game-menu-pages .place-activity-body>b:not(#_){font-family:var(--sc-font)!important;font-weight:400!important;color:var(--sc-ink)!important;letter-spacing:.2px}
+/* Pastilles de coût : gélules bleu nuit, chiffre blanc cerné */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .travel-costs>span:not(#_){font-family:var(--sc-font)!important;font-weight:400!important;color:#fff!important;text-shadow:var(--sc-stroke-s)!important;border:2px solid var(--sc-ink)!important;background:linear-gradient(180deg,#3d5f8f,#1b3358)!important;box-shadow:inset 0 2px 0 #ffffff40!important}
+/* Gains : gros chiffres turquoise cernés */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-energy-gain strong,.venue-other-gains):not(#_){font-family:var(--sc-font)!important;font-weight:400!important;color:var(--sc-teal-hi)!important;text-shadow:var(--sc-stroke-s)!important}
+/* Encadrés d'aperçu et d'information : panneaux blancs à contour noir */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is([class$="-preview"]:not(.venue-energy-preview),[class$="-result"]:not(.venue-energy-result),.house-budget-panel,.bills-summary,.game-menu-infos,.wait-dates,.sleep-energy,.work-mood-banner):not(#_){border:3px solid var(--sc-ink)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 4px 0 var(--sc-ink)!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(h3,summary,strong):not(#_){font-family:var(--sc-font)!important;font-weight:400!important}
+
+/* ---------- HUD : tuiles bleu nuit en relief, chiffres blancs cernés ---------- */
+html #app :is(.respo-console,.city-wallet-strip>.game-wallet,.resource-stats .game-wallet,.game-clock,#guide .guide-goal):not(#_){
+  border:3px solid var(--sc-ink)!important;border-image:none!important;border-radius:16px!important;
+  background:linear-gradient(180deg,#2b5590 0%,#1a3a68 50%,#11284a 100%)!important;
+  box-shadow:inset 0 3px 0 #ffffff40,inset 0 -5px 0 #00000040,0 4px 0 var(--sc-ink)!important;color:#fff!important
+}
+html #app :is(.respo-console,.game-wallet,.game-clock,#guide):not(#_) :is(b,strong,h1,h2,.game-wallet-amount,.game-clock-time,.game-clock-day,.respo-heading,.wallet-heading){font-family:var(--sc-font)!important;font-weight:400!important;color:#fff!important;text-shadow:var(--sc-stroke-s)!important}
+html #app :is(.game-wallet-amount,.game-clock-time):not(#_){font-size:30px!important;letter-spacing:.5px}
+html #app #guide .guide-head:not(#_){font-family:var(--sc-font)!important;color:#fff!important;text-shadow:var(--sc-stroke-s)!important;border:3px solid var(--sc-ink)!important;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 50%,var(--sc-gold-lo))!important;box-shadow:inset 0 2px 0 #ffffff80,0 3px 0 var(--sc-ink)!important}
+/* Barres du bas (outils, filtres, lieu regardé) */
+html #app :is(.tools,.map-filter,.view-card,.current-view):not(#_){border:3px solid var(--sc-ink)!important;background:linear-gradient(180deg,#2b5590,#11284a)!important;box-shadow:inset 0 3px 0 #ffffff30,0 4px 0 var(--sc-ink)!important}
+html #app .tools button:not(#_){font-size:15px!important}
+
+/* ---------- Étiquettes des lieux sur la carte ---------- */
+html .landmark:not(#_){font-family:var(--sc-font)!important;font-weight:400!important;font-size:15px!important;letter-spacing:.2px;color:var(--sc-ink)!important;border:3px solid var(--sc-ink)!important;border-radius:12px!important;background:linear-gradient(180deg,#ffffff,#e3edf9)!important;box-shadow:inset 0 -3px 0 #c3d4ea,0 3px 0 var(--sc-ink)!important;backdrop-filter:none!important}
+
+@media(prefers-reduced-motion:reduce){html dialog.travel-dialog.game-menu[open]:not(#_){animation:none!important}}
+/* Cartes un peu plus basses : le relief ajoute de la hauteur, les fenêtres doivent tenir sans défiler. */
+@media(min-width:981px) and (min-height:600px){
+  html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):not(#_)>.game-card-art{height:72px!important}
+  html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):not(#_){padding:6px 10px 9px!important;gap:2px!important}
+  html dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-icon:not(#_){height:74px!important}
+  html dialog.game-menu.transport-dialog[open][data-travel-step=place] .popup-body .game-menu-pages .place-activity-list>li:not(#_):not(#__){padding:6px 8px 9px!important}
+}

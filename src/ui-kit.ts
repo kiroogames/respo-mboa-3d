@@ -3,7 +3,9 @@
  * au chargement, sans toucher au code. Une pièce absente laisse simplement l'apparence actuelle.
  */
 const icons = ['meal', 'transport', 'dossier', 'sleep', 'bills', 'energy', 'mood', 'tontine', 'ceremony', 'savings', 'level']
-const pieces = ['panel', 'plaque', 'button-primary', 'button-secondary', 'card', 'hud', 'close', ...icons.map(name => `icon-${name}`)]
+// Charte arcade du 11 novembre 2026 : cadres, boutons et tuiles sont dessinés en CSS (arcade-style.css) ;
+// seules les icônes peintes restent utilisées. Les autres pièces restent dans public/ui/kit/.
+const pieces = icons.map(name => `icon-${name}`)
 const ready = new Set<string>()
 // Les images restent référencées : le navigateur les garde décodées, sans clignotement à la première fenêtre.
 const loaded: HTMLImageElement[] = []
