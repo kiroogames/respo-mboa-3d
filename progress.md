@@ -522,3 +522,7 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-11 — À la demande « encore », cadrage tourné de 8 degrés supplémentaires vers la droite (16 degrés au total).
 
 2026-11-11 — Zoom rapproché encore légèrement à la demande : plage de rayons réduite de 10 % environ (259.76 à 305.6 en paysage), angle et déplacement conservés.
+
+2026-11-11 — Zoom plus proche autorisé : rayon minimal abaissé de 85 % à 75 % du rayon de dézoom ; limite éloignée inchangée. Bouton et redimensionnement alignés.
+
+2026-11-11 — Nouvelle augmentation du zoom maximal : rayon minimal 60 % du dézoom maximal (183.36 en paysage), contre 75 % auparavant. Limite de dézoom, angle et déplacements inchangés. Bouton Zoom et resize alignés.

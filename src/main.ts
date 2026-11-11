@@ -178,7 +178,7 @@ camera.attachControl(canvas,true)
 // Liberté de mouvement limitée autour du cadrage de référence.
 camera.lowerAlphaLimit=camera.upperAlphaLimit=referenceAlpha
 camera.lowerBetaLimit=camera.upperBetaLimit=1.12
-camera.lowerRadiusLimit=overviewRadius()*.85;camera.upperRadiusLimit=overviewRadius()
+camera.lowerRadiusLimit=overviewRadius()*.60;camera.upperRadiusLimit=overviewRadius()
 camera.wheelDeltaPercentage=.018;camera.pinchDeltaPercentage=.006
 camera.panningSensibility=90
 camera.mapPanning=true
@@ -417,7 +417,7 @@ document.querySelector<HTMLButtonElement>('#motion')!.onclick=()=>{motionPaused=
 
 updateMotion()
 
-zoomButton.onclick=()=>{destination={...views.city!,radius:camera.radius>overviewRadius()*.925?overviewRadius()*.85:overviewRadius()}}
+zoomButton.onclick=()=>{destination={...views.city!,radius:camera.radius>overviewRadius()*.80?overviewRadius()*.60:overviewRadius()}}
 const placesToggle=document.querySelector<HTMLButtonElement>('#places-toggle')!,placesPanel=document.querySelector<HTMLElement>('#places-panel')!
 function showPlaces(open:boolean){placesPanel.hidden=!open;placesToggle.setAttribute('aria-expanded',String(open))}
 placesToggle.onclick=()=>showPlaces(placesToggle.getAttribute('aria-expanded')!=='true')
@@ -519,7 +519,7 @@ scene.onBeforeRenderObservable.add(()=>{
 
 engine.runRenderLoop(()=>scene.render())
 
-window.addEventListener('resize',()=>{engine.resize();const fraction=camera.radius/views.city!.radius;views.city!.radius=overviewRadius();camera.lowerRadiusLimit=overviewRadius()*.85;camera.upperRadiusLimit=overviewRadius();camera.radius=overviewRadius()*Math.max(.85,Math.min(1,fraction));destination=null;pendingPlaceMenu=null})
+window.addEventListener('resize',()=>{engine.resize();const fraction=camera.radius/views.city!.radius;views.city!.radius=overviewRadius();camera.lowerRadiusLimit=overviewRadius()*.60;camera.upperRadiusLimit=overviewRadius();camera.radius=overviewRadius()*Math.max(.60,Math.min(1,fraction));destination=null;pendingPlaceMenu=null})
 
 const pins:{button:HTMLButtonElement;position:Vector3;alwaysVisible?:boolean;npcId?:string}[]=[]
 
