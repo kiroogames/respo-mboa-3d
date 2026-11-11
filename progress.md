@@ -505,3 +505,20 @@ Validation : buildfinalréussi (grosbundleavertissementhabituel). place-art-brow
 
 2026-11-10 — Demande explicite commit/push + correction filtresTout/Gagner/Manger/Ouvert + alimentationminimum45 + jobsministèrehorsministère comiques avantcommit. Énergie : minimum nominal45 sur repasmaison,cantine,servicesrepas,restaurants et alimentsdusac ; gainsdéjàsupérieurs conservés (maison45/50/70). Prix/durée inchangés, plafonds etgainréel existants. Filtres : causevraie footerz30recouvraitbarrez6 ; barrez40corrigée, masquageréeldesnoncorrespondants, contreancienneCSSmobilefirst3repères respectantleshiddenmoteur. Jobs4missionsterrain MINFI : balancesau marché650/45min/15énergie/+3Respo, étiquettes supermarché700/60/18/+4, chèvresvillage800/75/20/+5, tamponstransitaéroport1000/90/25/+6. Lunven08–16h, humeur−2,paiesmoduléeshumeur existante, 2missionsglobales/jour mêmegroupe, aucunfrais ; chutescomiquesdansreçu, illustrationsworkoriginales réutilisées. AucuntexteMDaméliorationajouté, demandesdirectesautorisées.
 Tests meal-and-field-jobs-check passentminimum45,débitexact,temps,rémunérations,gardelieuetlimitepartagée. Parcoursréelsouris filtresdesktop390320 a exposé recouvrementfooter, corrigé etcontrôlé ; entréejobmarchévisible. Buildfinalréussi. Git add tenté : fatalUnabletocreate .git/index.lock Permissiondenied, .gitestlectureseule danssession. Aucuncommitcréé,pushnonfait ; nepascontournerrestriction. ArchivesPNGdeproductionetanciennesvariantes excluesduGit, originauxplusieursGo déjàignorés. Scriptsdebugsleepjetablesupprimé. Changementsnonliéspréexistants depalettes conservés. Voirlogsartifacts/final-jobs-build.log etmap-filter-jobs-check.log. ServeurQA5182arrêté, autresserveurspréservés.
+
+
+2026-11-11 — Caméra demandée sur les captures utilisateur : perspective fixe alpha PI/2, beta 1.12, centre ville conservé ; zoom limité à 78–100 % du rayon responsive. Rotation, glissement, déplacement clavier et suivi du trajet supprimés. Bouton Visite remplacé par Zoom ; sélection des lieux et menus conservés. Build et test Chrome CDP réussis (glissements gauche/droit, clavier, zoom, ouverture marché), captures camera-locked-wide/close inspectées.
+
+2026-11-11 — Ajustement demandé du zoom : ancien rayon minimal (399.36 en paysage) devenu nouveau dézoom maximal ; zoom supplémentaire limité à 15 % (339.456). Initialisation, bouton Zoom, recentrage et redimensionnement utilisent les mêmes limites.
+
+2026-11-11 — Clarification utilisateur : mouvements rétablis avec limites autour du cadrage. Glissement gauche et flèches/ZQSD, rotation droite/milieu et tactile ; centre borné à ±38.4 X / ±28.8 Z, angles ±0.16 horizontal et ±0.10 vertical. Nouvelles limites de zoom conservées ; lieux et trajets ne forcent pas le suivi caméra.
+
+Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; glissement souris gauche/tactile et clavier seulement, bornes de déplacement et zoom conservées.
+
+2026-11-11 — Nouveau décalage du zoom demandé : rayon de dézoom 339.456, rayon de zoom 288.5376 en paysage ; déplacement borné, aucune rotation.
+
+2026-11-11 — Cadrage tourné légèrement vers la droite (8 degrés) pour mieux présenter la statue centrale de face. Même angle pour initialisation, limites et recentrage ; rotation utilisateur toujours désactivée, déplacement et zoom conservés.
+
+2026-11-11 — À la demande « encore », cadrage tourné de 8 degrés supplémentaires vers la droite (16 degrés au total).
+
+2026-11-11 — Zoom rapproché encore légèrement à la demande : plage de rayons réduite de 10 % environ (259.76 à 305.6 en paysage), angle et déplacement conservés.

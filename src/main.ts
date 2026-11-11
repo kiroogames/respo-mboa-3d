@@ -164,28 +164,27 @@ scene.imageProcessingConfiguration.contrast=1.035
 
 const surfaces=createSurfaceKit(scene)
 
-function overviewRadius(){return 320*cityScale*Math.max(1,Math.min(1.7,1.6/(innerWidth/innerHeight)))} 
+// L’ancien zoom maximal devient le cadrage le plus large autorisé.
+function overviewRadius(){return 191*cityScale*Math.max(1,Math.min(1.7,1.6/(innerWidth/innerHeight)))}
 
-const camera = new ArcRotateCamera(loc('Vue de référence'), Math.PI/2, .82, overviewRadius(), cityPosition(new Vector3(-25,0,0)), scene)
+// Léger décalage à droite pour présenter la statue davantage de face.
+const referenceAlpha=Math.PI/2-.28
+const camera = new ArcRotateCamera(loc('Vue de référence'), referenceAlpha, 1.12, overviewRadius(), cityPosition(new Vector3(-25,0,0)), scene)
 
 camera.fov=.7; camera.minZ=Math.max(.5,camera.radius*.02); camera.maxZ=4200
 
 camera.attachControl(canvas,true)
 
-camera.lowerBetaLimit=.22; camera.upperBetaLimit=1.4
-
-camera.lowerRadiusLimit=30; camera.upperRadiusLimit=650*cityScale
-
-camera.wheelDeltaPercentage=.025; camera.panningSensibility=90;camera.pinchDeltaPercentage=.006
-
-// Souris façon jeu de gestion : clic gauche + glisser déplace la vue sur le sol (comme les flèches),
-// clic molette ou clic droit + glisser fait tourner. Au doigt, un glissé fait toujours tourner.
+// Liberté de mouvement limitée autour du cadrage de référence.
+camera.lowerAlphaLimit=camera.upperAlphaLimit=referenceAlpha
+camera.lowerBetaLimit=camera.upperBetaLimit=1.12
+camera.lowerRadiusLimit=overviewRadius()*.85;camera.upperRadiusLimit=overviewRadius()
+camera.wheelDeltaPercentage=.018;camera.pinchDeltaPercentage=.006
+camera.panningSensibility=90
 camera.mapPanning=true
 const pointerMap=camera.movement.input
-const leftButton={source:'pointer' as const,button:0,interaction:'pan' as 'pan'|'rotate'}
-pointerMap.inputMap=[leftButton,{source:'pointer',button:1,interaction:'rotate'},{source:'pointer',button:2,interaction:'rotate'},...pointerMap.inputMap.filter(entry=>entry.source!=='pointer')]
-// Babylon lit la table au moment de l'appui : on choisit le rôle du bouton gauche avant lui, selon souris ou doigt.
-window.addEventListener('pointerdown',event=>{if(event.target===canvas)leftButton.interaction=event.pointerType==='mouse'?'pan':'rotate'},{capture:true})
+// Souris et doigt déplacent la carte ; aucun geste ne la fait tourner.
+pointerMap.inputMap=[{source:'pointer',button:0,interaction:'pan'},...pointerMap.inputMap.filter(entry=>entry.source!=='pointer'&&entry.interaction!=='rotate')]
 // Sans cela, Windows active le défilement automatique au clic molette.
 canvas.addEventListener('mousedown',event=>{if(event.button===1)event.preventDefault()})
 
@@ -214,7 +213,7 @@ type View = {target:Vector3;radius:number;alpha:number;beta:number;label:string}
 // Repères des lieux : les X/Z sont ensuite adaptés à l’échelle de la carte ; Y conserve la hauteur du décor.
 const views:Record<string,View>={
 
- city:{target:new Vector3(-25,0,0),radius:overviewRadius(),alpha:Math.PI/2,beta:.82,label:loc('Au cœur de Mboa Ville')},
+ city:{target:new Vector3(-25,0,0),radius:overviewRadius(),alpha:referenceAlpha,beta:1.12,label:loc('Au cœur de Mboa Ville')},
 
  square:{target:new Vector3(-15.86,9,-.7),radius:65,alpha:Math.PI/2+.13,beta:.98,label:loc('La place de Mougabiang')},
 
@@ -267,7 +266,7 @@ for(const [key,view] of Object.entries(views)){
 
 }
 
-let destination:View|null=null, orbit=false
+let destination:View|null=null
 // Le menu attend le cadrage du lieu ; une nouvelle sélection remplace la précédente.
 let pendingPlaceMenu:{key:string;view:View}|null=null
 
@@ -277,9 +276,11 @@ const citySound=mountCitySound({listener:()=>({x:camera.target.x,z:camera.target
 
 let motionPaused=matchMedia('(prefers-reduced-motion: reduce)').matches
 
-function setOrbit(value:boolean){orbit=value;const b=document.querySelector<HTMLButtonElement>('#orbit')!;b.innerHTML=orbit?'Ⅱ <span>Pause</span>':`▷ <span>${loc('Visite')}</span>`;b.setAttribute('aria-pressed',String(orbit))}
+function setOrbit(_value:boolean){/* Les déplacements conservent la vue de référence. */}
+const zoomButton=document.querySelector<HTMLButtonElement>('#orbit')!
+zoomButton.innerHTML='⌕ <span>Zoom</span>';zoomButton.title='Vue rapprochée';zoomButton.setAttribute('aria-label','Alterner vue rapprochée et vue d’ensemble')
 
-function select(key:string){pendingPlaceMenu=null;destination=views[key]!;setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=destination.label
+function select(key:string){pendingPlaceMenu=null;destination=key==='city'?{...views.city!}:{...views.city!,target:camera.target.clone(),radius:camera.radius,alpha:camera.alpha,beta:camera.beta};setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=views[key]!.label
 
  if(key==='home')showDialogue(`${base}portraits/respo.png`,loc('Le Respo'),loc('Me revoilà à la maison… direction la mairie, j’ai un pays à gérer.'))
 
@@ -295,7 +296,6 @@ journeyFeedback.innerHTML=`<span data-journey-symbol aria-hidden="true"></span><
 document.querySelector('#app')!.append(journeyFeedback)
 let journeyVisualPaused=false
 // Cadrage propre au trajet en cours, distinct des vues des lieux pour pouvoir le déplacer avec le Respo.
-let tripView:View|null=null
 let activeTrip:{key:string;mode:TravelMode;points:TravelPoint[];road:TravelPoint[];exit:TravelPoint[];entry:TravelPoint[];elapsed:number;duration:number;timing:ReturnType<typeof journeyTiming>;minutes:number;done?:()=>void}|null=null
 journeyFeedback.querySelector('button')!.onclick=()=>{if(activeTrip){activeTrip.elapsed=activeTrip.duration;tickJourney(0,true)}}
 function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void,minutes=quoteTravel(route,mode).minutes){
@@ -311,9 +311,8 @@ function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void
  playerPosition.copyFromFloats(...points[0]!)
  try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position à reprendre après rechargement. */}
  hideDialogue();setOrbit(false)
- // Cadrage haut mais proche ; tickJourney recentre ensuite la vue sur le Respo tout au long du trajet.
- tripView={...views.city!,target:new Vector3(points[0]![0],8,points[0]![2]),radius:Math.max(110,Math.min(180,camera.radius)),alpha:camera.alpha,beta:.65}
- destination=tripView
+ // Le personnage voyage sans déplacer la caméra.
+ destination=null
  tickJourney(0)
 }
 const travel=mountTravel({
@@ -370,10 +369,6 @@ function tickJourney(delta:number,force=false){
  const sample=sampleJourneyPath(path,progress)
  const visualPoint=journeyVisual.update({...frame,point:sample.point,yaw:sample.yaw,seconds:trip.elapsed,cameraAlpha:camera.alpha,vehiclePoint:frame.phase==='exit'?trip.road[0]:frame.phase==='enter'?trip.road.at(-1):undefined})
  playerPosition.copyFromFloats(visualPoint[0],visualPoint[1]+8,visualPoint[2])
- // La caméra suit le Respo, même vue de haut ; un lieu choisi pendant le trajet garde la main.
- const follow=new Vector3(visualPoint[0],8,visualPoint[2])
- if(destination&&destination===tripView)tripView.target=follow
- else if(!destination)camera.target=Vector3.Lerp(camera.target,follow,1-Math.exp(-delta*.005))
  if(isGuidedOutingActive())setGuidedProgress(frame.total)
  const labels={exit:loc('Le Respo sort…'),board:trip.mode==='moto'?loc('En selle !'):loc('On embarque !'),travel:trip.mode==='walk'?loc('À pied'):trip.mode==='moto'?loc('En bendskin'):trip.mode==='taxi'?loc('Taxi commun'):loc('Yonga privé'),alight:loc('On descend…'),enter:loc('Arrivée sur place'),done:loc('Arrivée')}
  journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')
@@ -387,11 +382,11 @@ function tickJourney(delta:number,force=false){
   document.querySelector('.player-pin')?.setAttribute('aria-label',loc('Le Respo, {0}',views[playerZone]!.label))
  }
 }
-// Un clic cadre d’abord le lieu, puis propose ses services ou les moyens de s’y rendre.
+// Un clic propose le lieu sans quitter le cadrage de référence.
 function requestZone(key:string){
  if(!views[key])return
  select(key);hideDialogue()
- if(key!=='city'&&!isGuidedOutingActive())pendingPlaceMenu={key,view:views[key]!}
+ if(key!=='city'&&!isGuidedOutingActive())pendingPlaceMenu={key,view:destination!}
 }
 function openFocusedPlace(){
  const pending=pendingPlaceMenu
@@ -422,7 +417,7 @@ document.querySelector<HTMLButtonElement>('#motion')!.onclick=()=>{motionPaused=
 
 updateMotion()
 
-document.querySelector<HTMLButtonElement>('#orbit')!.onclick=()=>{destination=null;setOrbit(!orbit)}
+zoomButton.onclick=()=>{destination={...views.city!,radius:camera.radius>overviewRadius()*.925?overviewRadius()*.85:overviewRadius()}}
 const placesToggle=document.querySelector<HTMLButtonElement>('#places-toggle')!,placesPanel=document.querySelector<HTMLElement>('#places-panel')!
 function showPlaces(open:boolean){placesPanel.hidden=!open;placesToggle.setAttribute('aria-expanded',String(open))}
 placesToggle.onclick=()=>showPlaces(placesToggle.getAttribute('aria-expanded')!=='true')
@@ -504,22 +499,27 @@ scene.onBeforeRenderObservable.add(()=>{
 
  if(pendingPlaceMenu&&destination!==pendingPlaceMenu.view)pendingPlaceMenu=null
 
- if(!destination){camera.target.x=Math.max(-245*cityScale,Math.min(165*cityScale,camera.target.x));camera.target.z=Math.max(-175*cityScale,Math.min(175*cityScale,camera.target.z));camera.target.y=Math.max(0,Math.min(80,camera.target.y))}
-
- if(orbit)camera.alpha+=engine.getDeltaTime()*.000045
+ // Le centre reste dans le quartier central, même après un long glissement.
+ const center=views.city!.target
+ camera.target.x=Math.max(center.x-24*cityScale,Math.min(center.x+24*cityScale,camera.target.x))
+ camera.target.z=Math.max(center.z-18*cityScale,Math.min(center.z+18*cityScale,camera.target.z))
+ camera.target.y=center.y
+ camera.alpha=Math.max(camera.lowerAlphaLimit!,Math.min(camera.upperAlphaLimit!,camera.alpha))
+ camera.beta=Math.max(camera.lowerBetaLimit!,Math.min(camera.upperBetaLimit!,camera.beta))
+ camera.radius=Math.max(camera.lowerRadiusLimit!,Math.min(camera.upperRadiusLimit!,camera.radius))
 
  // Keep millimetre-scale surface gaps distinct as the enlarged city recedes.
 
  camera.minZ=Math.max(.5,camera.radius*.02)
 
- // Glisser au clic gauche : le sol suit à peu près la souris, de près comme de loin.
+ // Sensibilité adaptée au zoom pour garder des glissements doux.
  camera.panningSensibility=11800/camera.radius
 
 })
 
 engine.runRenderLoop(()=>scene.render())
 
-window.addEventListener('resize',()=>{engine.resize();views.city!.radius=overviewRadius();if(document.querySelector('[data-view=city]')!.classList.contains('active'))destination=views.city!})
+window.addEventListener('resize',()=>{engine.resize();const fraction=camera.radius/views.city!.radius;views.city!.radius=overviewRadius();camera.lowerRadiusLimit=overviewRadius()*.85;camera.upperRadiusLimit=overviewRadius();camera.radius=overviewRadius()*Math.max(.85,Math.min(1,fraction));destination=null;pendingPlaceMenu=null})
 
 const pins:{button:HTMLButtonElement;position:Vector3;alwaysVisible?:boolean;npcId?:string}[]=[]
 
@@ -947,7 +947,7 @@ if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:
  project(points:number[][]){scene.updateTransformMatrix(true);const viewport=new Viewport(0,0,engine.getRenderWidth(),engine.getRenderHeight());return points.map(p=>{const q=Vector3.Project(new Vector3(p[0],p[1],p[2]),Matrix.Identity(),scene.getTransformMatrix(),viewport);return [q.x/engine.getRenderWidth()*innerWidth,q.y/engine.getRenderHeight()*innerHeight,q.z]})},
  trafficLanes(){return (cityLife?.lanePaths()??[]).map(lane=>(window as unknown as {__MBOA_QA__:{project:(p:number[][])=>number[][]}}).__MBOA_QA__.project(lane))},
  openVenue(key:string,tab?:'place'|'people'){playerZone=key;venues.open(key,tab)},
- metrics(){return {model:'mboa-wsp.glb',layoutScale:cityScale,meshes:scene.meshes.length,activeMeshes:scene.getActiveMeshes().length,vertices:scene.getTotalVertices(),landmarks:pins.length,player:{zone:playerZone,position:playerPosition.asArray(),travelling:travel.isTravelling()},camera:{target:camera.target.asArray(),radius:camera.radius},life:cityLife?.metrics()}},
+ metrics(){return {model:'mboa-wsp.glb',layoutScale:cityScale,meshes:scene.meshes.length,activeMeshes:scene.getActiveMeshes().length,vertices:scene.getTotalVertices(),landmarks:pins.length,player:{zone:playerZone,position:playerPosition.asArray(),travelling:travel.isTravelling()},camera:{target:camera.target.asArray(),radius:camera.radius,alpha:camera.alpha,beta:camera.beta,min:camera.lowerRadiusLimit,max:camera.upperRadiusLimit},life:cityLife?.metrics()}},
 
 }})
 
