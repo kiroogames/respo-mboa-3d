@@ -1,10 +1,12 @@
 import { loc, locData } from './i18n.ts'
-import { recordMeal } from './hunger.ts'
+import { recordMeal, mealLimitReason } from './hunger.ts'
 import {mealEnergyRules,grantMealEnergyEffect} from './meal-energy.ts'
 import {getNPCState} from './npcs.ts'
 import {getCompletedNPCRequests,getConsideration} from './npc-relationships.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
-/* Un seul repas par service à domicile ; le registre est enregistré avant toute notification. */
+/* Repas à la maison (décision utilisateur du 11 novembre 2026) : le premier repas de chaque service (matin, midi, soir)
+ * est gratuit ; en dehors des services, ou après le repas gratuit, le plat est payé à son prix. Un vrai repas par
+ * période reste la règle commune (hunger.ts). Le registre est enregistré avant toute notification. */
 import mealsSource from './data/home-meals.json' with {type:'json'}
 const meals=locData(mealsSource)
 import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
@@ -14,8 +16,9 @@ export const homeMeals=meals
 const key='mboa-home-meals-v1'
 // L’heure est monotone : seul le dernier service consommé est nécessaire.
 let lastConsumed=-1,lastBaeDay=-1,sequence=0,committing=false
-try{const value=JSON.parse(localStorage.getItem(key)??'null');if(value&&Number.isSafeInteger(value.lastConsumed)&&value.lastConsumed>=0&&[360,720,1080].includes(value.lastConsumed%1440))lastConsumed=value.lastConsumed;if(Number.isSafeInteger(value?.lastBaeDay)&&value.lastBaeDay>=0&&value.lastBaeDay<=Math.floor(getGameTime().totalMinutes/1440))lastBaeDay=value.lastBaeDay}catch{/* Sauvegarde absente/corrompue. */}
-function windows(day:number){return day%7>=5?[[360,600],[720,900],[1080,1410]]:[[360,600],[1080,1410]]}
+try{const value=JSON.parse(localStorage.getItem(key)??'null');if(value&&Number.isSafeInteger(value.lastConsumed)&&value.lastConsumed>=0&&[360,660,720,1080].includes(value.lastConsumed%1440))lastConsumed=value.lastConsumed;if(Number.isSafeInteger(value?.lastBaeDay)&&value.lastBaeDay>=0&&value.lastBaeDay<=Math.floor(getGameTime().totalMinutes/1440))lastBaeDay=value.lastBaeDay}catch{/* Sauvegarde absente/corrompue. */}
+// Services gratuits, tous les jours : 6 h–10 h, 11 h–14 h, 18 h–23 h 30.
+function windows(_day:number){return [[360,600],[660,840],[1080,1410]]}
 export function getHomeMealService(total=getGameTime().totalMinutes){
   const day=Math.floor(total/1440),minute=total%1440
   const current=windows(day).find(([start,end])=>minute>=start!&&minute<end!)
@@ -23,7 +26,7 @@ export function getHomeMealService(total=getGameTime().totalMinutes){
   const consumed=current&&lastConsumed===start
   let next=-1
   for(let d=day;d<=day+1&&next<0;d++)for(const [opening] of windows(d))if(d*1440+opening!>total){next=d*1440+opening!;break}
-  return {open:!!current&&!consumed,start,end,consumed:!!consumed,next:getGameTimeAt(next),reason:consumed?loc('Vous avez déjà mangé pendant ce service.'):!current?loc('Les repas ne sont pas servis à cette heure.'):''}
+  return {open:!!current&&!consumed,start,end,consumed:!!consumed,next:getGameTimeAt(next),reason:consumed?loc('Repas gratuit déjà pris pendant ce service : le plat est payant.'):!current?loc('Hors service : le plat est payant.'):''}
 }
 export type MealVariant='regular'|'bae'
 // Vérifier chaque minute garantit la présence durant tout le repas, départ exact à la fin autorisé.
@@ -42,11 +45,12 @@ export function previewHomeMeal(id:string,variant:MealVariant='regular'){
   if(!meal)throw new RangeError(loc('Plat inconnu.'))
   const from=getGameTime(),to=getGameTimeAt(from.totalMinutes+meal.minutes),service=getHomeMealService(),state=getPlayerResources()
   const bae=getBaeMealStatus(meal.minutes),moodDelta=meal.mood+(variant==='bae'?5:0),balance=getMoneyBalance()
-  const reason=service.reason||(variant==='bae'?bae.reason:'')||(to.totalMinutes>service.end?loc('Ce repas se terminerait après la fermeture.'):'')||(getMoneyBalance()<meal.money?loc('Argent insuffisant.'):'')
+  const free=service.open,price=free?0:meal.money
+  const reason=mealLimitReason(from.totalMinutes)||(variant==='bae'?bae.reason:'')||(balance<price?loc('Argent insuffisant.'):'')
   const details=getEnergyDetails(to.totalMinutes),maxEnergyAfter=Math.min(Number.MAX_SAFE_INTEGER,details.total-details.mealBonus+mealEnergyRules.bonus),energyAfter=Math.min(maxEnergyAfter,state.energy+meal.energy)
   const projection={maxEnergyAfter,energyAfter,energyGain:Math.max(0,energyAfter-Math.min(state.energy,maxEnergyAfter)),energyLoss:Math.max(0,state.energy-maxEnergyAfter)},energyGain=projection.energyGain,mood=previewMoodChange(moodDelta),moodGain=mood.delta
   const mealEffectEnd=getGameTimeAt(to.totalMinutes+mealEnergyRules.minutes)
-  return {mealEffectEnd,variant,bae,moodDelta,balance,meal:{...meal},from,to,service,reason,energyBefore:state.energy,maxEnergy:state.maxEnergy,energyGain,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBefore:state.mood,moodGain,moodAfter:mood.moodAfter,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus}
+  return {free,price,mealEffectEnd,variant,bae,moodDelta,balance,meal:{...meal},from,to,service,reason,energyBefore:state.energy,maxEnergy:state.maxEnergy,energyGain,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBefore:state.mood,moodGain,moodAfter:mood.moodAfter,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus}
 }
 export type MealPreview=ReturnType<typeof previewHomeMeal>
 let pending:(MealPreview&{id:number})|null=null
@@ -59,13 +63,13 @@ export function confirmHomeMeal(id:number,context:{zone:string;travelling:boolea
   if(context.zone!=='home'||context.travelling||!context.allowed)return {ok:false as const,reason:loc('Vous devez être à la maison, hors autre activité.')}
   const current=previewHomeMeal(quote.meal.id,quote.variant)
   if(current.reason)return {ok:false as const,reason:current.reason}
-  if(current.from.totalMinutes!==quote.from.totalMinutes||current.balance!==quote.balance||current.variant==='bae'&&current.bae.consideration!==quote.bae.consideration||current.energyBefore!==quote.energyBefore||current.maxEnergy!==quote.maxEnergy||current.moodBaseBefore!==quote.moodBaseBefore||current.moodBonus!==quote.moodBonus)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
+  if(current.from.totalMinutes!==quote.from.totalMinutes||current.balance!==quote.balance||current.price!==quote.price||current.variant==='bae'&&current.bae.consideration!==quote.bae.consideration||current.energyBefore!==quote.energyBefore||current.maxEnergy!==quote.maxEnergy||current.moodBaseBefore!==quote.moodBaseBefore||current.moodBonus!==quote.moodBonus)return {ok:false as const,reason:loc('La situation a changé. Vérifiez le nouvel aperçu.')}
   committing=true
   try{
-    lastConsumed=current.service.start
+    if(current.free)lastConsumed=current.service.start
     if(current.variant==='bae')lastBaeDay=Math.floor(current.from.totalMinutes/1440)
     try{localStorage.setItem(key,JSON.stringify({lastConsumed,lastBaeDay}))}catch{/* Le verrou reste actif pendant la session. */}
-    spendMoney(current.meal.money);recordMeal();advanceGameTime(current.meal.minutes);grantMealEnergyEffect();restoreEnergy(Math.max(0,current.energyAfter-getPlayerResources().energy));changeMood(current.moodDelta)
+    if(current.price)spendMoney(current.price);recordMeal();advanceGameTime(current.meal.minutes);grantMealEnergyEffect();restoreEnergy(Math.max(0,current.energyAfter-getPlayerResources().energy));changeMood(current.moodDelta)
     return {ok:true as const,...current}
   }finally{committing=false}
 }

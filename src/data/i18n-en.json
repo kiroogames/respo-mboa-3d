@@ -1383,5 +1383,12 @@
 "Traite un dossier au ministère : +500 Nkap":"Process a file at the ministry: +500 Nkap",
 "Cher et confortable · remonte l’humeur · ralenti par les bouchons":"Expensive and comfortable · lifts your mood · slowed by traffic jams",
 "Humeur gagnée":"Mood gained",
-", +{0} humeur":", +{0} mood"
+", +{0} humeur":", +{0} mood",
+"Repas gratuit déjà pris pendant ce service : le plat est payant.":"Free meal already taken this service: this dish is paid.",
+"Hors service : le plat est payant.":"Outside meal times: this dish is paid.",
+"Gratuit pendant les services du matin, de midi et du soir ; payant en dehors.":"Free during morning, noon and evening meal times; paid outside them.",
+"Service ouvert : ce repas est gratuit.":"Meal time: this meal is free.",
+"{0} Prochain repas gratuit : {1} {2} · semaine {3}.":"{0} Next free meal: {1} {2} · week {3}.",
+"Gratuit · {0} min":"Free · {0} min",
+"+{0} humeur · repas gratuit":"+{0} mood · free meal"
 }

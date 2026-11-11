@@ -22,6 +22,7 @@ import { missionRules, getMissionState, onMissionChange } from './pro-missions'
 import { mountUserQueue } from './user-queue-ui'
 import { getUserQueue, userQueueRules } from './user-queue'
 import { mountHomeMeals } from './home-meals-ui'
+import { getHomeMealService } from './home-meals'
 import { mountSleeping } from './sleeping-ui'
 /*
  * Menu du lieu : sépare les services du bâtiment et ceux des personnes présentes.
@@ -319,7 +320,7 @@ export function mountVenues(options: {
     if(food)takeaway.innerHTML=`<b>${food.name}</b><span class="venue-description">${loc('Pour plus tard · 1 emplacement dans le sac')}</span><span class="travel-costs">${loc('{0} Nkap · achat 5 min · conservation {1} h',food.money,food.life/60)}</span><span class="venue-gains">${loc('À consommer ensuite : +{0} énergie · +{1} humeur de base',food.energy,food.mood)}</span>`
 
     const money = getMoneyBalance(), resources = getPlayerResources()
-    list.innerHTML = (zone==='home'?`<button class="venue-service" data-service="home-meals"><b>${loc('Manger à la maison')}</b><span class="venue-description">${loc('Bouillie et beignets, riz sauce arachide ou ndolé et plantain.')}</span><span class="travel-costs">${loc('Dès 150 Nkap')}</span><span class="venue-gains">${loc('Énergie + humeur')}</span></button>`:'') + getVenueServices(zone).map(service => {
+    list.innerHTML = (zone==='home'?`<button class="venue-service" data-service="home-meals"><b>${loc('Manger à la maison')}</b><span class="venue-description">${loc('Bouillie et beignets, riz sauce arachide ou ndolé et plantain.')}</span><span class="travel-costs">${getHomeMealService().open?loc('Gratuit'):loc('Dès 150 Nkap')}</span><span class="venue-gains">${loc('Énergie + humeur')}</span></button>`:'') + getVenueServices(zone).map(service => {
       if(service.id==='home-sleep')return `<button class="venue-service" data-service="home-sleep"><b>${loc('Dormir')}</b><span class="venue-description">${loc('30 min–16 h')}</span><span class="travel-costs">${loc('Gratuit · durée au choix')}</span><span class="venue-gains">${loc('Récupération selon la durée')}</span></button>`
       const reason = venueServiceReason(service) || (money < service.money ? loc('Argent insuffisant') : resources.energy < service.energyCost ? loc('Énergie insuffisante') : '')
       const projection=projectVenueEnergy(service),energyGain=projection.energyGain

@@ -116,7 +116,8 @@ export function getPlaceEffects(zone: string) {
     if (missionRules.missions.some(m => getMissionState(m.id)?.stage === 'ready')) add(['nkap'])
   }
   if (zone === 'home') {
-    if (getHomeMealService().open) add(['energy', 'mood'], ['nkap'])
+    // Repas gratuit pendant un service, payant en dehors.
+    add(['energy', 'mood'], getHomeMealService().open ? [] : ['nkap'])
     add(['mood'], ['nkap'])
   }
   for (const service of getVenueServices(zone)) {
