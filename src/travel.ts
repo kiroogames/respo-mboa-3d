@@ -83,8 +83,8 @@ export const travelModes = [
   { id: 'walk', label: loc('À pied'), description: loc('Gratuit, mais long et éprouvant'), symbol: '🚶', fare: 0, moneyPerKm: 0, energyPerKm: 4, moodPerKm: 3, metersPerMinute: 75, departureMinutes: 0, stopsMinutesPerKm: 0 },
   // Taxi commun : le moins cher des véhicules, lent (attente, arrêts) et inconfortable.
   { id: 'taxi', label: loc('Taxi commun'), description: loc('Pas cher · lent, serré, arrêts fréquents'), symbol: '🚕', fare: 150, moneyPerKm: 60, energyPerKm: 0, moodPerKm: 1.5, metersPerMinute: 300, departureMinutes: 5, stopsMinutesPerKm: 1.5 },
-  // Yonga : cher et rapide, mais coincé dans les embouteillages comme les autres voitures.
-  { id: 'yonga', label: loc('Yonga — taxi privé'), description: loc('Cher et confortable · ralenti par les bouchons'), symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, moodPerKm: 0, metersPerMinute: 600, departureMinutes: 5, stopsMinutesPerKm: 0 },
+  // Yonga : cher et rapide, mais coincé dans les embouteillages ; le confort remonte l’humeur (coût d’humeur négatif = gain).
+  { id: 'yonga', label: loc('Yonga — taxi privé'), description: loc('Cher et confortable · remonte l’humeur · ralenti par les bouchons'), symbol: '🚘', fare: 600, moneyPerKm: 180, energyPerKm: 0, moodPerKm: -1.5, metersPerMinute: 600, departureMinutes: 5, stopsMinutesPerKm: 0 },
   // Moto : plus chère que le taxi commun, un peu plus rapide que Yonga, légèrement éprouvante ; se faufile mais subit aussi les bouchons.
   { id: 'moto', label: 'Moto', description: loc('Pratique et rapide · un peu secouant'), symbol: '🏍️', fare: 250, moneyPerKm: 110, energyPerKm: .3, moodPerKm: .5, metersPerMinute: 650, departureMinutes: 3, stopsMinutesPerKm: 0 },
 ] as const
