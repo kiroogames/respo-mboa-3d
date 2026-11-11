@@ -526,3 +526,5 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-11 — Zoom plus proche autorisé : rayon minimal abaissé de 85 % à 75 % du rayon de dézoom ; limite éloignée inchangée. Bouton et redimensionnement alignés.
 
 2026-11-11 — Nouvelle augmentation du zoom maximal : rayon minimal 60 % du dézoom maximal (183.36 en paysage), contre 75 % auparavant. Limite de dézoom, angle et déplacements inchangés. Bouton Zoom et resize alignés.
+
+2026-11-11 — Demandes utilisateur : « le scroll les gens n’aiment pas » et « retire complètement le voile qui floute ». Plus aucun voile ni flou derrière les fenêtres (::backdrop transparent ; mesure du bandeau du HUD retirée de main.ts). Grand écran : fenêtres plus larges que hautes (jusqu’à 1300 px), cartes de lieu sur 3 à 4 colonnes et plus basses, aperçu à droite des choix (cantine, repas, sorties…), factures et attente sur deux colonnes. Vérifié en 1557×831 : ministère, marché, Njoka, factures, attente et dossiers sans défilement. Non vérifié : écran moyen, mobile, anglais.

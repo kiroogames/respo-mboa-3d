@@ -351,9 +351,6 @@ mountStartMenu(base,()=>travel.isTravelling()||isGuidedOutingActive())
 mountUiKit()
 // Guide « À faire » : dit quoi faire maintenant et amène la caméra au bon lieu.
 mountGuide({currentZone:()=>playerZone,goTo:zone=>requestZone(zone),busy:()=>travel.isTravelling()||isGuidedOutingActive()||!!document.querySelector('dialog[open]')})
-// Le voile des fenêtres s’arrête sous le bandeau du haut : argent, énergie, humeur et heure restent nets à toute taille d’écran.
-function measureHudBand(){const bottoms=[...document.querySelectorAll<HTMLElement>('.city-wallet-strip,.game-clock,.respo-console')].map(node=>node.getBoundingClientRect()).filter(rect=>rect.width>0&&rect.top<innerHeight*.3).map(rect=>rect.bottom);if(bottoms.length)document.documentElement.style.setProperty('--hud-band',Math.round(Math.max(...bottoms)+6)+'px')}
-measureHudBand();window.addEventListener('resize',measureHudBand);setInterval(measureHudBand,2000)
 mountCurrencyIcons(base)
 mountHungerUI()
 mountPlaceEffects(base)
