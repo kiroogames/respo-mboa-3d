@@ -7,7 +7,8 @@ const pieces = ['panel', 'plaque', 'button-primary', 'button-secondary', 'card',
 const ready = new Set<string>()
 // Les images restent référencées : le navigateur les garde décodées, sans clignotement à la première fenêtre.
 const loaded: HTMLImageElement[] = []
-export const kitUrl = (name: string) => `${import.meta.env.BASE_URL}ui/kit/${name}.png`
+// Adresse absolue : une adresse relative placée dans une variable CSS serait résolue depuis le dossier de la feuille de style (assets/).
+export const kitUrl = (name: string) => new URL(`${import.meta.env.BASE_URL}ui/kit/${name}.png`, document.baseURI).href
 export const kitHas = (name: string) => ready.has(name)
 export const kitCount = () => ready.size
 
