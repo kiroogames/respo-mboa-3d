@@ -586,3 +586,5 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-12 — Capture utilisateur : icônes illisibles dans les badges rouges des lieux. Chaque icône est posée sur un rond blanc cerclé, signe plus gros.
 
 2026-11-12 — Capture utilisateur « mauvais contraste » (pastille +45 or avec éclair jaune). Icônes images (billet, éclair) des pastilles or/rouges posées sur un rond blanc cerclé ; smiley d’humeur (sprite) laissé sans fond ; texte des pastilles or de la fenêtre de destination en brun foncé ; prix et durées en blanc gras.
+
+2026-11-12 — Demande utilisateur : « mets toujours un fond vert sur ce qu’on gagne » (remplace « pas de vert » pour les gains seulement). Gains en pastille verte #4fd36a → #1e9a3c, texte blanc : cartes de lieu, sous-menus (currency-chip.is-gain), fenêtre de destination, transport (Yonga), badges des lieux sur la carte. Pertes restent rouges, interface reste bleu/or.
