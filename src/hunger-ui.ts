@@ -12,7 +12,7 @@ export function mountHungerUI() {
   const toast = document.createElement('div')
   toast.className = 'hunger-toast'; toast.setAttribute('role', 'status'); toast.hidden = true
   document.body.append(toast)
-  let toastTimer = 0
+
 
   function render() {
     const hunger = getHunger()
@@ -20,22 +20,15 @@ export function mountHungerUI() {
       const state = slot.eaten ? 'eaten' : slot.current ? 'now' : slot.passed ? 'missed' : 'later'
       const title = `${slot.label} : ${slot.eaten ? loc('repas pris') : slot.current ? loc('c’est l’heure de manger') : slot.passed ? loc('repas sauté') : loc('plus tard')}`
       return `<span class="meal-slot" data-state="${state}" title="${title}" aria-label="${title}">${slot.icon}</span>`
-    }).join('') + (hunger.missed ? `<span class="meal-warning">+${Math.round(hunger.surcharge * 100)} % ⚡</span>` : '')
+    }).join('') + ''
     energyTile?.setAttribute('data-hungry', String(hunger.missed > 0))
-    // Bandeau dans chaque fenêtre ouverte : le coût affiché des activités ne tient pas encore compte de la faim.
-    for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog.travel-dialog')) {
-      let banner = dialog.querySelector<HTMLElement>(':scope > .popup-head .hunger-banner')
-      if (!hunger.missed) { banner?.remove(); continue }
-      if (!banner) { banner = document.createElement('p'); banner.className = 'hunger-banner'; dialog.querySelector(':scope > .popup-head')?.append(banner) }
-      banner.title = loc('{0}. Mangez pour retrouver vos forces.',hunger.label)
-      banner.textContent = loc('🍽 Repas sauté : coût ⚡ +{0} %',Math.round(hunger.surcharge * 100))
-    }
+    // Plus de bandeau « repas sauté » : sauter un repas ne punit plus (décision du 12 novembre 2026).
+    for (const banner of document.querySelectorAll('dialog.travel-dialog .hunger-banner')) banner.remove()
   }
   function warn(missedNow: number) {
     render()
-    if (!missedNow) return
-    toast.textContent = loc('🍽️ Repas sauté : −{0} humeur, et chaque activité coûte plus d’énergie jusqu’au prochain repas.',5 * missedNow)
-    toast.hidden = false; clearTimeout(toastTimer); toastTimer = window.setTimeout(() => { toast.hidden = true }, 6000)
+    // Plus d’avertissement : sauter un repas ne coûte rien.
+    void missedNow
   }
   onHungerChange(warn); onGameTimeChange(() => queueMicrotask(render))
   new MutationObserver(render).observe(document.body, { childList: true })

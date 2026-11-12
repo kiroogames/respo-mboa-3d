@@ -11,7 +11,8 @@ export const mealSlots = [
   { id: 'noon', label: loc('Midi'), icon: '🍲', start: 660, end: 840 },
   { id: 'evening', label: loc('Soir'), icon: '🌙', start: 1080, end: 1320 },
 ] as const
-export const hungerRules = { surchargePerMissed: .25, maxMissed: 2, moodPerMissed: 5 }
+// Décision utilisateur du 12 novembre 2026 : un repas sauté ne punit plus (ni énergie, ni humeur).
+export const hungerRules = { surchargePerMissed: 0, maxMissed: 2, moodPerMissed: 0 }
 const key = 'mboa-hunger-v1'
 // lastMeal : heure du dernier repas (ou du début du suivi) ; checked : dernière heure où les repas manqués ont été comptés.
 let state = { lastMeal: getGameTime().totalMinutes, checked: getGameTime().totalMinutes, eaten: [] as string[], meals: [] as string[] }
@@ -42,7 +43,7 @@ export function getHunger(total = getGameTime().totalMinutes) {
   const day = Math.floor(total / 1440)
   return {
     missed, surcharge: counted * hungerRules.surchargePerMissed,
-    label: missed ? loc('Repas sauté{0} : activités +{1} % d’énergie',missed > 1 ? 's' : '',Math.round(counted * hungerRules.surchargePerMissed * 100)) : loc('Bien nourri'),
+    label: missed ? loc('Repas sauté') : loc('Bien nourri'),
     today: mealSlots.map(slot => ({ ...slot, eaten: state.eaten.includes(`${day}:${slot.id}`), passed: total % 1440 >= slot.end, current: total % 1440 >= slot.start && total % 1440 < slot.end })),
   }
 }
@@ -76,7 +77,7 @@ function check() {
   if (now <= state.checked) return
   const newlyMissed = disabled() ? 0 : slotEndsBetween(Math.max(state.checked, state.lastMeal), now).length
   state.checked = now; save()
-  if (newlyMissed) { moodHandler?.(-hungerRules.moodPerMissed * newlyMissed); listeners.forEach(listener => listener(newlyMissed)) }
+  if (newlyMissed) { if (hungerRules.moodPerMissed) moodHandler?.(-hungerRules.moodPerMissed * newlyMissed); listeners.forEach(listener => listener(newlyMissed)) }
   else listeners.forEach(listener => listener(0))
 }
 onGameTimeChange(check)
