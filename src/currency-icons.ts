@@ -51,6 +51,8 @@ function convert(text: Text) {
   for (const match of matches) {
     pieces.push(value.slice(cursor, match.index))
     const chip = document.createElement('span'); chip.className = 'currency-chip'
+    // Le signe donne la couleur : « + » = gain (or), « − » = perte (rouge), sans signe = neutre.
+    const sign = match.number?.trim()[0]; if (sign === '+') chip.classList.add('is-gain'); else if (sign && '−–-'.includes(sign)) chip.classList.add('is-loss')
     if (leadingIcon && match === matches[0] && match.number !== undefined && !value.slice(0, match.index).trim()) {
       chip.append(match.number); chip.setAttribute('aria-label', `${match.number} ${labels[match.unit]}`)
       pieces.push(chip); cursor = match.end; continue
