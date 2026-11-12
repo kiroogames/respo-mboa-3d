@@ -580,3 +580,5 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-12 — « Tu as oublié de faire pareil dans les menus » : currency-icons.ts marque chaque montant signé (is-gain « + », is-loss « − ») ; dans tous les sous-menus ils deviennent des pastilles or ou rouges ; prix des plats/sorties/équipements en pastille rouge « − » ; bandeaux d’état des services translucides. Vérifié : cantine, repas maison, taf extra, attente.
 
 2026-11-12 — Demande utilisateur : griser ce qui n’est pas disponible dans les cartes d’activités. Cartes désactivées : fond gris, niveaux de gris, opacité 0,55, placées après les disponibles, raison (« Fermé ») en pastille. Fenêtre de destination : <li data-closed> (travel-ui.ts) grisé et placé à la fin.
+
+2026-11-12 — Retour utilisateur : traiter les dossiers demandait trois niveaux (carte, liste, confirmation). La carte « Traiter un dossier » traite directement le prochain dossier disponible (completeDossier) et affiche le reçu dans la fenêtre du lieu ; plus de flèche de sous-menu. La fenêtre de liste reste dans le code mais n’est plus ouverte depuis le lieu.

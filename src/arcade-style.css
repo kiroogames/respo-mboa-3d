@@ -299,3 +299,5 @@ html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:disab
 html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li[data-closed]:not(#_):not(#__):not(#___):not(#____){order:20;filter:grayscale(1);opacity:.5;background:#ffffff08!important}
 html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li[data-closed] small:not(#_):not(#__):not(#___):not(#____){border-color:#9aa5b1!important;background:#1d2c44!important}
 html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service:disabled>small:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;background:#1d2c44!important}
+/* Traiter un dossier agit directement : pas de flèche de sous-menu. */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service[data-venue-work]:not(#_):not(#__)::after{content:none!important;display:none!important}

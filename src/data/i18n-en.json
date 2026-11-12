@@ -1449,5 +1449,9 @@
 "+ humeur chaque jour":"+ mood every day",
 "{0} · jusqu’à {1}":"{0} · until {1}",
 "Bientôt : {0} à {1}":"Soon: {0} at {1}",
-"Mission à rendre":"Mission to hand in"
+"Mission à rendre":"Mission to hand in",
+"Traiter un dossier":"Process a file",
+"Un clic = un dossier traité":"One click = one file processed",
+"Dossier traité : {0}":"File processed: {0}",
+"Plus de dossier à traiter pour le moment.":"No more files to process for now."
 }

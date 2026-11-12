@@ -38,7 +38,7 @@ import { getNPCsAtZone, isNPCAvailable, getNPCState, getNPCSchedule } from './np
 import { onGameTimeChange } from './game-clock'
 import { getConsideration, getNPCRequests, getCompletedNPCRequests, isRequestAccepted, npcNeedsService, onNPCRelationshipChange } from './npc-relationships'
 import { mountDossierWork } from './dossier-work-ui'
-import { dossierRules, getDossierBatch } from './dossier-work'
+import { dossierRules, getDossierBatch, completeDossier, dossierWorkReason } from './dossier-work'
 
 export function mountVenues(options: {
   base: string
@@ -187,11 +187,20 @@ export function mountVenues(options: {
     workEntry.hidden = zone !== dossierRules.zone
     if (workEntry.hidden) return
     const batch = getDossierBatch()
-    workEntry.innerHTML = `<b>${loc('Traiter les dossiers')}</b><span class="venue-description">${loc('Dossiers du jour')}</span><span class="travel-costs"><span class="pill-cost">${loc('−{0} énergie',dossierRules.energyCost)}</span><span class="pill-time">${loc('◷ {0} min',dossierRules.minutes)}</span></span><span class="venue-gains">${loc('+{0} Nkap · +{1} points Respo',dossierRules.moneyGain,dossierRules.respoGain)}</span><small>${batch.reason || loc('{0} dossiers disponibles dans la pile',batch.remaining)}</small>`
+    workEntry.innerHTML = `<b>${loc('Traiter un dossier')}</b><span class="venue-description">${loc('Un clic = un dossier traité')}</span><span class="travel-costs"><span class="pill-cost">${loc('−{0} énergie',dossierRules.energyCost)}</span><span class="pill-time">${loc('◷ {0} min',dossierRules.minutes)}</span></span><span class="venue-gains">${loc('+{0} Nkap · +{1} points Respo',dossierRules.moneyGain,dossierRules.respoGain)}</span><small>${batch.reason || loc('{0} dossiers disponibles dans la pile',batch.remaining)}</small>`
   }
+  // Un seul clic : le prochain dossier disponible est traité tout de suite, le reçu s'affiche sur place.
   workEntry.addEventListener('click', () => {
-    if (options.travelling() || options.currentZone() !== dossierRules.zone || zone !== dossierRules.zone) return
-    dialog.close(); work.open()
+    if (selecting || options.travelling() || options.currentZone() !== dossierRules.zone || zone !== dossierRules.zone) return
+    const batch = getDossierBatch(), next = batch.dossiers.find(d => !d.done && !dossierWorkReason(zone, batch.id, d.index))
+    result.hidden = false
+    if (!next) { result.textContent = batch.reason || dossierWorkReason(zone) || loc('Plus de dossier à traiter pour le moment.'); return }
+    selecting = true
+    const outcome = completeDossier(batch.id, next.index, [], zone)
+    selecting = false
+    if (!outcome.ok) { result.textContent = outcome.reason; render(); return }
+    result.innerHTML = `<b>${loc('Dossier traité : {0}', next.title)}</b><strong>${loc('+{0} Nkap', outcome.money)}</strong><small>${loc('+{0} Respo · −{1} énergie · {2} min', outcome.respo, outcome.energy, outcome.minutes)}</small>`
+    render(); popupScroller(dialog).scrollTop = 0
   })
   // Maintient sélection ARIA, ordre de tabulation et panneau visible en cohérence pour le clavier.
   function setTab(tab: 'place' | 'people') {
