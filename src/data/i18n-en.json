@@ -1446,5 +1446,8 @@
 "Quête principale : mets de l’argent de côté.":"Main quest: put money aside.",
 "Équipe la maison pour être de meilleure humeur.":"Equip the house to stay in a good mood.",
 "Confort {0} / {1}":"Comfort {0} / {1}",
-"+ humeur chaque jour":"+ mood every day"
+"+ humeur chaque jour":"+ mood every day",
+"{0} · jusqu’à {1}":"{0} · until {1}",
+"Bientôt : {0} à {1}":"Soon: {0} at {1}",
+"Mission à rendre":"Mission to hand in"
 }

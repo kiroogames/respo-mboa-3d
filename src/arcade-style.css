@@ -247,3 +247,11 @@ html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([
 /* Les notes du bas (« Disponible », « Voir Anneke », « 5 dossiers… ») disparaissent ; seule la raison d'un refus reste. */
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):not(:disabled)>small:not(#_):not(#__){display:none!important}
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>:is(p,span):not(b):not(.game-card-art):not(.venue-description):not(.travel-costs):not(.venue-gains):not(#_):not(#__){display:none!important}
+
+/* ---------- Lieux d'événement sur la carte : étiquette dorée qui pulse, ruban sous le nom ---------- */
+html #app .landmark.has-event:not(#_):not(#__){z-index:7;border-color:var(--sc-ink)!important;background:linear-gradient(180deg,#fff3b0,#ffd23f 60%,#f0a800)!important;box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 0 #ffd23f!important;animation:event-pulse 1.8s ease-out infinite}
+html #app .landmark.has-event-soon:not(#_):not(#__){border-color:var(--sc-ink)!important;box-shadow:inset 0 -3px 0 #c3d4ea,0 3px 0 var(--sc-ink),0 0 0 3px #ffd23f!important}
+html #app .landmark .landmark-event:not(#_){position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);padding:3px 10px;border:2px solid var(--sc-ink);border-radius:999px;background:linear-gradient(180deg,#2b5590,#11284a);color:#fff;font:400 13px/1.2 var(--sc-font);letter-spacing:.2px;text-shadow:var(--sc-stroke-s);white-space:nowrap;pointer-events:none;box-shadow:0 3px 0 var(--sc-ink)}
+html #app .landmark.has-event .landmark-event:not(#_){background:linear-gradient(180deg,#e8382b,#a3180f)}
+@keyframes event-pulse{0%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 0 #ffd23fcc}70%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 16px #ffd23f00}100%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 0 #ffd23f00}}
+@media(prefers-reduced-motion:reduce){html #app .landmark.has-event:not(#_):not(#__){animation:none}}
