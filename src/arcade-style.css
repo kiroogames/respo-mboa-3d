@@ -286,3 +286,16 @@ html dialog.travel-dialog :is(.meal-choices,.canteen-choices,.outing-options,.co
 html dialog.travel-dialog.game-menu[open] .popup-body :is(.meal-service,[class$="-service"]:not(.venue-service):not(.venue-person-service)):not(#_):not(#__):not(#___):not(#____){background:#ffffff14!important;border:2px solid #ffffff38!important;color:#fff!important;box-shadow:none!important}
 html dialog.travel-dialog :is(.meal-choices,.canteen-choices,.outing-options,.comfort-catalogue)>button .currency-chip:is(.is-gain,.is-loss),html dialog.travel-dialog :is(.meal-choices,.canteen-choices,.outing-options,.comfort-catalogue)>button .currency-chip:has(.currency-icon-nkap){opacity:1!important;filter:none!important}
 html dialog.travel-dialog :is(.meal-choices,.canteen-choices,.outing-options,.comfort-catalogue)>button:not(#_):not(#__){opacity:1!important}
+
+/* ---------- Activité indisponible : nettement grisée, la raison bien visible ---------- */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,.citizen-card,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button):disabled:not(#_):not(#__):not(#___):not(#____){background:#5b6573!important;border:2px solid #3a424d!important;box-shadow:none!important;translate:none!important;filter:grayscale(1)!important;opacity:.55!important;cursor:not-allowed}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service:disabled :is(b,span,strong):not(#_):not(#__):not(#___):not(#____){color:#e6eaf0!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service:disabled .game-card-art img:not(#_):not(#__){opacity:.6}
+/* La raison (« Fermé à cette heure », « Argent insuffisant »…) reste lisible, même grisée. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):disabled>small:not(#_):not(#__):not(#___){display:inline-block!important;order:7;margin-top:4px!important;padding:3px 10px!important;border-radius:999px;background:#1d2c44!important;color:#fff!important;font:800 13px/1.2 Nunito,system-ui,sans-serif!important}
+/* Les disponibles passent devant, les grisées à la fin. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:disabled:not(#_):not(#__){order:20!important}
+/* Fenêtre de destination : activité fermée grisée, placée après les ouvertes. */
+html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li[data-closed]:not(#_):not(#__):not(#___):not(#____){order:20;filter:grayscale(1);opacity:.5;background:#ffffff08!important}
+html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li[data-closed] small:not(#_):not(#__):not(#___):not(#____){border-color:#9aa5b1!important;background:#1d2c44!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service:disabled>small:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;background:#1d2c44!important}

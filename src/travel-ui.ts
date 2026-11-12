@@ -59,7 +59,7 @@ export function mountTravel(options: {
   function renderPlace(key: string) {
     const activities = getPlaceActivities(key), people = getPlacePeople(key)
     dialog.querySelector('#travel-place-panel')!.innerHTML = (activities.length
-      ? `<ul class="place-activity-list">${activities.map(item => `<li><span class="place-activity-icon" aria-hidden="true">${item.art ? `<img src="${options.base}ui/menu-${escape(item.art)}.jpg" alt=""/>` : item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail.replace(/^\s*·\s*/,''))}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
+      ? `<ul class="place-activity-list">${activities.map(item => `<li${item.closed ? ' data-closed' : ''}><span class="place-activity-icon" aria-hidden="true">${item.art ? `<img src="${options.base}ui/menu-${escape(item.art)}.jpg" alt=""/>` : item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail.replace(/^\s*·\s*/,''))}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
       : `<p class="place-activity-empty">${loc('Aucune activité particulière dans ce lieu.')}</p>`)
       + `<h3 class="place-people-title">${loc('Sur place')}</h3>`
       + (people.length
