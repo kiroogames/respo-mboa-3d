@@ -167,3 +167,21 @@ html #app #guide .guide-quest[hidden]:not(#_){display:none}
 html #app #guide .guide-quest-bar:not(#_){position:relative;flex:1;height:14px;border:2px solid var(--sc-ink);border-radius:999px;background:#0b1a30;overflow:hidden}
 html #app #guide .guide-quest-bar i:not(#_){position:absolute;inset:0 auto 0 0;min-width:6px;border-radius:999px;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 55%,var(--sc-gold-lo));transition:width .6s cubic-bezier(.2,.9,.3,1.2)}
 html #app #guide .guide-quest-text:not(#_){flex:none;font:400 14px/1 var(--sc-font);color:#fff;text-shadow:var(--sc-stroke-s);white-space:nowrap}
+
+/* ---------- Fond des fenêtres : dégradé bleu sombre, textes blancs (décision utilisateur du 12 novembre 2026) ----------
+   Les cartes cliquables restent claires et en relief ; tout le reste du corps passe en blanc sur bleu sombre. */
+html dialog.travel-dialog.game-menu[open]:not(#_):not(#__){background:linear-gradient(180deg,#1d3d6b 0%,#122a4d 55%,#0b1a33 100%)!important;color:#fff;box-shadow:inset 0 0 0 3px #ffffff26,0 8px 0 var(--sc-ink),0 26px 60px #050c1699!important}
+html dialog.travel-dialog.game-menu[open] .popup-body :is(p,span,small,label,h3,h4,strong,b,em,summary,li,dt,dd,legend,div,output,time):not(:is(.venue-service,.citizen-card,.venue-person-service,.meal-choices>button,.canteen-choices>button,.outing-options>button,.extra-choices>button,.meeting-options>button,.comfort-catalogue>button,.missions-list>button,.classic-work-cards>button,.place-activity-list>li,button,.travel-costs) *):not(#_):not(#__):not(#___){color:#fff!important;text-shadow:none}
+html dialog.travel-dialog.game-menu[open] .popup-body :is(small,.venue-description,.place-activity-note,label):not(:is(.venue-service,.citizen-card,.venue-person-service,button) *):not(#_):not(#__):not(#___){color:#c9dbf2!important}
+/* Encadrés d'information, bandeaux et alertes : translucides sur le bleu, texte blanc. */
+html dialog.travel-dialog.game-menu[open] .popup-body :is([class$="-preview"]:not(.venue-energy-preview),[class$="-result"]:not(.venue-energy-result),[class$="-error"],[class$="-notice"],[class$="-banner"],[class$="-status"],[class$="-policy"],[class$="-intro"],.house-budget-panel,.bills-summary,.bill-history,.game-menu-infos,.wait-dates,.sleep-energy,.venue-resident,.toque-progress,.toque-preview,[role=alert],[role=status]):not(#_):not(#__):not(#___):not(#____){background:#ffffff14!important;border:2px solid #ffffff38!important;box-shadow:none!important;color:#fff!important}
+html dialog.travel-dialog.game-menu[open] .popup-body :is([class$="-error"],[role=alert]):not(:empty):not(#_):not(#__):not(#___):not(#____){background:#d8362b38!important;border-color:#ff8a78!important}
+html dialog.travel-dialog.game-menu[open] .popup-body .venue-section-label:not(#_):not(#__):not(#___){color:#ffd23f!important}
+/* Champs de saisie et listes déroulantes : clairs, texte sombre, lisibles. */
+html dialog.travel-dialog.game-menu[open] .popup-body :is(input,select,textarea):not(#_):not(#__){background:#fff!important;color:var(--sc-ink)!important;border:2px solid var(--sc-ink)!important}
+html dialog.travel-dialog.game-menu[open] .popup-body .game-menu-infos>summary:not(#_):not(#__):not(#___){color:#ffd23f!important}
+/* Fiche habitant : la ligne d'activité (fond beige d'origine) passe en translucide, comme les autres encadrés. */
+html dialog.travel-dialog.game-menu[open] .popup-body .venue-resident :is(.npc-activity,.npc-agenda):not(#_):not(#__):not(#___):not(#____){background:#ffffff14!important;border:2px solid #ffffff30!important;color:#fff!important}
+/* Aperçus d'humeur (attente, sommeil) et cartes de durée : translucides et texte blanc sur le bleu. */
+html dialog.travel-dialog.game-menu[open] .popup-body :is(.wait-mood,.sleep-mood):not(#_):not(#__):not(#___):not(#____){background:#ffffff14!important;border:2px solid #ffffff30!important;box-shadow:none!important}
+html dialog.travel-dialog.game-menu[open] .popup-body :is(.wait-mood,.sleep-mood) *:not(#_):not(#__):not(#___):not(#____){color:#fff!important}
