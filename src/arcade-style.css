@@ -305,3 +305,13 @@ html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service[data-v
 html #app .landmark .effect-group:not(#_):not(#__){gap:3px!important;padding:2px 6px 2px 7px!important;font:900 15px/1 var(--sc-font)!important}
 html #app .landmark .effect-group .currency-icon:not(#_):not(#__){width:19px!important;height:19px!important;padding:1px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--sc-ink)}
 html #app .landmark .effect-group.is-loss:not(#_):not(#__){text-shadow:0 1px 0 #0008}
+/* Icônes à l'intérieur des pastilles or et rouges : sur un rond blanc cerclé, pour garder le contraste (éclair jaune sur or…). */
+html dialog.travel-dialog :is(.currency-chip.is-gain,.currency-chip.is-loss,.pill-cost,.venue-gains>.venue-energy-gain,.venue-gains>.venue-other-gains,.transport-mood) img:not(#_):not(#__):not(#___):not(#____){width:18px!important;height:18px!important;padding:1px;box-sizing:border-box;border-radius:50%;background-color:#fff!important;box-shadow:0 0 0 1.5px var(--sc-ink);object-fit:contain}
+/* Montants sans signe sur fond bleu (prix, durée de la fenêtre de destination) : blancs et gras. */
+html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li .place-activity-body>span:not(#_):not(#__):not(#___):not(#____){color:#fff!important;font-weight:800!important}
+
+/* Pastilles or de la fenêtre de destination : texte foncé (le blanc général y était illisible). */
+html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li .currency-chip.is-gain:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#3a2414!important}
+html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li .currency-chip.is-loss:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important}
+/* Badges de la carte : seuls les billets et l’éclair (images) reçoivent le rond blanc, le smiley garde son dessin. */
+html #app .landmark .effect-group span.currency-icon:not(#_):not(#__):not(#___){padding:0!important;background-color:transparent!important;box-shadow:none!important}

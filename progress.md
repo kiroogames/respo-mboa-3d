@@ -584,3 +584,5 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-12 — Retour utilisateur : traiter les dossiers demandait trois niveaux (carte, liste, confirmation). La carte « Traiter un dossier » traite directement le prochain dossier disponible (completeDossier) et affiche le reçu dans la fenêtre du lieu ; plus de flèche de sous-menu. La fenêtre de liste reste dans le code mais n’est plus ouverte depuis le lieu.
 
 2026-11-12 — Capture utilisateur : icônes illisibles dans les badges rouges des lieux. Chaque icône est posée sur un rond blanc cerclé, signe plus gros.
+
+2026-11-12 — Capture utilisateur « mauvais contraste » (pastille +45 or avec éclair jaune). Icônes images (billet, éclair) des pastilles or/rouges posées sur un rond blanc cerclé ; smiley d’humeur (sprite) laissé sans fond ; texte des pastilles or de la fenêtre de destination en brun foncé ; prix et durées en blanc gras.
