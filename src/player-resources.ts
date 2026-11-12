@@ -33,7 +33,7 @@ try {
 
 // Les seuils sauvegardés de l’ancienne version sont remplacés sans toucher au total.
 state.respoNext=getRespoProgress(state.ptRespo).nextThreshold??Number.MAX_SAFE_INTEGER
-state.energy=Math.min(state.energy,getEnergyMaximumAt())
+// Au chargement, l’énergie sauvegardée est gardée telle quelle (elle peut dépasser le plafond du moment).
 const listeners = new Set<() => void>()
 export function onPlayerResourcesChange(listener:()=>void){listeners.add(listener);return ()=>listeners.delete(listener)}
 const format = new Intl.NumberFormat(gameLocale, { maximumFractionDigits: 0 })
@@ -58,14 +58,19 @@ export function getEnergyStatus(){
 }
 export function getEnergyMaximumAt(total=getGameTime().totalMinutes,kind:TimeKind='awake',points=state.ptRespo){return getEnergyDetails(total,kind,points).total}
 export function projectEnergy(amount:number,end:number,start=getGameTime().totalMinutes,energy=state.energy,cost=0,kind:TimeKind='awake',points=state.ptRespo){
- const before=Math.max(0,Math.min(energy,getEnergyMaximumAt(start))-cost),maxEnergyAfter=getEnergyMaximumAt(end,kind,points)
- const energyAfter=Math.min(maxEnergyAfter,kind==='sleep'?maxEnergyAfter:getEnergyMaximumAt(start),before+amount)
- return {energyAfter,maxEnergyAfter,energyGain:Math.max(0,energyAfter-Math.min(before,maxEnergyAfter)),energyLoss:Math.max(0,before-maxEnergyAfter)}
+ // Seul le coût fait baisser l’énergie : un plafond plus bas ne retire rien de ce qui est déjà acquis ; un gain, lui, reste plafonné.
+ const before=Math.max(0,energy-cost),maxEnergyAfter=getEnergyMaximumAt(end,kind,points)
+ const cap=Math.min(maxEnergyAfter,kind==='sleep'?maxEnergyAfter:getEnergyMaximumAt(start))
+ const energyAfter=Math.max(before,Math.min(cap,before+amount))
+ return {energyAfter,maxEnergyAfter,energyGain:energyAfter-before,energyLoss:0}
 }
-onFatigueChange(()=>{state.energy=Math.min(state.energy,getEnergyMaximumAt());save()})
-onMealEnergyEffectChange(()=>{state.energy=Math.min(state.energy,getEnergyMaximumAt());save()})
-onRestedEffectChange(()=>{state.energy=Math.min(state.energy,getEnergyMaximumAt());save()})
-onSportEffectChange(()=>{state.energy=Math.min(state.energy,getEnergyMaximumAt());save()})
+// Décision utilisateur du 12 novembre 2026 : l’énergie ne baisse qu’avec le coût des activités.
+// Quand le plafond baisse (fin d’un bonus, fatigue), l’énergie déjà acquise est gardée ; les gains, eux, restent plafonnés.
+onFatigueChange(()=>save())
+// Fin du bonus « repas maison » : la capacité redescend, mais l’énergie déjà gagnée est gardée ; seules les activités la font baisser.
+onMealEnergyEffectChange(()=>save())
+onRestedEffectChange(()=>save())
+onSportEffectChange(()=>save())
 // state.mood reste la valeur de fond, compatible avec les anciennes sauvegardes.
 export function getMoodDetails(){
   const effect=getComfortMoodEffect(),displayed=Math.min(140,state.mood+effect.bonus)
@@ -107,7 +112,8 @@ export function spendEnergy(amount: number) {
 // Une recharge est limitée à l’énergie manquante ; aucun dépassement du maximum.
 export function restoreEnergy(amount: number) {
   nonnegativeInteger(amount)
-  state.energy += Math.min(amount, getEnergyMaximumAt() - state.energy)
+  // Un gain ne fait jamais baisser l’énergie, même au-dessus du plafond du moment.
+  state.energy += Math.max(0, Math.min(amount, getEnergyMaximumAt() - state.energy))
   save()
 }
 export function setMaxEnergy(maximum: number) {

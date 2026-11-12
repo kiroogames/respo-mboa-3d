@@ -47,8 +47,8 @@ export function previewHomeMeal(id:string,variant:MealVariant='regular'){
   const bae=getBaeMealStatus(meal.minutes),moodDelta=meal.mood+(variant==='bae'?5:0),balance=getMoneyBalance()
   const free=service.open,price=free?0:meal.money
   const reason=mealLimitReason(from.totalMinutes)||(variant==='bae'?bae.reason:'')||(balance<price?loc('Argent insuffisant.'):'')
-  const details=getEnergyDetails(to.totalMinutes),maxEnergyAfter=Math.min(Number.MAX_SAFE_INTEGER,details.total-details.mealBonus+mealEnergyRules.bonus),energyAfter=Math.min(maxEnergyAfter,state.energy+meal.energy)
-  const projection={maxEnergyAfter,energyAfter,energyGain:Math.max(0,energyAfter-Math.min(state.energy,maxEnergyAfter)),energyLoss:Math.max(0,state.energy-maxEnergyAfter)},energyGain=projection.energyGain,mood=previewMoodChange(moodDelta),moodGain=mood.delta
+  const details=getEnergyDetails(to.totalMinutes),maxEnergyAfter=Math.min(Number.MAX_SAFE_INTEGER,details.total-details.mealBonus+mealEnergyRules.bonus),energyAfter=Math.max(state.energy,Math.min(maxEnergyAfter,state.energy+meal.energy))
+  const projection={maxEnergyAfter,energyAfter,energyGain:Math.max(0,energyAfter-Math.min(state.energy,maxEnergyAfter)),energyLoss:0},energyGain=projection.energyGain,mood=previewMoodChange(moodDelta),moodGain=mood.delta
   const mealEffectEnd=getGameTimeAt(to.totalMinutes+mealEnergyRules.minutes)
   return {free,price,mealEffectEnd,variant,bae,moodDelta,balance,meal:{...meal},from,to,service,reason,energyBefore:state.energy,maxEnergy:state.maxEnergy,energyGain,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBefore:state.mood,moodGain,moodAfter:mood.moodAfter,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus}
 }
