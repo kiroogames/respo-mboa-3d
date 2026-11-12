@@ -255,3 +255,21 @@ html #app .landmark .landmark-event:not(#_){position:absolute;left:50%;top:calc(
 html #app .landmark.has-event .landmark-event:not(#_){background:linear-gradient(180deg,#e8382b,#a3180f)}
 @keyframes event-pulse{0%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 0 #ffd23fcc}70%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 16px #ffd23f00}100%{box-shadow:inset 0 -3px 0 #c98700,0 3px 0 var(--sc-ink),0 0 0 0 #ffd23f00}}
 @media(prefers-reduced-motion:reduce){html #app .landmark.has-event:not(#_):not(#__){animation:none}}
+
+/* ---------- Gagner ou perdre : un seul code couleur partout ----------
+   Ce qu'on perd = ROUGE avec « − » · ce qu'on gagne = OR avec « + » · durée et gratuit = neutre. */
+html dialog.travel-dialog :is(.pill-cost,.pill-free,.pill-time,.pill-info):not(#_):not(#__):not(#___):not(#____){display:inline-flex;align-items:center;gap:4px;padding:4px 11px!important;border:2px solid var(--sc-ink)!important;border-radius:999px!important;font:800 15px/1.15 Nunito,system-ui,sans-serif!important;box-shadow:inset 0 2px 0 #ffffff40!important}
+html dialog.travel-dialog .pill-cost:not(#_):not(#__):not(#___):not(#____){background:linear-gradient(180deg,#f0574a,#b3261e)!important;color:#fff!important;text-shadow:0 1px 0 #0007!important}
+html dialog.travel-dialog .pill-free:not(#_):not(#__):not(#___):not(#____){background:#fff!important;color:#1d2c44!important;text-shadow:none!important}
+html dialog.travel-dialog .pill-time:not(#_):not(#__):not(#___):not(#____){background:#dde6f2!important;color:#1d2c44!important;text-shadow:none!important}
+html dialog.travel-dialog .pill-info:not(#_):not(#__):not(#___):not(#____){background:linear-gradient(180deg,#2b5590,#11284a)!important;color:#fff!important;text-shadow:0 1px 0 #0007!important}
+html dialog.travel-dialog :is(.pill-cost,.pill-free,.pill-time,.pill-info) *:not(#_):not(#__):not(#___):not(#____){color:inherit!important;text-shadow:inherit!important;font:inherit!important}
+/* Gains : or, texte foncé, toujours avec « + ». */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>:is(.venue-energy-gain,.venue-other-gains):not(:empty):not(#_):not(#__):not(#___):not(#____){background:linear-gradient(180deg,#ffe680,#ffbf1f)!important;border:2px solid var(--sc-ink)!important;color:#3a2414!important;text-shadow:none!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>* *:not(#_):not(#__):not(#___):not(#____){color:#3a2414!important;text-shadow:none!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains .venue-penalty:not(#_):not(#__):not(#___):not(#____){color:#b3261e!important}
+html dialog.travel-dialog .transport-mood:not(.transport-mood-gain):not(#_):not(#__):not(#___){background:linear-gradient(180deg,#f0574a,#b3261e)!important;color:#fff!important;border:2px solid var(--sc-ink);border-radius:999px;padding:4px 11px}
+html dialog.travel-dialog .transport-mood.transport-mood-gain:not(#_):not(#__):not(#___){background:linear-gradient(180deg,#ffe680,#ffbf1f)!important;color:#3a2414!important;border:2px solid var(--sc-ink);border-radius:999px;padding:4px 11px}
+/* Badges des lieux sur la carte : gains en or, pertes en rouge. */
+html #app .landmark .effect-group.is-gain:not(#_){background:linear-gradient(180deg,#ffe680,#ffbf1f)!important;color:#3a2414!important;box-shadow:0 0 0 2px var(--sc-ink)!important}
+html #app .landmark .effect-group.is-loss:not(#_){background:linear-gradient(180deg,#f0574a,#b3261e)!important;color:#fff!important;box-shadow:0 0 0 2px var(--sc-ink)!important}
