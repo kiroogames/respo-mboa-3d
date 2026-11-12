@@ -280,6 +280,9 @@ for(const [key,view] of Object.entries(views)){
 let destination:View|null=null
 // Le menu attend le cadrage du lieu ; une nouvelle sélection remplace la précédente.
 let pendingPlaceMenu:{key:string;view:View}|null=null
+// Caméra libérée de ses bornes pendant un zoom sur un lieu ou le suivi d’un trajet ; elle revient ensuite à la vue d’ensemble.
+let cameraFree=false,tripView:View|null=null
+const overviewView=():View=>({...views.city!,alpha:viewAlpha,beta:viewBeta})
 
 let cityLife:ReturnType<typeof createCityLife>|undefined
 
@@ -291,7 +294,7 @@ function setOrbit(_value:boolean){/* Les déplacements conservent la vue de réf
 const zoomButton=document.querySelector<HTMLButtonElement>('#orbit')!
 zoomButton.innerHTML='⌕ <span>Zoom</span>';zoomButton.title='Vue rapprochée';zoomButton.setAttribute('aria-label','Alterner vue rapprochée et vue d’ensemble')
 
-function select(key:string){pendingPlaceMenu=null;destination=key==='city'?{...views.city!}:{...views.city!,target:camera.target.clone(),radius:camera.radius,alpha:camera.alpha,beta:camera.beta};setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=views[key]!.label
+function select(key:string){pendingPlaceMenu=null;if(key==='city'){cameraFree=false;destination=overviewView()}else{cameraFree=true;destination={...views[key]!,alpha:viewAlpha+(views[key]!.alpha-Math.PI/2)*.5}};setOrbit(false);document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===key));document.querySelector('#view-name')!.textContent=views[key]!.label
 
  if(key==='home')showDialogue(`${base}portraits/respo.png`,loc('Le Respo'),loc('Me revoilà à la maison… direction la mairie, j’ai un pays à gérer.'))
 
@@ -322,8 +325,9 @@ function beginTrip(key:string,route:TravelPoint[],mode:TravelMode,done?:()=>void
  playerPosition.copyFromFloats(...points[0]!)
  try{localStorage.setItem('mboa-player-zone-v1',key)}catch{/* Position à reprendre après rechargement. */}
  hideDialogue();setOrbit(false)
- // Le personnage voyage sans déplacer la caméra.
- destination=null
+ // La caméra suit le Respo pendant tout le trajet.
+ cameraFree=true;tripView={...views.city!,target:new Vector3(points[0]![0],8,points[0]![2]),radius:Math.min(140,camera.radius),alpha:viewAlpha,beta:Math.min(viewBeta,1.0)}
+ destination=tripView
  tickJourney(0)
 }
 const travel=mountTravel({
@@ -380,6 +384,9 @@ function tickJourney(delta:number,force=false){
  const sample=sampleJourneyPath(path,progress)
  const visualPoint=journeyVisual.update({...frame,point:sample.point,yaw:sample.yaw,seconds:trip.elapsed,cameraAlpha:camera.alpha,vehiclePoint:frame.phase==='exit'?trip.road[0]:frame.phase==='enter'?trip.road.at(-1):undefined})
  playerPosition.copyFromFloats(visualPoint[0],visualPoint[1]+8,visualPoint[2])
+ const follow=new Vector3(visualPoint[0],8,visualPoint[2])
+ if(tripView&&destination===tripView)tripView.target=follow
+ else if(!destination&&cameraFree)camera.target=Vector3.Lerp(camera.target,follow,.08)
  if(isGuidedOutingActive())setGuidedProgress(frame.total)
  const labels={exit:loc('Le Respo sort…'),board:trip.mode==='moto'?loc('En selle !'):loc('On embarque !'),travel:trip.mode==='walk'?loc('À pied'):trip.mode==='moto'?loc('En bendskin'):trip.mode==='taxi'?loc('Taxi commun'):loc('Yonga privé'),alight:loc('On descend…'),enter:loc('Arrivée sur place'),done:loc('Arrivée')}
  journeyFeedback.querySelector('[data-journey-label]')!.textContent=labels[frame.phase]+(frame.phase==='travel'?' · '+trip.minutes+' min':'')
@@ -389,11 +396,12 @@ function tickJourney(delta:number,force=false){
   playerPosition.copyFromFloats(...trip.points.at(-1)!)
   if(trip.done){trip.done();return}
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.getAttribute('data-view')===playerZone));document.querySelector('#view-name')!.textContent=views[playerZone]!.label
-  travel.arrive(playerZone);hideDialogue();venues.open(playerZone)
+  travel.arrive(playerZone);hideDialogue();tripView=null
+  cameraFree=true;destination={...views[playerZone]!,alpha:viewAlpha+(views[playerZone]!.alpha-Math.PI/2)*.5};pendingPlaceMenu={key:playerZone,view:destination}
   document.querySelector('.player-pin')?.setAttribute('aria-label',loc('Le Respo, {0}',views[playerZone]!.label))
  }
 }
-// Un clic propose le lieu sans quitter le cadrage de référence.
+// Un clic cadre d’abord le lieu, puis ouvre son menu.
 function requestZone(key:string){
  if(!views[key])return
  select(key);hideDialogue()
@@ -511,12 +519,16 @@ scene.onBeforeRenderObservable.add(()=>{
  if(pendingPlaceMenu&&destination!==pendingPlaceMenu.view)pendingPlaceMenu=null
 
  // Le centre reste dans le quartier central, même après un long glissement.
+ const relaxed=cameraFree||!!destination||!!activeTrip
+ camera.lowerRadiusLimit=relaxed?20:overviewRadius()*.60;camera.lowerBetaLimit=relaxed?.45:.85
+ // Zoom terminé et aucun menu ouvert : retour en douceur à la vue d’ensemble.
+ if(cameraFree&&!destination&&!activeTrip&&!pendingPlaceMenu&&!isGuidedOutingActive()&&!document.querySelector('dialog[open]')){cameraFree=false;destination=overviewView()}
  const center=views.city!.target
- camera.target.x=Math.max(center.x-24*cityScale,Math.min(center.x+24*cityScale,camera.target.x))
- camera.target.z=Math.max(center.z-18*cityScale,Math.min(center.z+18*cityScale,camera.target.z))
- camera.target.y=center.y
+ if(!relaxed)camera.target.x=Math.max(center.x-24*cityScale,Math.min(center.x+24*cityScale,camera.target.x))
+ if(!relaxed)camera.target.z=Math.max(center.z-18*cityScale,Math.min(center.z+18*cityScale,camera.target.z))
+ if(!relaxed)camera.target.y=center.y
  // Un trajet de caméra impose son angle ; sinon la caméra rejoint en douceur le cran choisi.
- if(destination){viewAlpha=destination.alpha;viewBeta=destination.beta}
+ if(destination){if(!cameraFree){viewAlpha=destination.alpha;viewBeta=destination.beta}}
  else{camera.alpha+=Math.atan2(Math.sin(viewAlpha-camera.alpha),Math.cos(viewAlpha-camera.alpha))*Math.min(1,blend*2.5);camera.beta+=(viewBeta-camera.beta)*Math.min(1,blend*2.5)}
  camera.beta=Math.max(camera.lowerBetaLimit!,Math.min(camera.upperBetaLimit!,camera.beta))
  camera.radius=Math.max(camera.lowerRadiusLimit!,Math.min(camera.upperRadiusLimit!,camera.radius))
