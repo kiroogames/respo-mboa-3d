@@ -734,7 +734,8 @@ scene.onAfterRenderObservable.add(()=>{
   }
 
   pin.button.style.left=x+'px';pin.button.style.top=y+'px'
-  if(!isCharacter&&!pin.button.hidden&&pin.button.dataset.view){
+  // Un nom masqué par le style (filtre de carte) n'occupe pas de place : il n'est pas replacé.
+  if(!isCharacter&&!pin.button.hidden&&pin.button.dataset.view&&pin.button.offsetWidth>0){
    const size=labelSize(pin.button)
    // Un nom caché sous un panneau du HUD (toit du bâtiment regardé de près) descend juste en dessous.
    for(const panel of hudPanels)if(x+size.w/2>panel.left&&x-size.w/2<panel.right&&y>panel.top&&y-size.h<panel.bottom+6)y=panel.bottom+size.h+8
@@ -742,7 +743,9 @@ scene.onAfterRenderObservable.add(()=>{
    const free=(cx:number,cy:number)=>!placedLabels.some(label=>cx+size.w/2>label.l&&cx-size.w/2<label.r&&cy>label.t&&cy-size.h<label.b)&&!hudPanels.some(panel=>cx+size.w/2>panel.left&&cx-size.w/2<panel.right&&cy>panel.top&&cy-size.h<panel.bottom+6)&&cx-size.w/2>4&&cx+size.w/2<innerWidth-4&&cy-size.h>4&&cy<innerHeight-100
    if(!free(x,y)){
     let best:[number,number]|null=null,bestCost=Infinity
-    for(let dy=-size.h*3;dy<=size.h*3;dy+=size.h/2)for(let dx=-size.w*1.2;dx<=size.w*1.2;dx+=size.w/4){
+    // Pas d'au moins 4 px : un nom masqué (filtre de carte) mesure 0 px, et un pas nul bloquait la page.
+    const stepY=Math.max(4,size.h/2),stepX=Math.max(4,size.w/4)
+    for(let dy=-size.h*3;dy<=size.h*3;dy+=stepY)for(let dx=-size.w*1.2;dx<=size.w*1.2;dx+=stepX){
      const cost=Math.hypot(dx,dy*1.6)
      if(cost<bestCost&&free(x+dx,y+dy)){best=[x+dx,y+dy];bestCost=cost}
     }
