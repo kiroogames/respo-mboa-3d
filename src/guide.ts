@@ -13,9 +13,11 @@ import { getMoneyBalance, onMoneyBalanceChange } from './currency.ts'
 import { getHouseBilling, onHouseBillChange } from './house-bills.ts'
 import { getVenueServices, venueServiceReason } from './venue-services.ts'
 import { kitHas, kitUrl, kitCount } from './ui-kit.ts'
+import { getDowryState, onDowryChange } from './dowry.ts'
+import { getHomeMealService } from './home-meals.ts'
 
 // Icône peinte du kit pour chaque objectif ; l'émoji reste le repli.
-const kitIcons: Record<string, string> = { broke: 'savings', eat: 'meal', hungry: 'meal', meal: 'meal', go: 'transport', work: 'dossier', sleep: 'sleep', tired: 'sleep', bills: 'bills', energy: 'energy', mood: 'mood', tontine: 'tontine', ceremony: 'ceremony', save: 'savings', level: 'level' }
+const kitIcons: Record<string, string> = { broke: 'savings', dowry: 'savings', job: 'dossier', relax: 'mood', eat: 'meal', hungry: 'meal', meal: 'meal', go: 'transport', work: 'dossier', sleep: 'sleep', tired: 'sleep', bills: 'bills', energy: 'energy', mood: 'mood', tontine: 'tontine', ceremony: 'ceremony', save: 'savings', level: 'level' }
 
 // Besoins qui ne peuvent pas attendre la fin des premiers pas.
 const urgentIds = new Set(['broke', 'bills', 'hungry', 'meal', 'tired', 'energy', 'mood'])
@@ -61,11 +63,35 @@ function priorities(): Goal[] {
   return goals.slice(0, 3)
 }
 
+// Une seule action à faire maintenant : d'abord ce qui ne peut pas attendre, puis ce qui fait avancer la dot.
+function nextStep(zone: string): Goal {
+  const urgent = priorities().find(goal => ['bills', 'broke', 'hungry', 'meal', 'tired', 'energy'].includes(goal.id))
+  if (urgent) {
+    // Repas : à la maison, c'est gratuit aux heures de repas.
+    if (urgent.id === 'meal' && getHomeMealService().open) return { ...urgent, hint: loc('Maison › Manger à la maison · gratuit maintenant'), zone: 'home' }
+    return urgent
+  }
+  const time = getGameTime().totalMinutes, minute = time % 1440, day = Math.floor(time / 1440) % 7, resources = getPlayerResources()
+  const money = getMoneyBalance(), bills = getHouseBilling(), dowry = getDowryState(), amount = (value: number) => value.toLocaleString(gameLocale)
+  if (minute >= 1320 || minute < 360) return { id: 'sleep', icon: '🛏️', title: loc('Il est tard : va dormir'), hint: loc('Maison › Dormir · demain, on travaille pour la dot'), zone: 'home' }
+  if (resources.mood < 60) return { id: 'relax', icon: '🙂', title: loc('Humeur basse : détends-toi'), hint: loc('Tes gains baissent de 15 % : ludo au village, match au bar, cinéma…') }
+  // Argent en trop (au-delà de la prochaine facture) : il va dans la caisse de la dot.
+  const reserve = bills.amount + 1000, spare = Math.floor((money - reserve) / 1000) * 1000
+  if (!dowry.complete && spare >= 2000) return { id: 'dowry', icon: '💰', title: loc('Mets {0} Nkap de côté pour la dot', amount(Math.min(spare, dowry.remaining))), hint: loc('Maison › Caisse de la dot · garde {0} Nkap pour les factures', amount(reserve)), zone: 'home', action: 'dowry' }
+  if (day < 5 && minute >= 480 && minute < 1080) return { id: 'work', icon: '📂', title: loc('Travaille au ministère'), hint: loc('Dossiers et usagers : l’argent de la dot se gagne ici'), zone: 'ministry' }
+  // Hors bureau : le petit job ouvert le mieux payé.
+  const jobs = ['jcd', 'market', 'njoka', 'club', 'education', 'supermarket', 'nsimaport', 'baos'].flatMap(z => getVenueServices(z).filter(s => s.job && !venueServiceReason(s)).map(s => ({ z, s })))
+  const best = jobs.sort((a, b) => (b.s.moneyGain ?? 0) - (a.s.moneyGain ?? 0))[0]
+  if (best) return { id: 'job', icon: '🛵', title: loc('Petit job : {0}', best.s.name), hint: loc('+{0} Nkap pour la dot · {1} min', amount(best.s.moneyGain ?? 0), best.s.minutes), zone: best.z }
+  void zone
+  return { id: 'relax', icon: '🙂', title: loc('Repose-toi un moment'), hint: loc('Rien d’ouvert pour gagner de l’argent : profite pour te détendre') }
+}
+
 export function mountGuide(options: { currentZone: () => string; goTo: (zone: string) => void; busy: () => boolean }) {
   const panel = document.createElement('aside'); panel.id = 'guide'; panel.setAttribute('aria-label', loc('À faire'))
-  panel.innerHTML = `<button type="button" class="guide-head" aria-controls="guide-list"><b>${loc('À faire')}</b><span aria-hidden="true">▾</span></button><ol id="guide-list" class="guide-list"></ol>`
+  panel.innerHTML = `<button type="button" class="guide-head" aria-controls="guide-list"><b>${loc('Quête : réunir la dot')}</b><span aria-hidden="true">▾</span></button><button type="button" class="guide-quest" aria-label="${loc('Caisse de la dot')}"><span class="guide-quest-bar"><i></i></span><small class="guide-quest-text"></small></button><ol id="guide-list" class="guide-list"></ol>`
   document.querySelector('#app')!.append(panel)
-  const head = panel.querySelector<HTMLButtonElement>('.guide-head')!, list = panel.querySelector<HTMLElement>('.guide-list')!
+  const head = panel.querySelector<HTMLButtonElement>('.guide-head')!, list = panel.querySelector<HTMLElement>('.guide-list')!, quest = panel.querySelector<HTMLButtonElement>('.guide-quest')!
   // Une partie déjà entamée n'a pas besoin des premiers pas.
   if (step === 0 && (getPlayerResources().ptRespo > 0 || getGameTime().totalMinutes >= 1440)) { step = 99; save() }
   let signature = ''
@@ -76,12 +102,16 @@ export function mountGuide(options: { currentZone: () => string; goTo: (zone: st
     if (advanced) { save(); panel.classList.remove('guide-done'); void panel.offsetWidth; panel.classList.add('guide-done') }
     const teaching = step < steps.length
     const urgent = teaching ? priorities().filter(goal => urgentIds.has(goal.id)).slice(0, 2) : []
-    const goals: Goal[] = teaching ? [...urgent, steps[step]!] : priorities()
-    const next = `${kitCount()}|${collapsed}|${teaching ? `${step + 1}/${steps.length}` : ''}|${goals.map(goal => `${goal.id}:${goal.title}:${goal.hint}`).join('|')}`
+    const goals: Goal[] = teaching ? [urgent[0] ?? steps[step]!] : [nextStep(zone)]
+    const dowry = getDowryState()
+    const next = `${dowry.saved}|${kitCount()}|${collapsed}|${teaching ? `${step + 1}/${steps.length}` : ''}|${goals.map(goal => `${goal.id}:${goal.title}:${goal.hint}`).join('|')}`
     if (next === signature) return
     signature = next
     panel.dataset.collapsed = String(collapsed); head.setAttribute('aria-expanded', String(!collapsed))
-    head.querySelector('b')!.textContent = teaching ? loc('Premiers pas · {0}/{1}',step + 1,steps.length) : loc('À faire')
+    head.querySelector('b')!.textContent = teaching ? loc('Premiers pas · {0}/{1}',step + 1,steps.length) : dowry.complete ? loc('Quête accomplie : la dot est réunie !') : loc('Quête : réunir la dot')
+    quest.hidden = collapsed || teaching
+    quest.querySelector<HTMLElement>('i')!.style.width = `${Math.round(dowry.share * 100)}%`
+    quest.querySelector('small')!.textContent = loc('{0} / {1} Nkap', dowry.saved.toLocaleString(gameLocale), dowry.target.toLocaleString(gameLocale))
     list.hidden = collapsed
     list.replaceChildren(...goals.map((goal, index) => {
       const item = document.createElement('li'), button = document.createElement('button')
@@ -100,13 +130,15 @@ export function mountGuide(options: { currentZone: () => string; goTo: (zone: st
     }))
   }
   head.onclick = () => { collapsed = !collapsed; save(); render() }
+  quest.onclick = () => { if (options.busy()) return; if (options.currentZone() === 'home') window.dispatchEvent(new Event('mboa:open-dowry')); else options.goTo('home') }
   list.addEventListener('click', event => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('.guide-goal')
     if (!button || button.disabled || options.busy()) return
     if (button.dataset.guideAction === 'bills') document.querySelector<HTMLButtonElement>('#bills-open')?.click()
+    else if (button.dataset.guideAction === 'dowry' && options.currentZone() === 'home') window.dispatchEvent(new Event('mboa:open-dowry'))
     else if (button.dataset.guideZone) options.goTo(button.dataset.guideZone)
   })
-  onGameTimeChange(render); onPlayerResourcesChange(render); onMoneyBalanceChange(render); onHungerChange(render); onHouseBillChange(render)
+  onGameTimeChange(render); onPlayerResourcesChange(render); onMoneyBalanceChange(render); onHungerChange(render); onHouseBillChange(render); onDowryChange(render)
   // Le lieu du joueur change sans événement dédié : un contrôle léger suffit.
   setInterval(render, 1500)
   render()

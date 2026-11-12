@@ -160,3 +160,10 @@ html #app .player-pin:not(.npc-pin):not(#_)::after{animation-delay:.8s}
 /* Flèche « › » seulement sur les cartes qui ouvrent un sous-menu. Les services directs (pause, jobs, plats de rue…)
    portent data-service et agissent sur place ; Manger à la maison et Dormir ouvrent leur fenêtre. */
 html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service[data-service]:not([data-service=home-meals]):not([data-service=home-sleep]):not(#_):not(#__)::after{content:none!important;display:none!important}
+
+/* ---------- Quête principale : barre de la dot sous le titre du guide ---------- */
+html #app #guide .guide-quest:not(#_){display:flex;align-items:center;gap:10px;width:100%;margin:6px 0 4px;padding:7px 10px;border:3px solid var(--sc-ink);border-radius:14px;background:linear-gradient(180deg,#1f4170,#132c50);box-shadow:inset 0 2px 0 #ffffff30,0 3px 0 var(--sc-ink);cursor:pointer}
+html #app #guide .guide-quest[hidden]:not(#_){display:none}
+html #app #guide .guide-quest-bar:not(#_){position:relative;flex:1;height:14px;border:2px solid var(--sc-ink);border-radius:999px;background:#0b1a30;overflow:hidden}
+html #app #guide .guide-quest-bar i:not(#_){position:absolute;inset:0 auto 0 0;min-width:6px;border-radius:999px;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 55%,var(--sc-gold-lo));transition:width .6s cubic-bezier(.2,.9,.3,1.2)}
+html #app #guide .guide-quest-text:not(#_){flex:none;font:400 14px/1 var(--sc-font);color:#fff;text-shadow:var(--sc-stroke-s);white-space:nowrap}

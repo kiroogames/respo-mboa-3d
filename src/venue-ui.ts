@@ -16,6 +16,8 @@ import { cityOutings, getOutingSchedule, onCityOutingChange } from './city-outin
 import { mountHomeComfort } from './home-comfort-ui'
 import { getHomeComfort, onComfortChange } from './home-comfort'
 import { mountBaeToque } from './bae-toque-ui'
+import { mountDowry } from './dowry-ui'
+import { getDowryState } from './dowry'
 import { getToqueState, onToqueChange } from './bae-toque'
 import { mountProMissions } from './pro-missions-ui'
 import { missionRules, getMissionState, onMissionChange } from './pro-missions'
@@ -125,6 +127,16 @@ export function mountVenues(options: {
   const comfortEntry=document.createElement('button');comfortEntry.className='venue-service';comfortEntry.dataset.venueComfort='';comfortEntry.hidden=true
   dialog.querySelector('#venue-place-panel')!.append(comfortEntry)
   comfortEntry.onclick=()=>{if(options.travelling()||options.currentZone()!=='home'||zone!=='home')return;dialog.close();comfort.open()}
+  // Quête principale : la caisse de la dot, à la maison.
+  const dowry=mountDowry({currentZone:options.currentZone,travelling:options.travelling,back:()=>{
+    if(options.travelling()||options.currentZone()!=='home')return
+    render();setTab('place');if(!dialog.open)dialog.showModal()
+  }})
+  const dowryEntry=document.createElement('button');dowryEntry.className='venue-service';dowryEntry.dataset.venueDowry='';dowryEntry.dataset.menuArt='budget';dowryEntry.hidden=true
+  dialog.querySelector('#venue-place-panel')!.prepend(dowryEntry)
+  dowryEntry.onclick=()=>{if(options.travelling()||options.currentZone()!=='home'||zone!=='home')return;dialog.close();dowry.open()}
+  // Le panneau de quête ouvre la caisse directement quand le joueur est à la maison.
+  window.addEventListener('mboa:open-dowry',()=>{if(options.travelling()||options.currentZone()!=='home'||document.querySelector('dialog[open]'))return;dowry.open()})
   const outings=mountCityOutings({currentZone:options.currentZone,travelling:options.travelling,back:()=>{
     if(options.travelling()||options.currentZone()!==zone)return
     render();setTab('place');if(!dialog.open)dialog.showModal()
@@ -160,6 +172,8 @@ export function mountVenues(options: {
     outingEntry.hidden=!outing
     if(outing){const schedule=getOutingSchedule(outing.id),meal=outing.id.startsWith('restaurant');outingEntry.innerHTML=`<b>${meal?loc('À la carte'):loc('Sorties · {0}',outing.name)}</b><span class="venue-description">${outing.hours}</span><span class="venue-gains">${meal?loc('Choisir un plat'):loc('Choisir une sortie')}</span><small>${schedule.reason||loc('Disponible sur place')}</small>`}
 
+    dowryEntry.hidden=zone!=='home'
+    if(!dowryEntry.hidden){const d=getDowryState();dowryEntry.innerHTML=`<b>${loc('Caisse de la dot')}</b><span class="venue-description">${loc('Quête principale : mettre de l’argent de côté pour la dot.')}</span><span class="travel-costs">${d.saved.toLocaleString(gameLocale)} / ${d.target.toLocaleString(gameLocale)} Nkap</span><span class="venue-gains">${d.complete?loc('Dot réunie !'):loc('Reste {0} Nkap',d.remaining.toLocaleString(gameLocale))}</span>`}
     comfortEntry.hidden=zone!=='home'
     if(!comfortEntry.hidden){const state=getHomeComfort();comfortEntry.innerHTML=`<b>${loc('Confort et équipements')}</b><span class="venue-description">${loc('Chambre, salon, cuisine et salle de bain.')}</span><span class="venue-gains">${loc('Confort : {0} / {1}{2}',state.total,state.target,state.complete?loc(' · objectif atteint'):'')}</span><small>${loc('Acheter · équiper · revendre')}</small>`}
 
