@@ -362,7 +362,7 @@ dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidde
 dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art img{width:100%!important;height:100%!important;object-fit:contain!important}
 dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>*{grid-area:auto!important}
 /* Décision du 11 novembre 2026 : aucun voile ni flou derrière les fenêtres, la ville et le HUD restent nets. */
-html dialog::backdrop,html dialog.travel-dialog::backdrop{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html dialog::backdrop,html dialog.travel-dialog::backdrop{background:transparent!important;backdrop-filter:none!important}
 /* Fenêtres plus larges que hautes : davantage de colonnes et des cartes plus basses, pour défiler le moins possible. */
 @media(min-width:981px) and (min-height:600px){
   html dialog.game-menu:not([data-mode=puzzle]):not([data-travel-step=go])[open]{width:min(1300px,calc(100vw - 300px))!important;max-height:calc(100dvh - 150px)!important}

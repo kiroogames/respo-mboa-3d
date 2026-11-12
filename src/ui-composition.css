@@ -109,7 +109,7 @@ dialog.citizen-puzzle-dialog[data-mode=puzzle]>.menu-context{display:none}
 }
 
 /* Les ressources restent lisibles : aucun flou derrière les menus, rappel de valeurs dans leur en-tête. */
-dialog.travel-dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#0b2e343d}
+dialog.travel-dialog::backdrop{background:transparent}
 dialog.travel-dialog:not([data-mode=puzzle])>.popup-head{flex-wrap:wrap}
 dialog.travel-dialog .popup-stats{display:flex;flex-basis:100%;gap:16px;padding-top:13px;margin-top:5px;border-top:1px solid #c7d8e0;justify-content:space-between;color:#53606c}
 dialog.travel-dialog .popup-stats>span{display:flex;flex-direction:column;gap:3px;font-size:9px;letter-spacing:.5px;font-weight:700}

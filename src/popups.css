@@ -15,7 +15,7 @@
 dialog.travel-dialog{width:min(500px,calc(100vw - 24px));max-width:none;max-height:min(780px,calc(100dvh - 24px));padding:0;border:0;border-radius:24px;background:var(--pp-paper);color:var(--pp-ink);overflow:hidden;box-shadow:0 32px 90px #040a128c,0 0 0 1px #ffffff40;font-family:Nunito,'Segoe UI',system-ui,sans-serif}
 dialog.travel-dialog:is(.dossier-dialog,.bills-dialog,.missions-dialog,.comfort-dialog,.npc-dialogue-dialog){width:min(560px,calc(100vw - 24px))}
 dialog.travel-dialog[open]{display:flex;flex-direction:column;animation:popup-in .24s cubic-bezier(.2,.9,.3,1.1)}
-dialog.travel-dialog::backdrop{background:radial-gradient(circle at 50% 35%,#0a192d66,#040a12d9);backdrop-filter:blur(5px)}
+dialog.travel-dialog::backdrop{background:transparent}
 @keyframes popup-in{from{opacity:0;transform:translateY(16px) scale(.97)}}
 
 /* ---------- En-tête ---------- */

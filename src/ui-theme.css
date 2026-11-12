@@ -35,7 +35,7 @@
 #app .landmark{border:1px solid #ffffffbc;border-radius:8px;background:#fbf9f3ed;font:700 12px/1.3 Nunito,sans-serif;padding:7px 10px;box-shadow:0 3px 10px #10254020}#app .landmark i{background:#ad8037}
 /* Coque des menus : lecture stable et action principale claire. */
 dialog.travel-dialog{border-radius:18px;background:#fbf9f3;box-shadow:0 30px 100px #041e2266,0 0 0 1px #fff9;font-family:Nunito,'Segoe UI',sans-serif}
-dialog.travel-dialog::backdrop{background:#102d36a8;backdrop-filter:blur(7px)}
+dialog.travel-dialog::backdrop{background:transparent}
 dialog.travel-dialog .popup-head{background:#132e52;border-bottom:3px solid #cda354;padding:20px 68px 18px 24px;gap:12px}
 dialog.travel-dialog .popup-head .popup-icon{display:none}dialog.travel-dialog .popup-head h2{font:800 23px/1.2 Nunito,sans-serif;letter-spacing:-.5px;margin:5px 0 0}dialog.travel-dialog .popup-head .travel-eyebrow{font-size:9px;letter-spacing:1.8px;color:#ebd4a2}
 dialog.travel-dialog .popup-head .travel-close{border-radius:9px;width:36px;height:36px;top:18px;right:18px;background:#ffffff0f;border:1px solid #ffffff38;font-size:21px}dialog.travel-dialog .popup-head .travel-close:hover{transform:none;background:#ffffff25}

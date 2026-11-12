@@ -94,7 +94,7 @@
 
 /* ---------- Fenêtres ---------- */
 dialog.travel-dialog{border:4px solid var(--g-ink);border-radius:26px;background:var(--g-paper);box-shadow:inset 0 0 0 3px var(--g-gold),0 9px 0 var(--g-ink),0 26px 60px #050c1699}
-dialog.travel-dialog::backdrop{background:#08122073}
+dialog.travel-dialog::backdrop{background:transparent}
 dialog.travel-dialog[open]{animation:skin-pop .36s cubic-bezier(.2,1.45,.4,1)}
 @keyframes skin-pop{from{opacity:0;transform:translateY(26px) scale(.82)}}
 
