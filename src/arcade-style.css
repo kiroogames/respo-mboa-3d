@@ -204,3 +204,46 @@ html #dialogue #dialogue-name:not(#_){font:400 20px/1.1 var(--sc-font)!important
 html #dialogue #dialogue-text:not(#_){font:700 16px/1.35 Nunito,system-ui,sans-serif!important;color:#fff!important}
 html #dialogue #dialogue-close:not(#_){color:#fff!important}
 html #dialogue:not([hidden]):not(#_){animation:sc-pop .26s cubic-bezier(.2,.9,.3,1.25)}
+
+/* Cartes de lieu, ordre « jeu vidéo » : image, titre, une phrase, pastilles de coût, pastilles de gain.
+   Les rubriques « Coûts » et « Gains » disparaissent : les pastilles et icônes suffisent. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]) .venue-section-label:not(#_){display:none!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.game-card-art:not(#_){order:1}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>b:not(#_){order:2}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.venue-description:not(#_){order:3}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.travel-costs:not(#_){order:4;display:flex!important;flex-wrap:wrap;justify-content:center;gap:5px!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.venue-gains:not(#_){order:5;display:flex!important;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>small:not(#_){order:6}
+/* Gains en pastilles turquoise, comme les coûts sont en pastilles bleu nuit. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>:is(.venue-energy-gain,.venue-other-gains):not(:empty):not(#_):not(#__){display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:2px solid var(--sc-ink);border-radius:999px;background:linear-gradient(180deg,#5ff0ee,#17b9bb);font:400 15px/1.1 var(--sc-font)!important;color:#fff!important;text-shadow:var(--sc-stroke-s)!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains *:not(#_):not(#__){color:#fff!important;font:inherit!important;text-shadow:inherit!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains img:not(#_){width:18px!important;height:20px!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-energy-preview:not(#_){display:none!important}
+/* Ordre des cartes à la maison : besoins d'abord (manger, dormir, pause), puis la quête, puis le confort. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel [data-service=home-meals]:not(#_){order:1}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel [data-service=home-sleep]:not(#_){order:2}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel [data-service=home-rest]:not(#_){order:3}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel [data-venue-dowry]:not(#_){order:4}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel [data-venue-comfort]:not(#_){order:5}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel>.venue-service:not([data-venue-dowry]):not([data-venue-comfort]):not(#_){order:6}
+
+/* Lisibilité des cartes claires : tout texte hors pastille est sombre (fini les chiffres blancs sur blanc). */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,.citizen-card,button[aria-pressed]) :is(span,strong,b,small,em):not(.travel-costs *):not(.venue-gains>*):not(.venue-gains>* *):not(.game-card-art *):not(#_):not(#__):not(#___):not(#____){color:#1d2c44!important;text-shadow:none!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,.citizen-card) .venue-gains:not(#_):not(#__):not(#___){color:#0b6f71!important}
+/* Pastilles de gain : plus grandes, fond turquoise foncé, texte blanc net sans contour épais. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>:is(.venue-energy-gain,.venue-other-gains):not(:empty):not(#_):not(#__):not(#___){padding:4px 12px!important;border:2px solid #0b4f51!important;background:#0f8c8e!important;font:800 15px/1.15 Nunito,system-ui,sans-serif!important;color:#fff!important;text-shadow:0 1px 0 #0006!important;box-shadow:inset 0 2px 0 #ffffff40}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>* *:not(#_):not(#__):not(#___){font:800 15px/1.15 Nunito,system-ui,sans-serif!important;color:#fff!important;text-shadow:0 1px 0 #0006!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .travel-costs>span:not(#_):not(#__):not(#___){font:800 15px/1.15 Nunito,system-ui,sans-serif!important;text-shadow:0 1px 0 #0008!important;padding:4px 12px!important}
+/* Bandeau « repas sauté » de l'en-tête : plus lisible. */
+html dialog.travel-dialog.game-menu[open]>.popup-head .hunger-banner:not(#_):not(#__):not(#___){font:800 14px/1.3 Nunito,system-ui,sans-serif!important;padding:5px 12px!important;background:#b3261e!important}
+/* Montants avec icône posés directement sur une carte claire : texte foncé et gras. */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,.citizen-card,button[aria-pressed]) .venue-gains>.currency-chip:not(#_):not(#__):not(#___):not(#____){color:#0b4f51!important;font-weight:900!important;text-shadow:none!important}
+html dialog.travel-dialog.game-menu[open] .game-menu-pages :is(.venue-service,.venue-person-service,.citizen-card,button[aria-pressed]) .travel-costs>span .currency-chip:not(#_):not(#__):not(#___):not(#____){color:#fff!important}
+
+/* Moins de texte sur les cartes : titre, une seule ligne d'infos, pastilles. Les détails restent dans le sous-menu. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]) .venue-description:not(#_):not(#__){display:-webkit-box!important;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-size:13px!important;opacity:.8}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):has(.travel-costs) .venue-description:not(#_):not(#__):not(#___){display:none!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>.venue-gains:not(:has(>.venue-energy-gain,>.venue-other-gains)):not(#_):not(#__){display:-webkit-box!important;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-align:center}
+/* Les notes du bas (« Disponible », « Voir Anneke », « 5 dossiers… ») disparaissent ; seule la raison d'un refus reste. */
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden]):not(:disabled)>small:not(#_):not(#__){display:none!important}
+html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service:not([hidden])>:is(p,span):not(b):not(.game-card-art):not(.venue-description):not(.travel-costs):not(.venue-gains):not(#_):not(#__){display:none!important}

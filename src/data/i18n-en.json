@@ -1434,5 +1434,17 @@
 "en benskin 🏍️":"by moto-taxi 🏍️",
 "Je suis en route pour {0} {1} ! J’arrive vers {2}, rejoins-moi là-bas.":"I’m on my way to {0} {1}! I’ll be there around {2}, meet me there.",
 "Pas maintenant, je file à {0} {1}. Rendez-vous là-bas vers {2} !":"Not now, I’m heading to {0} {1}. See you there around {2}!",
-"Je suis dans les embouteillages {1}… Arrivée prévue à {0} vers {2}.":"Stuck in traffic {1}… I should reach {0} around {2}."
+"Je suis dans les embouteillages {1}… Arrivée prévue à {0} vers {2}.":"Stuck in traffic {1}… I should reach {0} around {2}.",
+"Énergie déjà pleine":"Energy already full",
+"Bouillie, riz sauce arachide ou ndolé.":"Porridge, rice with peanut sauce or ndolé.",
+"dès 150":"from 150",
+"+45 à +70":"+45 to +70",
+"+ humeur":"+ mood",
+"Recharge ton énergie pour demain.":"Recharge your energy for tomorrow.",
+"Énergie pleine":"Full energy",
+"8 h conseillées":"8 h recommended",
+"Quête principale : mets de l’argent de côté.":"Main quest: put money aside.",
+"Équipe la maison pour être de meilleure humeur.":"Equip the house to stay in a good mood.",
+"Confort {0} / {1}":"Comfort {0} / {1}",
+"+ humeur chaque jour":"+ mood every day"
 }
