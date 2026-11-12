@@ -3,11 +3,12 @@
  * Formes et textures ne changent pas : tout se joue au rendu. L'eau garde son animation, sans ce style.
  */
 import { MaterialPluginBase } from '@babylonjs/core/Materials/materialPluginBase'
-import { Color4 } from '@babylonjs/core/Maths/math.color'
+import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { RegisterClass } from '@babylonjs/core/Misc/typeStore'
 import type { Material } from '@babylonjs/core/Materials/material'
 import type { Mesh } from '@babylonjs/core/Meshes/mesh'
 import '@babylonjs/core/Rendering/edgesRenderer'
+import '@babylonjs/core/Rendering/outlineRenderer'
 
 const plain = /^(WSP (Eau turquoise|Mer vivante)|Outline|Verre des)/
 // Pas de contour sur ce qui est posé à plat ou très fin : il ne dessinerait que des traits parasites.
@@ -48,4 +49,32 @@ export function inkEdges(mesh: Mesh) {
   mesh.enableEdgesRendering(.92)
   mesh.edgesWidth = 5
   mesh.edgesColor = new Color4(.13, .09, .07, 1)
+}
+
+// Style de l'ancien jeu (MVP Responsable) pour les bâtiments, sans toucher à leurs formes :
+// textures simplifiées en aplats, traits d'arêtes plus épais et contour noir autour de la silhouette.
+class MvpStylePlugin extends MaterialPluginBase {
+  constructor(material: Material) { super(material, 'StyleMVP', 210); this._enable(true) }
+  override getClassName() { return 'MvpStylePlugin' }
+  override isCompatible() { return true }
+  override getCustomCode(shaderType: string) {
+    if (shaderType !== 'fragment') return null
+    return {
+      // Aplats : la couleur peinte est ramenée à quelques niveaux, les détails (fenêtres, enseignes) restent lisibles.
+      CUSTOM_FRAGMENT_UPDATE_DIFFUSE: `
+        vec3 mvpFlat=floor(baseColor.rgb*5.+.5)/5.;
+        baseColor.rgb=mix(baseColor.rgb,mvpFlat,.6);`,
+    }
+  }
+}
+RegisterClass('BABYLON.MvpStylePlugin', MvpStylePlugin)
+const notBuilding = /Arbre|Arbuste|Tronc|Feuillage|Couronne|banc|Lampadaire|Lanterne|Bordure|N116|^taxi$|WSP Vehicule|Mat3D_police|Avion|Garde corps|Bois des poteaux|Transformateurs|pont|Passant|Panneau|Assise|Statue|statue/
+export const isBuildingGroup = (name: string) => !notBuilding.test(name)
+export function applyMvpStyle(mesh: Mesh) {
+  if (mesh.material && !mesh.material.pluginManager?.getPlugin('StyleMVP')) new MvpStylePlugin(mesh.material)
+  mesh.edgesWidth = 8
+  mesh.edgesColor = new Color4(.07, .05, .05, 1)
+  mesh.renderOutline = true
+  mesh.outlineColor = new Color3(.07, .05, .05)
+  mesh.outlineWidth = .07
 }

@@ -87,7 +87,7 @@ import { mountPlaceEffects } from './place-effects-ui'
 import { mountMapFilter } from './map-filter'
 import { mountCitySound } from './city-sound'
 import { getTrafficConditions } from './traffic-conditions'
-import { applyToon, inkEdges, isCartoonMaterial, wantsInk } from './toon-city'
+import { applyToon, inkEdges, isCartoonMaterial, wantsInk, applyMvpStyle, isBuildingGroup } from './toon-city'
 import { mountPlaceFx } from './place-fx'
 import { roadHeight } from './road-network'
 import { mountCurrencyFly } from './currency-fly'
@@ -871,6 +871,8 @@ async function loadCity(){
 
    merged.name=merged.material?.name??'Mboa';merged.receiveShadows=true;merged.freezeWorldMatrix();merged.isPickable=false
    if(wantsInk(merged.name))inkEdges(merged)
+   // Bâtiments : même style graphique que l’ancien jeu, formes inchangées.
+   if(wantsInk(merged.name)&&isBuildingGroup(merged.name)&&!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))applyMvpStyle(merged)
 
    if(!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg\.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))shadows.addShadowCaster(merged)
 
