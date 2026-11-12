@@ -1,7 +1,9 @@
 # Repeint la texture du sol, à partir de la peinture d'origine (scripts/data/large-map-original.jpg) et du réseau routier.
 # Centre-ville : herbe, terre et parcelles en aplats propres, routes nettes aux dimensions des voies.
 # Aéroport, stade, colline, plantations et bord de mer gardent leur peinture : ce sont des détails dessinés, pas des taches.
-# Usage : python -I scripts/paint_ground.py <fichier-de-sortie.jpg>
+# Usage : python -I scripts/paint_ground.py <fichier-de-sortie.jpg> [--clean]
+# --clean : routes propres (pas de terre, de nids-de-poule ni de trottoirs cassés, marquage complet)
+#           et zones du sol en grands aplats, sans petits îlots.
 import heapq, json, math, sys
 from pathlib import Path
 import numpy as np
@@ -9,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(sys.argv[1])
+CLEAN = '--clean' in sys.argv[2:]
 W, H = 6144, 3964
 # Correspondance monde (x, z) -> UV du sol, relevée sur les sommets du maillage par extract-road-network.py.
 CU = (1.59622906e-03, 8.85175441e-07, 5.08740826e-01)
@@ -50,6 +53,13 @@ def surfaces(original, rng):
     fields = [np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3)).resize((W, H), Image.BICUBIC)) for m in (grass, earth, plaza, track)]
     kind = np.argmax(np.stack(fields), axis=0).astype(np.uint8)
     del fields
+    if CLEAN:
+        # Grands aplats : chaque pixel prend la zone majoritaire autour de lui ; les petits îlots disparaissent.
+        small_kind = np.asarray(Image.fromarray(kind * 60).resize((W // 4, H // 4), Image.NEAREST).filter(ImageFilter.ModeFilter(9))) // 60
+        # Bords arrondis : chaque zone est agrandie en douceur puis la plus présente l'emporte.
+        smooth = [np.asarray(Image.fromarray(((small_kind == c) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.5)).resize((W, H), Image.BICUBIC)) for c in range(4)]
+        kind = np.argmax(np.stack(smooth), axis=0).astype(np.uint8)
+        del smooth
     # Îlot du rond-point : pelouse autour de la statue.
     y, x = np.mgrid[0:H // 2, 0:W // 2].astype(np.float32) * 2
     wx, wz = (x / W - CU[2]) / CU[0], (y / H - CV[2]) / CV[1]
@@ -221,13 +231,14 @@ def main():
     # Le tronçon de la présidence reste neuf ; ailleurs le marquage n'existe plus que par endroits.
     good_mask = stroke(good, WALK + 1).astype(np.float32) / 255
     keep = 1 - good_mask
-    faded = (noise(rng, 170, 0, 1) > .62).astype(np.float32)
+    faded = np.ones((H, W), np.float32) if CLEAN else (noise(rng, 170, 0, 1) > .62).astype(np.float32)
     line = markings(paths, degree).astype(np.float32) * asphalt.astype(np.float32) / 255 * (good_mask + keep * faded)
     image = over(image, np.clip(line, 0, 255).astype(np.uint8), PALETTE['line'])
     bare, hole, centre, rim = wear(damaged, keep, rng)
+    if CLEAN: bare, hole, centre, rim = (np.zeros((H, W), np.float32),) * 4
     road = asphalt.astype(np.float32) / 255
     # Trottoirs cassés sur les routes abîmées.
-    pavement = (stroke(damaged, WALK).astype(np.float32) / 255) * (1 - road) * keep * (noise(rng, 420, 0, 1) > .57)
+    pavement = np.zeros((H, W), np.float32) if CLEAN else (stroke(damaged, WALK).astype(np.float32) / 255) * (1 - road) * keep * (noise(rng, 420, 0, 1) > .57)
     def paint(mask, color, texture=None):
         nonlocal image
         m = mask[..., None]; ink = np.array(color, np.float32) * (texture if texture is not None else 1)

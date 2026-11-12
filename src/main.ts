@@ -799,7 +799,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261103-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=loc('Chargement des modèles… {0} %',Math.round(event.loaded/event.total*100))}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261112-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=loc('Chargement des modèles… {0} %',Math.round(event.loaded/event.total*100))}})
 
   container.addAllToScene()
 
@@ -872,7 +872,7 @@ async function loadCity(){
    merged.name=merged.material?.name??'Mboa';merged.receiveShadows=true;merged.freezeWorldMatrix();merged.isPickable=false
    if(wantsInk(merged.name))inkEdges(merged)
    // Bâtiments : même style graphique que l’ancien jeu, formes inchangées.
-   if(wantsInk(merged.name)&&isBuildingGroup(merged.name)&&!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))applyMvpStyle(merged)
+   if(wantsInk(merged.name)&&isBuildingGroup(merged.name)&&!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg\.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))applyMvpStyle(merged)
 
    if(!/Relief|Sol peint|Roche|Montagnes|Océan|Rivière|Ligne|Boulevard|Route|Trottoir|Marquage|^bg\.|WSP Terre|WSP Eau|WSP Mer vivante/.test(merged.name))shadows.addShadowCaster(merged)
 
