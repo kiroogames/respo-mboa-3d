@@ -34,7 +34,8 @@ import type { TravelPoint, TravelMode } from './travel'
 
 import { createSurfaceKit } from './surfaces'
 
-import { createCityLife } from './city-life'
+import { createCityLife, kitVehicleKinds } from './city-life'
+import { loadMvpModels } from './mvp-models'
 
 import { cityScale, cityPosition } from './city-layout'
 
@@ -875,7 +876,9 @@ async function loadCity(){
 
   }
 
-  cityLife=createCityLife(scene,trafficPrototypes,planePrototype,shadows);updateMotion()
+  // Personnages et véhicules de l’ancien jeu (MVP Responsable) ; en cas d’échec, la ville garde ses prototypes.
+  const mvp=await loadMvpModels(base,scene,kitVehicleKinds).catch(error=>{console.warn('Modèles MVP indisponibles',error);return undefined})
+  cityLife=createCityLife(scene,trafficPrototypes,planePrototype,shadows,mvp);updateMotion()
   mountPlaceFx(scene,{zone:()=>playerZone,travelling:()=>travel.isTravelling(),point:zone=>{const {x,z}=views[zone]!.target;return new Vector3(x,roadHeight(x,z)+.5,z)}})
 
   createLandmarks()
@@ -938,6 +941,7 @@ const levelNotice=mountRespoLevelNotice(()=>document.documentElement.dataset.rea
 
 if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:true,value:{
 
+ scene,camera,
  setCamera(alpha:number,beta:number,radius:number,target:number[]){
 
   destination=null;setOrbit(false);camera.setTarget(Vector3.FromArray(target));camera.alpha=alpha;viewAlpha=alpha;camera.beta=beta;viewBeta=beta;camera.radius=radius

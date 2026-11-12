@@ -18,6 +18,8 @@ import { createRoadTraffic } from './road-traffic'
 import { roadPaths, roadHeight, walkPaths } from './road-network'
 import { createWalkers } from './street-walkers'
 import { applyToon, inkEdges } from './toon-city'
+import { placeKitVehicle, kitWorldScale } from './mvp-models'
+import type { KitVehicle, Crowd } from './mvp-models'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import { Constants } from '@babylonjs/core/Engines/constants'
 import { getTrafficConditions } from './traffic-conditions'
@@ -34,14 +36,26 @@ const fleet:{model:string;scale:number;half:number;paint:string[]}[]=[
   {model:'WSP Traffic prototype',scale:.74,half:2.2,paint:['#F2C230']},
   {model:'WSP Traffic prototype Minibus',scale:.66,half:2.95,paint:['#F7F4EA','#2F7F8F','#D9722E']},
 ]
+// Même mélange avec les véhicules de l’ancien jeu (MVP Responsable) : même longueur à l’écran que les prototypes.
+const kitFleet:{kind:string;scale:number;half:number;paint:string[]}[]=[
+  {kind:'taxi',scale:.74,half:2.2,paint:['#F2C230']},
+  {kind:'moto',scale:.8,half:1.15,paint:['#D9472F','#2F3A42','#3E6E9E']},
+  {kind:'sedan',scale:.74,half:2.2,paint:['#F7F4EA','#B9C2C8','#3E6E9E','#B5412F','#2F3A42']},
+  {kind:'pickup',scale:.74,half:2.3,paint:['#F7F4EA','#2F3A42','#7C8A6B','#A9B4BA']},
+  {kind:'taxi',scale:.74,half:2.2,paint:['#F2C230']},
+  {kind:'moto',scale:.8,half:1.15,paint:['#E9984A','#F7F4EA','#3F9A5B']},
+  {kind:'taxi',scale:.74,half:2.2,paint:['#F2C230']},
+  {kind:'minibus',scale:.66,half:2.95,paint:['#F7F4EA','#2F7F8F','#D9722E']},
+]
+export const kitVehicleKinds=[...new Set(kitFleet.map(entry=>entry.kind))]
 // Rayon de sécurité commun : celui du plus long véhicule, le minibus.
 const trafficRadius=2.1
 // Là où ça bouchonne : le rond-point de la statue, le carrefour du Ministère et l'abord du marché.
 const trafficHotspots:[number,number][]=[[-25.4,1.1],[4,-34],[-70,28]]
 
-export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh|undefined,shadows:ShadowGenerator){
+export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh|undefined,shadows:ShadowGenerator,mvp?:{vehicles:Map<string,KitVehicle>|null;crowd:Crowd|null}){
   let time=0,paused=false,evening=false
-  const cars:Mesh[]=[],carLights:InstancedMesh[]=[]
+  const cars:TransformNode[]=[],carLights:InstancedMesh[]=[]
   const beamTexture=new DynamicTexture('Faisceau des phares',{width:128,height:256},scene,true);beamTexture.hasAlpha=true
   const beamContext=beamTexture.getContext(),beamFade=beamContext.createLinearGradient(0,0,0,256)
   beamFade.addColorStop(0,'rgba(255,240,190,.75)');beamFade.addColorStop(1,'rgba(255,240,190,0)')
@@ -50,7 +64,20 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
   const beamMaster=MeshBuilder.CreateGround('Faisceau',{width:3.4,height:9},scene);beamMaster.material=beamMaterial;beamMaster.isPickable=false;beamMaster.isVisible=false
   const tailMaterial=new StandardMaterial('Feux arrière',scene);tailMaterial.disableLighting=true;tailMaterial.emissiveColor=new Color3(1,.1,.06);tailMaterial.specularColor=Color3.Black()
   const tailMaster=MeshBuilder.CreateBox('Feu arrière',{width:1.5,height:.14,depth:.05},scene);tailMaster.material=tailMaterial;tailMaster.isPickable=false;tailMaster.isVisible=false
-  if(prototypes.length){
+  const kit=mvp?.vehicles&&kitFleet.every(entry=>mvp.vehicles!.has(entry.kind))?mvp.vehicles:null
+  if(kit){
+    // Véhicules de l’ancien jeu : le nœud porte l’échelle d’origine, phares et feux restent aux mêmes places.
+    for(let i=0;i<72;i++){
+      const kind=kitFleet[i%kitFleet.length]!,vehicle=kit.get(kind.kind)!
+      const car=new TransformNode('Vehicule de Mboa '+i,scene);car.scaling.setAll(kind.scale)
+      // Taille réelle : même échelle pour tous les véhicules et pour les passants ; half = demi-longueur dans le repère du nœud.
+      const half=vehicle.length*kitWorldScale/2/kind.scale
+      for(const part of placeKitVehicle(vehicle,car,kitWorldScale/kind.scale,kind.paint[i%kind.paint.length]!)){part.receiveShadows=true;shadows.addShadowCaster(part)}
+      cars.push(car)
+      const beam=beamMaster.createInstance('Phares '+i);beam.parent=car;beam.position.set(0,.14,-half-5.2);beam.setEnabled(false);carLights.push(beam)
+      const tail=tailMaster.createInstance('Feux arrière '+i);tail.parent=car;tail.position.set(0,.78,half+.04);tail.setEnabled(false);carLights.push(tail)
+    }
+  }else if(prototypes.length){
     // Prépare un pool fixe ; la congestion change le nombre de voitures actives sans recréer leurs maillages.
     for(let i=0;i<72;i++){
       const kind=fleet[i%fleet.length]!,prototype=prototypes.find(p=>p.name===kind.model)??prototypes[0]!
@@ -117,7 +144,9 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
   })
   const legsMaster=MeshBuilder.CreateCylinder('Jambes',{height:.72,diameterTop:.32,diameterBottom:.22,tessellation:6},scene);legsMaster.material=trousers;legsMaster.isVisible=false;legsMaster.isPickable=false
   const headMaster=MeshBuilder.CreateSphere('Tête',{diameter:.3,segments:5},scene);headMaster.material=skin;headMaster.isVisible=false;headMaster.isPickable=false
-  const people=walkers.walkers.map((_,i)=>{
+  // Personnages de l’ancien jeu quand le modèle est chargé, silhouettes simples sinon.
+  const chibis=mvp?.crowd?walkers.walkers.map((_,i)=>mvp.crowd!.create('Passant '+i,i)):null
+  const people=chibis?chibis.map(chibi=>chibi.root):walkers.walkers.map((_,i)=>{
    const root=new TransformNode('Passant '+i,scene)
    const legs=legsMaster.createInstance('Jambes');legs.parent=root;legs.position.y=.36
    const body=shirts[i%shirts.length]!.createInstance('Buste');body.parent=root;body.position.y=1.08
@@ -145,7 +174,6 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
       if(!state.active)continue
       car.position.copyFromFloats(...state.position)
       car.rotation.y=state.yaw
-      car.visibility=1
     }
     planes.forEach((plane,i)=>{
       const state=planeState(time,i)
@@ -162,7 +190,10 @@ export function createCityLife(scene:Scene,prototypes:Mesh[],planePrototype:Mesh
       const shown=!evening||i%5<2,person=people[i]!
       person.setEnabled(shown)
       if(!shown)return
-      person.position.set(walker.x,roadHeight(walker.x,walker.z)-.04+Math.abs(Math.sin(walker.phase))*.05,walker.z);person.rotation.y=walker.yaw
+      const chibi=chibis?.[i]
+      // Le personnage de l’ancien jeu regarde vers +Z : demi-tour par rapport aux silhouettes ; sa marche est animée.
+      if(chibi){chibi.pose(walker.phase*.75);person.position.set(walker.x,roadHeight(walker.x,walker.z)-.04,walker.z);person.rotation.y=walker.yaw+Math.PI}
+      else{person.position.set(walker.x,roadHeight(walker.x,walker.z)-.04+Math.abs(Math.sin(walker.phase))*.05,walker.z);person.rotation.y=walker.yaw}
     })
     boats.forEach((boat,i)=>{
       const a=time*.018+i*Math.PI
