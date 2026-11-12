@@ -802,7 +802,7 @@ async function loadCity(){
   const routeResponse=fetch(`${base}data/wsp-traffic.json?v=palace-20261023-2`)
 
   // useSRGBBuffers : ces textures passent par des matériaux Standard, sans retour en sRGB ; décodées, elles sortiraient sombres et trop saturées.
-  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261112-1`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=loc('Chargement des modèles… {0} %',Math.round(event.loaded/event.total*100))}})
+  const container=await LoadAssetContainerAsync(`${base}models/mboa-wsp.glb?v=ville-20261112-2`,scene,{pluginOptions:{gltf:{createInstances:false,useSRGBBuffers:false}},onProgress:event=>{if(event.lengthComputable)document.querySelector('#load-status')!.textContent=loc('Chargement des modèles… {0} %',Math.round(event.loaded/event.total*100))}})
 
   container.addAllToScene()
 

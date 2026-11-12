@@ -1,9 +1,9 @@
 # Repeint la texture du sol, à partir de la peinture d'origine (scripts/data/large-map-original.jpg) et du réseau routier.
 # Centre-ville : herbe, terre et parcelles en aplats propres, routes nettes aux dimensions des voies.
 # Aéroport, stade, colline, plantations et bord de mer gardent leur peinture : ce sont des détails dessinés, pas des taches.
-# Usage : python -I scripts/paint_ground.py <fichier-de-sortie.jpg> [--clean]
-# --clean : routes propres (pas de terre, de nids-de-poule ni de trottoirs cassés, marquage complet)
-#           et zones du sol en grands aplats, sans petits îlots.
+# Usage : python -I scripts/paint_ground.py <fichier-de-sortie.jpg> [--clean-ground] [--clean-roads]
+# --clean-ground : sol des quartiers en grands aplats lisses, sans taches de piste ni traits d'encre entre zones.
+# --clean-roads  : routes propres (pas de terre, de nids-de-poule ni de trottoirs cassés, marquage complet).
 import heapq, json, math, sys
 from pathlib import Path
 import numpy as np
@@ -11,7 +11,8 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(sys.argv[1])
-CLEAN = '--clean' in sys.argv[2:]
+CLEAN_GROUND = '--clean-ground' in sys.argv[2:]
+CLEAN = '--clean-roads' in sys.argv[2:]
 W, H = 6144, 3964
 # Correspondance monde (x, z) -> UV du sol, relevée sur les sommets du maillage par extract-road-network.py.
 CU = (1.59622906e-03, 8.85175441e-07, 5.08740826e-01)
@@ -53,7 +54,9 @@ def surfaces(original, rng):
     fields = [np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3)).resize((W, H), Image.BICUBIC)) for m in (grass, earth, plaza, track)]
     kind = np.argmax(np.stack(fields), axis=0).astype(np.uint8)
     del fields
-    if CLEAN:
+    if CLEAN_GROUND:
+        # Les taches de piste (beige) redeviennent de la terre : ce sont elles qui faisaient des traînées sales.
+        kind[kind == 3] = 1
         # Grands aplats : chaque pixel prend la zone majoritaire autour de lui ; les petits îlots disparaissent.
         small_kind = np.asarray(Image.fromarray(kind * 60).resize((W // 4, H // 4), Image.NEAREST).filter(ImageFilter.ModeFilter(9))) // 60
         # Bords arrondis : chaque zone est agrandie en douceur puis la plus présente l'emporte.
@@ -74,7 +77,7 @@ def surfaces(original, rng):
     ink_width = max(3, int(.26 * PX)) | 1
     k = Image.fromarray(kind * 60)
     outline = np.asarray(k.filter(ImageFilter.MaxFilter(ink_width))).astype(np.int16) != np.asarray(k.filter(ImageFilter.MinFilter(ink_width))).astype(np.int16)
-    out[outline] = out[outline] * .62
+    if not CLEAN_GROUND: out[outline] = out[outline] * .62
     amount = np.where(kind == 2, .12, .22)[..., None].astype(np.float32)
     broad = noise(rng, 90, .96, 1.04)[..., None]; fine = noise(rng, 1800, .97, 1.03)[..., None]
     return np.clip(out * (1 + (broad - 1) * amount) * (1 + (fine - 1) * amount), 0, 255)
