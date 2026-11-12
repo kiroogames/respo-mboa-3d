@@ -320,9 +320,9 @@ html #app .landmark .effect-group span.currency-icon:not(#_):not(#__):not(#___){
 html dialog.travel-dialog .currency-chip.is-gain:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______),
 html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li .currency-chip.is-gain:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______),
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>:is(.venue-energy-gain,.venue-other-gains):not(:empty):not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______),
-html dialog.travel-dialog .transport-mood.transport-mood-gain:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______){background:linear-gradient(180deg,#4fd36a,#1e9a3c)!important;color:#fff!important;text-shadow:0 1px 0 #0007!important}
+html dialog.travel-dialog .transport-mood.transport-mood-gain:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______){background:linear-gradient(180deg,#1f7a3a,#0e4d22)!important;color:#fff!important;text-shadow:0 1px 0 #0007!important}
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains>* *:not(.venue-penalty):not(#_):not(#__):not(#___):not(#____):not(#_____),
 html dialog.travel-dialog .currency-chip.is-gain *:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;text-shadow:0 1px 0 #0007!important}
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains .venue-penalty:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;background:#b3261e;border-radius:999px;padding:0 6px}
-html #app .landmark .effect-group.is-gain:not(#_):not(#__):not(#___){background:linear-gradient(180deg,#4fd36a,#1e9a3c)!important;color:#fff!important;text-shadow:0 1px 0 #0008}
+html #app .landmark .effect-group.is-gain:not(#_):not(#__):not(#___){background:linear-gradient(180deg,#1f7a3a,#0e4d22)!important;color:#fff!important;text-shadow:0 1px 0 #0008}
 html dialog.travel-dialog .currency-chip.is-gain .currency-icon:not(img):not(#_):not(#__){background-color:transparent!important}
