@@ -176,10 +176,11 @@ camera.fov=.7; camera.minZ=Math.max(.5,camera.radius*.02); camera.maxZ=4200
 camera.attachControl(canvas,true)
 
 // Liberté de mouvement limitée autour du cadrage de référence.
-// Angle horizontal : fixé, sauf rotation par crans de 15° à la molette appuyée (viewAlpha = angle visé).
-let viewAlpha=referenceAlpha
-const rotationStep=Math.PI/12,rotationPixels=48
-camera.lowerBetaLimit=camera.upperBetaLimit=1.12
+// Molette appuyée : glisser à gauche ou à droite tourne la vue, vers l’avant ou l’arrière l’incline,
+// par crans de 5° (viewAlpha et viewBeta = angles visés). L’inclinaison reste dans une plage étroite.
+let viewAlpha=referenceAlpha,viewBeta=1.12
+const rotationStep=Math.PI/36,rotationPixels=24
+camera.lowerBetaLimit=.85;camera.upperBetaLimit=1.3
 camera.lowerRadiusLimit=overviewRadius()*.60;camera.upperRadiusLimit=overviewRadius()
 camera.wheelDeltaPercentage=.018;camera.pinchDeltaPercentage=.006
 camera.panningSensibility=90
@@ -189,10 +190,11 @@ const pointerMap=camera.movement.input
 pointerMap.inputMap=[{source:'pointer',button:0,interaction:'pan'},...pointerMap.inputMap.filter(entry=>entry.source!=='pointer'&&entry.interaction!=='rotate')]
 // Sans cela, Windows active le défilement automatique au clic molette.
 canvas.addEventListener('mousedown',event=>{if(event.button===1)event.preventDefault()})
-// Molette appuyée + glisser à gauche ou à droite : un cran de 15° tous les 48 pixels.
-let rotateFrom:number|null=null
-canvas.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button===1){rotateFrom=event.clientX;try{canvas.setPointerCapture(event.pointerId)}catch{/* Capture facultative. */}}})
-canvas.addEventListener('pointermove',event=>{if(rotateFrom===null)return;if(!(event.buttons&4)){rotateFrom=null;return}const steps=Math.trunc((event.clientX-rotateFrom)/rotationPixels);if(steps){viewAlpha+=steps*rotationStep;rotateFrom+=steps*rotationPixels}})
+let rotateFrom:number|null=null,tiltFrom=0
+canvas.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button===1){rotateFrom=event.clientX;tiltFrom=event.clientY;try{canvas.setPointerCapture(event.pointerId)}catch{/* Capture facultative. */}}})
+canvas.addEventListener('pointermove',event=>{if(rotateFrom===null)return;if(!(event.buttons&4)){rotateFrom=null;return}const steps=Math.trunc((event.clientX-rotateFrom)/rotationPixels);if(steps){viewAlpha+=steps*rotationStep;rotateFrom+=steps*rotationPixels}
+ // Souris vers l’avant (vers le haut de l’écran) : vue plus rasante ; vers l’arrière : vue plus plongeante.
+ const tilt=Math.trunc((event.clientY-tiltFrom)/rotationPixels);if(tilt){viewBeta=Math.max(camera.lowerBetaLimit!,Math.min(camera.upperBetaLimit!,viewBeta-tilt*rotationStep));tiltFrom+=tilt*rotationPixels}})
 for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,()=>{rotateFrom=null})
 
 const ambient = new HemisphericLight('Lumière du ciel',new Vector3(.2,1,.1),scene)
@@ -424,7 +426,7 @@ document.querySelector<HTMLButtonElement>('#motion')!.onclick=()=>{motionPaused=
 
 updateMotion()
 
-zoomButton.onclick=()=>{destination={...views.city!,alpha:viewAlpha,radius:camera.radius>overviewRadius()*.80?overviewRadius()*.60:overviewRadius()}}
+zoomButton.onclick=()=>{destination={...views.city!,alpha:viewAlpha,beta:viewBeta,radius:camera.radius>overviewRadius()*.80?overviewRadius()*.60:overviewRadius()}}
 const placesToggle=document.querySelector<HTMLButtonElement>('#places-toggle')!,placesPanel=document.querySelector<HTMLElement>('#places-panel')!
 function showPlaces(open:boolean){placesPanel.hidden=!open;placesToggle.setAttribute('aria-expanded',String(open))}
 placesToggle.onclick=()=>showPlaces(placesToggle.getAttribute('aria-expanded')!=='true')
@@ -512,8 +514,8 @@ scene.onBeforeRenderObservable.add(()=>{
  camera.target.z=Math.max(center.z-18*cityScale,Math.min(center.z+18*cityScale,camera.target.z))
  camera.target.y=center.y
  // Un trajet de caméra impose son angle ; sinon la caméra rejoint en douceur le cran choisi.
- if(destination)viewAlpha=destination.alpha
- else camera.alpha+=Math.atan2(Math.sin(viewAlpha-camera.alpha),Math.cos(viewAlpha-camera.alpha))*Math.min(1,blend*2.5)
+ if(destination){viewAlpha=destination.alpha;viewBeta=destination.beta}
+ else{camera.alpha+=Math.atan2(Math.sin(viewAlpha-camera.alpha),Math.cos(viewAlpha-camera.alpha))*Math.min(1,blend*2.5);camera.beta+=(viewBeta-camera.beta)*Math.min(1,blend*2.5)}
  camera.beta=Math.max(camera.lowerBetaLimit!,Math.min(camera.upperBetaLimit!,camera.beta))
  camera.radius=Math.max(camera.lowerRadiusLimit!,Math.min(camera.upperRadiusLimit!,camera.radius))
 
@@ -938,7 +940,7 @@ if(import.meta.env.DEV)Object.defineProperty(window,'__MBOA_QA__',{configurable:
 
  setCamera(alpha:number,beta:number,radius:number,target:number[]){
 
-  destination=null;setOrbit(false);camera.setTarget(Vector3.FromArray(target));camera.alpha=alpha;viewAlpha=alpha;camera.beta=beta;camera.radius=radius
+  destination=null;setOrbit(false);camera.setTarget(Vector3.FromArray(target));camera.alpha=alpha;viewAlpha=alpha;camera.beta=beta;viewBeta=beta;camera.radius=radius
 
   camera.inertialAlphaOffset=0;camera.inertialBetaOffset=0;camera.inertialRadiusOffset=0
 
