@@ -1390,5 +1390,6 @@
 "Service ouvert : ce repas est gratuit.":"Meal time: this meal is free.",
 "{0} Prochain repas gratuit : {1} {2} · semaine {3}.":"{0} Next free meal: {1} {2} · week {3}.",
 "Gratuit · {0} min":"Free · {0} min",
-"+{0} humeur · repas gratuit":"+{0} mood · free meal"
+"+{0} humeur · repas gratuit":"+{0} mood · free meal",
+"Version {0}":"Version {0}"
 }
