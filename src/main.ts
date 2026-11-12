@@ -36,7 +36,6 @@ import { createSurfaceKit } from './surfaces'
 
 import { createCityLife, kitVehicleKinds } from './city-life'
 import { loadMvpModels } from './mvp-models'
-import { createBuildingKit, remodeledBuilding, remodelDetailOnly } from './mvp-buildings'
 
 import { cityScale, cityPosition } from './city-layout'
 
@@ -282,7 +281,6 @@ let destination:View|null=null
 let pendingPlaceMenu:{key:string;view:View}|null=null
 
 let cityLife:ReturnType<typeof createCityLife>|undefined
-let buildingKit:ReturnType<typeof createBuildingKit>|undefined
 
 const citySound=mountCitySound({listener:()=>({x:camera.target.x,z:camera.target.z,radius:camera.radius}),traffic:()=>getTrafficConditions().id,evening:()=>lampsEnabled,planeRoar:()=>cityLife?.planeRoar()??0,quiet:()=>!!document.querySelector('dialog[open]')})
 
@@ -838,8 +836,6 @@ async function loadCity(){
 
   applyToon(statueMaterial);statueMaterial.diffuseColor=new Color3(.34,.25,.15);statueMaterial.specularColor=new Color3(.22,.18,.12);statueMaterial.specularPower=42
 
-  // Bâtiments ordinaires remodelés dans le style de l’ancien jeu (MVP Responsable).
-  buildingKit=createBuildingKit(scene);buildingKit.setEvening(lampsEnabled)
   for(const mesh of [...container.meshes]){
 
    if(!(mesh instanceof Mesh)||!mesh.getTotalVertices())continue
@@ -856,11 +852,6 @@ async function loadCity(){
 
    if(mesh.name.startsWith('WSP Traffic prototype')){trafficPrototypes.push(mesh);mesh.setEnabled(false);continue}
    if(mesh.name==='WSP Avion prototype'){planePrototype=mesh;mesh.setEnabled(false);continue}
-
-   if(remodeledBuilding(mesh.name)){
-    if(!remodelDetailOnly(mesh.name))for(const built of buildingKit.remodel(mesh)){built.receiveShadows=true;const key=`${built.material!.uniqueId}:${built.getVerticesDataKinds().sort().join(",")}`;const group=groups.get(key)??[];group.push(built);groups.set(key,group)}
-    mesh.dispose();continue
-   }
 
    surfaces.prepareMesh(mesh)
 
@@ -927,7 +918,7 @@ const daylight=mountDaylight({
  apply(period){
   const profile=daylightProfiles[period]
   const to={ambient:profile.ambient,sun:profile.sun,tint:Color3.FromArray(profile.tint),sky:Color3.FromArray(profile.sky),glow:Color3.FromArray(profile.glow)}
-  lampsEnabled=profile.lamps;surfaces.setEvening(lampsEnabled);buildingKit?.setEvening(lampsEnabled);cityLife?.setEvening(lampsEnabled);palaceLight.intensity=lampsEnabled?.85:0
+  lampsEnabled=profile.lamps;surfaces.setEvening(lampsEnabled);cityLife?.setEvening(lampsEnabled);palaceLight.intensity=lampsEnabled?.85:0
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){lightingValues=to;lightingTransition=null;paintLighting()}
   else lightingTransition={start:performance.now(),from:lightingValues,to}
  },
