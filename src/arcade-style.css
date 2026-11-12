@@ -156,3 +156,7 @@ html #app .player-pin:not(.npc-pin):not(#_)::after{animation-delay:.8s}
 @keyframes respo-halo{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.6);opacity:0}}
 @media(max-width:760px){html #app .player-pin:not(.npc-pin):not(#_)>.player-pin-frame{width:68px}}
 @media(prefers-reduced-motion:reduce){html #app .player-pin:not(.npc-pin):not(#_),html #app .player-pin:not(.npc-pin):not(#_)::before,html #app .player-pin:not(.npc-pin):not(#_)::after{animation:none}}
+
+/* Flèche « › » seulement sur les cartes qui ouvrent un sous-menu. Les services directs (pause, jobs, plats de rue…)
+   portent data-service et agissent sur place ; Manger à la maison et Dormir ouvrent leur fenêtre. */
+html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service[data-service]:not([data-service=home-meals]):not([data-service=home-sleep]):not(#_):not(#__)::after{content:none!important;display:none!important}
