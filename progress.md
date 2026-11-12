@@ -582,3 +582,5 @@ Correction immédiate utilisateur : aucune rotation. Angles fixes rétablis ; gl
 2026-11-12 — Demande utilisateur : griser ce qui n’est pas disponible dans les cartes d’activités. Cartes désactivées : fond gris, niveaux de gris, opacité 0,55, placées après les disponibles, raison (« Fermé ») en pastille. Fenêtre de destination : <li data-closed> (travel-ui.ts) grisé et placé à la fin.
 
 2026-11-12 — Retour utilisateur : traiter les dossiers demandait trois niveaux (carte, liste, confirmation). La carte « Traiter un dossier » traite directement le prochain dossier disponible (completeDossier) et affiche le reçu dans la fenêtre du lieu ; plus de flèche de sous-menu. La fenêtre de liste reste dans le code mais n’est plus ouverte depuis le lieu.
+
+2026-11-12 — Capture utilisateur : icônes illisibles dans les badges rouges des lieux. Chaque icône est posée sur un rond blanc cerclé, signe plus gros.

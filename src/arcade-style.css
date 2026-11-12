@@ -301,3 +301,7 @@ html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li[da
 html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service:disabled>small:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;background:#1d2c44!important}
 /* Traiter un dossier agit directement : pas de flèche de sous-menu. */
 html dialog.travel-dialog.game-menu[open] .game-menu-pages .venue-service[data-venue-work]:not(#_):not(#__)::after{content:none!important;display:none!important}
+/* Badges des lieux : icônes posées sur une pastille blanche pour rester lisibles sur l'or comme sur le rouge. */
+html #app .landmark .effect-group:not(#_):not(#__){gap:3px!important;padding:2px 6px 2px 7px!important;font:900 15px/1 var(--sc-font)!important}
+html #app .landmark .effect-group .currency-icon:not(#_):not(#__){width:19px!important;height:19px!important;padding:1px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--sc-ink)}
+html #app .landmark .effect-group.is-loss:not(#_):not(#__){text-shadow:0 1px 0 #0008}
