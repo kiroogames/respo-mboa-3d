@@ -18,7 +18,7 @@ import './daylight.css'
 
 import './style.css'
 
-import { mountGameClock, onGameTimeChange } from './game-clock'
+import { mountGameClock, onGameTimeChange, getGameTimeAt, getGameTime } from './game-clock'
 
 import { mountWallet, addMoney } from './currency'
 
@@ -597,6 +597,14 @@ function createLandmarks(){
   button.onclick=()=>{
    if(travel.isTravelling())return
    const state=getNPCState(npc.id),zone=state?.zone??state?.destination
+   // En chemin : le personnage annonce lui-même où il va et quand il arrive.
+   if(state?.travelling&&state.destination&&views[state.destination]){
+    const arrival=getGameTimeAt(Math.floor(getGameTime().totalMinutes/1440)*1440+state.until).time
+    const ride={walk:loc('à pied 🚶'),taxi:loc('en taxi 🚕'),yonga:loc('en Yonga 🚘'),moto:loc('en benskin 🏍️')}[state.transport as string]??''
+    const lines=[loc('Je suis en route pour {0} {1} ! J’arrive vers {2}, rejoins-moi là-bas.',views[state.destination]!.label,ride,arrival),loc('Pas maintenant, je file à {0} {1}. Rendez-vous là-bas vers {2} !',views[state.destination]!.label,ride,arrival),loc('Je suis dans les embouteillages {1}… Arrivée prévue à {0} vers {2}.',views[state.destination]!.label,ride,arrival)]
+    showDialogue(npc.portrait.startsWith('http')?npc.portrait:base+npc.portrait,npc.name,lines[Math.floor(getGameTime().totalMinutes/10)%lines.length]!)
+    return
+   }
    if(!zone)return
    if(playerZone!==zone){requestZone(zone);return}
    if(!isNPCAvailable(npc.id))return

@@ -1427,5 +1427,12 @@
 "Dans la caisse : {0} / {1}":"In the fund: {0} / {1}",
 "La caisse de la dot est à la maison.":"The dowry fund is at home.",
 "La dot est déjà réunie.":"The dowry is already ready.",
-"Le montant dépasse ce qu’il reste à réunir.":"The amount exceeds what is left to raise."
+"Le montant dépasse ce qu’il reste à réunir.":"The amount exceeds what is left to raise.",
+"à pied 🚶":"on foot 🚶",
+"en taxi 🚕":"by taxi 🚕",
+"en Yonga 🚘":"by Yonga 🚘",
+"en benskin 🏍️":"by moto-taxi 🏍️",
+"Je suis en route pour {0} {1} ! J’arrive vers {2}, rejoins-moi là-bas.":"I’m on my way to {0} {1}! I’ll be there around {2}, meet me there.",
+"Pas maintenant, je file à {0} {1}. Rendez-vous là-bas vers {2} !":"Not now, I’m heading to {0} {1}. See you there around {2}!",
+"Je suis dans les embouteillages {1}… Arrivée prévue à {0} vers {2}.":"Stuck in traffic {1}… I should reach {0} around {2}."
 }

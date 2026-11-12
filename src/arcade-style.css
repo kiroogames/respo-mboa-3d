@@ -197,3 +197,10 @@ html dialog.travel-dialog.game-menu[open] .popup-body .place-activity-list>li .p
 /* Bandeau « repas sauté » de l'en-tête : rouge translucide, texte blanc. */
 html dialog.travel-dialog.game-menu[open]>.popup-head .hunger-banner:not(#_):not(#__){background:#d8362b40!important;border:2px solid #ff8a78!important;color:#fff!important}
 html dialog.travel-dialog.game-menu[open]>.popup-head .hunger-banner *:not(#_):not(#__){color:#fff!important}
+
+/* Bulle de dialogue des personnages : charte du jeu, plus grande, apparition avec rebond. */
+html #dialogue .dialogue-box:not(#_){background:linear-gradient(180deg,#1d3d6b,#0b1a33)!important;border:3px solid var(--sc-ink)!important;border-radius:18px!important;box-shadow:inset 0 0 0 2px #ffffff26,0 5px 0 var(--sc-ink),0 14px 30px #050c1680!important;backdrop-filter:none!important;min-width:280px;max-width:min(440px,calc(100vw - 140px));padding:14px 40px 14px 34px!important;color:#fff}
+html #dialogue #dialogue-name:not(#_){font:400 20px/1.1 var(--sc-font)!important;color:#ffd23f!important;text-shadow:var(--sc-stroke-s)!important;margin-bottom:4px}
+html #dialogue #dialogue-text:not(#_){font:700 16px/1.35 Nunito,system-ui,sans-serif!important;color:#fff!important}
+html #dialogue #dialogue-close:not(#_){color:#fff!important}
+html #dialogue:not([hidden]):not(#_){animation:sc-pop .26s cubic-bezier(.2,.9,.3,1.25)}
