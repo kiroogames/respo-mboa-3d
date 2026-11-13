@@ -326,3 +326,7 @@ html dialog.travel-dialog .currency-chip.is-gain *:not(#_):not(#__):not(#___):no
 html dialog.game-menu.venue-dialog[open] #venue-place-panel .venue-service .venue-gains .venue-penalty:not(#_):not(#__):not(#___):not(#____):not(#_____){color:#fff!important;background:#b3261e;border-radius:999px;padding:0 6px}
 html #app .landmark .effect-group.is-gain:not(#_):not(#__):not(#___){background:linear-gradient(180deg,#1f7a3a,#0e4d22)!important;color:#fff!important;text-shadow:0 1px 0 #0008}
 html dialog.travel-dialog .currency-chip.is-gain .currency-icon:not(img):not(#_):not(#__){background-color:transparent!important}
+
+/* Stock du jour des plats : pastille « Reste N », rouge si épuisé. */
+html dialog.travel-dialog .stock-badge:not(#_):not(#__):not(#___):not(#____){display:inline-block;margin-top:4px;padding:2px 9px;border:2px solid var(--sc-ink);border-radius:999px;background:#1d3d6b!important;color:#fff!important;font:800 12px/1.2 Nunito,system-ui,sans-serif!important}
+html dialog.travel-dialog .stock-badge.is-out:not(#_):not(#__):not(#___):not(#____){background:#b3261e!important}

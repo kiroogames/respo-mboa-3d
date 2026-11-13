@@ -1,5 +1,6 @@
 import { loc, locData } from './i18n.ts'
 import { recordMeal, mealLimitReason } from './hunger.ts'
+import { foodStockReason, consumeFoodStock } from './food-stock.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /*
  * Règles des services : sélection par lieu, validation des coûts et application des effets.
@@ -87,7 +88,7 @@ export function venueServiceReason(service: VenueService, total = getGameTime().
   } else if (service.days && !service.days.includes(day % 7)) return loc('Fermé à cette heure.')
   if (service.special === 'tontine' && getTontine(total).paid) return loc('Cotisation déjà versée cette semaine.')
   if (service.limit && usedCount(service, total) >= service.limit.count) return service.limit.per === 'week' ? loc('Déjà fait cette semaine.') : loc('Déjà fait aujourd’hui.')
-  if (isMeal(service)) return mealLimitReason(total)
+  if (isMeal(service)) return mealLimitReason(total) || foodStockReason(`venue:${service.id}@${service.zones[0]}`, total)
   return ''
 }
 
@@ -115,7 +116,7 @@ export function useVenueService(id: string, zone: string) {
   if (service.limit || service.special) saveLife()
   spendMoney(service.money)
   // Un vrai repas compte dans la limite d'un repas par période.
-  if (isMeal(service)) recordMeal()
+  if (isMeal(service)) { recordMeal(); consumeFoodStock(`venue:${service.id}@${service.zones[0]}`) }
   spendEnergy(service.energyCost)
   const sleeping=service.id==='hotel-night'
   if(sleeping)advanceGameTime(service.minutes,'sleep')

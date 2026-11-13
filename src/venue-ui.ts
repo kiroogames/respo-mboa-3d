@@ -1,4 +1,6 @@
 import { loc, gameLocale } from './i18n.ts'
+import { getFoodStock, onFoodStockChange } from './food-stock'
+const isMealService = (service: { meal?: unknown; id: string }) => !!service.meal || service.id === 'market-meal' || service.id === 'hotel-meal'
 import { popupScroller } from './popup-shell'
 import {mountAdvancedDossiers} from './advanced-dossiers-ui'
 import {advancedRules,getAdvancedBatch,onAdvancedChange} from './advanced-dossiers'
@@ -153,6 +155,7 @@ export function mountVenues(options: {
   advancedEntry.onclick=()=>{if(options.travelling()||options.currentZone()!=='ministry'||zone!=='ministry')return;dialog.close();advanced.open()}
   onAdvancedChange(()=>{if(dialog.open)renderWorkEntry()})
   onPlayerResourcesChange(()=>{if(dialog.open)renderWorkEntry()})
+  onFoodStockChange(()=>{if(dialog.open)render()})
   const workEntry = document.createElement('button'); workEntry.className = 'venue-service dossier-launch'; workEntry.dataset.venueWork = ''; workEntry.hidden = true
   dialog.querySelector('#venue-place-panel')!.append(workEntry)
   function renderWorkEntry() {
@@ -350,8 +353,10 @@ export function mountVenues(options: {
       const energyReward = service.fullEnergy || service.energyGain ? `<span class="venue-energy-gain"><img src="${options.base}ui/currency-energy.png" alt=""/><strong>${service.fullEnergy ? loc('Recharge complète') : loc('+{0} énergie',energyGain)}</strong></span>${energyGain > 0 ? '' : `<span class="venue-energy-preview">${loc('Énergie déjà pleine')}</span>`}` : ''
       const visibleMood=previewMoodChange(service.moodGain).delta
       const otherGains = [service.moneyGain ? loc('+{0} Nkap',service.moneyGain.toLocaleString(gameLocale)) : '', visibleMood < 0 ? `<span class="venue-penalty">${loc('{0} humeur',visibleMood)}</span>` : visibleMood ? loc('+{0} humeur',visibleMood) : service.moodGain ? loc('Humeur affichée inchangée') : '', service.respoGain ? loc('+{0} points Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
+      const stock = isMealService(service) ? getFoodStock(`venue:${service.id}@${service.zones[0]}`) : null
+      const stockPill = stock ? `<span class="pill-info stock-pill">${stock.soldOut ? loc('Épuisé') : loc('Reste {0}', stock.remaining)}</span>` : ''
       const energyCost = service.energyCost ? `<span class="pill-cost"><img src="${options.base}ui/currency-energy.png" alt=""/>${loc('−{0} énergie',service.energyCost)}</span>` : ''
-      return `<button class="venue-service" data-service="${service.id}"${service.art ? ` data-menu-art="${service.art}"` : ''} ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?loc('Pause maison'):service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">${loc('Coûts')}</span><span class="travel-costs">${service.money ? `<span class="pill-cost"><img src="${options.base}ui/currency-nkap.png" alt="${loc('Argent')}"/>−${service.money.toLocaleString(gameLocale)}</span>` : `<span class="pill-free">${loc('Gratuit')}</span>`}${energyCost}<span class="pill-time">${loc('◷ {0} min',service.minutes)}</span></span><span class="venue-gains"><span class="venue-section-label">${loc('Gains et effets')}</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
+      return `<button class="venue-service" data-service="${service.id}"${service.art ? ` data-menu-art="${service.art}"` : ''} ${reason ? 'disabled' : ''}><b>${service.id==='home-rest'?loc('Pause maison'):service.name}</b><span class="venue-description">${service.description}</span><span class="venue-section-label">${loc('Coûts')}</span><span class="travel-costs">${service.money ? `<span class="pill-cost"><img src="${options.base}ui/currency-nkap.png" alt="${loc('Argent')}"/>−${service.money.toLocaleString(gameLocale)}</span>` : `<span class="pill-free">${loc('Gratuit')}</span>`}${energyCost}<span class="pill-time">${loc('◷ {0} min',service.minutes)}</span>${stockPill}</span><span class="venue-gains"><span class="venue-section-label">${loc('Gains et effets')}</span>${energyReward}<span class="venue-other-gains">${otherGains}</span></span>${reason ? `<small>${reason}</small>` : ''}</button>`
     }).join('')
     renderPeople()
     renderWorkEntry()

@@ -1453,5 +1453,9 @@
 "Traiter un dossier":"Process a file",
 "Un clic = un dossier traité":"One click = one file processed",
 "Dossier traité : {0}":"File processed: {0}",
-"Plus de dossier à traiter pour le moment.":"No more files to process for now."
+"Plus de dossier à traiter pour le moment.":"No more files to process for now.",
+"Épuisé pour aujourd’hui · retour demain.":"Sold out for today · back tomorrow.",
+"Épuisé":"Sold out",
+"Reste {0}":"{0} left",
+"· stock du jour limité":"· limited daily stock"
 }

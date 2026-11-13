@@ -1,6 +1,7 @@
 /* Un emplacement, une confirmation : les aliments vieillissent uniquement avec le calendrier du jeu. */
 import { loc } from './i18n.ts'
 import { recordMeal, mealLimitReason } from './hunger.ts'
+import { foodStockReason, consumeFoodStock } from './food-stock.ts'
 import {getGameTime,advanceGameTime} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 import {projectEnergy,getPlayerResources,getMoodDetails,previewMoodChange,restoreEnergy,changeMood} from './player-resources.ts'
@@ -30,7 +31,7 @@ export function previewFoodBag(action:BagAction,id:string,context:BagContext){
  const minutes=action==='buy'?5:action==='eat'&&food?food.minutes:0,end=now+minutes,expires=action==='buy'&&food?end+food.life:item?.expires??null
  const projection=projectEnergy(action==='eat'&&food?food.energy:0,end)
  const energyGain=action==='eat'?projection.energyGain:0,moodGain=action==='eat'?mood.delta:0,money=action==='buy'&&food?food.money:0
- const reason=isGuidedOutingActive()?loc('Terminez votre sortie accompagnée.'):context.travelling||!context.allowed?loc('Terminez votre déplacement ou votre activité.'):!food?loc('Aucun aliment disponible.'):action==='eat'&&food.id==='meal'&&mealLimitReason()?mealLimitReason():!Number.isSafeInteger(end)||expires!==null&&!Number.isSafeInteger(expires)?loc('Limite du calendrier atteinte.'):action==='buy'?(context.zone!==food.zone?loc('Achetez cet aliment sur place.'):item?loc('Votre sac est plein.'):getMoneyBalance()<money?loc('Nkap insuffisants.'):''):!item?loc('Votre sac est vide.'):action==='eat'?(now>=item.expires?loc('Cet aliment est périmé.'):end>item.expires?loc('Le repas finirait après la péremption.'):energyGain===0&&moodGain===0?loc('Énergie et humeur déjà au maximum utile.'):''):''
+ const reason=isGuidedOutingActive()?loc('Terminez votre sortie accompagnée.'):context.travelling||!context.allowed?loc('Terminez votre déplacement ou votre activité.'):!food?loc('Aucun aliment disponible.'):action==='buy'&&foodStockReason(`bag:${food.id}@${food.zone}`)?foodStockReason(`bag:${food.id}@${food.zone}`):action==='eat'&&food.id==='meal'&&mealLimitReason()?mealLimitReason():!Number.isSafeInteger(end)||expires!==null&&!Number.isSafeInteger(expires)?loc('Limite du calendrier atteinte.'):action==='buy'?(context.zone!==food.zone?loc('Achetez cet aliment sur place.'):item?loc('Votre sac est plein.'):getMoneyBalance()<money?loc('Nkap insuffisants.'):''):!item?loc('Votre sac est vide.'):action==='eat'?(now>=item.expires?loc('Cet aliment est périmé.'):end>item.expires?loc('Le repas finirait après la péremption.'):energyGain===0&&moodGain===0?loc('Énergie et humeur déjà au maximum utile.'):''):''
  return {action,food:food?{...food}:null,now,end,expires,minutes,money,energyGain,moodGain,energyBefore:r.energy,energyAfter:projection.energyAfter,maxEnergy:r.maxEnergy,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodBase:getMoodDetails().base,moodBonus:mood.bonus,balance:getMoneyBalance(),item:item?{...item}:null,zone:context.zone,reason}
 }
 let pending:(ReturnType<typeof previewFoodBag>&{token:number})|null=null
@@ -46,7 +47,7 @@ export function confirmFoodBag(token:number,context:BagContext){
  try{
   // Libérer/remplir le sac avant les notifications empêche de consommer deux fois le même objet.
   item=p.action==='buy'?{id:p.food!.id,bought:p.end,expires:p.expires!}:null;save()
-  if(p.action==='buy')spendMoney(p.money)
+  if(p.action==='buy'){spendMoney(p.money);consumeFoodStock(`bag:${p.food!.id}@${p.food!.zone}`)}
   if(p.action==='eat'){if(p.food!.id==='meal')recordMeal();restoreEnergy(p.food!.energy);changeMood(p.food!.mood)}
   if(p.minutes)advanceGameTime(p.minutes)
   listeners.forEach(fn=>fn())

@@ -1,4 +1,5 @@
 import { loc, gameLocale } from './i18n.ts'
+import { getFoodStock, onFoodStockChange } from './food-stock'
 import {getSportEffect,sportRules} from './sport-energy'
 /* Options de sorties : choisir ne produit aucun effet ; une seule confirmation engage les coûts. */
 import {cityOutings,getOutingSchedule,prepareCityOuting,cancelCityOuting,confirmCityOuting,onCityOutingChange} from './city-outings'
@@ -27,7 +28,8 @@ export function mountCityOutings(options:{currentZone:()=>string;travelling:()=>
   text('[data-outing-schedule]',`${s.reason||(s.end!==null?loc('Ouvert jusqu’à {0}.',date(getGameTimeAt(s.end))):'')} ${s.next?loc('Prochaine ouverture : {0}.',date(s.next)):''}`)
   // Les horaires sont déjà au-dessus : évite un second pavé avant la carte des plats.
   dialog.querySelector<HTMLElement>('[data-outing-schedule]')!.hidden=meal&&s.open&&!s.consumed
-  list.innerHTML=a.options.map(o=>`<button type="button" data-outing-option="${o.id}" data-menu-art="${a.id==='restaurant'?({classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'} as Record<string,string>)[o.id]??'food':''}" aria-pressed="${o.id===optionId}" ${s.consumed?'disabled':''}><b>${o.name}</b><span>${loc('{0} · {1} min · {2}',o.money?format(o.money):loc('Gratuit'),o.minutes,o.energy?loc('−{0} énergie',o.energy):loc('Sans coût d’énergie'))}</span></button>`).join('')
+  const stockOf=(option:string)=>a.id.startsWith('restaurant')||option==='meal'?getFoodStock(`outing:${a.id}:${option}`):null
+  list.innerHTML=a.options.map(o=>`<button type="button" data-outing-option="${o.id}" data-menu-art="${a.id==='restaurant'?({classic:'ndole',complete:'chicken','rice-beans':'ricebeans','grilled-chicken':'chicken',mafe:'rice'} as Record<string,string>)[o.id]??'food':''}" aria-pressed="${o.id===optionId}" ${s.consumed||stockOf(o.id)?.soldOut?'disabled':''}><b>${o.name}</b><span>${loc('{0} · {1} min · {2}',o.money?format(o.money):loc('Gratuit'),o.minutes,o.energy?loc('−{0} énergie',o.energy):loc('Sans coût d’énergie'))}</span>${stockOf(o.id)?`<small class="stock-badge${stockOf(o.id)!.soldOut?' is-out':''}">${stockOf(o.id)!.soldOut?loc('Épuisé'):loc('Reste {0}',stockOf(o.id)!.remaining)}</small>`:''}</button>`).join('')
   text('.outing-policy',a.repeatable?loc('Repas en solo. Disponible à nouveau tant que vous pouvez en bénéficier. Aucun gain de Respo, influence ou considération.'):loc('Sortie en solo. Une utilisation par jour, ou par soirée pour le snack. Aucun gain de Respo, influence ou considération.'))
   text('[data-outing-title]',p.option.name)
   text('[data-outing-gain]',`+${p.moodGain}`);text('[data-outing-mood]',`${p.moodBefore} → ${p.moodAfter} / 140`)
@@ -55,6 +57,6 @@ export function mountCityOutings(options:{currentZone:()=>string;travelling:()=>
   }finally{committing=false}
  }
  function refresh(){if(dialog.open&&!committing)render()}
- onGameTimeChange(()=>{if(dialog.open&&!committing){receipt=false;result.hidden=true;render()}});onPlayerResourcesChange(refresh);onMoneyBalanceChange(refresh);onCityOutingChange(refresh)
+ onGameTimeChange(()=>{if(dialog.open&&!committing){receipt=false;result.hidden=true;render()}});onPlayerResourcesChange(refresh);onMoneyBalanceChange(refresh);onFoodStockChange(refresh);onCityOutingChange(refresh)
  return {open(id:string){const a=cityOutings.find(a=>a.id===id);if(!a||options.currentZone()!==a.zone||options.travelling()||dialog.open)return;activityId=id;optionId=a.options[0]!.id;if(!allowed())return;receipt=false;result.hidden=true;render();dialog.showModal()},snapshot:()=>({mode:dialog.open?'menu':'closed',preview:dialog.open?pending:null,schedules:cityOutings.map(a=>({id:a.id,...getOutingSchedule(a.id)}))})}
 }

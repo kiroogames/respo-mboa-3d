@@ -1,5 +1,6 @@
 import { loc, locData } from './i18n.ts'
 import { recordMeal, mealLimitReason } from './hunger.ts'
+import { foodStockReason, consumeFoodStock } from './food-stock.ts'
 import {grantSportEffect} from './sport-energy.ts'
 import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Sorties solo : une occurrence par activité/session, même en changeant d’option ou après minuit. */
@@ -39,7 +40,7 @@ export function previewCityOuting(id:string,optionId:string){
  const safe=Number.isSafeInteger(from.totalMinutes+option.minutes),to=safe?getGameTimeAt(from.totalMinutes+option.minutes):from
  const projection=projectEnergy(option.energyGain,to.totalMinutes,from.totalMinutes,resources.energy,option.energy),energyGain=projection.energyGain
  const dishDays=(option as {days?:number[]}).days
- const reason=schedule.reason||(dishDays&&!dishDays.includes(Math.floor(from.totalMinutes/1440)%7)?loc('Ce plat du jour n’est pas servi aujourd’hui.'):'')||(activity.id.startsWith('restaurant')||option.id==='meal'?mealLimitReason():'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>schedule.end!?loc('La sortie se terminerait après la fermeture.'):'')||(balance<option.money?loc('Nkap insuffisants.'):'')||(resources.energy<option.energy?loc('Énergie insuffisante.'):'')||(activity.repeatable&&energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
+ const reason=schedule.reason||(dishDays&&!dishDays.includes(Math.floor(from.totalMinutes/1440)%7)?loc('Ce plat du jour n’est pas servi aujourd’hui.'):'')||(activity.id.startsWith('restaurant')||option.id==='meal'?mealLimitReason()||foodStockReason(`outing:${activity.id}:${option.id}`):'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>schedule.end!?loc('La sortie se terminerait après la fermeture.'):'')||(balance<option.money?loc('Nkap insuffisants.'):'')||(resources.energy<option.energy?loc('Énergie insuffisante.'):'')||(activity.repeatable&&energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
  return {activity:structuredClone(activity),option:{...option},from,to,schedule,balance,energyBefore:resources.energy,energyGain,maxEnergy:resources.maxEnergy,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodGain:mood.delta,reason}
 }
 const listeners=new Set<()=>void>()
@@ -69,7 +70,7 @@ export function confirmCityOuting(token:number,context:{zone:string;travelling:b
   // Verrouiller l’occurrence avant les notifications de portefeuille, ressources et calendrier.
   try{localStorage.setItem(key,JSON.stringify(completed))}catch{/* Limite conservée pendant la session. */}
   // Restaurant ou plat au snack : un vrai repas.
-  if(current.activity.id.startsWith('restaurant')||current.option.id==='meal')recordMeal()
+  if(current.activity.id.startsWith('restaurant')||current.option.id==='meal'){recordMeal();consumeFoodStock(`outing:${current.activity.id}:${current.option.id}`)}
   spendMoney(current.option.money);spendEnergy(current.option.energy);restoreEnergy(current.option.energyGain);changeMood(current.option.mood);advanceGameTime(current.option.minutes)
   if(current.activity.id==='football')grantSportEffect()
   listeners.forEach(listener=>listener())
