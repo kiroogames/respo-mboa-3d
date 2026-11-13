@@ -347,3 +347,20 @@ html dialog.travel-dialog:not([data-skin])>.popup-foot :is([class$="-actions"]>b
 @media(prefers-reduced-motion:reduce){html dialog.travel-dialog>.popup-foot button:not(#_):not(#a):not(#b){animation:none!important}}
 /* Mobile : chiffres plus petits pour que « 100 / 100 » tienne dans sa tuile malgré la pente. */
 @media(max-width:760px){html #app .resource-stats .game-wallet-amount:not(#_):not(#__):not(#___):not(#____){font-size:23px!important;margin-right:2px;white-space:nowrap}}
+/* Messages « vide » (personne ici, aucune activité) : encadré d'information translucide, texte blanc lisible. */
+html dialog.travel-dialog.game-menu[open] .popup-body :is(.venue-people-empty,.place-activity-empty):not(#_):not(#__){
+  border:2px dashed #a8bedb80!important;border-radius:14px!important;background:#ffffff14!important;box-shadow:none!important;
+  color:#fff!important;font-weight:700;text-shadow:0 1px 2px #0008
+}
+/* Activité ouverte maintenant mais fermée à l'arrivée : statut doré, bien visible avant de partir. */
+html dialog.travel-dialog.game-menu[open] .place-activity-list>li[data-late] small:not(#_):not(#__){background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold))!important;color:var(--sc-ink)!important;border:2px solid var(--sc-ink)!important;font-weight:800;opacity:1!important}
+/* Avertissement d'un transport (trop lent, trop cher, trop fatigant) : pastille dorée lisible. */
+html dialog.travel-dialog.game-menu[open] .transport-card .transport-warning:not(#_):not(#__){display:block;margin-top:6px;padding:4px 9px;border:2px solid var(--sc-ink);border-radius:10px;background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold));color:var(--sc-ink)!important;font:700 12px/1.25 Nunito,system-ui,sans-serif;text-shadow:none}
+/* Icônes des pastilles plus grandes (billets, éclair, smiley) : 24 px au lieu de 18, lisibles d'un coup d'œil. */
+html dialog.travel-dialog :is(.currency-chip.is-gain,.currency-chip.is-loss,.pill-cost,.pill-free,.venue-gains>.venue-energy-gain,.venue-gains>.venue-other-gains,.transport-mood) img:not(#_):not(#__):not(#___):not(#____):not(#_____){width:24px!important;height:24px!important;padding:1.5px!important}
+html dialog.travel-dialog :is(.currency-chip.is-gain,.currency-chip.is-loss,.pill-cost,.pill-free,.venue-gains>.venue-energy-gain,.venue-gains>.venue-other-gains,.transport-mood) .currency-icon:not(img):not(#_):not(#__):not(#___):not(#____):not(#_____){width:23px!important;height:23px!important}
+html dialog.travel-dialog .currency-chip:is(.is-gain,.is-loss):not(#_):not(#__):not(#___):not(#____):not(#_____){gap:4px!important;align-items:center}
+/* Caisse de la dot (et toque de Bae) : montants prédéfinis lisibles ; le montant choisi en or, texte foncé. */
+html dialog.travel-dialog .toque-presets>button:not(#_):not(#__):not(#___){border:3px solid var(--sc-ink)!important;border-radius:12px!important;background:linear-gradient(180deg,#fff,#e3edf9)!important;color:var(--sc-ink)!important;text-shadow:none!important;font:400 17px/1 var(--sc-font)!important;box-shadow:inset 0 -3px 0 #c3d4ea,0 3px 0 var(--sc-ink)!important;min-height:40px}
+html dialog.travel-dialog .toque-presets>button[aria-pressed=true]:not(#_):not(#__):not(#___){background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 55%,var(--sc-gold-lo))!important;color:var(--sc-ink)!important;box-shadow:inset 0 2px 0 #ffffffa0,0 3px 0 var(--sc-ink),0 0 0 3px #ffd34a80!important}
+html dialog.travel-dialog .toque-presets>button:disabled:not(#_):not(#__):not(#___){background:#9aa5b1!important;color:#e4e9ef!important;box-shadow:none!important;opacity:.8}

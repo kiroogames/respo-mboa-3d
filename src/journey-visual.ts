@@ -51,6 +51,10 @@ export function createJourneyVisual(scene:Scene,base:string){
  ball(bike,'Casque conducteur',.67,0,3,.18,helmet)
  for(const x of [-.42,.42]){const leg=box(bike,'Jambe conducteur',.25,.85,.3,x,1.35,.3,shirt);leg.rotation.x=-.65;const arm=box(bike,'Bras conducteur',.2,.75,.2,x,2.05,.5,skin);arm.rotation.x=-.85}
 
+ // Même gabarit que la circulation (voiture ≈ 1,6 × 1,3 × 3,5, moto ≈ 0,65 × 1,5 × 1,6) : les modèles
+ // ci-dessus sont dessinés plus grands, on les ramène à l’échelle de la ville (13/11/2026).
+ const vehicleScale:Record<string,number>={taxi:.6,yonga:.6,moto:.5}
+ for(const [id,vehicle] of vehicles)vehicle.scaling.setAll(vehicleScale[id]??1)
  const texture=new DynamicTexture('Animations originales du Respo',{width:256,height:256},scene,false)
  texture.hasAlpha=true
  const actorMat=new StandardMaterial('Personnage original détouré',scene);actorMat.diffuseTexture=texture;actorMat.useAlphaFromDiffuseTexture=true;actorMat.emissiveColor=Color3.White();actorMat.disableLighting=true;actorMat.backFaceCulling=false
@@ -89,14 +93,14 @@ export function createJourneyVisual(scene:Scene,base:string){
    actor.position.set(0,0,0);actor.scaling.setAll(1);plane.position.y=2.25
    const boarding=phase==='board',alighting=phase==='alight'
    // Le personnage rejoint la portière puis disparaît dans l’habitacle ; mouvement inverse à l’arrivée.
-   if(boarding||alighting){const t=boarding?1-progress:progress;actor.position.set(Math.cos(yaw)*2.1*t,0,-Math.sin(yaw)*2.1*t);actor.scaling.setAll(.75+.25*t)}
+   if(boarding||alighting){const t=boarding?1-progress:progress;actor.position.set(Math.cos(yaw)*1.3*t,0,-Math.sin(yaw)*1.3*t);actor.scaling.setAll(.75+.25*t)}
    for(const [id,vehicle] of vehicles){
     vehicle.rotation.y=yaw;vehicle.setEnabled(id===currentMode&&phase!=='done')
     const parked=state.vehiclePoint
     vehicle.position.set(parked?parked[0]-point[0]:0,parked?roadHeight(parked[0],parked[2])-height:0,parked?parked[2]-point[2]:0)
    }
    for(const door of doors)door.rotation.y=(boarding?Math.sin(progress*Math.PI):alighting?Math.sin(progress*Math.PI):0)*1.15
-   if(riding&&currentMode==='moto'){actor.position.set(-Math.sin(yaw)*.7,1.1,-Math.cos(yaw)*.7);actor.scaling.set(.72,.6,.72);shadow.setEnabled(false)}else shadow.setEnabled(true)
+   if(riding&&currentMode==='moto'){actor.position.set(-Math.sin(yaw)*.35,.55,-Math.cos(yaw)*.35);actor.scaling.set(.5,.42,.5);shadow.setEnabled(false)}else shadow.setEnabled(true)
    // Marche de dos quand on s’éloigne de la caméra ; même rythme que les clips Unity.
    const moving=phase==='exit'||phase==='enter'||phase==='travel'&&currentMode==='walk'||boarding||alighting
    const toward=Math.cos(yaw)*Math.cos(state.cameraAlpha)+Math.sin(yaw)*Math.sin(state.cameraAlpha)

@@ -1,10 +1,10 @@
 /*
- * Réseau routier et devis : les trajets suivent les rues tracées sur la carte WSP.
+ * Réseau routier et devis : les trajets suivent la chaussée peinte du sol 3D (road-network.json).
  * Un point de trajet est [X, Y, Z] ; les distances tarifées utilisent le plan horizontal X/Z.
  */
 
 import { loc } from './i18n.ts'
-import streets from '../scripts/wsp-streets.json' with { type: 'json' }
+import { roadPaths } from './road-network.ts'
 import settings from '../city-layout.json' with { type: 'json' }
 import rules from '../travel-rules.json' with { type: 'json' }
 import { getTrafficConditions } from './traffic-conditions.ts'
@@ -35,29 +35,32 @@ function connect(a: number, b: number) {
   const cost = distance(nodes[a]!, nodes[b]!)
   edges[a]!.push({ to: b, cost }); edges[b]!.push({ to: a, cost })
 }
-// Rues en coordonnées du monde (X, Z) : partagées par les trajets du joueur et la circulation.
-export const streetPaths: [number, number][][] = []
-for (const path of streets.paths) {
-  const points = path.map(([x, y]) => [
-    (((x! / 1800 * 6392 - 1276) / 3840) * 235.2227173 - 121.1039047) * scale,
-    8,
-    -((1 - y! / 1161) * 261.2766 - 126.4015656) * scale,
-  ] as TravelPoint)
-  streetPaths.push(points.map(p => [p[0], p[2]]))
-  addPath(points)
+// Rues = chaussée réellement peinte sur le sol (road-network.json), la même que suit la circulation :
+// le Respo, son taxi ou sa moto et les habitants roulent sur les vraies routes, plus sur l'ancien tracé.
+export const streetPaths: [number, number][][] = roadPaths.map(path => path.map(([x, z]) => [x, z] as [number, number]))
+for (const path of roadPaths) addPath(path.map(([x, z]) => [x, 8, z] as TravelPoint))
+// Les tronçons se touchent exactement aux carrefours : un raccord court (2,5 unités) évite les raccourcis
+// à travers les pâtés de maisons qu'un seuil large créait entre deux rues parallèles.
+const roadNodes = nodes.length
+for (let i = 0; i < roadNodes; i++) for (let j = i + 1; j < roadNodes; j++) {
+  if (distance(nodes[i]!, nodes[j]!) < 2.5) connect(i, j)
 }
+// Route de la présidence (absente de la chaussée peinte) : tracé manuel raccordé au point de route le plus proche.
 const presidencyRoad = [[-88, 8, -28], [-109, 8, -51], [-122, 12, -43], [-133, 18, -22], [-155, 28, -26], [-173, 36, -37], [-177.98, 42, -64.55]]
   .map(([x, y, z]) => [x! * scale, y!, z! * scale] as TravelPoint)
 streetPaths.push(presidencyRoad.map(p => [p[0], p[2]]))
 addPath(presidencyRoad)
-// Join streets at junctions, including crossings between sampled segments.
-for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
-  if (distance(nodes[i]!, nodes[j]!) < 9) connect(i, j)
-}
+let joint = 0
+for (let i = 1; i < roadNodes; i++) if (distance(nodes[i]!, nodes[roadNodes]!) < distance(nodes[joint]!, nodes[roadNodes]!)) joint = i
+connect(joint, roadNodes)
+// Réseau principal : les bouts de route isolés (bords de carte) ne servent jamais de point d'accroche,
+// sinon un lieu voisin se retrouverait « non relié ».
+const main = new Set<number>([roadNodes])
+for (const stack = [roadNodes]; stack.length;) for (const edge of edges[stack.pop()!]!) if (!main.has(edge.to)) { main.add(edge.to); stack.push(edge.to) }
 
 // Dijkstra relie les points routiers les plus proches ; les extrémités exactes raccordent le joueur et le lieu.
 export function createTravelRoute(from: TravelPoint, to: TravelPoint) {
-  const nearest = (p: TravelPoint) => nodes.reduce((best, node, i) => distance(node, p) < distance(nodes[best]!, p) ? i : best, 0)
+  const nearest = (p: TravelPoint) => nodes.reduce((best, node, i) => main.has(i) && distance(node, p) < distance(nodes[best]!, p) ? i : best, roadNodes)
   const start = nearest(from), goal = nearest(to)
   const costs = nodes.map(() => Infinity), parent = nodes.map(() => -1), visited = new Set<number>()
   costs[start] = 0

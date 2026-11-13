@@ -3,7 +3,7 @@
  * Seules les actions explicites avancent cette horloge ; les animations ne la modifient jamais.
  */
 
-import { loc } from './i18n.ts'
+import { loc, getLanguage } from './i18n.ts'
 // Events advance the calendar explicitly. Real time never changes it.
 const storageKey = 'mboa-game-minutes-v1'
 const days = [loc('Lundi'), loc('Mardi'), loc('Mercredi'), loc('Jeudi'), loc('Vendredi'), loc('Samedi'), loc('Dimanche')]
@@ -31,6 +31,22 @@ export function getGameTimeAt(totalMinutes: number) {
     minuteOfDay: totalMinutes % 1440,
     totalMinutes,
   }
+}
+
+// Nom du jour en minuscule en français (« samedi »), avec sa majuscule en anglais (« Saturday »).
+const dayWord = (total: number) => { const name = days[Math.floor(total / 1440) % 7]!; return getLanguage() === 'fr' ? name.toLowerCase() : name }
+// Heure courte : « 18h », « 11h35 » en français ; « 18:00 » en anglais.
+export function hourLabel(total: number) {
+  const h = Math.floor(total / 60) % 24, m = total % 60
+  return getLanguage() !== 'fr' ? `${h}:${String(m).padStart(2, '0')}` : m ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`
+}
+// « Fermé · ouvre à 18h », « … demain à 7h », « … samedi à 12h » : la prochaine ouverture à côté de la fermeture.
+export function closedUntil(next: number | null, total: number, withHour = true) {
+  if (next === null || !Number.isSafeInteger(next) || next <= total) return loc('Fermé à cette heure.')
+  const hour = hourLabel(next)
+  const gap = Math.floor(next / 1440) - Math.floor(total / 1440)
+  if (!withHour) return gap === 1 ? loc('Fermé · ouvre demain.') : loc('Fermé · ouvre {0}.', dayWord(next))
+  return gap === 0 ? loc('Fermé · ouvre à {0}.', hour) : gap === 1 ? loc('Fermé · ouvre demain à {0}.', hour) : loc('Fermé · ouvre {0} à {1}.', dayWord(next), hour)
 }
 
 // Ajoute une durée entière en minutes, sauvegarde puis avertit les menus et les routines.

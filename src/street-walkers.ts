@@ -1,6 +1,8 @@
 /*
  * Passants sur les trottoirs, sans dépendance au moteur 3D.
- * Chacun va et vient sur un tronçon de trottoir dégagé (extract-road-network.py écarte bâtiments et chaussées).
+ * Réseau piéton tiré du bord intérieur de la chaussée peinte (extract-road-network.py, walk_network) :
+ * bâtiments, herbe, cours éloignées des rues et îlots des ronds-points sont exclus. Chacun circule de
+ * tronçon en tronçon par les extrémités qui se touchent, et ne fait demi-tour qu’en impasse.
  */
 
 type P2 = [number, number]
@@ -34,13 +36,35 @@ export function createWalkers(walks: P2[][], count: number, seed = 11) {
     const dx = (b[0] - a[0]) * walker.direction, dz = (b[1] - a[1]) * walker.direction
     walker.yaw = Math.atan2(-dx, -dz)
   }
+  // Réseau piéton : les tronçons dont les extrémités se touchent (moins de 1,2 unité) sont reliés.
+  // Une boucle fermée (tour de pâté de maisons) se relie à elle-même et se parcourt sans fin.
+  const link = 1.2
+  const ends = paths.map(path => [path.points[0]!, path.points.at(-1)!] as const)
+  const neighbours = (index: number, atEnd: boolean) => {
+    const point = ends[index]![atEnd ? 1 : 0]
+    const found: { walk: number; fromEnd: boolean }[] = []
+    ends.forEach(([first, last], other) => {
+      if (Math.hypot(first[0] - point[0], first[1] - point[1]) < link && !(other === index && !atEnd)) found.push({ walk: other, fromEnd: false })
+      if (Math.hypot(last[0] - point[0], last[1] - point[1]) < link && !(other === index && atEnd)) found.push({ walk: other, fromEnd: true })
+    })
+    return found
+  }
+  const links = paths.map((_, index) => [neighbours(index, false), neighbours(index, true)] as const)
+  // Au bout d'un tronçon : continuer sur un tronçon voisin au hasard, sinon (impasse) faire demi-tour.
+  function turn(walker: Walker, atEnd: boolean, extra: number) {
+    const options = links[walker.walk]![atEnd ? 1 : 0]
+    if (!options.length) { walker.direction = atEnd ? -1 : 1; walker.s = atEnd ? paths[walker.walk]!.length - extra : extra; return }
+    const next = options[Math.floor(random() * options.length)]!
+    walker.walk = next.walk
+    walker.direction = next.fromEnd ? -1 : 1
+    walker.s = next.fromEnd ? paths[next.walk]!.length - extra : extra
+  }
   function step(seconds: number) {
     for (const walker of walkers) {
       walker.s += walker.direction * walker.speed * seconds
       const length = paths[walker.walk]!.length
-      // Au bout du trottoir, la personne fait demi-tour.
-      if (walker.s < 0) { walker.s = -walker.s; walker.direction = 1 }
-      else if (walker.s > length) { walker.s = 2 * length - walker.s; walker.direction = -1 }
+      if (walker.s < 0) turn(walker, false, Math.min(-walker.s, 1))
+      else if (walker.s > length) turn(walker, true, Math.min(walker.s - length, 1))
       walker.phase += seconds * walker.speed * 7
       place(walker)
     }

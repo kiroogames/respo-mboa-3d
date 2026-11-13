@@ -17,16 +17,25 @@ import { getCanteenService } from './canteen'
 import { advancedRules } from './advanced-dossiers'
 import { getRespoProgress } from './respo-level'
 import { getPlayerResources } from './player-resources'
-import { getGameTime } from './game-clock'
+import { getGameTime, hourLabel } from './game-clock'
 import { getHomeMealService } from './home-meals'
 
-export type PlaceActivity = { icon: string; art?: string; title: string; detail: string; status?: string; closed?: boolean }
+export type PlaceActivity = { icon: string; art?: string; title: string; detail: string; status?: string; closed?: boolean; late?: boolean }
 export type PlacePerson = { name: string; portrait: string; activity: string; request: boolean; stay: string }
 
-const nkap = (value: number) => value ? loc('{0} Nkap',value.toLocaleString(gameLocale)) : loc('Gratuit')
+// Coût signé « −1 500 Nkap » : currency-icons en fait une pastille rouge, comme dans le menu du lieu.
+const cost = (value: number) => value ? loc('−{0} Nkap',value.toLocaleString(gameLocale)) : loc('Gratuit')
+// État à l'arrivée : ouvert maintenant mais fermé à l'arrivée = signalé ; fermé maintenant mais ouvert à l'arrivée = disponible.
+function atArrival(now: string, then: string, arrival: number, current: number) {
+  if (arrival <= current || now === then) return then ? { closed: true, status: then } : {}
+  const hour = hourLabel(arrival)
+  if (then) return { closed: true, late: !now, status: loc('À ton arrivée vers {0} : {1}', hour, then) }
+  return { status: loc('Ouvert à ton arrivée vers {0}.', hour) }
+}
 
-export function getPlaceActivities(zone: string): PlaceActivity[] {
-  const items: PlaceActivity[] = []
+/** Activités du lieu ; « arrival » = heure d'arrivée prévue : horaires des services et sorties jugés à cette heure-là. */
+export function getPlaceActivities(zone: string, arrival = getGameTime().totalMinutes): PlaceActivity[] {
+  const items: PlaceActivity[] = [], current = getGameTime().totalMinutes
   if (zone === dossierRules.zone) {
     const batch = getDossierBatch()
     items.push({ icon: '📂', title: loc('Traiter les dossiers'), detail: loc('Jusqu’à {0} Nkap · +{1} Respo · {2} min',dossierRules.moneyGain,dossierRules.respoGain,dossierRules.minutes), closed: !!batch.reason, status: batch.reason || loc('{0} dossiers dans la pile',batch.remaining) })
@@ -45,15 +54,15 @@ export function getPlaceActivities(zone: string): PlaceActivity[] {
     items.push({ icon: '🛋️', art: 'home', title: loc('Équiper'), detail: loc('Confort et équipements') })
   }
   for (const service of getVenueServices(zone)) {
-    const closed = venueServiceReason(service)
+    const state = atArrival(venueServiceReason(service), venueServiceReason(service, arrival), arrival, current)
     const gains = [service.moneyGain ? loc('+{0} Nkap',service.moneyGain.toLocaleString(gameLocale)) : '', service.fullEnergy ? loc('recharge complète') : service.energyGain ? loc('+{0} énergie',service.energyGain) : '', service.moodGain > 0 ? loc('+{0} humeur',service.moodGain) : '', service.respoGain ? loc('+{0} Respo',service.respoGain) : ''].filter(Boolean).join(' · ')
-    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', art: service.art || (service.id === 'home-sleep' ? 'sleep-respo' : service.id === 'home-rest' ? 'wait' : undefined), title: zone === 'home' && service.id === 'home-rest' ? loc('Se reposer') : service.name, detail: service.id === 'home-sleep' ? loc('Durée au choix') : loc('{0} · {1} min{2}',service.money ? nkap(service.money) : '',service.minutes,gains ? ` · ${gains}` : ''), ...(closed ? { closed: true, status: closed } : {}) })
+    items.push({ icon: service.id === 'home-sleep' ? '🛏️' : '✨', art: service.art || (service.id === 'home-sleep' ? 'sleep-respo' : service.id === 'home-rest' ? 'wait' : undefined), title: zone === 'home' && service.id === 'home-rest' ? loc('Se reposer') : service.name, detail: service.id === 'home-sleep' ? loc('Durée au choix') : [service.money ? cost(service.money) : '', service.energyCost ? loc('−{0} énergie',service.energyCost) : '', loc('{0} min',service.minutes), gains].filter(Boolean).join(' · '), ...state })
   }
   for (const outing of cityOutings.filter(item => item.zone === zone)) {
-    const schedule = getOutingSchedule(outing.id)
-    items.push({ icon: '🎉', title: loc('Sorties · {0}',outing.name), detail: outing.hours, closed: !!schedule.reason, status: schedule.reason || loc('Ouvert') })
+    const state = atArrival(getOutingSchedule(outing.id).reason, getOutingSchedule(outing.id, arrival).reason, arrival, current)
+    items.push({ icon: '🎉', title: loc('Sorties · {0}',outing.name), detail: outing.hours, status: loc('Ouvert'), ...state })
   }
-  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: /emporter|takeaway/i.test(food.name) ? food.name : loc('{0} à emporter',food.name), detail: loc('{0} · +{1} énergie plus tard',nkap(food.money),food.energy) })
+  for (const food of bagFoods.filter(item => item.zone === zone)) items.push({ icon: '🥡', title: /emporter|takeaway/i.test(food.name) ? food.name : loc('{0} à emporter',food.name), detail: loc('{0} · +{1} énergie plus tard',cost(food.money),food.energy) })
   for (const mission of missionRules.missions.filter(item => item.zone === zone && getMissionState(item.id)?.stage === 'active')) items.push({ icon: '🎯', title: loc('Mission : {0}',mission.title), detail: loc('Vérification à effectuer ici'), status: loc('À faire') })
   return items
 }

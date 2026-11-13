@@ -98,7 +98,7 @@
     "money": 150,
     "energyCost": 0,
     "minutes": 15,
-    "energyGain": 15,
+    "energyGain": 45,
     "moodGain": 2,
     "respoGain": 0
   },
@@ -394,7 +394,7 @@
     "money": 500,
     "energyCost": 0,
     "minutes": 15,
-    "energyGain": 20,
+    "energyGain": 45,
     "moodGain": 6,
     "respoGain": 0,
     "opening": 1020,

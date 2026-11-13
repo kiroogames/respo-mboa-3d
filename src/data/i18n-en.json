@@ -1463,5 +1463,15 @@
 "Lieux":"Places",
 "Filtrer":"Filter",
 "Vue":"View",
-"Menu":"Menu"
+"Menu":"Menu",
+"Fermé · ouvre à {0}.":"Closed · opens at {0}.",
+"Fermé · ouvre demain à {0}.":"Closed · opens tomorrow at {0}.",
+"Fermé · ouvre {0} à {1}.":"Closed · opens {0} at {1}.",
+"Fermé · ouvre demain.":"Closed · opens tomorrow.",
+"Fermé · ouvre {0}.":"Closed · opens {0}.",
+"−{0} Nkap":"−{0} Nkap",
+"À ton arrivée vers {0} : {1}":"When you arrive around {0}: {1}",
+"Ouvert à ton arrivée vers {0}.":"Open when you arrive around {0}.",
+"{0} activités fermées à ton arrivée ({1})":"{0} activities closed when you arrive ({1})",
+"{0} : fermé à ton arrivée ({1})":"{0}: closed when you arrive ({1})"
 }

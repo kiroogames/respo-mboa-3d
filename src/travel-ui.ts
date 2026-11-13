@@ -8,7 +8,7 @@ import { isGuidedOutingActive } from './guided-outing-state'
 
 import { getMoneyBalance, spendMoney } from './currency'
 import { getPlayerResources, spendEnergy, changeMood } from './player-resources'
-import { advanceGameTime } from './game-clock'
+import { advanceGameTime, getGameTime, hourLabel } from './game-clock'
 import { createTravelRoute, quoteTravel, travelModes } from './travel'
 import type { TravelMode, TravelPoint } from './travel'
 import { getTrafficConditions } from './traffic-conditions'
@@ -56,10 +56,17 @@ export function mountTravel(options: {
   goButton.addEventListener('click', () => { if (pending) { setStep('go'); choices.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus() } })
   backButton.addEventListener('click', () => { setStep('place'); goButton.focus() })
   const escape = (text: string) => text.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
+  // Arrivée la plus rapide possible : sert à juger ce qui sera encore ouvert en arrivant.
+  const fastestArrival = () => getGameTime().totalMinutes + (pending ? Math.min(...travelModes.map(mode => quoteTravel(pending!.route, mode.id, pending!.traffic).minutes)) : 0)
+  // Activités ouvertes à l'arrivée la plus rapide mais fermées si l'on arrive à « arrival ».
+  const lostOnArrival = (key: string, arrival: number) => {
+    const open = new Set(getPlaceActivities(key, fastestArrival()).filter(item => !item.closed).map(item => item.title))
+    return getPlaceActivities(key, arrival).filter(item => item.closed && open.has(item.title)).map(item => item.title)
+  }
   function renderPlace(key: string) {
-    const activities = getPlaceActivities(key), people = getPlacePeople(key)
+    const activities = getPlaceActivities(key, fastestArrival()), people = getPlacePeople(key)
     dialog.querySelector('#travel-place-panel')!.innerHTML = (activities.length
-      ? `<ul class="place-activity-list">${activities.map(item => `<li${item.closed ? ' data-closed' : ''}><span class="place-activity-icon" aria-hidden="true">${item.art ? `<img src="${options.base}ui/menu-${escape(item.art)}.jpg" alt=""/>` : item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail.replace(/^\s*·\s*/,''))}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
+      ? `<ul class="place-activity-list">${activities.map(item => `<li${item.closed ? ' data-closed' : ''}${item.late ? ' data-late' : ''}><span class="place-activity-icon" aria-hidden="true">${item.art ? `<img src="${options.base}ui/menu-${escape(item.art)}.jpg" alt=""/>` : item.icon}</span><span class="place-activity-body"><b>${escape(item.title)}</b><span>${escape(item.detail.replace(/^\s*·\s*/,''))}</span>${item.status ? `<small${item.closed ? ' data-closed' : ''}>${escape(item.status)}</small>` : ''}</span></li>`).join('')}</ul>`
       : `<p class="place-activity-empty">${loc('Aucune activité particulière dans ce lieu.')}</p>`)
       + `<h3 class="place-people-title">${loc('Sur place')}</h3>`
       + (people.length
@@ -85,10 +92,12 @@ export function mountTravel(options: {
       const quote = quoteTravel(pending!.route, mode.id, pending!.traffic)
       const reason = money < quote.money ? loc('Argent insuffisant') : resources.energy < quote.energy ? loc('Énergie insuffisante') : ''
       const delay = quote.minutes - quote.clearMinutes
+      // Ce transport arrive trop tard pour une activité encore ouverte avec un transport plus rapide : on prévient.
+      const lost = lostOnArrival(pending!.key, getGameTime().totalMinutes + quote.minutes)
       const subtitle={walk:loc('Le pied, c’est gratuit !'),taxi:loc('On se serre un peu'),yonga:loc('La place du boss'),moto:loc('On faufile !')}[mode.id]
       const title=mode.id==='yonga'?loc('Yonga privé'):mode.label
       const cost=quote.money===0?loc('Gratuit'):'−'+quote.money.toLocaleString(gameLocale)
-      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${loc('{0}, {1} Nkap, {2} énergie{3}, {4} minutes{5}',title,quote.money,quote.energy,quote.mood>0?loc(', −{0} humeur',quote.mood):quote.mood<0?loc(', +{0} humeur',-quote.mood):'',quote.minutes,reason?', '+reason:'')}" ${reason ? 'disabled' : ''}><span class="transport-art" aria-hidden="true"><img src="${options.base}ui/transport-${mode.id}.png?v=respo-20261110" alt=""/></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span class="${quote.money?'pill-cost':'pill-free'}" title="${loc('Prix en Nkap')}"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span class="${quote.energy?'pill-cost':'pill-free'}" title="${loc('Énergie dépensée')}"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/>${quote.energy?'−'+quote.energy:0}</span>${quote.mood?`<span title="${quote.mood<0?loc('Humeur gagnée'):loc('Humeur perdue')}" class="transport-mood${quote.mood<0?' transport-mood-gain':''}"><span class="currency-icon currency-icon-mood" role="img" aria-label="${loc('Humeur')}" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>${quote.mood<0?'+'+(-quote.mood):'−'+quote.mood}</span>`:''}<span class="pill-time" title="${loc('Durée du trajet')}">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:delay>0?`<span class="transport-delay">${loc('Bouchons +{0} min',delay)}</span>`:''}</span></button>`
+      return `<button class="travel-option transport-card" data-travel-mode="${mode.id}" aria-label="${loc('{0}, {1} Nkap, {2} énergie{3}, {4} minutes{5}',title,quote.money,quote.energy,quote.mood>0?loc(', −{0} humeur',quote.mood):quote.mood<0?loc(', +{0} humeur',-quote.mood):'',quote.minutes,reason?', '+reason:'')}" ${reason ? 'disabled' : ''}><span class="transport-art" aria-hidden="true"><img src="${options.base}ui/transport-${mode.id}.png?v=respo-20261110" alt=""/></span><span class="transport-copy"><b>${title}</b><span class="transport-quip">${subtitle}</span><span class="transport-costs"><span class="${quote.money?'pill-cost':'pill-free'}" title="${loc('Prix en Nkap')}"><img src="${options.base}ui/currency-nkap.png" alt="Nkap"/>${cost}</span><span class="${quote.energy?'pill-cost':'pill-free'}" title="${loc('Énergie dépensée')}"><img src="${options.base}ui/currency-energy.png" alt="${loc('Énergie')}"/>${quote.energy?'−'+quote.energy:0}</span>${quote.mood?`<span title="${quote.mood<0?loc('Humeur gagnée'):loc('Humeur perdue')}" class="transport-mood${quote.mood<0?' transport-mood-gain':''}"><span class="currency-icon currency-icon-mood" role="img" aria-label="${loc('Humeur')}" style="background-image:url('${options.base}ui/mood-sprites.png')"></span>${quote.mood<0?'+'+(-quote.mood):'−'+quote.mood}</span>`:''}<span class="pill-time" title="${loc('Durée du trajet')}">◷ ${quote.minutes}<span class="transport-unit">min</span></span></span>${reason?`<span class="transport-warning">${reason}</span>`:lost.length?`<span class="transport-warning">${lost.length===1?loc('{0} : fermé à ton arrivée ({1})',escape(lost[0]!),hourLabel(getGameTime().totalMinutes+quote.minutes)):loc('{0} activités fermées à ton arrivée ({1})',lost.length,hourLabel(getGameTime().totalMinutes+quote.minutes))}</span>`:delay>0?`<span class="transport-delay">${loc('Bouchons +{0} min',delay)}</span>`:''}</span></button>`
 
     }).join('')
     const from=options.origin(),home=options.place('home'),rescue=previewEmergencyReturn(from.key,from.position,home.position,pending.traffic)
@@ -133,12 +142,12 @@ export function mountTravel(options: {
       choices.innerHTML = ''; message.textContent = ''; pending = null
       dialog.querySelector('#travel-distance')!.textContent = ''
       dialog.querySelector('#travel-traffic')!.textContent = ''
-      renderPlace(key)
       if (from.key === key) message.textContent = loc('Vous êtes déjà dans cette zone.')
       else {
         try { pending = { key, route: createTravelRoute(from.position, to.position), traffic: getTrafficConditions() }; renderChoices() }
         catch (error) { message.textContent = error instanceof Error ? error.message : loc('Trajet indisponible.') }
       }
+      renderPlace(key)
       goButton.disabled = !pending
       if (!dialog.open) dialog.showModal()
       setStep('place')

@@ -411,30 +411,46 @@ def relax(path, step=3.0, passes=6):
     return [[round(float(x), 2), round(float(z), 2)] for x, z in points]
 
 
-def sidewalks(paths, blocked, cu, cv, offset=5.15, step=4.0, trim=9.0, shortest=18.0):
-    """Trottoirs de part et d'autre des routes, coupés dès qu'un bâtiment ou une autre chaussée les gêne."""
-    h, w = blocked.shape
-    centre = np.array([q for p in paths for a, b in zip(p, p[1:]) for q in (a, ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2))])
-    walks = []
-    for path in paths:
-        total = length(path)
-        if total < trim * 2 + shortest: continue
-        cum = [0.0]
-        for a, b in zip(path, path[1:]): cum.append(cum[-1] + math.dist(a, b))
-        at = np.linspace(trim, total - trim, int((total - trim * 2) / step) + 2)
-        xs, zs = np.interp(at, cum, [q[0] for q in path]), np.interp(at, cum, [q[1] for q in path])
-        dx, dz = np.gradient(xs), np.gradient(zs); n = np.hypot(dx, dz) + 1e-6
-        for side in (-1, 1):
-            run = []
-            for x, z in zip(xs - side * dz / n * offset, zs + side * dx / n * offset):
-                u, v = (x * cu[0] + z * cu[1] + cu[2]) * w, (x * cv[0] + z * cv[1] + cv[2]) * h
-                inside = 0 <= v < h and 0 <= u < w and not blocked[int(v), int(u)]
-                if inside and np.hypot(centre[:, 0] - x, centre[:, 1] - z).min() > 4.6: run.append([round(float(x), 1), round(float(z), 1)])
-                else:
-                    if len(run) * step >= shortest: walks.append(run)
-                    run = []
-            if len(run) * step >= shortest: walks.append(run)
-    return walks
+def walk_network(mask, edges, circles, inset=(1, 3), island=2500, reach=15, shortest=10):
+    """Réseau piéton : une ligne qui longe l'intérieur de la chaussée peinte (≈ 0,9 unité du bord, sur la bordure-trottoir),
+    jamais sur l'herbe, la terre ni sous un bâtiment. Les îlots (rond-point, terre-pleins) sont bouchés
+    pour que personne ne marche au milieu de la route. Les tours de pâté fermés sont gardés en boucles."""
+    filled = mask | ~keep_large(~mask, island)
+    h, w = mask.shape
+    # Ronds-points : l'îlot central est bouché, personne ne marche sur son bord au milieu de l'anneau.
+    disc = Image.new('L', (w, h), 0); dd = ImageDraw.Draw(disc)
+    for cy, cx, radius in circles: dd.ellipse([cx - radius - 3, cy - radius - 3, cx + radius + 3, cy + radius + 3], fill=255)
+    filled = filled | (np.asarray(disc) > 127)
+    # Seulement le long des rues : les cours, parkings et parvis clairs loin d'une route sont écartés (≈ 7 unités).
+    lines = Image.new('L', (w, h), 0); dl = ImageDraw.Draw(lines)
+    for e in edges: dl.line([(p[1], p[0]) for p in e], fill=255, width=1)
+    near_road = np.asarray(lines.filter(ImageFilter.MaxFilter(2 * reach + 1))) > 127
+    img = Image.fromarray((filled * 255).astype(np.uint8))
+    near = np.asarray(img.filter(ImageFilter.MinFilter(2 * inset[0] + 1))) > 127
+    far = np.asarray(img.filter(ImageFilter.MinFilter(2 * inset[1] + 1))) > 127
+    band = keep_large(near & ~far & mask & near_road, 40)
+    skeleton = thin(band)
+    edges = graph(skeleton)
+    covered = {(int(round(p[0])), int(round(p[1]))) for e in edges for p in e}
+    left = set(zip(*np.nonzero(skeleton))) - covered
+    while left:
+        start = left.pop(); path = [start]; current = start
+        while True:
+            step = [(current[0] + i, current[1] + j) for i, j in FOUR + DIAG if (current[0] + i, current[1] + j) in left]
+            if not step: break
+            current = step[0]; left.discard(current); path.append(current)
+        if len(path) >= 20 and math.dist(path[0], path[-1]) <= 2: edges.append(path + [path[0]])
+        elif len(path) >= 20: edges.append(path)
+    edges = prune(merge(edges), spur=12)
+    return [e for e in edges if length(e) >= shortest]
+
+
+def simplify_any(path, tolerance):
+    """Simplifie aussi les boucles fermées, coupées en deux moitiés pour Ramer-Douglas-Peucker."""
+    if len(path) > 4 and path[0] == path[-1]:
+        mid = len(path) // 2
+        return simplify(path[:mid + 1], tolerance) + simplify(path[mid:], tolerance)[1:]
+    return simplify(path, tolerance)
 
 
 def main():
@@ -464,8 +480,9 @@ def main():
     paths = [[world(p) for p in smooth(simplify(e, 1.6))] for e in edges]
     paths = align_bridge(drop_inner_stubs(paths))
     total = sum(sum(math.dist(a, b) for a, b in zip(p, p[1:])) for p in paths)
+    walks = [[world(p) for p in smooth(simplify_any(e, 2.0), 3)] for e in walk_network(mask, edges, circles)]
     out = ROOT / 'src/data/road-network.json'
-    out.write_text(json.dumps({'source': 'Chaussée peinte du sol 3D (large map extended), squelette automatique', 'paths': paths, 'walks': sidewalks(paths, blocked, cu, cv), 'heights': height_grid()}, separators=(',', ':')), encoding='utf8')
+    out.write_text(json.dumps({'source': 'Chaussée peinte du sol 3D (large map extended), squelette automatique', 'paths': paths, 'walks': walks, 'heights': height_grid()}, separators=(',', ':')), encoding='utf8')
     print(json.dumps({'roundabouts': len(circles), 'paths': len(paths), 'length': round(total), 'mask_pixels': int(mask.sum()), 'skeleton_pixels': int(skeleton.sum())}))
     if DEBUG:
         DEBUG.mkdir(parents=True, exist_ok=True)

@@ -6,7 +6,7 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
 /* Sorties solo : une occurrence par activité/session, même en changeant d’option ou après minuit. */
 import definitionsSource from './data/city-outings.json' with {type:'json'}
 const definitions=locData(definitionsSource)
-import {getGameTime,getGameTimeAt,advanceGameTime} from './game-clock.ts'
+import {getGameTime,getGameTimeAt,advanceGameTime,closedUntil} from './game-clock.ts'
 import {getMoneyBalance,spendMoney} from './currency.ts'
 import {projectEnergy,getPlayerResources,spendEnergy,restoreEnergy,changeMood,previewMoodChange} from './player-resources.ts'
 export const cityOutings=definitions
@@ -31,7 +31,7 @@ export function getOutingSchedule(id:string,total=getGameTime().totalMinutes){
   const candidate=d*1440+activity.opening
   if(activity.days.includes(weekday(d))&&candidate>total&&Number.isSafeInteger(candidate))next=candidate
  }
- return {open,session:open?session:null,start,end,consumed,next:next===null?null:getGameTimeAt(next),reason:!open?loc('Cette sortie est fermée à cette heure.'):consumed?night?loc('Sortie déjà effectuée pour cette soirée.'):loc('Sortie déjà effectuée pour cette journée.'):''}
+ return {open,session:open?session:null,start,end,consumed,next:next===null?null:getGameTimeAt(next),reason:!open?closedUntil(next,total):consumed?night?loc('Sortie déjà effectuée pour cette soirée.'):loc('Sortie déjà effectuée pour cette journée.'):''}
 }
 export function previewCityOuting(id:string,optionId:string){
  const activity=definitions.find(a=>a.id===id),option=activity?.options.find(o=>o.id===optionId)

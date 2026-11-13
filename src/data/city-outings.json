@@ -30,9 +30,9 @@
         "name": "Séance avec encas",
         "money": 1200,
         "minutes": 90,
-        "energy": 5,
+        "energy": 0,
         "mood": 25,
-        "energyGain": 0
+        "energyGain": 45
       }
     ],
     "repeatable": false
@@ -68,9 +68,9 @@
         "name": "Plat et boisson",
         "money": 800,
         "minutes": 90,
-        "energy": 5,
+        "energy": 0,
         "mood": 20,
-        "energyGain": 0
+        "energyGain": 45
       },
       {
         "id": "dance",

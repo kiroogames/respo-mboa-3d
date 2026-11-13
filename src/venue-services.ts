@@ -11,7 +11,7 @@ import { isGuidedOutingActive } from './guided-outing-state.ts'
 import definitionsSource from './data/venue-services.json' with { type: 'json' }
 import { getMoneyBalance, spendMoney, addMoney } from './currency.ts'
 import { getEnergyMaximumAt,projectEnergy,getPlayerResources, spendEnergy, restoreEnergy, changeMood, changeRespoPoints, workGain } from './player-resources.ts'
-import { getGameTime,advanceGameTime } from './game-clock.ts'
+import { getGameTime,advanceGameTime,closedUntil } from './game-clock.ts'
 import { npcTemplates } from './npcs.ts'
 import { changeConsideration } from './npc-relationships.ts'
 
@@ -77,15 +77,25 @@ export function getVenueServices(zone: string, total = getGameTime().totalMinute
 }
 const isMeal = (service: VenueService) => !!service.meal || service.id === 'market-meal' || service.id === 'hotel-meal'
 
+// Prochaine ouverture d'un service fermé (dans les 8 jours), ou null.
+function nextOpening(service: VenueService, total: number) {
+  const day = Math.floor(total / 1440)
+  for (let d = day; d <= day + 8; d++) {
+    const candidate = d * 1440 + (service.opening ?? 0)
+    if (candidate > total && (!service.days || service.days.includes(d % 7))) return candidate
+  }
+  return null
+}
+
 /** Motif de fermeture ou de refus, hors argent et énergie ; chaîne vide si le service est possible maintenant. */
 export function venueServiceReason(service: VenueService, total = getGameTime().totalMinutes) {
   const day = Math.floor(total / 1440), minute = total % 1440
   if (service.opening !== undefined && service.closing !== undefined) {
     const night = service.closing <= service.opening
     const session = night ? (minute >= service.opening ? day : minute < service.closing ? day - 1 : null) : minute >= service.opening && minute < service.closing ? day : null
-    if (session === null || service.days && !service.days.includes(((session % 7) + 7) % 7)) return loc('Fermé à cette heure.')
+    if (session === null || service.days && !service.days.includes(((session % 7) + 7) % 7)) return closedUntil(nextOpening(service, total), total)
     if (total + service.minutes > session * 1440 + (night ? 1440 : 0) + service.closing) return loc('Trop tard pour finir avant la fermeture.')
-  } else if (service.days && !service.days.includes(day % 7)) return loc('Fermé à cette heure.')
+  } else if (service.days && !service.days.includes(day % 7)) return closedUntil(nextOpening(service, total), total, false)
   if (service.special === 'tontine' && getTontine(total).paid) return loc('Cotisation déjà versée cette semaine.')
   if (service.limit && usedCount(service, total) >= service.limit.count) return service.limit.per === 'week' ? loc('Déjà fait cette semaine.') : loc('Déjà fait aujourd’hui.')
   if (isMeal(service)) return mealLimitReason(total) || foodStockReason(`venue:${service.id}@${service.zones[0]}`, total)
