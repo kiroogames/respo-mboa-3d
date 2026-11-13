@@ -1,6 +1,5 @@
 /*
  * Organisation « jeu mobile » (demande du 13 novembre 2026, guide Clash Royale / Brawl Stars) :
- * - bouton « Jouer » qui lance l'action « maintenant » du guide (toutes tailles d'écran) ;
  * - sur mobile, barre d'onglets en bas (Missions, Lieux, Filtrer, Vue, Menu) qui remplace la pile
  *   filtres + « Vous regardez » + outils, et barre de ressources compacte en haut (mobile-hud.css).
  * Ce module ne fait que relayer des clics vers les boutons existants : aucune règle de jeu ici.
@@ -12,25 +11,6 @@ type Panel = 'places' | 'filter' | 'view'
 export function mountMobileHud(base: string) {
   const app = document.querySelector<HTMLElement>('#app')!
   const click = (selector: string) => document.querySelector<HTMLButtonElement>(selector)?.click()
-
-  // ---------- Bouton « Jouer » : reprend l'objectif principal du guide ----------
-  const play = document.createElement('button')
-  play.type = 'button'; play.id = 'play-now'; play.hidden = true
-  play.innerHTML = `<small class="play-now-goal"></small><b>${loc('Jouer')}</b>`
-  app.append(play)
-  const goalText = play.querySelector<HTMLElement>('.play-now-goal')!
-  const mainGoal = () => document.querySelector<HTMLButtonElement>('#guide .guide-goal[data-main]')
-  const syncPlay = () => {
-    const goal = mainGoal()
-    play.hidden = !goal || goal.disabled
-    const title = goal?.querySelector('.guide-text b')?.textContent ?? ''
-    goalText.textContent = title
-    play.title = title; play.setAttribute('aria-label', title ? loc('Jouer : {0}', title) : loc('Jouer'))
-  }
-  play.onclick = () => mainGoal()?.click()
-  const guideList = document.querySelector('#guide-list')
-  if (guideList) new MutationObserver(syncPlay).observe(guideList, { childList: true, subtree: true, characterData: true, attributes: true })
-  syncPlay()
 
   // ---------- Onglets du bas (affichés sur mobile seulement, voir la feuille) ----------
   const tabs = document.createElement('nav')

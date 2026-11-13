@@ -8,13 +8,6 @@ html .start-menu:not(#a):not(#b){
     radial-gradient(ellipse at 50% 38%,#3d8fe0 0%,#1d5bb0 28%,#0f2f66 62%,#071630 100%);
   backdrop-filter:none;overflow-x:hidden;overflow-y:auto
 }
-/* Rayons doux derrière le héros */
-html .start-menu:not(#a):not(#b)::before{
-  content:'';position:fixed;inset:-50%;pointer-events:none;
-  background:repeating-conic-gradient(from 0deg at 50% 50%,#ffffff12 0 9deg,transparent 9deg 18deg);
-  animation:start-rays 60s linear infinite
-}
-@keyframes start-rays{to{rotate:360deg}}
 html .start-menu .start-card:not(#a):not(#b){
   position:relative;z-index:1;width:min(440px,100%);padding:0;border:0;border-radius:0;
   background:none;box-shadow:none;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center
@@ -71,4 +64,4 @@ html .start-menu .start-confirm:not(#a):not(#b) .start-danger{--hi:var(--sc-red-
   html .start-menu .start-card h1:not(#a):not(#b){font-size:80px}
   html .start-menu .start-tagline:not(#a):not(#b){margin-bottom:14px}
 }
-@media(prefers-reduced-motion:reduce){html .start-menu:not(#a):not(#b)::before,html .start-menu .start-actions:not(#a):not(#b) button{animation:none!important}}
+@media(prefers-reduced-motion:reduce){html .start-menu .start-actions:not(#a):not(#b) button{animation:none!important}}
