@@ -28,7 +28,7 @@ export function previewCanteenMeal(id:string){
  if(!dish)throw new RangeError(loc('Plat inconnu.'))
  const service=getCanteenService(),from=getGameTime(),resources=getPlayerResources(),balance=getMoneyBalance(),mood=previewMoodChange(dish.mood),safe=Number.isSafeInteger(from.totalMinutes+dish.minutes),to=safe?getGameTimeAt(from.totalMinutes+dish.minutes):from
  const projection=projectEnergy(dish.energy,to.totalMinutes),energyGain=projection.energyGain
- const reason=service.reason||mealLimitReason()||(!service.menu.includes(id)?loc('Ce plat n’est pas au menu aujourd’hui.'):'')||(service.done.includes(id)?loc('Ce plat a déjà été consommé pendant ce service.'):'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>service.end?loc('Ce repas se terminerait après 14h.'):'')||(balance<dish.money?loc('Nkap insuffisants.'):'')||(energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
+ const reason=service.reason||mealLimitReason()||(!service.menu.includes(id)?loc('Ce plat n’est pas au menu aujourd’hui.'):'')||(!safe?loc('Limite du calendrier atteinte.'):'')||(to.totalMinutes>service.end?loc('Ce repas se terminerait après 14h.'):'')||(balance<dish.money?loc('Nkap insuffisants.'):'')||(energyGain===0&&mood.delta===0?loc('Énergie et humeur déjà au maximum utile.'):'')
  return {dish:{...dish},service,from,to,balance,energyBefore:resources.energy,maxEnergy:resources.maxEnergy,energyGain,energyAfter:projection.energyAfter,maxEnergyAfter:projection.maxEnergyAfter,energyLoss:projection.energyLoss,moodBaseBefore:mood.baseBefore,moodBonus:mood.bonus,moodBefore:mood.moodBefore,moodAfter:mood.moodAfter,moodGain:mood.delta,reason}
 }
 let pending:(ReturnType<typeof previewCanteenMeal>&{token:number})|null=null

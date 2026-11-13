@@ -58,7 +58,8 @@ export function hungerEnergyCost(base: number, total = getGameTime().totalMinute
 const periodKey = (total: number) => { const day = Math.floor(total / 1440), minute = total % 1440; return minute < mealSlots[0].start ? `${day - 1}:evening` : minute < mealSlots[1].start ? `${day}:morning` : minute < mealSlots[2].start ? `${day}:noon` : `${day}:evening` }
 /** Motif de refus d'un deuxième vrai repas dans la même période ; les collations ne sont pas concernées. */
 export function mealLimitReason(total = getGameTime().totalMinutes) {
-  return !disabled() && state.meals.includes(periodKey(total)) ? loc('Vous avez déjà pris un vrai repas : le prochain sera au créneau suivant.') : ''
+  // Décision utilisateur du 13 novembre 2026 : on mange autant de fois qu’on veut dans la journée.
+  void total; return ''
 }
 /** À appeler au début d'un vrai repas, avant d'avancer l'heure. */
 export function recordMeal(total = getGameTime().totalMinutes) {

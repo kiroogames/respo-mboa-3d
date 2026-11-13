@@ -44,12 +44,12 @@ function firstSteps(zone: string): (Goal & { done: boolean })[] {
 
 // Priorités du moment, de la plus urgente à la moins urgente ; les trois premières sont affichées.
 function priorities(): Goal[] {
-  const goals: Goal[] = [], time = getGameTime().totalMinutes, hunger = getHunger(), resources = getPlayerResources()
+  const goals: Goal[] = [], time = getGameTime().totalMinutes, resources = getPlayerResources()
   const bills = getHouseBilling(), fatigue = getFatigueAt(), progress = getRespoProgress(resources.ptRespo)
   const amount = (value: number) => value.toLocaleString(gameLocale)
   if (bills.unpaid > 0) goals.push({ id: 'bills', icon: '🧾', title: loc('Paie les factures : {0} Nkap',amount(bills.totalDue)), hint: getMoneyBalance() < bills.amount ? loc('Il te manque {0} Nkap : travaille d’abord',amount(bills.amount - getMoneyBalance())) : loc('Touche ici pour payer · en retard : −10 d’humeur par jour'), action: 'bills' })
   if (getMoneyBalance() < 150) goals.push({ id: 'broke', icon: '💸', title: loc('Plus d’argent'), hint: loc('Traite un dossier au ministère : +500 Nkap'), zone: 'ministry' })
-  if (hunger.today.some(slot => slot.current && !slot.eaten)) goals.push({ id: 'meal', icon: '🍲', title: loc('C’est l’heure de manger'), hint: loc('Maison, cantine, marché ou restaurant') })
+  // Plus de rappel pour manger : le joueur mange quand il veut (13 novembre 2026).
   if (fatigue.penalty) goals.push({ id: 'tired', icon: '🛏️', title: loc('Tu es fatigué : va dormir'), hint: loc('Maison › Dormir'), zone: 'home' })
   if (resources.energy * 10 < resources.maxEnergy * 3) goals.push({ id: 'energy', icon: '⚡', title: loc('Énergie basse'), hint: loc('Mange ou repose-toi avant de travailler') })
   if (resources.mood < 60) goals.push({ id: 'mood', icon: '🙂', title: loc('Humeur basse : détends-toi'), hint: loc('Ludo au village, match au bar, cinéma… tes gains baissent de 15 %') })
