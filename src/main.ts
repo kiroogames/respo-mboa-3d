@@ -85,6 +85,7 @@ import { mountCurrencyIcons } from './currency-icons'
 import { mountHungerUI } from './hunger-ui'
 import { mountPlaceEffects } from './place-effects-ui'
 import { mountPlaceEvents } from './place-events-ui'
+import { mountMobileHud } from './mobile-hud'
 import { mountMapFilter } from './map-filter'
 import { mountCitySound } from './city-sound'
 import { getTrafficConditions } from './traffic-conditions'
@@ -368,7 +369,7 @@ mountUiKit()
 mountGuide({currentZone:()=>playerZone,goTo:zone=>requestZone(zone),busy:()=>travel.isTravelling()||isGuidedOutingActive()||!!document.querySelector('dialog[open]')})
 mountCurrencyIcons(base)
 mountHungerUI()
-mountPlaceEffects(base);mountPlaceEvents()
+mountPlaceEffects(base);mountPlaceEvents();mountMobileHud(base)
 mountMapFilter()
 mountCurrencyFly(base)
 mountGameFeedback()
@@ -1022,3 +1023,5 @@ import './game-skin.css'
 
 import './menus-arcade.css'
 import './arcade-style.css'
+import './mobile-hud.css'
+import './start-arcade.css'

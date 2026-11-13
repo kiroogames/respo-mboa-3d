@@ -330,3 +330,20 @@ html dialog.travel-dialog .currency-chip.is-gain .currency-icon:not(img):not(#_)
 /* Stock du jour des plats : pastille « Reste N », rouge si épuisé. */
 html dialog.travel-dialog .stock-badge:not(#_):not(#__):not(#___):not(#____){display:inline-block;margin-top:4px;padding:2px 9px;border:2px solid var(--sc-ink);border-radius:999px;background:#1d3d6b!important;color:#fff!important;font:800 12px/1.2 Nunito,system-ui,sans-serif!important}
 html dialog.travel-dialog .stock-badge.is-out:not(#_):not(#__):not(#___):not(#____){background:#b3261e!important}
+
+/* ---------- Codes « Clash Royale / Brawl Stars » (demande du 13 novembre 2026) ----------
+   Texte de titre et de bouton penché vers l'avant, cartouches de ressources sombres translucides,
+   action principale qui pulse doucement. Lilita One n'a pas d'italique : la pente est synthétisée. */
+:is(html dialog.travel-dialog .popup-foot button,html #app .tools button,html #app .header-actions button,html #app #ui-menu-toggle,html #app #wait-open,html .start-menu button,html dialog.travel-dialog.game-menu[open]>.popup-head :is(.popup-titles h2,.npc-conversation-header :is(h2,h3,b)),html dialog.travel-dialog.game-menu[open]>.popup-head .venue-tabs button,html #app #guide .guide-head,html #app :is(.game-wallet-amount,.game-clock-time)):not(#_){font-synthesis:style!important;font-style:italic!important}
+/* Titres et chiffres : pente franche par transformation (plus visible que l’italique synthétique). */
+html :is(dialog.travel-dialog.game-menu[open]>.popup-head :is(.popup-titles h2,.npc-conversation-header h2),#app :is(.game-wallet-amount,.game-clock-time),#app #guide .guide-head):not(#_):not(#__):not(#___){display:inline-block;transform:skewX(-8deg);transform-origin:50% 100%}
+html #app :is(.game-wallet-amount,.game-clock-time):not(#_):not(#__):not(#___){margin-right:6px}
+html #app :is(.respo-console,.city-wallet-strip>.game-wallet,.resource-stats .game-wallet,.game-clock):not(#_):not(#__):not(#___){
+  border:3px solid #0d1b2ee6!important;background:linear-gradient(180deg,#0f2440b8,#081629a6)!important;backdrop-filter:none!important;
+  box-shadow:inset 0 2px 0 #ffffff26,0 3px 0 #0d1b2e99!important
+}
+@keyframes sc-pulse{0%,100%{scale:1}50%{scale:1.045}}
+html dialog.travel-dialog:not([data-skin])>.popup-foot :is([class$="-actions"]>button:last-child:not(:first-child),[class$="-actions"]>button:only-child,button.travel-go):not(:disabled):not(#_):not(#a):not(#b){animation:sc-pulse 1.6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){html dialog.travel-dialog>.popup-foot button:not(#_):not(#a):not(#b){animation:none!important}}
+/* Mobile : chiffres plus petits pour que « 100 / 100 » tienne dans sa tuile malgré la pente. */
+@media(max-width:760px){html #app .resource-stats .game-wallet-amount:not(#_):not(#__):not(#___):not(#____){font-size:23px!important;margin-right:2px;white-space:nowrap}}

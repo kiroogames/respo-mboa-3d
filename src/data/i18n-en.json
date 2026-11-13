@@ -1457,5 +1457,13 @@
 "Épuisé pour aujourd’hui · retour demain.":"Sold out for today · back tomorrow.",
 "Épuisé":"Sold out",
 "Reste {0}":"{0} left",
-"· stock du jour limité":"· limited daily stock"
+"· stock du jour limité":"· limited daily stock",
+"Jouer":"Play",
+"Jouer : {0}":"Play: {0}",
+"Navigation":"Navigation",
+"Missions":"Missions",
+"Lieux":"Places",
+"Filtrer":"Filter",
+"Vue":"View",
+"Menu":"Menu"
 }

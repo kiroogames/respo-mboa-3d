@@ -1,0 +1,98 @@
+/*
+ * Organisation « jeu mobile » (demande du 13 novembre 2026) : bouton « Jouer », onglets du bas et
+ * barre de ressources compacte sur mobile. Chargée après arcade-style.css ; les « :not(#…) » répétés
+ * passent devant les anciennes règles mobiles sans les modifier.
+ */
+
+/* ---------- Bouton « Jouer » (toutes tailles) ---------- */
+html #app #play-now:not(#a):not(#b){
+  position:fixed;right:24px;bottom:104px;z-index:7;display:grid;justify-items:center;gap:0;
+  min-width:150px;padding:6px 22px 9px;
+  border:4px solid var(--sc-ink);border-radius:20px;cursor:pointer;
+  background:linear-gradient(180deg,var(--sc-gold-hi) 0%,var(--sc-gold) 48%,var(--sc-gold) 54%,var(--sc-gold-lo) 100%);
+  box-shadow:inset 0 4px 0 #ffffff90,inset 0 -7px 0 #00000030,0 6px 0 var(--sc-ink),0 14px 26px #050c1670;
+  animation:sc-pulse 1.6s ease-in-out infinite;transition:translate .07s,box-shadow .07s
+}
+html #app #play-now:not(#a):not(#b)[hidden]{display:none}
+html #app #play-now:not(#a):not(#b) b{font:italic 400 34px/1 var(--sc-font);font-synthesis:style;letter-spacing:1px;color:#fff;text-shadow:var(--sc-stroke);text-transform:uppercase}
+html #app #play-now:not(#a):not(#b) .play-now-goal{max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 13px/1.2 var(--sc-font);color:var(--sc-ink)}
+html #app #play-now:not(#a):not(#b) .play-now-goal:empty{display:none}
+html #app #play-now:not(#a):not(#b):hover{filter:brightness(1.06)}
+html #app #play-now:not(#a):not(#b):active{translate:0 4px;box-shadow:inset 0 4px 0 #ffffff90,inset 0 -4px 0 #00000030,0 2px 0 var(--sc-ink)}
+/* Une fenêtre ouverte a la priorité : le bouton s'efface. */
+html body:has(dialog[open]) #app #play-now:not(#a):not(#b){display:none}
+@media(prefers-reduced-motion:reduce){html #app #play-now:not(#a):not(#b){animation:none}}
+
+/* ---------- Onglets du bas : cachés hors mobile ---------- */
+html #app .mobile-tabs:not(#a){display:none}
+
+@media(max-width:760px){
+  /* Onglets : 5 grands boutons à portée de pouce */
+  html #app .mobile-tabs:not(#a):not(#b){
+    position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:8;
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:5px;
+    border:3px solid var(--sc-ink);border-radius:18px;
+    background:linear-gradient(180deg,#2b5590,#11284a);box-shadow:inset 0 3px 0 #ffffff30,0 4px 0 var(--sc-ink)
+  }
+  html #app .mobile-tabs:not(#a):not(#b) button{
+    display:grid;justify-items:center;align-content:center;gap:1px;min-width:0;height:54px;padding:2px;
+    border:0;border-radius:13px;background:transparent;color:#fff;cursor:pointer
+  }
+  html #app .mobile-tabs:not(#a):not(#b) button[aria-pressed=true]{
+    border:3px solid var(--sc-ink);background:linear-gradient(180deg,var(--sc-gold-hi),var(--sc-gold) 55%,var(--sc-gold-lo));
+    box-shadow:inset 0 2px 0 #ffffff80
+  }
+  html #app .mobile-tabs:not(#a):not(#b) .mobile-tab-icon{display:grid;place-items:center;height:28px;font-size:24px;line-height:1;color:#fff;text-shadow:var(--sc-stroke-s)}
+  html #app .mobile-tabs:not(#a):not(#b) .mobile-tab-icon img{height:28px;width:auto;filter:drop-shadow(0 2px 0 var(--sc-ink))}
+  html #app .mobile-tabs:not(#a):not(#b) .mobile-tab-label{font:italic 400 13px/1.1 var(--sc-font);font-synthesis:style;color:#fff;text-shadow:var(--sc-stroke-s);white-space:nowrap}
+
+  /* Ce que les onglets remplacent : caché par défaut, ouvert au-dessus de la barre à la demande */
+  html #app footer .place-picker:not(#a):not(#b):not(#c):not(#d),html #app footer .tools:not(#a):not(#b):not(#c):not(#d),html #app .map-filter:not(#a):not(#b):not(#c):not(#d),html #app #ui-menu-toggle:not(#a):not(#b):not(#c){display:none!important}
+  html #app[data-mobile-panel=places] footer .place-picker:not(#a):not(#b):not(#c):not(#d){display:block!important;position:fixed;left:8px;right:8px;bottom:84px;z-index:8}
+  html #app[data-mobile-panel=filter] .map-filter:not(#a):not(#b):not(#c):not(#d){display:flex!important;position:fixed;left:8px;right:8px;bottom:84px;top:auto;transform:none;translate:none;max-width:none;justify-content:space-around;z-index:8}
+  html #app[data-mobile-panel=view] footer .tools:not(#a):not(#b):not(#c):not(#d){display:flex!important;position:fixed;left:8px;right:8px;bottom:84px;z-index:8;justify-content:space-around}
+  html #app[data-mobile-panel=view] footer .tools #missions-open:not(#a):not(#b):not(#c):not(#d){display:none}
+  /* Le menu s'ouvre au-dessus des onglets */
+  html #app #hud-menu-actions:not(#a):not(#b):not(#c):not(#d){position:fixed;top:auto;bottom:84px;right:8px;left:auto;max-height:calc(100dvh - 160px);overflow:auto;z-index:9}
+
+  /* Bouton « Jouer » au-dessus des onglets, à droite */
+  html #app #play-now:not(#a):not(#b){right:10px;bottom:88px;min-width:118px;padding:4px 16px 7px;border-radius:18px}
+  html #app #play-now:not(#a):not(#b) b{font-size:28px}
+  html #app #play-now:not(#a):not(#b) .play-now-goal{max-width:130px;font-size:11px}
+  html #app[data-mobile-panel]:not([data-mobile-panel=""]) #play-now:not(#a):not(#b){display:none}
+
+  /* ---------- Barre de ressources compacte : une ligne en haut ---------- */
+  html #app .resource-stats:not(#a):not(#b):not(#c):not(#d){
+    position:fixed;top:8px;left:8px;right:74px;width:auto!important;max-width:none!important;height:50px;z-index:6;
+    display:flex;align-items:stretch;gap:5px;margin:0;padding:0;transform:none;background:none;border:0;box-shadow:none
+  }
+  html #app .respo-console:not(#a):not(#b):not(#c):not(#d){
+    position:relative;inset:auto;flex:none;width:46px;height:50px;padding:0;margin:0;display:grid;place-items:center;overflow:visible
+  }
+  html #app .respo-console:not(#a):not(#b):not(#c):not(#d) :is(.console-caption,.player-info){display:none!important}
+  html #app .respo-console:not(#a):not(#b):not(#c):not(#d) .player-card{display:grid;place-items:center;padding:0;margin:0;gap:0;width:44px;height:44px}
+  html #app .respo-console:not(#a):not(#b):not(#c):not(#d) .player-ring{width:42px;height:42px;margin:0}
+  html #app .city-wallet-strip:not(#a):not(#b):not(#c):not(#d){
+    position:static;inset:auto;transform:none;flex:1 1 auto;min-width:0;max-width:none;margin:0;padding:0;
+    display:flex;gap:4px;flex-wrap:nowrap;background:none;border:0;box-shadow:none
+  }
+  html #app .city-wallet-strip>#influence-counter:not(#a):not(#b):not(#c):not(#d){display:none!important}
+  html #app .city-wallet-strip>.game-wallet:not(#a):not(#b):not(#c):not(#d){
+    flex:1 1 auto;min-width:0;height:50px;margin:0;padding:2px 5px 2px 4px;border-radius:14px;
+    display:flex!important;flex-direction:row!important;align-items:center;justify-content:center;gap:3px;grid-template-columns:none
+  }
+  html #app .city-wallet-strip>.game-wallet:not(#a):not(#b):not(#c):not(#d)>:is(img,.mood-icon){display:block!important;flex:none;width:21px!important;height:21px!important;margin:0}
+  html #app .city-wallet-strip>.game-wallet:not(#a):not(#b):not(#c):not(#d) .game-wallet-details{display:block;width:auto!important;min-width:0}
+  html #app .city-wallet-strip>.game-wallet:not(#a):not(#b):not(#c):not(#d) .game-wallet-details>:not(.game-wallet-amount){display:none!important}
+  html #app .city-wallet-strip>.game-wallet:not(#a):not(#b):not(#c):not(#d) .game-wallet-amount{display:inline-block;font-size:15px!important;line-height:1;margin:0 1px 0 0;white-space:nowrap;letter-spacing:-.2px}
+  html #app .game-clock:not(#a):not(#b):not(#c):not(#d){
+    position:fixed;top:8px;right:8px;left:auto;width:62px;height:50px;padding:0;margin:0;z-index:6;
+    display:grid!important;place-items:center;align-content:center;grid-template-columns:1fr!important;grid-template-rows:1fr!important;cursor:pointer
+  }
+  html #app .game-clock:not(#a):not(#b):not(#c):not(#d)>:not(.game-clock-time){display:none!important}
+  html #app .game-clock:not(#a):not(#b):not(#c):not(#d) .game-clock-time{font-size:19px!important;margin:0;grid-area:auto}
+
+  /* Guide : seule sa pastille de progression reste sous la barre ; l'objectif passe dans « Jouer » */
+  html #app #guide:not(#a):not(#b):not(#c):not(#d){top:64px;bottom:auto;left:8px;width:auto;max-width:calc(100vw - 16px)}
+  html #app #guide:not(#a):not(#b):not(#c):not(#d) .guide-list{display:none!important}
+}

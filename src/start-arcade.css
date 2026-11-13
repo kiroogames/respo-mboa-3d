@@ -1,0 +1,74 @@
+/*
+ * Écran titre façon Clash Royale / Brawl Stars (demande du 13 novembre 2026) : plus de carte crème,
+ * un grand logo doré, le Respo en héros, un énorme bouton doré qui pulse, la langue dans un coin.
+ * Apparence seule ; chargée en dernier, les « :not(#…) » passent devant game-skin.css et arcade-style.css.
+ */
+html .start-menu:not(#a):not(#b){
+  background:
+    radial-gradient(ellipse at 50% 38%,#3d8fe0 0%,#1d5bb0 28%,#0f2f66 62%,#071630 100%);
+  backdrop-filter:none;overflow-x:hidden;overflow-y:auto
+}
+/* Rayons doux derrière le héros */
+html .start-menu:not(#a):not(#b)::before{
+  content:'';position:fixed;inset:-50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,#ffffff12 0 9deg,transparent 9deg 18deg);
+  animation:start-rays 60s linear infinite
+}
+@keyframes start-rays{to{rotate:360deg}}
+html .start-menu .start-card:not(#a):not(#b){
+  position:relative;z-index:1;width:min(440px,100%);padding:0;border:0;border-radius:0;
+  background:none;box-shadow:none;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center
+}
+/* Le Respo en grand, cerclé d'or */
+html .start-menu .start-portrait:not(#a):not(#b){
+  position:relative;left:auto;top:auto;margin:0 0 -26px;width:168px;height:168px;z-index:2;
+  border:6px solid var(--sc-ink);outline:6px solid var(--sc-gold);outline-offset:-12px;border-radius:50%;
+  background:radial-gradient(circle,#5fb0ff,#1b4f9c);
+  box-shadow:0 7px 0 var(--sc-ink),0 0 0 10px #ffd34a33,0 0 60px #ffd34a66
+}
+/* Bandeau « LE RESPONSABLE » en ruban bleu */
+html .start-menu .start-eyebrow:not(#a):not(#b){
+  position:relative;z-index:3;display:inline-block;padding:7px 26px 8px;
+  border:3px solid var(--sc-ink);border-radius:12px;
+  background:linear-gradient(180deg,var(--sc-blue-hi),var(--sc-blue) 50%,var(--sc-blue-lo));
+  box-shadow:inset 0 3px 0 #ffffff60,0 4px 0 var(--sc-ink);transform:skewX(-8deg);
+  font:400 18px/1 var(--sc-font);letter-spacing:3px;color:#fff;text-shadow:var(--sc-stroke-s)
+}
+html .start-menu .start-card h1:not(#a):not(#b){
+  margin:-4px 0 0;font:400 124px/1 var(--sc-font);letter-spacing:2px;transform:skewX(-8deg);
+  color:var(--sc-gold);-webkit-text-fill-color:var(--sc-gold);
+  -webkit-text-stroke:5px var(--sc-ink);paint-order:stroke fill;text-shadow:0 7px 0 var(--sc-ink),0 16px 24px #0008
+}
+html .start-menu .start-tagline:not(#a):not(#b){margin:6px 0 26px;font:400 18px/1.25 var(--sc-font);color:#fff;text-shadow:var(--sc-stroke-s)}
+
+/* Langue : petites pastilles dans le coin */
+html .start-menu .start-language-switch:not(#a):not(#b){position:fixed;top:14px;right:14px;z-index:2;margin:0;gap:6px}
+html .start-menu .start-language-switch:not(#a):not(#b)[hidden]{display:none}
+html .start-menu .start-language-switch:not(#a):not(#b) button{min-width:52px;min-height:38px;font-size:16px!important}
+
+/* Boutons : « Continuer » énorme et doré, « Nouvelle partie » bleu en dessous */
+html .start-menu .start-actions:not(#a):not(#b){width:100%;gap:16px}
+html .start-menu .start-actions:not(#a):not(#b) button{min-height:74px;border-radius:20px!important;border-width:4px!important}
+html .start-menu .start-actions:not(#a):not(#b) button b{font:italic 400 30px/1.05 var(--sc-font);font-synthesis:style;color:#fff;text-shadow:var(--sc-stroke)}
+html .start-menu .start-actions:not(#a):not(#b) button small{font:400 14px/1.2 var(--sc-font);color:#fff;text-shadow:var(--sc-stroke-s);opacity:1}
+html .start-menu .start-actions:not(#a):not(#b) :is(.start-continue,.start-new:only-of-type,.start-continue[hidden]+.start-new){--hi:var(--sc-gold-hi)!important;--mid:var(--sc-gold)!important;--lo:var(--sc-gold-lo)!important;min-height:92px;animation:sc-pulse 1.6s ease-in-out infinite}
+html .start-menu .start-actions:not(#a):not(#b) :is(.start-continue,.start-continue[hidden]+.start-new) b{font-size:40px}
+html .start-menu .start-actions:not(#a):not(#b) .start-continue:not([hidden])+.start-new{--hi:var(--sc-blue-hi)!important;--mid:var(--sc-blue)!important;--lo:var(--sc-blue-lo)!important}
+
+/* Confirmation d'effacement et choix de langue : panneaux bleu nuit */
+html .start-menu :is(.start-confirm,.start-language):not(#a):not(#b){width:100%;box-sizing:border-box;padding:16px;border:4px solid var(--sc-ink);border-radius:20px;background:linear-gradient(180deg,#2b5590,#11284a);box-shadow:inset 0 3px 0 #ffffff30,0 5px 0 var(--sc-ink);text-align:center}
+html .start-menu :is(.start-confirm,.start-language):not(#a):not(#b)[hidden]{display:none}
+html .start-menu .start-confirm:not(#a):not(#b) p,html .start-menu .start-language:not(#a):not(#b) p{color:#fff;font-weight:700}
+html .start-menu .start-confirm:not(#a):not(#b) p b{color:#ffd34a;font:400 20px/1.2 var(--sc-font);text-shadow:var(--sc-stroke-s)}
+html .start-menu .start-confirm:not(#a):not(#b) .start-danger{--hi:var(--sc-red-hi)!important;--mid:var(--sc-red)!important;--lo:var(--sc-red-lo)!important}
+
+@media(max-width:420px){
+  html .start-menu .start-portrait:not(#a):not(#b){width:136px;height:136px}
+  html .start-menu .start-card h1:not(#a):not(#b){font-size:96px}
+}
+@media(max-height:640px){
+  html .start-menu .start-portrait:not(#a):not(#b){width:104px;height:104px;margin-bottom:-18px}
+  html .start-menu .start-card h1:not(#a):not(#b){font-size:80px}
+  html .start-menu .start-tagline:not(#a):not(#b){margin-bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){html .start-menu:not(#a):not(#b)::before,html .start-menu .start-actions:not(#a):not(#b) button{animation:none!important}}
